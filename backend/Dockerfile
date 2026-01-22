@@ -14,8 +14,15 @@ RUN npm install
 # copy the rest of the application source code
 COPY . .
 
+# build TypeScript → JavaScript
+RUN npm run build
+
+# generate Prisma client
+RUN npx prisma generate
+
 # expose the port NestJS listens on
 EXPOSE 3000
 
+ENTRYPOINT ["./docker-entrypoint.sh"]
 # start the application
 CMD ["npm", "run", "start:dev"]
