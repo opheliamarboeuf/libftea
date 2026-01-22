@@ -1,0 +1,59 @@
+version: "3.9"
+
+# Each service runs in its own container
+services:
+  db:
+    image: postgres:16
+    container_name: postgres
+    # Environment variables for PostgreSQL
+    # Taken from the .env file for security (no hardcoded passwords)
+    env_file:
+      - .env
+    # Volume to persist database data
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Expose PostgreSQL port
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./backend  # Docker reads the Dockerfile in ./backend
+    container_name: backend
+    # Environment variables for backend (e.g., DATABASE_URL)
+    env_file:
+      - .env
+    # Backend depends on the database
+    depends_on:
+      - db
+    # Expose NestJS port
+    ports:
+      - "3000:3000"
+    # Live reload for development
+    volumes:
+      - ./backend:/app        # source code
+      - /app/node_modules     # keep npm modules inside container
+    # Command to start backend in dev mode
+    command: npm run start:dev
+
+  frontend:
+    build:
+      context: ./frontend  # Docker reads the Dockerfile in ./frontend
+    container_name: frontend
+    # Port exposed for Vite dev server
+    ports:
+      - "5173:5173"
+    # Live reload and isolated npm modules
+    volumes:
+      - ./frontend:/app      # source code
+      - /app/node_modules    # keep npm modules inside container
+    # Frontend waits for backend to start
+    depends_on:
+      - backend
+    # Environment variable for the API URL
+    environment:
+      - VITE_API_URL=http://backend:3000
+
+# Docker persistent volumes
+volumes:
+  postgres_data:
