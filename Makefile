@@ -10,7 +10,9 @@ migrate:
 dev:
 	docker compose up
 
-start:
-	make build
-	make up
-	make migrate
+reset:
+	docker compose down -v --remove-orphans
+
+start: build up migrate
+
+re: reset start

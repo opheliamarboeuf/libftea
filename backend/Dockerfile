@@ -23,6 +23,5 @@ RUN npx prisma generate
 # expose the port NestJS listens on
 EXPOSE 3000
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
 # start the application
 CMD ["npm", "run", "start:dev"]
