@@ -36,12 +36,17 @@ model User {
 
 	role	Role	@default(USER)
 
-	profile			Profile?	// optional field — a user can be created now and link a profile later
-	posts			Post[]
-	likes			Like[]
-	comments		Comment[]
-	conversations	Conversation[]	@relation("UserConversations")
-	messages		Message[]		@relation("MessageSender")
+	profile					Profile?	// optional field — a user can be created now and link a profile later
+	posts					Post[]
+	likes					Like[]
+	comments				Comment[]
+	conversations			Conversation[]		@relation("UserConversations")
+	messages				Message[]			@relation("MessageSender")
+	friendRequestSent		Friendship[]		@relation("FriendRequester")
+	friendRequestReceived	Friendship[]		@relation("FriendAddresse")
+	battleParticipants		BattleParticipant[]
+	votes					Vote[]
+	notifications			Notification[]
 }
 
 model	Profile {
@@ -65,8 +70,11 @@ model	Post {
 	authorId	Int
 	author		User	@relation(fields: [authorId], references: [id])
 
-	likes		Like[]
-	comments	Comment[]
+	likes				Like[]
+	comments			Comment[]
+	battleParticipants	BattleParticipant[]
+	votes				Vote[]
+	postTags			PostTag[]
 }
 
 model	Like {
@@ -120,14 +128,14 @@ model Friendship {
   id	Int	@id @default(autoincrement())
 
   requesterId	Int
-  addresseeId	Int
+  addresseId	Int
 
   requester	User	@relation("FriendRequester", fields: [requesterId], references: [id])
-  addressee	User	@relation("FriendAddressee", fields: [addresseeId], references: [id])
+  addresse	User	@relation("FriendAddresse", fields: [addresseId], references: [id])
 
   status FriendshipStatus	@default(PENDING)
 
-  @@unique([requesterId, addresseeId])
+  @@unique([requesterId, addresseId])
 }
 
 model Battle {
@@ -180,6 +188,8 @@ model Notification {
 model Tag {
 	id		Int		@id @default(autoincrement())
 	name	String	@unique
+
+	postTags	PostTag[]
 }
 
 model PostTag {
