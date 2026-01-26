@@ -1,3 +1,21 @@
+enum	Role {
+	USER
+	ADMIN
+}
+
+enum	FriendshipStatus{
+	PENDING
+	ACCEPTED
+	BLOCKED
+}
+
+enum	NotificationType {
+	LIKE
+	COMMENT
+	BATTLE_WIN
+	FRIEND_REQUEST
+}
+
 generator client {
 	provider = "prisma-client-js"
 }
@@ -7,32 +25,42 @@ datasource db {
 	url      = env("DATABASE_URL")
 }
 
+// @ symbols are Prisma directives > they define rules that apply to the column
 model User {
-	id    		Int     	@id @default(autoincrement())
-	email 		String  	@unique
+	id			Int     	@id @default(autoincrement())	//@id > clé primaire de la table 
+	//	Each table MUST have a primary key. This key uniquely identifies each row.
+	email		String  	@unique
 	username	String		@unique
 	password 	String
 	createdAt	DateTime	@default(now())
 
-	profile		Profile?	// optional field — a user can be created now and link a profile later
-	posts		Post[]
-	likes		Like[]
-	comments	Comment[]
+	role	Role	@default(USER)
+
+	profile			Profile?	// optional field — a user can be created now and link a profile later
+	posts			Post[]
+	likes			Like[]
+	comments		Comment[]
+	conversations	Conversation[]	@relation("UserConversations")
+	messages		Message[]		@relation("MessageSender")
 }
 
 model	Profile {
-	id			Int			@id @default(autoincrement())
+	//	primary key
+	id			Int		@id @default(autoincrement())
 	avatarUrl	String?
 	bio			String?
 
-	userId		Int			@unique
+	//	foreign key
+	userId		Int		@unique
+
+	user		User	@relation(fields: [userId], references: [id])
 }
 
 model	Post {
-	id			Int
+	id			Int			@id @default(autoincrement())
 	imageUrl	String
 	caption		String?
-	createdAt	@default(now())
+	createdAt	DateTime	@default(now())
 
 	authorId	Int
 	author		User	@relation(fields: [authorId], references: [id])
@@ -42,13 +70,17 @@ model	Post {
 }
 
 model	Like {
-	id		Int
+	id		Int	@id @default(autoincrement())
 
 	userId	Int
 	postId	Int
 
-	user		User	@relation(fields: [userId], references: [id])
-	post		Post	@relation(fields: [postId], references: [id])
+	user	User	@relation(fields: [userId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id])
+
+	//	A user can only like a specific post once (no duplicate likes)
+	//	@@ > applies a rule at the model level, not just a single field
+	@@unique([userId, postId])
 }
 
 model	Comment {
@@ -67,6 +99,95 @@ model	Conversation {
 	id			Int			@id @default(autoincrement())
 	createdAt	DateTime	@default(now())
 
-	user	User[]	@relation("UserConversations")
-	message	Message[]
+	users	User[]	@relation("UserConversations")
+
+	messages	Message[]
+}
+
+model	Message {
+	id			Int			@id @default(autoincrement())
+	content		String
+	createdAt	DateTime	@default(now())
+
+	senderId		Int
+	conversationId	Int
+
+	sender			User			@relation("MessageSender", fields: [senderId], references: [id])
+	conversation	Conversation	@relation(fields: [conversationId], references: [id])
+}
+
+model Friendship {
+  id	Int	@id @default(autoincrement())
+
+  requesterId	Int
+  addresseeId	Int
+
+  requester	User	@relation("FriendRequester", fields: [requesterId], references: [id])
+  addressee	User	@relation("FriendAddressee", fields: [addresseeId], references: [id])
+
+  status FriendshipStatus	@default(PENDING)
+
+  @@unique([requesterId, addresseeId])
+}
+
+model Battle {
+  id        Int			@id @default(autoincrement())
+  theme     String
+  createdAt	DateTime	@default(now())
+  endsAt    DateTime
+
+  participants BattleParticipant[]
+  votes        Vote[]
+}
+
+model BattleParticipant {
+	id			Int	@id @default(autoincrement())
+	battleId 	Int
+	userId		Int
+	postId		Int
+
+	battle	Battle	@relation(fields: [battleId], references: [id])
+	user	User	@relation(fields: [userId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id])
+
+	@@unique([battleId, userId])
+}
+
+model Vote {
+	id			Int @id @default(autoincrement())
+	battleId	Int	// for which battle is this vote
+	voterId		Int
+	postId		Int
+
+	battle	Battle	@relation(fields: [battleId], references: [id])
+	voter	User	@relation(fields: [voterId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id])
+
+	@@unique([battleId, voterId])
+}
+
+model Notification {
+	id		Int @id @default(autoincrement())
+	type	NotificationType
+	isRead 	Boolean @default(false)
+
+	userId	Int
+	user	User	@relation(fields: [userId], references: [id])
+
+	createdAt DateTime @default(now())
+}
+
+model Tag {
+	id		Int		@id @default(autoincrement())
+	name	String	@unique
+}
+
+model PostTag {
+	postId	Int
+	tagId	Int
+
+	post	Post	@relation(fields: [postId], references: [id])
+	tag		Tag		@relation(fields: [tagId], references: [id])
+
+	@@unique([postId, tagId])
 }
