@@ -11,25 +11,25 @@ model User {
 	id    		Int     	@id @default(autoincrement())
 	email 		String  	@unique
 	username	String		@unique
-	password  String
+	password 	String
 	createdAt	DateTime	@default(now())
 
 	profile		Profile?	// optional field — a user can be created now and link a profile later
-	posts			Post[]
-	likes			Like[]
+	posts		Post[]
+	likes		Like[]
 	comments	Comment[]
 }
 
 model	Profile {
-	id				Int			@id @default(autoincrement())
+	id			Int			@id @default(autoincrement())
 	avatarUrl	String?
-	bio				String?
+	bio			String?
 
 	userId		Int			@unique
 }
 
 model	Post {
-	id				Int
+	id			Int
 	imageUrl	String
 	caption		String?
 	createdAt	@default(now())
@@ -37,12 +37,12 @@ model	Post {
 	authorId	Int
 	author		User	@relation(fields: [authorId], references: [id])
 
-	likes			Like[]
+	likes		Like[]
 	comments	Comment[]
 }
 
 model	Like {
-	id			Int
+	id		Int
 
 	userId	Int
 	postId	Int
@@ -52,7 +52,7 @@ model	Like {
 }
 
 model	Comment {
-	id				Int				@id @default(autoincrement())
+	id			Int			@id @default(autoincrement())
 	content		String
 	createdAt	DateTime	@default(now())
 
@@ -64,9 +64,9 @@ model	Comment {
 }
 
 model	Conversation {
-	id				Int				@id @default(autoincrement())
+	id			Int			@id @default(autoincrement())
 	createdAt	DateTime	@default(now())
 
-	user		User[]	@relation("UserConversations")
+	user	User[]	@relation("UserConversations")
 	message	Message[]
 }
