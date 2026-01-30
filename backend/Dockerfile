@@ -11,14 +11,17 @@ COPY package*.json ./
 # install dependencies
 RUN npm install
 
+COPY prisma ./prisma
+
+# generate Prisma client
+RUN npx prisma generate
+RUN npx prisma migrate deploy
+
 # copy the rest of the application source code
 COPY . .
 
 # build TypeScript → JavaScript
 RUN npm run build
-
-# generate Prisma client
-RUN npx prisma generate
 
 # expose the port NestJS listens on
 EXPOSE 3000

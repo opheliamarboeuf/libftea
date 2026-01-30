@@ -1,4 +1,4 @@
-//traducteur de token
+//traducteur de token, permet a NestJs de lire et verifier le token JWT
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';

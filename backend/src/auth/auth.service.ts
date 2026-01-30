@@ -58,6 +58,7 @@ export class AuthService {
 		return this.generateToken(user.id);
 	}
 
+	// jwt service cre le token qui va etre verifie dans jwt.strategy
 	generateToken(userId: number) {
 		const payload = { sub: userId };
 
