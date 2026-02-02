@@ -7,8 +7,9 @@ WORKDIR /app
 COPY package*.json ./
 
 # install all dependencies
-RUN npm install
-
+RUN npm install \
+    && npm install react react-dom \
+    && npm install -D @types/react @types/react-dom
 # copy the rest of the source
 COPY . .
 
