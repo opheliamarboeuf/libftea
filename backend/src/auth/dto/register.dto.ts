@@ -1,7 +1,7 @@
 import { IsEmail, IsString, IsStrongPassword, MinLength } from 'class-validator';
 
 export class RegisterDto {
-	@IsEmail()
+	@IsEmail({}, { message: "Please enter a valid email address" })
 	email: string;
 
 	@IsString()

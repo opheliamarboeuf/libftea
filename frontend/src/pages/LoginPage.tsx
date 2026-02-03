@@ -1,5 +1,9 @@
+import { useState } from "react";
+
 const LoginPage = () => {
-	return <h1>Login Page</h1>; 
+return (
+	<></>
+);
 }
 
 export default LoginPage;

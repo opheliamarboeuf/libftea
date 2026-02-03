@@ -30,7 +30,7 @@ const App = () => {
         console.log("Fetch error:", (err as Error).message);
       }
     }
-      fetchUser()
+    	fetchUser()
   }, [token]);
 
 
