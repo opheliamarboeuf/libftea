@@ -1,12 +1,21 @@
-import { useState, ChangeEvent, FormEvent } from 'react'
+import { useState, ChangeEvent } from 'react'
+import { useUser } from '../context/UserContext';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
+	
+	// Local state for form fields
 	const [username, setUsername] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	// Hold a backend error message (or null if no error)
 	const [errorMessage, setErrorMessage] = useState<string | null>(null); // can be either a string or null, and it is initialized to null
+	const navigate = useNavigate();
 
-	// Create 3 changeEvent for each input field
+	// Access setUser from the global UserContext
+	const { setUser } = useUser();
+
+	// Update username when input changes
 	// e = ChangeEvent<HTMLInputElement> object
 	// target = HTML element that triggered the event
 	// value = input
@@ -20,10 +29,10 @@ const RegisterPage = () => {
 		setPassword(e.target.value);
 	}
 	
-	// Create a FormEvent
-	const handleSubmit = async (e: FormEvent<HTMLFormElement>) =>{
-		e.preventDefault(); // prevents the page to refresh after submitting
-		setErrorMessage(null); // reset error
+	// Handle form submission
+	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) =>{
+		e.preventDefault(); // prevent full page reload
+		setErrorMessage(null); // clear previous errors
 		const userData = {
 			username: username,
 			email: email, 
@@ -47,13 +56,19 @@ const RegisterPage = () => {
 				}
 				return ;
 			}
-			// extract token
-			const token = data.access_token; //TOKEN A SUPPRIMER
-			localStorage.setItem("token", token);
-			window.location.href = "/profile"; 
+	
+			// Store the user in the global context
+			setUser({
+				username: data.username,
+				email: data.email,
+			});
+
+			// Save JWT token and redirect to profile
+			localStorage.setItem("token", data.access_token);
+			navigate("/profile", {replace: true}) ;
 		}
 		catch (err){
-		console.log("Server unreachable");
+			console.log("Server unreachable");
 		}
 	};
 
@@ -95,14 +110,14 @@ const RegisterPage = () => {
 						required
 					/> 
 				</label>
-				  {errorMessage && (
-					 <div className="error-message">
-					  {errorMessage}
- 					</div>
-  )}
 			</div>
+				{errorMessage && ( //Displays backend error message if any
+					<div className="error-message">
+					{errorMessage}
+					</div>
+					)}
 			<div className = "form-button">
-			<button type = "submit">Register</button>
+				<button type = "submit">Register</button>
 			</div>
 		</form>
 		</div>
@@ -110,37 +125,3 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
-
-// // Gestionnnaire d'event
-
-// // Pour ChangeEvent<HTMLInputElement>
-// {
-//   target: {
-//     value: string;       // La valeur actuelle
-//     name: string;        // L'attribut name (si présent)
-//     type: string;        // "text", "email", etc.
-//     checked?: boolean;   // Pour checkboxes
-//     // ... autres propriétés HTMLInputElement
-//   },
-//   currentTarget: HTMLInputElement,
-//   preventDefault: () => void,
-//   // ... autres méthodes
-// }
-
-// // Pour FormEvent<HTMLFormElement>
-// {
-//   target: HTMLFormElement,
-//   currentTarget: HTMLFormElement,
-//   preventDefault: () => void,  // Empêche rechargement page
-//   // ... autres méthodes
-// }
-
-// Exemple d’erreur NestJS :
-// {
-//   "statusCode": 400,
-//   "message": [
-//     "username must be at least 3 characters",
-//     "password is not strong enough"
-//   ],
-//   "error": "Bad Request"
-// }

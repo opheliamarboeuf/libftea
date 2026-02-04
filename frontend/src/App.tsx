@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { UserContext, User } from "./context/UserContext";
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 
 const App = () => {
-  const [user, setUser] = useState(null);
+const [user, setUser] = useState<User | null>(null);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -33,21 +34,25 @@ const App = () => {
     	fetchUser()
   }, [token]);
 
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route 
-          path="/"
-          element={user ? <Navigate to = "/profile"/>: <LoginPage />} />
+    <UserContext.Provider value={{ user, setUser }}>
+      <BrowserRouter>
+        <Routes>
+          <Route 
+            path="/"
+            element={<Navigate to = {user ? "profile" : "/login"} replace/>} />
+          <Route
+            path="/register"
+            element={<RegisterPage />} />
         <Route
-          path="/register"
-          element={<RegisterPage />} />
-        <Route
-          path = "/profile"
-          element = {user ? <ProfilePage/> : <Navigate to = "/"/>} />
-      </Routes>
-    </BrowserRouter>
+            path = "/login"
+            element = {<LoginPage />} />
+          <Route
+            path = "/profile"
+            element = {user ? <ProfilePage/> : <Navigate to = "/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </UserContext.Provider>
   );
 };
 

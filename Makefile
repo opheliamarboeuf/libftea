@@ -4,15 +4,15 @@ build:
 up:
 	docker compose up -d
 
-migrate:
-	docker compose exec backend npx prisma migrate dev --name init
-
 dev:
 	docker compose up
 
-reset:
+migrate:
+	docker compose exec backend npx prisma migrate dev --name init
+
+down:
 	docker compose down -v --remove-orphans
 
 start: build up migrate
 
-re: reset start
+re: down start
