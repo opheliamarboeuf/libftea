@@ -1,7 +1,8 @@
 import "../App.css";
+import "./LoginPage.css";
 import React, { useState, ChangeEvent } from "react";
 import { useUser } from "../context/UserContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
 	const [username, setUsername] = useState("");
@@ -58,9 +59,13 @@ const LoginPage = () => {
 	}
 
 	return (
-		<div className="app-container">
-			<div className="app-title text-focus-in">WebApp</div>
-			<div className="form">
+		<div className="login-page">
+			<div className="login-left">
+				<div className="bg-image kenburns-bottom-right"></div>
+				<h1 className="app-title text-focus-in ">WebApp</h1>
+				<p className="app-subtitle">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis p</p>
+			</div>
+			<div className="login-right">
 				<h1>Login</h1>
 				<form onSubmit={handleSubmit}>
 					<div className="field">
@@ -92,14 +97,14 @@ const LoginPage = () => {
 						<button type="submit">
 							Login
 						</button>
+						<p className="no-account">No account yet ?</p>
 						<button onClick={() =>
 							navigate("/register")}>
 							Create new account
 						</button>
 					</div>
-					
 				</form>
-			</div>
+		</div>
 		</div>
 	);
 };

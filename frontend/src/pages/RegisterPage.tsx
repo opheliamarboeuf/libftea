@@ -1,6 +1,8 @@
+import "../App.css";
+import "./RegisterPage.css";
 import { useState, ChangeEvent } from 'react'
 import { useUser } from '../context/UserContext';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
 	
@@ -73,7 +75,7 @@ const RegisterPage = () => {
 	};
 
 	return (
-		<div className="app-container">
+		<div className="register-page">
 			<div className="form">
 				<form onSubmit={handleSubmit}>
 					<h1>Register</h1>
@@ -117,9 +119,10 @@ const RegisterPage = () => {
 						<button type="submit">
 							Register
 						</button>
+						<p className="no-account">Already have an account?</p>
 						<button onClick={() =>
 							navigate("/login")}>
-							I already have an account
+							Log in to account
 						</button>
 					</div>
 				</form>
