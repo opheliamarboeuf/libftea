@@ -4,14 +4,19 @@ import { UserContext, User } from "./context/UserContext";
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
+import HomePage from "./pages/HomePage";
 
 const App = () => {
 const [user, setUser] = useState<User | null>(null);
-  const token = localStorage.getItem("token");
+const token = localStorage.getItem("token");
+const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!token)
-      return;
+      {
+        setLoading(false);
+        return;
+      }
 
     const fetchUser = async () => {
       try {
@@ -30,8 +35,11 @@ const [user, setUser] = useState<User | null>(null);
       catch(err){
         console.log("Fetch error:", (err as Error).message);
       }
+      finally{
+        setLoading(false);
+      }
     }
-    	fetchUser()
+      fetchUser()
   }, [token]);
 
   return (
@@ -40,7 +48,7 @@ const [user, setUser] = useState<User | null>(null);
         <Routes>
           <Route 
             path="/"
-            element={<Navigate to = {user ? "profile" : "/login"} replace/>} />
+            element={loading ? null : <Navigate to = {user ? "/feed" : "/login"} replace/>} />
           <Route
             path="/register"
             element={<RegisterPage />} />
@@ -49,7 +57,10 @@ const [user, setUser] = useState<User | null>(null);
             element = {<LoginPage />} />
           <Route
             path = "/profile"
-            element = {user ? <ProfilePage/> : <Navigate to = "/" replace />} />
+            element = {loading ? null : user ? <ProfilePage/> : <Navigate to = "/" replace />} />
+        <Route
+            path = "/home"
+            element = {loading ? null : user ? <HomePage/> : <Navigate to = "/" replace />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>

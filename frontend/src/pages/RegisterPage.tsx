@@ -65,7 +65,7 @@ const RegisterPage = () => {
 
 			// Save JWT token and redirect to profile
 			localStorage.setItem("token", data.access_token);
-			navigate("/profile", {replace: true}) ;
+			navigate("/home", {replace: true}) ;
 		}
 		catch (err){
 			console.log("Server unreachable");
@@ -73,55 +73,81 @@ const RegisterPage = () => {
 	};
 
 	return (
-		<div className = "form">
-		<form onSubmit={handleSubmit}>
-			<div className = "field">
-				<label>
-					Username 
-					<input
-						type = "text"
-						name = "username"
-						value = {username}
-						onChange = {handleUsernameChange} // call handleUsernameChange
-						required
-					/> 
-				</label>
-			</div>
-			<div className = "field">
-				<label>
-					Email 
-					<input
-						type = "email"
-						name = "email"
-						value = {email}
-						onChange = {handleEmailChange}
-						required
-					/>
-				</label>
-			</div>
-			<div className = "field">
-				<label>
-					Password 
-					<input
-						type = "password"
-						name = "password"
-						value = {password}
-						onChange = {handlePasswordChange}
-						required
-					/> 
-				</label>
-			</div>
-				{errorMessage && ( //Displays backend error message if any
-					<div className="error-message">
-					{errorMessage}
+		<div className="app-container">
+			<div className="form">
+				<form onSubmit={handleSubmit}>
+					<h1>Register</h1>
+					<div className = "field">
+						<label htmlFor="username" className="sr-only">Username</label>
+							<input
+								type = "text"
+								name = "username"
+								placeholder='Username'
+								value = {username}
+								onChange = {handleUsernameChange} // call handleUsernameChange
+								required
+							/> 
+						</div>
+					<div className = "field">
+						<label htmlFor="email" className="sr-only">Email</label>
+							<input
+								type = "email"
+								name = "email"
+								placeholder="Email"
+								value = {email}
+								onChange = {handleEmailChange}
+								required
+							/>
 					</div>
+					<div className = "field">
+						<label htmlFor="password" className="sr-only">Password</label>
+							<input
+								type = "password"
+								name = "password"
+								placeholder="Password"
+								value = {password}
+								onChange = {handlePasswordChange}
+								required
+							/> 
+					</div>
+					{errorMessage && (
+						<div className="error-message shake-horizontal">{errorMessage}</div>
 					)}
-			<div className = "form-button">
-				<button type = "submit">Register</button>
+					<div className="form-button">
+						<button type="submit">
+							Register
+						</button>
+						<button onClick={() =>
+							navigate("/login")}>
+							I already have an account
+						</button>
+					</div>
+				</form>
+			
 			</div>
-		</form>
 		</div>
 	);
 };
 
 export default RegisterPage;
+
+		// <div className = "form">
+		// <form onSubmit={handleSubmit}>
+			
+			
+		// 	</div>
+		// 		{errorMessage && ( //Displays backend error message if any
+		// 			<div className="error-message">
+		// 			{errorMessage}
+		// 			</div>
+		// 			)}
+		// 	<div className = "form-button">
+		// 		<button type = "submit">Register</button>
+		// 	</div>
+		// 	<button onClick={() =>
+		// 		navigate("/login")
+		// 	}>
+		// 		I already have an account
+		// 	</button>
+		// </form>
+		// </div>

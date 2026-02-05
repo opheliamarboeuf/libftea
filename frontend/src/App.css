@@ -1,7 +1,106 @@
-#root {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;     
+  height: 100vh;
+  width: 100vw;
+  gap: 1rem;
+}
+
+.app-title {
+  font-family: "Palatino", serif;
+  font-size: 5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+}
+
+.form-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 10rem;
+  margin: 1rem;
+  gap: 0.5rem;
+}
+
+.form h1 {
+  font-size: 1rem;
+  margin-left: 0.4rem;
+}
+
+.form button {
+  border-radius: 8px;
+  border: none;
+}
+
+.form {
+
+}
+
+.error-message {
+  color: #777777;
+  text-align: right;
+  margin-right: 0.1rem;
+}
+
+.field input {
+  border: 1px solid #000;
+  border-radius: 12px;
+  margin: 0.2rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  margin: -1px;
+  border: 0;
+}
+
+.text-focus-in {
+  -webkit-animation: text-focus-in 1s cubic-bezier(.55,.085,.68,.53) both;
+  animation: text-focus-in 1s cubic-bezier(.55,.085,.68,.53) both;
+}
+
+.shake-horizontal {
+  -webkit-animation:shake-horizontal .8s cubic-bezier(.455,.03,.515,.955) both;animation:shake-horizontal .8s cubic-bezier(.455,.03,.515,.955) both
+}
+
+@-webkit-keyframes shake-horizontal {
+  0%,100%{-webkit-transform:translateX(0);transform:translateX(0)}10%,30%,50%,70%{-webkit-transform:translateX(-10px);transform:translateX(-10px)}20%,40%,60%{-webkit-transform:translateX(10px);transform:translateX(10px)}80%{-webkit-transform:translateX(8px);transform:translateX(8px)}90%{-webkit-transform:translateX(-8px);transform:translateX(-8px)}}@keyframes shake-horizontal{0%,100%{-webkit-transform:translateX(0);transform:translateX(0)}10%,30%,50%,70%{-webkit-transform:translateX(-10px);transform:translateX(-10px)}20%,40%,60%{-webkit-transform:translateX(10px);transform:translateX(10px)}80%{-webkit-transform:translateX(8px);transform:translateX(8px)}90%{-webkit-transform:translateX(-8px);transform:translateX(-8px)}
+}
+
+@-webkit-keyframes text-focus-in {
+  0% {
+    -webkit-filter: blur(12px);
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-filter: blur(0);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+/*
+
+.app-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
 }
 
 .app {
@@ -137,4 +236,4 @@
 
 .user-data strong {
   color: #667eea;
-}
+} */ 

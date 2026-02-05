@@ -1,6 +1,7 @@
+import "../App.css";
 import React, { useState, ChangeEvent } from "react";
 import { useUser } from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
 	const [username, setUsername] = useState("");
@@ -49,7 +50,7 @@ const LoginPage = () => {
 			});
 
 			localStorage.setItem("token", data.access_token);
-			navigate("/profile", {replace: true});
+			navigate("/home", {replace: true});
 		}
 		catch(err){
 			console.log("Server unreachable");
@@ -57,43 +58,52 @@ const LoginPage = () => {
 	}
 
 	return (
-	<div className="form">
-		<form onSubmit={handleSubmit}>
-		<div className="field">
-			<label>
-				Username
-				<input 
-					type="text" 
-					name="username"
-					value = {username}
-					onChange={handleUsernameChange}
-					required
-				/>
-			</label>
+		<div className="app-container">
+			<div className="app-title text-focus-in">WebApp</div>
+			<div className="form">
+				<h1>Login</h1>
+				<form onSubmit={handleSubmit}>
+					<div className="field">
+						<label htmlFor="username" className="sr-only">Username</label>
+							<input 
+								type="text" 
+								name="username"
+								placeholder="Username"
+								value = {username}
+								onChange={handleUsernameChange}
+								required
+							/>
+					</div>
+					<div className="field">
+						<label htmlFor="password" className="sr-only">Password</label>
+							<input 
+								type="password"
+								name="password"
+								placeholder="Password"
+								value={password}
+								onChange={handlePasswordChange}
+								required
+							/>
+					</div>
+					{errorMessage && (
+						<div className="error-message shake-horizontal">{errorMessage}</div>
+					)}
+					<div className="form-button">
+						<button type="submit">
+							Login
+						</button>
+						<button onClick={() =>
+							navigate("/register")}>
+							Create new account
+						</button>
+					</div>
+					
+				</form>
+			</div>
 		</div>
-		<div className="field">
-			<label>
-				Password
-				<input 
-					type="password"
-					name="password"
-					value={password}
-					onChange={handlePasswordChange}
-					required
-				/>
-			</label>
-		</div>
-			{errorMessage && (
-				<div className="error-message">
-					{errorMessage}
-				</div>
-			)}
-		<div className="form-button">
-			<button type="submit">Login</button>
-		</div>
-		</form>
-	</div>
 	);
 };
 
+		
 export default LoginPage;
+
