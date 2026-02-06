@@ -36,7 +36,7 @@ model User {
 
 	role	Role	@default(USER)
 
-	profile					Profile?	// optional field — a user can be created now and link a profile later
+	profile					Profile?
 	posts					Post[]
 	likes					Like[]
 	comments				Comment[]
@@ -53,6 +53,7 @@ model	Profile {
 	//	primary key
 	id			Int		@id @default(autoincrement())
 	avatarUrl	String?
+	coverUrl	String?
 	bio			String?
 
 	//	foreign key

@@ -25,16 +25,17 @@ export class AuthService {
 					email: dto.email,
 					username: dto.username,
 					password: hashedPassword,
-					// profile:{
-					// 	create:{
-					// 		bio: "",
-					// 		avatarUrl: null,
-					// 	},
-					// },
+					profile:{
+						create:{
+							bio: "",
+							avatarUrl: null,
+							coverUrl: null,
+						},
+					},
 				},
-				// include: {
-				// 	profile: true,
-				// },
+				include: {
+					profile: true,
+				},
 			});
 
 			return this.generateToken(user.id);
@@ -67,7 +68,9 @@ export class AuthService {
 		return this.generateToken(user.id);
 	}
 
-	// jwt service cre le token qui va etre verifie dans jwt.strategy
+	// Generates a JWT access token for the given user ID.
+	// The token payload contains the user ID under the "sub" claim, and it is signed with the JWT secret.
+	// The returned token can be used by the client to authenticate future requests.
 	generateToken(userId: number) {
 		const payload = { sub: userId };
 
@@ -85,6 +88,13 @@ export class AuthService {
 				username: true,
 				createdAt: true,
 				role: true,
+				profile: {
+					select: {
+						bio:true, 
+						avatarUrl: true,
+						coverUrl: true,
+					},
+				},
 			},
 		});
 	}

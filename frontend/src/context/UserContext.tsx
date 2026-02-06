@@ -4,6 +4,9 @@ import { createContext, useContext } from "react";
 export interface User {
 	username: string; // the user's name
 	email: string;    // the user's email address
+	avatarUrl?: string;
+	coverUrl?: string;
+	bio?: string;
 }
 
 // Defines the shape of the context, meaning the fields the context must contain

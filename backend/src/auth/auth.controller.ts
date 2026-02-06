@@ -18,8 +18,9 @@ export class AuthController {
 		return this.authService.login(dto);
 	}
 
-	// AuthGuard va bloquer l'acces si le token est invalide
-	@UseGuards(AuthGuard('jwt'))
+// Protects the route: only requests with a valid JWT can access it.
+// Returns the current user's data based on the user ID stored in req.user by JwtStrategy.
+ 	@UseGuards(AuthGuard('jwt'))
 	@Get('me')
 	getMe(@Req() req) {
 		return this.authService.getMe(req.user.sub);
