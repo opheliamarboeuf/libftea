@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { PrismaService } from '../prisma.service';
 import { JwtStrategy } from './jwt.strategy';
 
 @Module({
@@ -14,7 +13,7 @@ import { JwtStrategy } from './jwt.strategy';
 			signOptions: { expiresIn: '1h' },
 		}),
 	],
-	providers: [AuthService, PrismaService, JwtStrategy],
+	providers: [AuthService, JwtStrategy],
 	controllers: [AuthController],
 
 	exports: [PassportModule, JwtModule]

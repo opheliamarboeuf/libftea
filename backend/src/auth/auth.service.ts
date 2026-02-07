@@ -2,7 +2,7 @@
 // BadRequestException = erreur 400, UnauthorizedException = erreur 401
 
 import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
