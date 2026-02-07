@@ -45,11 +45,7 @@ const LoginPage = () => {
 				return ;
 			}
 
-			setUser({
-				username: data.username,
-				email: data.email,
-			});
-
+			setUser(data);
 			localStorage.setItem("token", data.access_token);
 			navigate("/home", {replace: true});
 		}

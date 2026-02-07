@@ -10,9 +10,9 @@ const ProfilePage = () => {
 	if (!user)
 		return <Navigate to="/" replace />; // redirect if not logged in
 
-	const [bio, setbio] = useState(user.bio);
-	const [avatarUrl, setavatarUrl] = useState(user.avatarUrl);
-	const [coverUrl, setcoverUrl] = useState(user.coverUrl);
+	const [bio, setbio] = useState(user.profile.bio);
+	const [avatarUrl, setavatarUrl] = useState(user.profile.avatarUrl);
+	const [coverUrl, setcoverUrl] = useState(user.profile.coverUrl);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	const handleBioChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,13 +46,23 @@ const ProfilePage = () => {
 				return;
 			}
 
-			// Update user context with new profile info
-			setUser({
-				...user,	// spreads all existing properties of user into the new object.
-				bio: data.bio,
-				avatarUrl: data.avatarUrl,
-				coverUrl: data.coverUrl,
-			});
+			// Update user context by creating a new object: 
+			// if prevUser exists, keep all user fields, replace the profile object 
+			// with a copy that updates bio, avatarUrl, and coverUrl; 
+			// if prevUser is null, do nothing
+			setUser((prevUser) =>
+					prevUser
+					? {
+						...prevUser,
+						profile: {
+						...prevUser.profile,
+						bio: data.bio,
+						avatarUrl: data.avatarUrl,
+						coverUrl: data.coverUrl,
+					},
+				}
+				: prevUser
+			);
 		} catch (error) {
 			console.log("Server unreachable");
 		}
@@ -63,17 +73,17 @@ const ProfilePage = () => {
 			<h1>{user.username}'s Profile Page</h1>
 			<div className="profile">
 			<div className="cover">
-				<p>Cover URL: {user.coverUrl}</p>
-				<img src={user.coverUrl} alt="Cover" />
+				<p>Cover URL: {user.profile.coverUrl}</p>
+				<img src={user.profile.coverUrl} alt="Cover" />
 			</div>
 
 			<div className="avatar">
-				<p>Avatar URL: {user.avatarUrl}</p>
-				<img src={user.avatarUrl} alt="Avatar" />
+				<p>Avatar URL: {user.profile.avatarUrl}</p>
+				<img src={user.profile.avatarUrl} alt="Avatar" />
 			</div>
 
 			<div className="bio">
-				<p>Bio: {user.bio}</p>
+				<p>Bio: {user.profile.bio}</p>
 			</div>
 			</div>
 			<div className="button1">

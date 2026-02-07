@@ -60,10 +60,7 @@ const RegisterPage = () => {
 			}
 	
 			// Store the user in the global context
-			setUser({
-				username: data.username,
-				email: data.email,
-			});
+			setUser(data);
 
 			// Save JWT token and redirect to profile
 			localStorage.setItem("token", data.access_token);
