@@ -11,7 +11,7 @@ export class FriendsService {
 	async sendFriendRequest(
 		requesterId: number,
 		addresseId: number,
-	): Promise<Friendship> {
+	) {
 		
 		if (requesterId === addresseId) {
 			throw new BadRequestException('You cannot add yourself as a friend');
@@ -47,7 +47,7 @@ export class FriendsService {
 	async acceptFriendRequest(
 		requesterId: number, 
 		addresseId: number,
-	): Promise<Friendship> {
+	) {
 
 		const friendship = await this.prisma.friendship.findUnique({
 			where: {
@@ -66,9 +66,9 @@ export class FriendsService {
 			throw new BadRequestException('Friendship request is not pending');
 		}
 
-		const updatedFriendship = await this.prisma.update({
+		const updatedFriendship = await this.prisma.friendship.update({
 			where: {
-				requesterId_adresseId: {
+				requesterId_addresseId: {
 					requesterId,
 					addresseId,
 				},
@@ -104,7 +104,7 @@ export class FriendsService {
 
 		await this.prisma.friendship.delete({
 			where: {
-				requesterId_adresseId: {
+				requesterId_addresseId: {
 					requesterId,
 					addresseId,
 				},
@@ -112,34 +112,34 @@ export class FriendsService {
 		});
 	}
 
-	async getFriends(userId: number): Promise<User[]> {
+	async getFriends(userId: number) {
 
 		const friendships = await this.prisma.friendship.findMany({
 			where: {
 				status: 'ACCEPTED',
 				OR: [
 					{ requesterId: userId},
-					{ adresseId: userId},
+					{ addresseId: userId},
 				],
 				},
 			include: {
 				requester: true,
-				adresse: true,
+				addresse: true,
 			},
 		});
 		return friendships.map((friendship) => {
 			return friendship.requesterId === userId
-			 ? friendship.adresse
+			 ? friendship.addresse
 			 : friendship.requester;
 		});
 	}
 
-	async getPendingRequests(userId: number): Promise<User[]> {
+	async getPendingRequests(userId: number) {
 
 		const friendships = await this.prisma.friendship.findMany({
 			where: {
 				status: 'PENDING',
-				adresseId: userId,
+				addresseId: userId,
 				},
 			include: {
 				requester: true,

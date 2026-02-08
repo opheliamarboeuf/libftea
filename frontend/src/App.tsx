@@ -5,6 +5,7 @@ import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import HomePage from "./pages/HomePage";
+import FriendsPage from "./pages/FriendsPage";
 
 const App = () => {
 const [user, setUser] = useState<User | null>(null);
@@ -58,6 +59,9 @@ const [loading, setLoading] = useState(true);
           <Route
             path = "/profile"
             element = {loading ? null : user ? <ProfilePage/> : <Navigate to = "/" replace />} />
+		  <Route
+			path="/friends"
+			element={loading ? null : user ? <FriendsPage/> : <Navigate to="/" replace />} />
         <Route
             path = "/home"
             element = {loading ? null : user ? <HomePage/> : <Navigate to = "/" replace />} />

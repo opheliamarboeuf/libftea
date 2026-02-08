@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Param, Req, UseGuards } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { Request } from 'express';
 
@@ -7,11 +7,32 @@ export class FriendsController {
 	constructor(private readonly friendsService: FriendsService) {}
 
 	@Post('request/:addresseId')
-	async sendFriendRequest(@Req() req: Request, @Param('adresseId') adresseId: string) {
+	async sendFriendRequest(@Req() req: Request, @Param('addresseId') addresseId: string) {
 		const requesterId = req.user.id;
-		return this.friendsService.sendFriendRequest(requesterId, Number(adresseId));
+		return this.friendsService.sendFriendRequest(requesterId, Number(addresseId));
 	}
 
 	@Post('accept/:requesterId')
-	async acceptFriendRequest(@Req() req)
+	async acceptFriendRequest(@Req() req: Request, @Param('requesterId') requesterId: string) {
+		const addresseId = req.user.id;
+		return this.friendsService.acceptFriendRequest(Number(requesterId), addresseId);
+	}
+
+	@Delete('reject/:requesterId')
+	async rejectFriendRequest(@Req() req: Request, @Param('requesterId') requesterId: string) {
+		const addresseId = req.user.id;
+		return this.friendsService.rejectFriendRequest(Number(requesterId), addresseId);
+	}
+
+	@Get()
+	async getFriends(@Req() req: Request) {
+		const userId = req.user.id;
+		return this.friendsService.getFriends(userId);
+	}
+
+	@Get('pending')
+	async getPendingRequests(@Req() req: Request) {
+		const userId = req.user.id;
+		return this.friendsService.getPendingRequests(userId);
+	}
 }

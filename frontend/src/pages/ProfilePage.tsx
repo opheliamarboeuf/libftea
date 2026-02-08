@@ -78,6 +78,7 @@ const ProfilePage = () => {
 			</div>
 			<div className="button1">
 				<button onClick={() => navigate("/home")}>My Feed</button>
+				<button onClick={() => navigate("/friends")}>Mes Amis</button>
 				<button
 					onClick={() => {
 						localStorage.removeItem("token");
