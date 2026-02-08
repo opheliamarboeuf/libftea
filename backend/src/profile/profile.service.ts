@@ -1,13 +1,11 @@
 import { Injectable, NotFoundException, InternalServerErrorException} from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { JwtService } from '@nestjs/jwt';
 import { EditDto } from "./dto/edit.dto";
 
 @Injectable()
 export class ProfileService {
 	constructor(
 		private prisma: PrismaService,
-		private jwtService: JwtService,
 	) {}
 
 	async edit(userId:number, dto: EditDto) {
@@ -49,7 +47,7 @@ export class ProfileService {
 					select: {
 						bio: true,
 						avatarUrl: true,
-						converrUrl: true,
+						coverUrl: true,
 					},
 				});
 				if (!profile)

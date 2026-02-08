@@ -1,7 +1,9 @@
+import "../App.css";
+import "./ProfilePage.css";
 import { Navigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import { useState, ChangeEvent } from "react";
+import { useState } from "react";
 
 const ProfilePage = () => {
 	const { user, setUser } = useUser();
@@ -10,31 +12,64 @@ const ProfilePage = () => {
 	if (!user)
 		return <Navigate to="/" replace />; // redirect if not logged in
 
-	const [bio, setbio] = useState(user.profile.bio);
-	const [avatarUrl, setavatarUrl] = useState(user.profile.avatarUrl);
-	const [coverUrl, setcoverUrl] = useState(user.profile.coverUrl);
+
+	const [bio, setBio] = useState(user.profile.bio);
+	const [avatarUrl, setAvatarUrl] = useState(user.profile.avatarUrl);
+	const [coverUrl, setCoverUrl] = useState(user.profile.coverUrl);
+  	const [showMenu, setShowMenu] = useState(false);
+	const [showModal, setshowModal] = useState(false);
+	const [showConfirm, setshowConfirm] = useState(false);
+	const [fadeOut, setFadeOut] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const MAX_BIO_LENGTH = 400;
 
-	const handleBioChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setbio(e.target.value);
-	};
-	const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setavatarUrl(e.target.value);
-	};
-	const handleCoverChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setcoverUrl(e.target.value);
-	};
+	const handleLogout = () => {
+		localStorage.removeItem("token");
+		setUser(null);
+	}
 
-	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-		e.preventDefault();
+	const resetFields = () => {
+			setBio(user.profile.bio);
+			setAvatarUrl(user.profile.avatarUrl);
+			setCoverUrl(user.profile.coverUrl);
+			setErrorMessage(null);
+	}
+
+	const confirmDiscard = () => {
+		resetFields();
+		setshowConfirm(false);
+		setshowModal(false);
+	}
+
+	const handleCancel = () => {
+		const isChanged =
+		bio !== user.profile.bio ||
+		avatarUrl !== user.profile.avatarUrl ||
+		coverUrl !== user.profile.coverUrl;
+
+		if (isChanged) {
+			setshowConfirm(true);
+			return ;
+		}
+		setFadeOut(true);
+		setTimeout(() => {
+			resetFields();
+			setshowModal(false);
+			setFadeOut(false);
+		}, 250) // CSS duration
+	}
+
+	const handleSaveProfile = async () => {
 		setErrorMessage(null);
 
 		const userData = { bio, avatarUrl, coverUrl };
-
 		try {
 			const res = await fetch("http://localhost:3000/profile/edit", {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: { 
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
 				body: JSON.stringify(userData),
 			});
 
@@ -63,43 +98,79 @@ const ProfilePage = () => {
 				}
 				: prevUser
 			);
+			setFadeOut(true);
+			setTimeout(() => {
+				setshowModal(false);
+				setFadeOut(false);
+			}, 250);
 		} catch (error) {
 			console.log("Server unreachable");
 		}
 	};
 
 	return (
-		<>
-			<h1>{user.username}'s Profile Page</h1>
-			<div className="profile">
-			<div className="cover">
-				<p>Cover URL: {user.profile.coverUrl}</p>
-				<img src={user.profile.coverUrl} alt="Cover" />
+		<div className="profile-page">
+			<button className="menu-btn" 
+				onClick={() => setShowMenu(!showMenu)}> 
+				☰
+			</button>
+			{showMenu && (
+				<div className="drop-down-menu">
+					<button onClick={() => navigate("/home")}>My Feed</button>
+					<button onClick={handleLogout}>Log Out</button>
+				</div>
+			)}
+			<button className="edit-profile-btn" onClick={() => setshowModal(true)}>
+				Edit Profile</button>
+			{ showModal && (
+				<div className="modal-overlay" onClick={handleCancel}>
+					<div className={`modal-content ${fadeOut ? "fade-out" : "fade-in"}`} onClick={e => e.stopPropagation()}> {/*stops modal-overlay onCLick propagation*/}
+						<h2>Edit Profile</h2>
+						<label>Bio</label>
+						<textarea
+							value={bio}
+							onChange={(e) => setBio(e.target.value)}
+							rows={5}/>
+							<div className={`char-counter ${bio.length > MAX_BIO_LENGTH ? "error" : ""}`}>
+ 								{bio.length} / {MAX_BIO_LENGTH}
+							</div>
+						<label>Profile Picture</label>
+						<input
+							type="text"
+							value={avatarUrl}
+							onChange={(e) => setAvatarUrl(e.target.value)} />
+						<label>Cover Picture</label>
+						<input
+							type="text"
+							value={coverUrl}
+							onChange={(e) => setCoverUrl(e.target.value)} />
+							{errorMessage && (<div className="error-message shake-horizontal">
+								{errorMessage}</div>)}
+							<div className="modal-actions">
+								<button className="modal-btn" onClick={handleSaveProfile}>Save</button>
+								<button className="modal-btn" onClick={handleCancel}>Cancel</button>
+							</div>
+					</div>
+				</div>
+				)}
+				{ showConfirm && (
+					<div className="confirm-overlay">
+						<div className="confirm-box">
+							<p>Looks like you’ve made some changes. Are you sure you want to exit without saving?</p>
+							<div className="confirm-actions">
+								<button className="modal-btn" onClick={() => confirmDiscard()}>Discard</button>
+								<button className="modal-btn" onClick={() =>setshowConfirm(false)}>Stay</button>
+							</div>
+						</div>
+					</div>
+				)}
+			<div className="cover-image"><img src={user.profile.coverUrl} alt="Cover" /></div>
+			<div className="profile-header">
+				<div className="avatar-image"><img src={user.profile.avatarUrl} alt="Avatar" /></div>
+				<div className="bio"><p>{user.profile.bio}</p></div>
 			</div>
-
-			<div className="avatar">
-				<p>Avatar URL: {user.profile.avatarUrl}</p>
-				<img src={user.profile.avatarUrl} alt="Avatar" />
-			</div>
-
-			<div className="bio">
-				<p>Bio: {user.profile.bio}</p>
-			</div>
-			</div>
-			<div className="button1">
-				<button onClick={() => navigate("/home")}>My Feed</button>
-				<button
-					onClick={() => {
-						localStorage.removeItem("token");
-						setUser(null); // logout
-					}}
-				>
-					Logout
-				</button>
-			</div>
-
-			{errorMessage && <p className="error">{errorMessage}</p>}
-		</>
+			<div className="posts"></div>
+		</div>
 	);
 };
 

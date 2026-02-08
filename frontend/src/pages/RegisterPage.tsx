@@ -131,23 +131,3 @@ const RegisterPage = () => {
 
 export default RegisterPage;
 
-		// <div className = "form">
-		// <form onSubmit={handleSubmit}>
-			
-			
-		// 	</div>
-		// 		{errorMessage && ( //Displays backend error message if any
-		// 			<div className="error-message">
-		// 			{errorMessage}
-		// 			</div>
-		// 			)}
-		// 	<div className = "form-button">
-		// 		<button type = "submit">Register</button>
-		// 	</div>
-		// 	<button onClick={() =>
-		// 		navigate("/login")
-		// 	}>
-		// 		I already have an account
-		// 	</button>
-		// </form>
-		// </div>

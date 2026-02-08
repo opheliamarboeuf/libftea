@@ -1,12 +1,13 @@
 .login-page {
 	display: flex;
 	height: 100vh;
-  width: 100vw;
+	width: 100vw;
 }
 
 .login-left {
   flex: 3; /*3/5 of space*/
   position: relative; 
+  overflow: hidden;
   color: white;
   display: flex;
   flex-direction: column;
