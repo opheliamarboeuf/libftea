@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const ProfilePage = () => {
+	const API_URL = "http://localhost:3000";
+
 	const { user, setUser } = useUser();
 	const navigate = useNavigate();
 
@@ -14,8 +16,8 @@ const ProfilePage = () => {
 
 
 	const [bio, setBio] = useState(user.profile.bio);
-	const [avatarUrl, setAvatarUrl] = useState(user.profile.avatarUrl);
-	const [coverUrl, setCoverUrl] = useState(user.profile.coverUrl);
+	const [avatarFile, setAvatarFile] = useState<File | null>(null);
+	const [coverFile, setCoverFile] = useState<File | null>(null);
   	const [showMenu, setShowMenu] = useState(false);
 	const [showModal, setshowModal] = useState(false);
 	const [showConfirm, setshowConfirm] = useState(false);
@@ -30,8 +32,6 @@ const ProfilePage = () => {
 
 	const resetFields = () => {
 			setBio(user.profile.bio);
-			setAvatarUrl(user.profile.avatarUrl);
-			setCoverUrl(user.profile.coverUrl);
 			setErrorMessage(null);
 	}
 
@@ -43,9 +43,9 @@ const ProfilePage = () => {
 
 	const handleCancel = () => {
 		const isChanged =
-		bio !== user.profile.bio ||
-		avatarUrl !== user.profile.avatarUrl ||
-		coverUrl !== user.profile.coverUrl;
+		bio !== user.profile.bio //||
+		// avatarFile !== user.profile.avatarUrl ||
+		// coverFile !== user.profile.coverUrl;
 
 		if (isChanged) {
 			setshowConfirm(true);
@@ -62,15 +62,19 @@ const ProfilePage = () => {
 	const handleSaveProfile = async () => {
 		setErrorMessage(null);
 
-		const userData = { bio, avatarUrl, coverUrl };
+		const formData = new FormData();
+		formData.append("bio", bio);
+		if (avatarFile)
+			formData.append("avatar", avatarFile); // expected name for the FileInterceptor
+		if (coverFile)
+			formData.append("covr", coverFile); 
 		try {
 			const res = await fetch("http://localhost:3000/profile/edit", {
 				method: 'POST',
 				headers: { 
-					'Content-Type': 'application/json',
 					Authorization: `Bearer ${localStorage.getItem("token")}`,
 				},
-				body: JSON.stringify(userData),
+				body: formData,
 			});
 
 			const data = await res.json();
@@ -136,14 +140,14 @@ const ProfilePage = () => {
 							</div>
 						<label>Profile Picture</label>
 						<input
-							type="text"
-							value={avatarUrl}
-							onChange={(e) => setAvatarUrl(e.target.value)} />
+							type="file"
+							accept="image/*"
+							onChange={(e) => setAvatarFile(e.target.files?.[0] || null)} />
 						<label>Cover Picture</label>
 						<input
-							type="text"
-							value={coverUrl}
-							onChange={(e) => setCoverUrl(e.target.value)} />
+							type="file"
+							accept="image/*"
+							onChange={(e) => setCoverFile(e.target.files?.[0] || null)} />
 							{errorMessage && (<div className="error-message shake-horizontal">
 								{errorMessage}</div>)}
 							<div className="modal-actions">
@@ -164,9 +168,13 @@ const ProfilePage = () => {
 						</div>
 					</div>
 				)}
-			<div className="cover-image"><img src={user.profile.coverUrl} alt="Cover" /></div>
+			<div className="cover-image">
+				<img src={ user.profile.coverUrl ? `${API_URL}${user.profile.coverUrl}`
+      				: "/default-cover.png"} alt="Cover"/></div>
 			<div className="profile-header">
-				<div className="avatar-image"><img src={user.profile.avatarUrl} alt="Avatar" /></div>
+				<div className="avatar-image">
+					<img src={    user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}`
+      				: "/default-avatar.png"} alt="Avatar"/></div>
 				<div className="bio"><p>{user.profile.bio}</p></div>
 			</div>
 			<div className="posts"></div>

@@ -7,6 +7,7 @@ import ProfilePage from './pages/ProfilePage';
 import HomePage from "./pages/HomePage";
 
 const App = () => {
+
 const [user, setUser] = useState<User | null>(null);
 const token = localStorage.getItem("token");
 const [loading, setLoading] = useState(true);
