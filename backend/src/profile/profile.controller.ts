@@ -7,7 +7,7 @@ import { Request } from 'express';
 import { ProfileService } from './profile.service';
 import { EditDto } from './dto/edit.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-
+import { ImageResizeService } from './image-resize.service';
 
 export interface RequestWithUser extends Request {
 	user: {
@@ -17,45 +17,62 @@ export interface RequestWithUser extends Request {
 
 @Controller('profile')
 export class ProfileController {
-	constructor(private readonly profileService: ProfileService) {}
+	constructor(
+		private readonly profileService: ProfileService,
+		private readonly imageResizeService: ImageResizeService,
+	) {}
 	
 	@UseGuards(JwtAuthGuard)
 	@UseInterceptors(
 		AnyFilesInterceptor({
-		// Configure how and where the file is stored on disk
 		storage: diskStorage({
-			destination: './uploads',
-			// Function that defines the filename of the stored file
+			destination: (req, file, cb) => {
+			// Sauvegarder dans le bon sous-dossier selon le type
+			if (file.fieldname === 'avatar') {
+				cb(null, './uploads/avatar');
+			} else if (file.fieldname === 'cover') {
+				cb(null, './uploads/cover');
+			} else {
+				cb(null, './uploads');
+			}
+			},
 			filename: (req, file, cb) => {
-				// Generate a unique suffix using the current timestamp + a random number
-				const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-  				// Save the file with the generated unique name while keeping the original file extension 
-				cb(null, uniqueSuffix + extname(file.originalname));
+			const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+			cb(null, uniqueSuffix + extname(file.originalname));
 			},
 		}),
-	}),
+		}),
 	)
+
 	@Post('edit')
 	async editProfile(
-    @UploadedFiles() files: File[], // Gets all files sent by the client
-    @Body() dto: EditDto,
-    @Req() req: RequestWithUser,) {
-    const userId = req.user.sub; 
+	@UploadedFiles() files: File[], // Gets all files sent by the client
+	@Body() dto: EditDto,
+	@Req() req: RequestWithUser,) {
+	const userId = req.user.sub; 
 
-	// Loop through all uploaded files
-	files.forEach(file => {
-		// If the file field is "avatar", update the profile's avatar URL
+	const currentProfile = await this.profileService.getProfile(userId);
+	
+	for (const file of files) {
 		if (file.fieldname === 'avatar') {
-			dto.avatarUrl = `/uploads/${file.filename}`;
+			await this.profileService.deleteOldImage(currentProfile.avatarUrl);
+			
+			// Resize the new avatar (200x200)
+			const resizedPath = await this.imageResizeService.resizeAvatar(file.path);
+			const filename = resizedPath.split('/').pop() || resizedPath.split('\\').pop(); // Handle Windows/Linux paths
+			dto.avatarUrl = `/uploads/avatar/${filename}`;
 		}
-		// If the file field is "cover", update the cover URL
-		if (file.fieldname === 'cover') {
-      		dto.coverUrl = `/uploads/${file.filename}`;
-		}
-	});
-    return this.profileService.edit(userId, dto);
-}  
 
+		if (file.fieldname === 'cover') {
+			await this.profileService.deleteOldImage(currentProfile.coverUrl);
+			const resizedPath = await this.imageResizeService.resizeCover(file.path);
+			const filename = resizedPath.split('/').pop() || resizedPath.split('\\').pop(); // Handle Windows/Linux paths
+			dto.coverUrl = `/uploads/cover/${filename}`;
+		}
+	}
+	
+	return this.profileService.edit(userId, dto);
+}
 	@Get('me')
 	getProfile(@Req() req: any) {
 		return this.profileService.getProfile(req.user.sub);

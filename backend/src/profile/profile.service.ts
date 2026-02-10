@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException, InternalServerErrorException} from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { EditDto } from "./dto/edit.dto";
+import { unlink } from 'fs/promises';
+import { join } from 'path';
 
 @Injectable()
 export class ProfileService {
@@ -39,6 +41,24 @@ export class ProfileService {
 			throw new InternalServerErrorException("Could not update profile");
 		}
 	}
+
+	async deleteOldImage(imageUrl: string): Promise<void> {
+		if (!imageUrl)
+			return;
+		const relativePath = imageUrl.startsWith('/')
+    	? imageUrl.slice(1)
+    	: imageUrl;
+		// Construct the full file path by combining the project root directory with the relative image URL
+		const filePath = join(process.cwd(), imageUrl);
+		try {
+			// Attempt to delete the file from the file system
+			await unlink(filePath);
+		}
+		catch (error) {
+			console.log('Could not delete old image:', error.message);
+		}
+  	}
+	
 
 	async getProfile(userId: number) {
 		try {

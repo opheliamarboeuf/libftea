@@ -19,6 +19,9 @@ RUN npx prisma generate
 # copy the rest of the application source code
 COPY . .
 
+# Create uploads directory (since it's in .dockerignore)
+RUN mkdir -p uploads/avatar uploads/cover
+
 # build TypeScript → JavaScript
 RUN npm run build
 

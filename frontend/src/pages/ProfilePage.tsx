@@ -18,17 +18,53 @@ const ProfilePage = () => {
 	const [bio, setBio] = useState(user.profile.bio);
 	const [avatarFile, setAvatarFile] = useState<File | null>(null);
 	const [coverFile, setCoverFile] = useState<File | null>(null);
-  	const [showMenu, setShowMenu] = useState(false);
+	const [showMenu, setShowMenu] = useState(false);
 	const [showModal, setshowModal] = useState(false);
 	const [showConfirm, setshowConfirm] = useState(false);
 	const [fadeOut, setFadeOut] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	
 	const MAX_BIO_LENGTH = 400;
+	const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+	const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
-	const handleLogout = () => {
-		localStorage.removeItem("token");
-		setUser(null);
+	const validateImage = (file: File, type: string): string | null => {
+		if (!ALLOWED_TYPES.includes(file.type)) {
+			return `${type} must be JPEG, PNG, or WebP`
+		}
+		if (file.size > MAX_FILE_SIZE) {
+			return `${type} must be under 5MB`;
+		}
+		return null;
 	}
+
+	const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0] || null;
+		if (file) {
+			const error = validateImage(file, 'Profile picture');
+			if (error) {
+				setErrorMessage(error);
+				e.target.value = '';
+				return;
+			}
+		}
+		setAvatarFile(file);
+		setErrorMessage(null);
+	};
+
+	const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0] || null;
+		if (file) {
+			const error = validateImage(file, 'Cover picture');
+			if (error) {
+				setErrorMessage(error);
+				e.target.value = '';
+				return;
+			}
+		}
+		setCoverFile(file);
+		setErrorMessage(null);
+	};
 
 	const resetFields = () => {
 			setBio(user.profile.bio);
@@ -41,11 +77,15 @@ const ProfilePage = () => {
 		setshowModal(false);
 	}
 
+	const handleLogout = () => {
+		localStorage.removeItem("token");
+		setUser(null);
+	}
+
 	const handleCancel = () => {
-		const isChanged =
-		bio !== user.profile.bio //||
-		// avatarFile !== user.profile.avatarUrl ||
-		// coverFile !== user.profile.coverUrl;
+		const isChanged = bio !== user.profile.bio || 
+				avatarFile !== null || 
+				coverFile !== null;
 
 		if (isChanged) {
 			setshowConfirm(true);
@@ -62,12 +102,17 @@ const ProfilePage = () => {
 	const handleSaveProfile = async () => {
 		setErrorMessage(null);
 
+		if (bio.length > MAX_BIO_LENGTH) {
+			setErrorMessage(`Bio cannot exceed ${MAX_BIO_LENGTH} characters`);
+			return;
+		}
+
 		const formData = new FormData();
 		formData.append("bio", bio);
 		if (avatarFile)
 			formData.append("avatar", avatarFile); // expected name for the FileInterceptor
 		if (coverFile)
-			formData.append("covr", coverFile); 
+			formData.append("cover", coverFile); 
 		try {
 			const res = await fetch("http://localhost:3000/profile/edit", {
 				method: 'POST',
@@ -136,18 +181,25 @@ const ProfilePage = () => {
 							onChange={(e) => setBio(e.target.value)}
 							rows={5}/>
 							<div className={`char-counter ${bio.length > MAX_BIO_LENGTH ? "error" : ""}`}>
- 								{bio.length} / {MAX_BIO_LENGTH}
+								{bio.length} / {MAX_BIO_LENGTH}
 							</div>
 						<label>Profile Picture</label>
 						<input
 							type="file"
-							accept="image/*"
-							onChange={(e) => setAvatarFile(e.target.files?.[0] || null)} />
+							accept="image/jpeg,image/jpg,image/png,image/webp"
+							onChange={handleAvatarChange}/>
+						<small style={{ color: '#666', fontSize: '0.85em' }}>
+							Accepted formats: JPEG, PNG, WebP (Max 5MB)
+						</small>
+						
 						<label>Cover Picture</label>
 						<input
 							type="file"
-							accept="image/*"
-							onChange={(e) => setCoverFile(e.target.files?.[0] || null)} />
+							accept="image/jpeg,image/jpg,image/png,image/webp"
+							onChange={handleCoverChange}/>
+							<small style={{ color: '#666', fontSize: '0.85em' }}>
+								Accepted formats: JPEG, PNG, WebP (Max 5MB)
+							</small>
 							{errorMessage && (<div className="error-message shake-horizontal">
 								{errorMessage}</div>)}
 							<div className="modal-actions">
@@ -170,11 +222,11 @@ const ProfilePage = () => {
 				)}
 			<div className="cover-image">
 				<img src={ user.profile.coverUrl ? `${API_URL}${user.profile.coverUrl}`
-      				: "/default-cover.png"} alt="Cover"/></div>
+					: "/default-cover.png"} alt="Cover"/></div>
 			<div className="profile-header">
 				<div className="avatar-image">
 					<img src={    user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}`
-      				: "/default-avatar.png"} alt="Avatar"/></div>
+					: "/default-avatar.png"} alt="Avatar"/></div>
 				<div className="bio"><p>{user.profile.bio}</p></div>
 			</div>
 			<div className="posts"></div>
