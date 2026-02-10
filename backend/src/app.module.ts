@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { FriendsModule } from './friends/friends.module';
+import { UsersModule } from './user/users.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { FriendsModule } from './friends/friends.module';
     }),
     AuthModule,
 	FriendsModule,
+	UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

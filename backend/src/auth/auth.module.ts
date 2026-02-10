@@ -18,6 +18,8 @@ import { PassportModule } from '@nestjs/passport';
 import { PrismaService } from '../prisma.service';
 // la strategie JWT que l'on a creee
 import { JwtStrategy } from './jwt.strategy';
+//le jwt-auth.guard
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 // declaration d'un module NestJS, module = bloc logique
 @Module({
@@ -32,7 +34,8 @@ import { JwtStrategy } from './jwt.strategy';
 			signOptions: { expiresIn: '1h' },
 		}),
 	],
-	providers: [AuthService, PrismaService, JwtStrategy],
+	providers: [AuthService, PrismaService, JwtStrategy, JwtAuthGuard],
+	exports: [JwtAuthGuard],
 	controllers: [AuthController],
 })
 // on exporte le module pour que AppModule puisse l'utiliser

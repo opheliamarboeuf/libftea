@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 
 // Defines the shape of a user object
 export interface User {
+	id: number; //the user's id number
 	username: string; // the user's name
 	email: string;    // the user's email address
 	avatarUrl?: string;
