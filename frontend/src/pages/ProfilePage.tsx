@@ -191,7 +191,6 @@ const ProfilePage = () => {
 						<small style={{ color: '#666', fontSize: '0.85em' }}>
 							Accepted formats: JPEG, PNG, WebP (Max 5MB)
 						</small>
-						
 						<label>Cover Picture</label>
 						<input
 							type="file"
