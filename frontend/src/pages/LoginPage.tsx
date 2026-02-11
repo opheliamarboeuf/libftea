@@ -47,7 +47,7 @@ const LoginPage = () => {
 
 			setUser(data);
 			localStorage.setItem("token", data.access_token);
-			navigate("/home", {replace: true});
+			navigate("/feed", {replace: true});
 		}
 		catch(err){
 			console.log("Server unreachable");

@@ -64,7 +64,7 @@ const RegisterPage = () => {
 
 			// Save JWT token and redirect to profile
 			localStorage.setItem("token", data.access_token);
-			navigate("/home", {replace: true}) ;
+			navigate("/feed", {replace: true}) ;
 		}
 		catch (err){
 			console.log("Server unreachable");

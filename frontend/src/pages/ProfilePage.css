@@ -1,124 +1,131 @@
+/* Parent */
 .profile-page {
-	display: flex;
-	height: 100vh;
-	width: 100vw;
-	flex-direction: column;
-	position: relative;
-	padding: 3rem; 
-	box-sizing: border-box;
-
-}
-
-.drop-down-menu {
-	position: fixed; /* superposition */
-	width: 200px;
-	background-color: #000;
-	display: flex;
-	flex-direction: column;
-	padding: 3rem 1rem;
-	margin-left: -1rem;
-	z-index: 15;
-	border-radius: 8px;
-}
-
-.drop-down-menu button:hover {
-  background-color: #3a3a3a;
-}
-
-.menu-btn {
-	top: 3rem;
-	left: 3rem;
-	position: fixed;
-	z-index: 20;
-	cursor: pointer;
-}
-
-.header-top {
   display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  background-color: #464646; /* rouge clair pour visualiser */
+  padding: 1rem 1rem;
+  height: 20px;
 }
 
-.profile-header {
+/* Left menu */
+.menu {
+	width: 25px;
+	background-color: #acacac; 
+	position: relative;
+	padding: 1rem;
+}
+
+
+/* Profile info column */
+.profile-info {
+	width: 250px;
+	background-color: #232723; /* vert clair */
+	padding: 1rem;
 	display: flex;
-	align-items: flex-start;
-	background-color: rgb(0, 0, 0);
-	gap: 1rem;
-	background-color: rgb(211, 39, 39);
-	min-height: 200px; /* hauteur fixe totale du header */
-	max-height: 200px;; 
-	position: relative;
-	padding: 0 1.5rem;
-	/* justify-content: flex-start; */
-	/* padding: 1rem, 2rem; */
+	flex-direction: column;
+	align-items: center;
 }
 
-.cover-image {
-	width: 100%;
-	height: 30vh;
-	min-height: 200px;
-	max-height: 200px;
-	overflow: hidden;
-	position: relative;
+/* Cover and posts */
+.cover-and-posts {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	background-color: #b9b6b3; /* orange clair */
 }
 
-.cover-image img {
+.cover-and-posts .cover img {
 	width: 100%;
   	height: 100%;
   	object-fit: cover;
   	display: block;
 }
 
-.avatar-image {
-	width: 200px;
-	height: 200px;
-	border-radius: 50%;
-	overflow: hidden;
-	position: relative;
-	flex-shrink: 0;
-	border: 4px solid #0f0f0f;
-	z-index: 2;
-	top: -100px;
-	left: 100px;
+.header .mini-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
 }
 
-.avatar-image img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	display: block;
-}
-
-.bio {
+.header .app-name {
   flex: 1;
-  padding: 1rem 1.5rem;
+  margin: 0 1rem;
+}
+
+.header .search-bar {
+  flex: 2;
+  padding: 0.5rem;
+}
+
+.header .edit-profile-btn {
+  padding: 0.5rem 1rem;
+}
+
+/* Main content */
+.main-content {
   display: flex;
-  align-items: center;
-  background-color: rgb(163, 86, 182);
-  margin-top: 0;
-  max-height: 150px;
-  /* overflow-y: auto; */
-  padding: 1rem 1.5rem;
-  margin-top: 10px; 
-  margin-left: 350px
+  flex: 1;
+  background-color: #eee; /* gris clair */
 }
 
-.bio p {
-	margin: 0;
-	max-height: 200px; 
-	max-width: 600px;
-	align-items: center;
-	line-height: 1.5;
-	word-break: break-word;
-	white-space: pre-wrap;
-	overflow: hidden;
+.menu .menu-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.profile-info .profile-pic img {
+  width: 150px;
+  height: 150px;
+  border-radius: 10%;
+}
+
+.profile-info .display-name {
+  margin: 1rem 0 0.5rem 0;
+}
+
+.profile-info .stats {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.profile-info .bio {
+  text-align: center;
+  background-color: #ccffcc; /* vert très clair pour la bio */
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.cover-and-posts .posts {
+  flex: 1;
+  background-color: #ffd699; /* jaune clair */
+  padding: 1rem;
+  overflow-y: auto;
 }
 
 
-.posts {
-	display: flex;
-	background-color: chocolate;
+
+.cover-image img {
+
 }
+
+.avatar-image {
+
+}
+
+
 
 .edit-profile-btn {
 	position: absolute;
@@ -237,4 +244,3 @@
     opacity: 0;
   }
 }
-

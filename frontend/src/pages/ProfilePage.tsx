@@ -162,84 +162,190 @@ const ProfilePage = () => {
 		}
 	};
 
-	return (
-		<div className="profile-page">
-			<button className="menu-btn" 
-				onClick={() => setShowMenu(!showMenu)}> 
-				☰
-			</button>
-			{showMenu && (
-				<div className="drop-down-menu">
-					<button onClick={() => navigate("/feed")}>My Feed</button>
-					<button onClick={handleLogout}>Log Out</button>
-				</div>
-			)}
-			<button className="edit-profile-btn" onClick={() => setshowModal(true)}>
-				Edit Profile</button>
-			{ showModal && (
-				<div className="modal-overlay" onClick={handleCancel}>
-					<div className={`modal-content ${fadeOut ? "fade-out" : "fade-in"}`} onClick={e => e.stopPropagation()}> {/*stops modal-overlay onCLick propagation*/}
-						<h2>Edit Profile</h2>
-						<label>Name</label>
-						<textarea
-							value={displayName}
-							onChange={(e) => setDisplayName(e.target.value)}/>
-						<label>Bio</label>
-						<textarea
-							value={bio}
-							onChange={(e) => setBio(e.target.value)}
-							rows={5}/>
-							<div className={`char-counter ${bio.length > MAX_BIO_LENGTH ? "error" : ""}`}>
-								{bio.length} / {MAX_BIO_LENGTH}
-							</div>
-						<label>Profile Picture</label>
-						<input
-							type="file"
-							accept="image/jpeg,image/jpg,image/png,image/webp"
-							onChange={handleAvatarChange}/>
-						<small style={{ color: '#666', fontSize: '0.85em' }}>
-							Accepted formats: JPEG, PNG, WebP (Max 5MB)
-						</small>
-						<label>Cover Picture</label>
-						<input
-							type="file"
-							accept="image/jpeg,image/jpg,image/png,image/webp"
-							onChange={handleCoverChange}/>
-							<small style={{ color: '#666', fontSize: '0.85em' }}>
-								Accepted formats: JPEG, PNG, WebP (Max 5MB)
-							</small>
-							{errorMessage && (<div className="error-message shake-horizontal">
-								{errorMessage}</div>)}
-							<div className="modal-actions">
-								<button className="modal-btn" onClick={handleSaveProfile}>Save</button>
-								<button className="modal-btn" onClick={handleCancel}>Cancel</button>
-							</div>
-					</div>
-				</div>
-				)}
-				{ showConfirm && (
-					<div className="confirm-overlay">
-						<div className="confirm-box">
-							<p>Looks like you’ve made some changes. Are you sure you want to exit without saving?</p>
-							<div className="confirm-actions">
-								<button className="modal-btn" onClick={() => confirmDiscard()}>Discard</button>
-								<button className="modal-btn" onClick={() =>setshowConfirm(false)}>Stay</button>
-							</div>
-						</div>
-					</div>
-				)}
-			<div className="cover-image">
-				<img src={ user.profile.coverUrl ? `${API_URL}${user.profile.coverUrl}`
-					: "/default-cover.png"} alt="Cover"/></div>
-			<div className="profile-header">
-				<div className="avatar-image">
-					<img src={    user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}`
-					: "/default-avatar.png"} alt="Avatar"/></div>
-				<div className="bio"><p>{user.profile.bio}</p></div>
-			</div>
-			<div className="posts"></div>
-		</div>
-	);
+return (
+  <div className="profile-page">
+    {/* HEADER */}
+    <header className="header">
+      <img
+        className="mini-avatar"
+        src={user.profile.avatarUrl || "/default-avatar.png"}
+        alt="Mini Avatar"
+      />
+      <h1 className="app-name">MyApp</h1>
+      <input type="text" className="search-bar" placeholder="Search..." />
+      <button className="edit-profile-btn" onClick={() => setshowModal(true)}>
+        Edit Profile
+      </button>
+    </header>
+
+    {/* MAIN CONTENT */}
+    <div className="main-content">
+      {/* LEFT MENU */}
+      <div className="menu">
+        <button className="menu-btn" onClick={() => setShowMenu(!showMenu)}>☰</button>
+        {showMenu && (
+          <div className="drop-down-menu">
+            <button onClick={() => navigate("/feed")}>My Feed</button>
+            <button onClick={handleLogout}>Log Out</button>
+          </div>
+        )}
+      </div>
+
+      {/* PROFILE INFO COLUMN */}
+      <div className="profile-info">
+        <div className="profile-pic">
+          <img
+            src={user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}` : "/default-avatar.png"}
+            alt="Profile Avatar"
+          />
+        </div>
+        <h2 className="display-name">{user.profile.displayName || user.username}</h2>
+        <div className="stats">
+          <span>Friends: 10</span>
+          <span>Posts: 5</span>
+        </div>
+        <div className="bio">
+          <p>{user.profile.bio || "This is my biography..."}</p>
+        </div>
+      </div>
+
+      {/* COVER AND POSTS */}
+      <div className="cover-and-posts">
+        <div className="cover">
+          <img
+            src={user.profile.coverUrl ? `${API_URL}${user.profile.coverUrl}` : "/default-cover.png"}
+            alt="Cover"
+          />
+        </div>
+        <div className="posts">
+          <p>Post 1</p>
+          <p>Post 2</p>
+          <p>Post 3</p>
+        </div>
+      </div>
+    </div>
+
+    {/* MODAL OVERLAY */}
+    {showModal && (
+      <div className="modal-overlay" onClick={handleCancel}>
+        <div className={`modal-content ${fadeOut ? "fade-out" : "fade-in"}`} onClick={e => e.stopPropagation()}>
+          <h2>Edit Profile</h2>
+          <label>Name</label>
+          <textarea value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+          <label>Bio</label>
+          <textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={5} />
+          <div className={`char-counter ${bio.length > MAX_BIO_LENGTH ? "error" : ""}`}>
+            {bio.length} / {MAX_BIO_LENGTH}
+          </div>
+          <label>Profile Picture</label>
+          <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handleAvatarChange} />
+          <small>Accepted formats: JPEG, PNG, WebP (Max 5MB)</small>
+          <label>Cover Picture</label>
+          <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handleCoverChange} />
+          <small>Accepted formats: JPEG, PNG, WebP (Max 5MB)</small>
+          {errorMessage && <div className="error-message shake-horizontal">{errorMessage}</div>}
+          <div className="modal-actions">
+            <button className="modal-btn" onClick={handleSaveProfile}>Save</button>
+            <button className="modal-btn" onClick={handleCancel}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {showConfirm && (
+      <div className="confirm-overlay">
+        <div className="confirm-box">
+          <p>Looks like you’ve made some changes. Are you sure you want to exit without saving?</p>
+          <div className="confirm-actions">
+            <button className="modal-btn" onClick={() => confirmDiscard()}>Discard</button>
+            <button className="modal-btn" onClick={() => setshowConfirm(false)}>Stay</button>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+
+
+	// return (
+	// 	<div classNameName="profile-page">
+	// 		<button classNameName="menu-btn" 
+	// 			onClick={() => setShowMenu(!showMenu)}> 
+	// 			☰
+	// 		</button>
+	// 		{showMenu && (
+	// 			<div classNameName="drop-down-menu">
+	// 				<button onClick={() => navigate("/feed")}>My Feed</button>
+	// 				<button onClick={handleLogout}>Log Out</button>
+	// 			</div>
+	// 		)}
+	// 		<button classNameName="edit-profile-btn" onClick={() => setshowModal(true)}>
+	// 			Edit Profile</button>
+	// 		{ showModal && (
+	// 			<div classNameName="modal-overlay" onClick={handleCancel}>
+	// 				<div classNameName={`modal-content ${fadeOut ? "fade-out" : "fade-in"}`} onClick={e => e.stopPropagation()}> {/*stops modal-overlay onCLick propagation*/}
+	// 					<h2>Edit Profile</h2>
+	// 					<label>Name</label>
+	// 					<textarea
+	// 						value={displayName}
+	// 						onChange={(e) => setDisplayName(e.target.value)}/>
+	// 					<label>Bio</label>
+	// 					<textarea
+	// 						value={bio}
+	// 						onChange={(e) => setBio(e.target.value)}
+	// 						rows={5}/>
+	// 						<div classNameName={`char-counter ${bio.length > MAX_BIO_LENGTH ? "error" : ""}`}>
+	// 							{bio.length} / {MAX_BIO_LENGTH}
+	// 						</div>
+	// 					<label>Profile Picture</label>
+	// 					<input
+	// 						type="file"
+	// 						accept="image/jpeg,image/jpg,image/png,image/webp"
+	// 						onChange={handleAvatarChange}/>
+	// 					<small style={{ color: '#666', fontSize: '0.85em' }}>
+	// 						Accepted formats: JPEG, PNG, WebP (Max 5MB)
+	// 					</small>
+	// 					<label>Cover Picture</label>
+	// 					<input
+	// 						type="file"
+	// 						accept="image/jpeg,image/jpg,image/png,image/webp"
+	// 						onChange={handleCoverChange}/>
+	// 						<small style={{ color: '#666', fontSize: '0.85em' }}>
+	// 							Accepted formats: JPEG, PNG, WebP (Max 5MB)
+	// 						</small>
+	// 						{errorMessage && (<div classNameName="error-message shake-horizontal">
+	// 							{errorMessage}</div>)}
+	// 						<div classNameName="modal-actions">
+	// 							<button classNameName="modal-btn" onClick={handleSaveProfile}>Save</button>
+	// 							<button classNameName="modal-btn" onClick={handleCancel}>Cancel</button>
+	// 						</div>
+	// 				</div>
+	// 			</div>
+	// 			)}
+	// 			{ showConfirm && (
+	// 				<div classNameName="confirm-overlay">
+	// 					<div classNameName="confirm-box">
+	// 						<p>Looks like you’ve made some changes. Are you sure you want to exit without saving?</p>
+	// 						<div classNameName="confirm-actions">
+	// 							<button classNameName="modal-btn" onClick={() => confirmDiscard()}>Discard</button>
+	// 							<button classNameName="modal-btn" onClick={() =>setshowConfirm(false)}>Stay</button>
+	// 						</div>
+	// 					</div>
+	// 				</div>
+	// 			)}
+	// 		<div classNameName="cover-image">
+	// 			<img src={ user.profile.coverUrl ? `${API_URL}${user.profile.coverUrl}`
+	// 				: "/default-cover.png"} alt="Cover"/></div>
+	// 		<div classNameName="profile-header">
+	// 			<div classNameName="avatar-image">
+	// 				<img src={    user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}`
+	// 				: "/default-avatar.png"} alt="Avatar"/></div>
+	// 			<div classNameName="bio"><p>{user.profile.bio}</p></div>
+	// 		</div>
+	// 		<div classNameName="posts"></div>
+	// 	</div>
+	// );
 };
 
 export default ProfilePage;
