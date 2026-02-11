@@ -8,7 +8,11 @@ const HomePage = () => {
 
 	return (
 		<>
-		<h1>{user.username}'s Home Page</h1>
+		<h1>
+		{user.profile.displayName
+			? `${user.profile.displayName}'s Home Page`
+			: `${user.username}'s Home Page`}
+		</h1>
 		<div className="button1">
 			<button
 			onClick={() => {

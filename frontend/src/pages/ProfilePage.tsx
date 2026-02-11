@@ -16,6 +16,7 @@ const ProfilePage = () => {
 
 
 	const [bio, setBio] = useState(user.profile.bio);
+	const [displayName, setDisplayName] = useState(user.profile.displayName);
 	const [avatarFile, setAvatarFile] = useState<File | null>(null);
 	const [coverFile, setCoverFile] = useState<File | null>(null);
 	const [showMenu, setShowMenu] = useState(false);
@@ -68,6 +69,7 @@ const ProfilePage = () => {
 
 	const resetFields = () => {
 			setBio(user.profile.bio);
+			setDisplayName(user.profile.displayName);
 			setErrorMessage(null);
 	}
 
@@ -84,6 +86,7 @@ const ProfilePage = () => {
 
 	const handleCancel = () => {
 		const isChanged = bio !== user.profile.bio || 
+				displayName !== user.profile.displayName ||
 				avatarFile !== null || 
 				coverFile !== null;
 
@@ -109,6 +112,7 @@ const ProfilePage = () => {
 
 		const formData = new FormData();
 		formData.append("bio", bio);
+		formData.append("displayName", displayName);
 		if (avatarFile)
 			formData.append("avatar", avatarFile); // expected name for the FileInterceptor
 		if (coverFile)
@@ -141,6 +145,7 @@ const ProfilePage = () => {
 						profile: {
 						...prevUser.profile,
 						bio: data.bio,
+						displayName: data.displayName,
 						avatarUrl: data.avatarUrl,
 						coverUrl: data.coverUrl,
 					},
@@ -165,7 +170,7 @@ const ProfilePage = () => {
 			</button>
 			{showMenu && (
 				<div className="drop-down-menu">
-					<button onClick={() => navigate("/home")}>My Feed</button>
+					<button onClick={() => navigate("/feed")}>My Feed</button>
 					<button onClick={handleLogout}>Log Out</button>
 				</div>
 			)}
@@ -175,6 +180,10 @@ const ProfilePage = () => {
 				<div className="modal-overlay" onClick={handleCancel}>
 					<div className={`modal-content ${fadeOut ? "fade-out" : "fade-in"}`} onClick={e => e.stopPropagation()}> {/*stops modal-overlay onCLick propagation*/}
 						<h2>Edit Profile</h2>
+						<label>Name</label>
+						<textarea
+							value={displayName}
+							onChange={(e) => setDisplayName(e.target.value)}/>
 						<label>Bio</label>
 						<textarea
 							value={bio}

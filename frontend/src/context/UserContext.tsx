@@ -9,6 +9,7 @@ export type User = {
 	createdAt: string;
 	profile: {
 		bio: string | null;
+		displayName: string | null;
 		avatarUrl: string | null;
 		coverUrl: string | null;
 	};

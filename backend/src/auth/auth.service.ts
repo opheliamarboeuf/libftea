@@ -28,6 +28,7 @@ export class AuthService {
 					profile:{
 						create:{
 							bio: "",
+							displayName: "",
 							avatarUrl: null,
 							coverUrl: null,
 						},

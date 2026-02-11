@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, InternalServerErrorException} from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
+import { Prisma } from '@prisma/client';
 import { EditDto } from "./dto/edit.dto";
 import { unlink } from 'fs/promises';
 import { join } from 'path';
@@ -20,9 +21,11 @@ export class ProfileService {
 					throw new NotFoundException("Profile not found");
 				
 				// Build an object containing only fields that are defined in the DTO
-				const updateData: any = {};
+				const updateData: Prisma.ProfileUpdateInput = {};
 				if (dto.bio !== undefined)
 					updateData.bio = dto.bio;
+				if (dto.displayName !== undefined)
+					updateData.displayName = dto.displayName;
 				if (dto.avatarUrl !== undefined)
 					updateData.avatarUrl = dto.avatarUrl;
 				if (dto.coverUrl !== undefined)
@@ -66,6 +69,7 @@ export class ProfileService {
 					where: {userId},
 					select: {
 						bio: true,
+						displayName: true,
 						avatarUrl: true,
 						coverUrl: true,
 					},

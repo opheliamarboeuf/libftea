@@ -55,6 +55,7 @@ model	Profile {
 	avatarUrl	String?
 	coverUrl	String?
 	bio			String?
+	displayName	String?
 
 	//	foreign key
 	userId		Int		@unique

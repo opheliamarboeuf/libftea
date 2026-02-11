@@ -4,7 +4,7 @@ import { UserContext, User } from "./context/UserContext";
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
-import HomePage from "./pages/HomePage";
+import FeedPage from "./pages/FeedPage";
 
 const App = () => {
 
@@ -60,8 +60,8 @@ const [loading, setLoading] = useState(true);
             path = "/profile"
             element = {loading ? null : user ? <ProfilePage/> : <Navigate to = "/" replace />} />
         <Route
-            path = "/home"
-            element = {loading ? null : user ? <HomePage/> : <Navigate to = "/" replace />} />
+            path = "/feed"
+            element = {loading ? null : user ? <FeedPage/> : <Navigate to = "/" replace />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
