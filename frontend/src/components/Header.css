@@ -1,0 +1,43 @@
+.header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: calc(100vw - 60px);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 15px 30px;
+	background-color: white;
+	border-bottom: 1px solid #000000;
+	z-index: 100;
+}
+
+.header-left {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+    flex: 1;
+	justify-content: flex-start;
+    margin-left: 30px;
+}
+
+.app-name {
+	margin: 0;
+	cursor: pointer;
+	color: #000;
+	font-family: "Palatino", serif;
+}
+
+.search-bar-container {
+	max-width: 250px;
+    flex-shrink: 0;
+    margin-left: 1100px;
+}
+
+.header-right {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-shrink: 0;
+}
+

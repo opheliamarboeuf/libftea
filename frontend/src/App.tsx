@@ -7,6 +7,7 @@ import ProfilePage from './pages/ProfilePage';
 import FeedPage from "./pages/FeedPage";
 import FriendsPage from "./pages/FriendsPage";
 import { Header } from './components/Header';
+import { LeftMenu } from './components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
 
 const App = () => {
@@ -50,6 +51,7 @@ const [loading, setLoading] = useState(true);
     <UserContext.Provider value={{ user, setUser }}>
       <BrowserRouter>
 	  <Header />
+    <LeftMenu />
         <Routes>
           <Route 
             path="/"

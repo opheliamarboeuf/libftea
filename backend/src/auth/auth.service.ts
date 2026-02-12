@@ -1,5 +1,3 @@
-// Handles user registration and authentication, including password hashing, JWT generation, and database access via Prisma
-// BadRequestException = erreur 400, UnauthorizedException = erreur 401
 
 import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';

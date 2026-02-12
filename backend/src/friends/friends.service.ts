@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { Friendship, User } from '@prisma/client';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class FriendsService {
 		addresseId: number,
 	) {
 		
-		console.log('📤 sendFriendRequest called:', { requesterId, addresseId });
+		console.log('sendFriendRequest called:', { requesterId, addresseId });
 		if (requesterId === addresseId) {
 			throw new BadRequestException('You cannot add yourself as a friend');
 		}
@@ -22,7 +22,7 @@ export class FriendsService {
 			where: { id: addresseId },
 		});
 
-		console.log('👤 Friend found:', friend);
+		console.log('Friend found:', friend);
 
 		if (!friend) {
 			throw new NotFoundException('User not found');
@@ -37,7 +37,7 @@ export class FriendsService {
 			},
 		});
 
-		console.log('🔍 Existing friendship:', exists);
+		console.log('Existing friendship:', exists);
 
 		if (exists) {
 			throw new BadRequestException('You have already sent a friend request to this user');
@@ -50,7 +50,7 @@ export class FriendsService {
 			},
 		});
 
-		console.log('✅ Friendship created:', created);
+		console.log('Friendship created:', created);
 
 		return created;
 	}
@@ -143,7 +143,7 @@ export class FriendsService {
 
 	async getPendingRequests(userId: number) {
 
-		console.log('📥 getPendingRequests called for userId:', userId);
+		console.log('getPendingRequests called for userId:', userId);
 		const friendships = await this.prisma.friendship.findMany({
 			where: {
 				status: 'PENDING',

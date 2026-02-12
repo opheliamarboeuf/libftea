@@ -2,18 +2,13 @@ import { Controller, Post, Body, Get, Req, UseGuards, UseInterceptors, UploadedF
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { File } from 'multer';
 import { Request } from 'express';
 import { ProfileService } from './profile.service';
 import { EditDto } from './dto/edit.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ImageResizeService } from './image-resize.service';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
-export interface RequestWithUser extends Request {
-	user: {
-		sub: number;
-  };
-}
 
 @Controller('profile')
 export class ProfileController {
@@ -27,7 +22,6 @@ export class ProfileController {
 		AnyFilesInterceptor({
 		storage: diskStorage({
 			destination: (req, file, cb) => {
-			// Sauvegarder dans le bon sous-dossier selon le type
 			if (file.fieldname === 'avatar') {
 				cb(null, './uploads/avatar');
 			} else if (file.fieldname === 'cover') {
@@ -46,9 +40,10 @@ export class ProfileController {
 
 	@Post('edit')
 	async editProfile(
-	@UploadedFiles() files: File[], // Gets all files sent by the client
-	@Body() dto: EditDto,
-	@Req() req: RequestWithUser,) {
+		@UploadedFiles() files: Express.Multer.File[],
+		@Body() dto: EditDto,
+		@Req() req: Request & { user: { sub: number } },
+	) {
 	const userId = req.user.sub; 
 
 	const currentProfile = await this.profileService.getProfile(userId);
@@ -74,7 +69,7 @@ export class ProfileController {
 	return this.profileService.edit(userId, dto);
 }
 	@Get('me')
-	getProfile(@Req() req: any) {
+	getProfile(@Req() req: Request & { user: { sub: number } }) {
 		return this.profileService.getProfile(req.user.sub);
 	}
 

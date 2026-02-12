@@ -1,19 +1,22 @@
 FROM node:20-alpine
 
+# Install system dependencies
 RUN apk add --no-cache python3 make g++ bash
 
-# set /app as the working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# copy only dependency files first (optimization)
-COPY package*.json ./
+# Copy dependency files first (optimization)
+COPY package.json package-lock.json* ./
 
-# install all dependencies
-RUN npm install 
+# Install all dependencies
+RUN npm install
 
-# copy the rest of the source
+# Copy the rest of the source
 COPY . .
 
+# Expose Vite dev server port
 EXPOSE 5173
 
+# Start development server
 CMD ["npm", "run", "dev", "--", "--host"]

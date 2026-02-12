@@ -1,0 +1,56 @@
+.left-menu {
+	width: 60px;
+	background-color: white;
+	position: fixed;
+	top: 65px;
+	left: 0;
+	height: 100vh;
+	padding: 1rem 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	z-index: 100;
+	transition: width 0.3s ease;
+	overflow: hidden;
+}
+
+.menu-item {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	padding: 10px;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.menu-item:hover {
+	background-color: #f0f0f0;
+}
+
+.icon {
+	font-size: 1.3rem;
+	min-width: 40px;
+	text-align: center;
+	flex-shrink: 0;
+	color: black;
+}
+
+/* Expansion */
+.left-menu:hover {
+	width: 200px;
+}
+
+/* Hidden text by default */
+.label {
+	flex: 1;
+	text-align: center;
+	opacity: 0;
+	color: black;
+	margin-left: -15px;
+	transition: opacity 0.2s ease;
+}
+
+/* Visible text with open menu*/
+.left-menu:hover .label {
+	opacity: 1;
+}
