@@ -5,19 +5,29 @@ import { User } from "./types";
 export function useFriends() {
 	const [friends, setFriends] = useState<User[]>([]);
 
+	const fetchFriends = async () => {
+		const data = await friendsApi.getFriends();
+		setFriends(data);
+	}
+
 	useEffect(() => {
-		friendsApi.getFriends().then(setFriends);
+		fetchFriends();
 	}, []);
 
-	return { friends };
+	return { friends, refetch: fetchFriends };
 }
 
 export function usePendingRequests() {
 	const [pending, setPending] = useState<User[]>([]);
 
+	const fetchPending = async () => {
+		const data = await friendsApi.getPendingRequests();
+		setPending(data);
+	}
+
 	useEffect(() => {
-		friendsApi.getPendingRequests().then(setPending);
+		fetchPending();
 	}, []);
 
-	return { pending };
+	return { pending, refetch: fetchPending };
 }

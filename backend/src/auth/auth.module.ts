@@ -35,7 +35,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 		}),
 	],
 	providers: [AuthService, PrismaService, JwtStrategy, JwtAuthGuard],
-	exports: [JwtAuthGuard],
+	exports: [JwtAuthGuard, JwtStrategy, PassportModule],
 	controllers: [AuthController],
 })
 // on exporte le module pour que AppModule puisse l'utiliser

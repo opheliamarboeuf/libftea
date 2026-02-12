@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { AddFriendButton } from "../friends";
 
-const URL = 'http://localhost:3000/user';
+const URL = 'http://localhost:3000/users';
 
 interface UserProfile {
 	id: number,
@@ -43,6 +43,10 @@ const UserProfilePage = () => {
 		}
 	}, [user, profile, navigate]);
 	
+	if (!profile) {
+		return <div style={{ padding: '20px' }}>Chargement...</div>;
+	}
+
 	return (
 		<div style={{ padding:'20px' }}>
 			<h1>{profile.username}'s Profile</h1>

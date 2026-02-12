@@ -13,6 +13,7 @@ export class FriendsService {
 		addresseId: number,
 	) {
 		
+		console.log('📤 sendFriendRequest called:', { requesterId, addresseId });
 		if (requesterId === addresseId) {
 			throw new BadRequestException('You cannot add yourself as a friend');
 		}
@@ -20,6 +21,9 @@ export class FriendsService {
 		const friend = await this.prisma.user.findUnique({
 			where: { id: addresseId },
 		});
+
+		console.log('👤 Friend found:', friend);
+
 		if (!friend) {
 			throw new NotFoundException('User not found');
 		}
@@ -32,16 +36,23 @@ export class FriendsService {
 				],
 			},
 		});
+
+		console.log('🔍 Existing friendship:', exists);
+
 		if (exists) {
 			throw new BadRequestException('You have already sent a friend request to this user');
 		}
 
-		return this.prisma.friendship.create({
+		const created = this.prisma.friendship.create({
 			data: {
 				requesterId,
 				addresseId,
 			},
 		});
+
+		console.log('✅ Friendship created:', created);
+
+		return created;
 	}
 
 	async acceptFriendRequest(
@@ -88,10 +99,9 @@ export class FriendsService {
 
 		const friendship = await this.prisma.friendship.findFirst({
 			where: {
-				requesterId_addresseId: {
-					requesterId,
-					addresseId,
-				},
+				requesterId,
+				addresseId,
+				status: 'PENDING',
 			},
 		});
 		if (!friendship) {
@@ -104,10 +114,7 @@ export class FriendsService {
 
 		await this.prisma.friendship.delete({
 			where: {
-				requesterId_addresseId: {
-					requesterId,
-					addresseId,
-				},
+				id: friendship.id,
 			},
 		});
 	}
@@ -136,6 +143,7 @@ export class FriendsService {
 
 	async getPendingRequests(userId: number) {
 
+		console.log('📥 getPendingRequests called for userId:', userId);
 		const friendships = await this.prisma.friendship.findMany({
 			where: {
 				status: 'PENDING',
@@ -145,6 +153,7 @@ export class FriendsService {
 				requester: true,
 			},
 		});
+
 		return friendships.map(f => f.requester);
 	}
 }

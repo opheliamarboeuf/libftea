@@ -69,7 +69,7 @@ const [loading, setLoading] = useState(true);
             path = "/home"
             element = {loading ? null : user ? <HomePage/> : <Navigate to = "/" replace />} />
 		<Route
-			path="/user/:id"
+			path="/users/:id"
 			element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
         </Routes>
       </BrowserRouter>

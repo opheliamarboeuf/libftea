@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const URL = 'http://localhost:3000/user';
+const URL = 'http://localhost:3000/users';
 
 interface SearchResult {
 	id: number;
@@ -57,7 +57,7 @@ export const SearchBar = () => {
 	}, []);
 
 	const handleSelectUser = (userId: number) => {
-		navigate(`/user/${userId}`);
+		navigate(`/users/${userId}`);
 		setQuery('');
 		setShowResults(false);
 	};
