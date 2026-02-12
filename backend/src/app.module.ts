@@ -7,6 +7,8 @@ import { AppService } from './app.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
+import { FriendsModule } from './friends/friends.module';
+import { UsersModule } from './user/users.module';
 import { ProfileModule } from './profile/profile.module';
 
 @Module({
@@ -17,6 +19,8 @@ import { ProfileModule } from './profile/profile.module';
     }),
 	PrismaModule,
     AuthModule,
+	FriendsModule,
+	UsersModule,
 	ProfileModule,
   ],
   controllers: [AppController], 

@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { UserContext, User } from "./context/UserContext";
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import FeedPage from "./pages/FeedPage";
+import FriendsPage from "./pages/FriendsPage";
+import { Header } from './components/Header';
+import UserProfilePage from './pages/UserProfilePage';
 
 const App = () => {
 
@@ -46,6 +49,7 @@ const [loading, setLoading] = useState(true);
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <BrowserRouter>
+	  <Header />
         <Routes>
           <Route 
             path="/"
@@ -59,9 +63,15 @@ const [loading, setLoading] = useState(true);
           <Route
             path = "/profile"
             element = {loading ? null : user ? <ProfilePage/> : <Navigate to = "/" replace />} />
+		  <Route
+			path="/friends"
+			element={loading ? null : user ? <FriendsPage/> : <Navigate to = "/" replace />} />
         <Route
             path = "/feed"
             element = {loading ? null : user ? <FeedPage/> : <Navigate to = "/" replace />} />
+		<Route
+			path="/users/:id"
+			element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>

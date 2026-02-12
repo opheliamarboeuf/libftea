@@ -24,6 +24,6 @@ export class AuthController {
 	// Returns the current user's data based on the user ID stored in req.user by JwtStrategy.
 	@Get('me')
 	getMe(@Req() req) {
-		return this.authService.getMe(req.user.sub);
+		return this.authService.getMe(req.user.id);
 	}
 }
