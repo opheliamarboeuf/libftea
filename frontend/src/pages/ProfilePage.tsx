@@ -211,10 +211,10 @@ return (
 			</div>
 			<label>Profile Picture</label>
 			<input type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handleAvatarChange} />
-			<small>Accepted formats: JPEG, PNG, WebP (Max 5MB)</small>
+			<small className="helper-text"> Accepted formats: JPEG, PNG, WebP (Max 5MB)</small>
 			<label>Cover Picture</label>
 			<input type="file" accept="image/jpeg,image/jpg,image/png,image/webp" onChange={handleCoverChange} />
-			<small>Accepted formats: JPEG, PNG, WebP (Max 5MB)</small>
+			<small className="helper-text">Accepted formats: JPEG, PNG, WebP (Max 5MB)</small>
 			{errorMessage && <div className="error-message shake-horizontal">{errorMessage}</div>}
 			<div className="modal-actions">
 				<button className="modal-btn" onClick={handleSaveProfile}>Save</button>
