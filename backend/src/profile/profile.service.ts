@@ -10,7 +10,6 @@ export class ProfileService {
 	constructor(
 		private prisma: PrismaService,
 	) {}
-
 	async edit(userId:number, dto: EditDto) {
 		try {
 				// Check if the profile exists

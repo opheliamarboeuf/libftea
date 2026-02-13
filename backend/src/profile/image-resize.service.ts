@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import sharp from 'sharp'; 
-import { join } from 'path';
 import { unlink } from 'fs/promises';
 
 @Injectable()

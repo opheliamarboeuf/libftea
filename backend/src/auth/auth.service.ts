@@ -27,8 +27,8 @@ export class AuthService {
 						create:{
 							bio: "",
 							displayName: "",
-							avatarUrl: null,
-							coverUrl: null,
+							avatarUrl: "/assets/default/default-avatar.jpeg",
+							coverUrl: "/assets/default/default-cover.jpeg",
 						},
 					},
 				},

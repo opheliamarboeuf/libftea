@@ -23,6 +23,11 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/', // Accessible via http://localhost:3000/uploads/...
   });
+  
+  // Expose the 'assets' folder for default images
+  app.useStaticAssets(join(__dirname, '..', 'assets'), {
+    prefix: '/assets/',
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
