@@ -1,12 +1,12 @@
 /* Parent */
 .profile-page {
 	position: fixed;
-	top: 80px;
+	top: 50px;
 	left: 60px;
 	display: flex;
 	flex-direction: column;
 	width: calc(100vw - 60px);
-	height: calc(100vh - 65px);
+	height: calc(100vh - 50px);
 	box-sizing: border-box;
 	background-color: white;
 	color: black;

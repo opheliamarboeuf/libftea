@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { SearchBar } from "./SearchBar";
@@ -8,13 +9,20 @@ export const Header = () => {
 	const navigate = useNavigate();
 	const { user, setUser } = useUser();
 	const API_URL = "http://localhost:3000";
+	const [menuHidden, setMenuHidden] = useState(false);
 
 	if (!user) return null;
 
 	const handleLogout = () => {
+		setMenuHidden(true);
 		localStorage.removeItem("token");
 		setUser(null);
 		navigate('/')
+	}
+
+	const handleNavigate = (path: string) => {
+		setMenuHidden(true);
+		navigate(path);
 	}
 
 	return (
@@ -26,18 +34,24 @@ export const Header = () => {
 			</div>
 			<div className="search-bar-container"><SearchBar /></div>
 			<div className="header-right">
-				<div className="avatar-menu">
-					<div className="small-avatar">
-						<img
-							src={user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}` : "/default-avatar.png"}
-							alt="Small Avatar"
-						/>
+				<div 
+					className={`avatar-menu ${menuHidden ? 'menu-hidden' : ''}`}
+					onMouseLeave={() => setMenuHidden(false)}
+				>
+					<div className="small-avatar-container">
+						<p className="header-username">{user.username || ""}</p>
+						<div className="small-avatar">
+							<img
+								src={user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}` : "/default-avatar.png"}
+								alt="Small Avatar"
+							/>
+						</div>
 					</div>
 					<div className="dropdown-menu">
-						<button onClick={() => navigate(`/profile`)}>
+						<button onClick={() => handleNavigate('/profile')}>
 							<span className="label">My Profile</span>
 						</button>
-						<button onClick={() => navigate('/settings')}>
+						<button onClick={() => handleNavigate('/settings')}>
 							<span className="label">Settings</span>
 						</button>
 						<button onClick={handleLogout}>
