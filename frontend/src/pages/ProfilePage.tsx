@@ -2,14 +2,13 @@ import "../App.css";
 import "./ProfilePage.css";
 import { Navigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 
 const ProfilePage = () => {
 	const API_URL = "http://localhost:3000";
 
 	const { user, setUser } = useUser();
-	const navigate = useNavigate();
 
 	if (!user)
 		return <Navigate to="/" replace />; // redirect if not logged in
@@ -167,7 +166,7 @@ return (
 		<div className="profile-info">
 			<div className="profile-pic">
 			<img
-				src={user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}` : "/default-avatar.png"}
+				src={user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}` : "/assets/images/default-avatar.jpeg"}
 				alt="Profile Avatar"
 			/>
 			</div>
@@ -177,7 +176,7 @@ return (
 			<span>Posts: 5</span>
 			</div>
 			<div className="bio">
-			<p>{user.profile.bio || "This is my biography..."}</p>
+			<p>{user.profile.bio || "Write your bio here..."}</p>
 			</div>
 		</div>
 
@@ -185,7 +184,7 @@ return (
 		<div className="cover-and-posts">
 			<div className="cover">
 			<img
-				src={user.profile.coverUrl ? `${API_URL}${user.profile.coverUrl}` : "/default-cover.png"}
+				src={user.profile.coverUrl ? `${API_URL}${user.profile.coverUrl}` : "/assets/images/default-cover.jpeg"}
 				alt="Cover"
 			/>
 			</div>
@@ -198,7 +197,7 @@ return (
 		</div>
 
 		{/* MODAL OVERLAY */}
-		{showModal && (
+		{showModal && createPortal(
 		<div className="modal-overlay" onClick={handleCancel}>
 			<div className={`modal-content ${fadeOut ? "fade-out" : "fade-in"}`} onClick={e => e.stopPropagation()}>
 			<h2>Edit Profile</h2>
@@ -221,10 +220,11 @@ return (
 				<button className="modal-btn" onClick={handleCancel}>Cancel</button>
 			</div>
 			</div>
-		</div>
+		</div>,
+		document.body
 		)}
 
-		{showConfirm && (
+		{showConfirm && createPortal(
 		<div className="confirm-overlay">
 			<div className="confirm-box">
 			<p>Looks like you’ve made some changes. Are you sure you want to exit without saving?</p>
@@ -233,7 +233,8 @@ return (
 				<button className="modal-btn" onClick={() => setshowConfirm(false)}>Stay</button>
 			</div>
 			</div>
-		</div>
+		</div>,
+		document.body
 		)}
 	</div>
 	);
