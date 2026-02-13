@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { SearchBar } from "./SearchBar";
-import { useState } from "react";
 import "./Header.css"
 import "../App.css"
 
@@ -9,18 +8,13 @@ export const Header = () => {
 	const navigate = useNavigate();
 	const { user, setUser } = useUser();
 	const API_URL = "http://localhost:3000";
-	const [showDropdown, setShowDropdown] = useState(false);
 
 	if (!user) return null;
 
 	const handleLogout = () => {
 		localStorage.removeItem("token");
 		setUser(null);
-		setShowDropdown(false);
-	}
-
-	const toggleDropdown = () => {
-		setShowDropdown(!showDropdown);
+		navigate('/')
 	}
 
 	return (
@@ -33,31 +27,23 @@ export const Header = () => {
 			<div className="search-bar-container"><SearchBar /></div>
 			<div className="header-right">
 				<div className="avatar-menu">
-					<div className="small-avatar" onClick={toggleDropdown}>
+					<div className="small-avatar">
 						<img
 							src={user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}` : "/default-avatar.png"}
 							alt="Small Avatar"
 						/>
 					</div>
-					{showDropdown && (
-						<div className="dropdown-menu">
-							<button onClick={() => {
-								navigate(`/profile/${user.id}`);
-								setShowDropdown(false);
-							}}>
-								My Profile
-							</button>
-							<button onClick={() => {
-								navigate('/settings');
-								setShowDropdown(false);
-							}}>
-								Settings
-							</button>
-							<button onClick={handleLogout}>
-								Log Out
-							</button>
-						</div>
-					)}
+					<div className="dropdown-menu">
+						<button onClick={() => navigate(`/profile`)}>
+							<span className="label">My Profile</span>
+						</button>
+						<button onClick={() => navigate('/settings')}>
+							<span className="label">Settings</span>
+						</button>
+						<button onClick={handleLogout}>
+							<span className="label">Log Out</span>
+						</button>
+					</div>
 				</div>
 			</div>
 		</header>
