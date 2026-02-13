@@ -42,9 +42,9 @@ export class ProfileController {
 	async editProfile(
 		@UploadedFiles() files: Express.Multer.File[],
 		@Body() dto: EditDto,
-		@Req() req: Request & { user: { sub: number } },
+		@Req() req: Request & { user: { id: number } },
 	) {
-	const userId = req.user.sub; 
+	const userId = req.user.id; 
 
 	const currentProfile = await this.profileService.getProfile(userId);
 	
@@ -69,8 +69,8 @@ export class ProfileController {
 	return this.profileService.edit(userId, dto);
 }
 	@Get('me')
-	getProfile(@Req() req: Request & { user: { sub: number } }) {
-		return this.profileService.getProfile(req.user.sub);
+	getProfile(@Req() req: Request & { user: { id: number } }) {
+		return this.profileService.getProfile(req.user.id);
 	}
 
 }  

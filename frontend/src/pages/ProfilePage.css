@@ -1,21 +1,31 @@
 /* Parent */
+
+
 .profile-page {
-	margin-top: 60px;
-	margin-left: 60px; 
+	position: fixed;
+	top: 65px;
+	left: 60px;
 	display: flex;
 	flex-direction: column;
-	width: 100vw;
-	min-height: calc(100vh - 70px);
+	width: calc(100vw - 60px);
+	height: calc(100vh - 65px);
+	box-sizing: border-box;
+	background-color: white;
+	color: black;
+	overflow: hidden;
 }
+
 
 /* Profile info column */
 .profile-info {
 	width: 250px;
-	background-color: #232723; /* vert clair */
+	background-color: white; 
 	padding: 1rem;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	border-right: 1px solid #00000053;
+	border-left: 1px solid #00000053;
 }
 
 /* Cover and posts */
@@ -23,7 +33,6 @@
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	background-color: #b9b6b3; /* orange clair */
 }
 
 .cover-and-posts .cover img {
@@ -37,7 +46,6 @@
 .main-content {
   display: flex;
   flex: 1;
-  background-color: #eee; /* gris clair */
 }
 
 .menu .menu-avatar {
@@ -66,14 +74,13 @@
 
 .profile-info .bio {
   text-align: center;
-  background-color: #ccffcc; /* vert très clair pour la bio */
   padding: 0.5rem;
   border-radius: 4px;
 }
 
 .cover-and-posts .posts {
   flex: 1;
-  background-color: #ffd699; /* jaune clair */
+  background-color: #dacbb5; /* jaune clair */
   padding: 1rem;
   overflow-y: auto;
 }

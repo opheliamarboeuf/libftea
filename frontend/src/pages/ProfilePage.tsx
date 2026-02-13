@@ -19,7 +19,6 @@ const ProfilePage = () => {
 	const [displayName, setDisplayName] = useState(user.profile.displayName);
 	const [avatarFile, setAvatarFile] = useState<File | null>(null);
 	const [coverFile, setCoverFile] = useState<File | null>(null);
-	const [showMenu, setShowMenu] = useState(false);
 	const [showModal, setshowModal] = useState(false);
 	const [showConfirm, setshowConfirm] = useState(false);
 	const [fadeOut, setFadeOut] = useState(false);
@@ -77,11 +76,6 @@ const ProfilePage = () => {
 		resetFields();
 		setshowConfirm(false);
 		setshowModal(false);
-	}
-
-	const handleLogout = () => {
-		localStorage.removeItem("token");
-		setUser(null);
 	}
 
 	const handleCancel = () => {

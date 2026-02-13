@@ -90,6 +90,7 @@ export class AuthService {
 				profile: {
 					select: {
 						bio:true, 
+						displayName: true,
 						avatarUrl: true,
 						coverUrl: true,
 					},

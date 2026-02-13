@@ -40,13 +40,21 @@ const LoginPage = () => {
 				if (Array.isArray(data.message)){
 					setErrorMessage(data.message[0]);} 
 				else {
-					setErrorMessage(data.message || "Registration Failed")
+					setErrorMessage(data.message || "Login Failed")
 				}
 				return ;
 			}
 
-			setUser(data);
 			localStorage.setItem("token", data.access_token);
+
+			// Fetch full user data
+			const userRes = await fetch("http://localhost:3000/auth/me", {
+				headers: {
+					Authorization: `Bearer ${data.access_token}`,
+				},
+			});
+			const fullUserData = await userRes.json();
+			setUser(fullUserData);
 			navigate("/feed", {replace: true});
 		}
 		catch(err){

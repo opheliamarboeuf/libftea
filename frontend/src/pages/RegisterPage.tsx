@@ -59,11 +59,17 @@ const RegisterPage = () => {
 				return ;
 			}
 	
-			// Store the user in the global context
-			setUser(data);
-
-			// Save JWT token and redirect to profile
+			// Save JWT token
 			localStorage.setItem("token", data.access_token);
+
+			// Fetch full user data and store in context
+			const userRes = await fetch("http://localhost:3000/auth/me", {
+				headers: {
+					Authorization: `Bearer ${data.access_token}`,
+				},
+			});
+			const fullUserData = await userRes.json();
+			setUser(fullUserData);
 			navigate("/feed", {replace: true}) ;
 		}
 		catch (err){

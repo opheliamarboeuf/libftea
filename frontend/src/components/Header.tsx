@@ -21,9 +21,8 @@ export const Header = () => {
 				<h2 className="app-name" onClick={() => navigate('/feed')}>
 					Libftea
 				</h2>
-				<div className="search-bar-container"><SearchBar /></div>
 			</div>
-
+			<div className="search-bar-container"><SearchBar /></div>
 			<div className="header-right">
 				<button className="regular-button" onClick = {handleLogout}>Log Out</button>
 			</div>
