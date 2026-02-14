@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { AddFriendButton } from "../friends";
+import "./MyProfilePage.css"
 
 const URL = 'http://localhost:3000/users';
 
@@ -39,7 +40,7 @@ const UserProfilePage = () => {
 
 	useEffect(() => {
 		if (user && profile && user.id === profile.id) {
-			navigate('/profile');
+			navigate('/myprofile');
 		}
 	}, [user, profile, navigate]);
 	

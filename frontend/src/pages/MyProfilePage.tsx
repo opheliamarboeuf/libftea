@@ -1,5 +1,5 @@
 import "../App.css";
-import "./ProfilePage.css";
+import "./MyProfilePage.css";
 import { Navigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { useState } from "react";
@@ -157,9 +157,6 @@ const ProfilePage = () => {
 
 return (
 	<div className="profile-page">
-		<button className="edit-profile-btn" onClick={() => setshowModal(true)}>
-			Edit Profile
-		</button>
 		{/* MAIN CONTENT */}
 		<div className="main-content">
 		{/* PROFILE INFO COLUMN */}
@@ -187,6 +184,9 @@ return (
 				src={user.profile.coverUrl ? `${API_URL}${user.profile.coverUrl}` : "/assets/images/default-cover.jpeg"}
 				alt="Cover"
 			/>
+			<button className="edit-profile-btn" onClick={() => setshowModal(true)}>
+				Edit Profile
+			</button>
 			</div>
 			<div className="posts">
 			<p>Post 1</p>

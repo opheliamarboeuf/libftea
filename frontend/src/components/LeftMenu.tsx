@@ -18,7 +18,7 @@ export const LeftMenu = () => {
 				<span className="label">Feed</span>
 			</div>
 
-			<div className="menu-item" onClick={() => navigate("/profile")}>
+			<div className="menu-item" onClick={() => navigate("/myprofile")}>
 				<FaUser className="icon" />
 				<span className="label">Profile</span>
 			</div>

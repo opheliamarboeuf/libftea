@@ -48,7 +48,7 @@ export const Header = () => {
 						</div>
 					</div>
 					<div className="dropdown-menu">
-						<button onClick={() => handleNavigate('/profile')}>
+						<button onClick={() => handleNavigate('/myprofile')}>
 							<span className="label">My Profile</span>
 						</button>
 						<button onClick={() => handleNavigate('/settings')}>

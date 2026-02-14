@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { UserContext, User } from "./context/UserContext";
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
-import ProfilePage from './pages/ProfilePage';
+import MyProfilePage from './pages/MyProfilePage';
 import FeedPage from "./pages/FeedPage";
 import FriendsPage from "./pages/FriendsPage";
 import { Header } from './components/Header';
@@ -63,8 +63,8 @@ const [loading, setLoading] = useState(true);
             path = "/login"
             element = {<LoginPage />} />
           <Route
-            path = "/profile"
-            element = {loading ? null : user ? <ProfilePage/> : <Navigate to = "/" replace />} />
+            path = "/myprofile"
+            element = {loading ? null : user ? <MyProfilePage/> : <Navigate to = "/" replace />} />
 		  <Route
 			path="/friends"
 			element={loading ? null : user ? <FriendsPage/> : <Navigate to = "/" replace />} />

@@ -1,8 +1,8 @@
 import { FriendsList, PendingRequests } from "../friends";
-
+import "./FriendsPage.css"
 const FriendsPage = () => {
 	return (
-		<div>
+		<div className="friends-page">
 			<h1>Mes amis</h1>
 
 			<PendingRequests />
