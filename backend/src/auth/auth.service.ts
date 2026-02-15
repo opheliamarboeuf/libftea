@@ -79,7 +79,7 @@ export class AuthService {
 	}
 
 	async getMe(userId: number) {
-		return this.prisma.user.findUnique({
+		const user = await this.prisma.user.findUnique({
 			where: { id: userId },
 			select: {
 				id: true,
@@ -97,5 +97,70 @@ export class AuthService {
 				},
 			},
 		});
+
+		// Fetch friends (accepted friendships)
+		const friendships = await this.prisma.friendship.findMany({
+			where: {
+				status: 'ACCEPTED',
+				OR: [
+					{ requesterId: userId },
+					{ addresseId: userId },
+				],
+			},
+			include: {
+				requester: {
+					select: {
+						id: true,
+						username: true,
+						profile: { select: { avatarUrl: true } },
+					},
+				},
+				addresse: {
+					select: {
+						id: true,
+						username: true,
+						profile: { select: { avatarUrl: true } },
+					},
+				},
+			},
+		});
+
+		const friends = friendships.map((f) => {
+			const friend = f.requesterId === userId ? f.addresse : f.requester;
+			return {
+				id: friend.id,
+				username: friend.username,
+				avatarUrl: friend.profile?.avatarUrl,
+			};
+		});
+
+		// Fetch pending friend requests (where user is the addressee)
+		const pendingFriendships = await this.prisma.friendship.findMany({
+			where: {
+				status: 'PENDING',
+				addresseId: userId,
+			},
+			include: {
+				requester: {
+					select: {
+						id: true,
+						username: true,
+						profile: { select: { avatarUrl: true } },
+					},
+				},
+			},
+		});
+
+		const pendingRequests = pendingFriendships.map((f) => ({
+			id: f.requester.id,
+			username: f.requester.username,
+			avatarUrl: f.requester.profile?.avatarUrl,
+		}));
+
+		return {
+			...user,
+			friends,
+			pendingRequests,
+		};
 	}
 }

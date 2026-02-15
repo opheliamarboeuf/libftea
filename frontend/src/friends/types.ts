@@ -1,8 +1,5 @@
-export interface User {
-	id: number;
-	username: string;
-	avatarUrl?: string;
-}
+// Re-export Friend type from UserContext for convenience
+export { Friend as User } from "../context/UserContext";
 
 export interface Friendship {
 	id: number;

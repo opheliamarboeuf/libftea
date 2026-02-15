@@ -156,4 +156,42 @@ export class FriendsService {
 
 		return friendships.map(f => f.requester);
 	}
+
+	async removeFriend(userId: number, friendId: number): Promise<void> {
+		const friendship = await this.prisma.friendship.findFirst({
+			where: {
+				status: 'ACCEPTED',
+				OR: [
+					{ requesterId: userId, addresseId: friendId },
+					{ requesterId: friendId, addresseId: userId },
+				],
+			},
+		});
+
+		if (!friendship) {
+			throw new BadRequestException('Friendship does not exist');
+		}
+
+		await this.prisma.friendship.delete({
+			where: { id: friendship.id },
+		});
+	}
+
+	async cancelRequest(requesterId: number, addresseId: number): Promise<void> {
+		const friendship = await this.prisma.friendship.findFirst({
+			where: {
+				requesterId,
+				addresseId,
+				status: 'PENDING',
+			},
+		});
+
+		if (!friendship) {
+			throw new BadRequestException('Friend request does not exist');
+		}
+
+		await this.prisma.friendship.delete({
+			where: { id: friendship.id },
+		});
+	}
 }

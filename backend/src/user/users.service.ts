@@ -30,8 +30,8 @@ export class UsersService {
 		});
 	}
 
-	async findId(id: number) {
-		return this.prisma.user.findUnique({
+	async findId(id: number, currentUserId: number) {
+		const user = await this.prisma.user.findUnique({
 			where: {
 				id,
 			},
@@ -47,5 +47,33 @@ export class UsersService {
 				}
 			},
 		});
+
+		if (!user) return null;
+
+		// Check friendship status with current user
+		const friendship = await this.prisma.friendship.findFirst({
+			where: {
+				OR: [
+					{ requesterId: currentUserId, addresseId: id },
+					{ requesterId: id, addresseId: currentUserId },
+				],
+			},
+		});
+
+		let friendshipStatus: 'NONE' | 'PENDING_SENT' | 'PENDING_RECEIVED' | 'ACCEPTED' | 'BLOCKED' = 'NONE';
+		if (friendship) {
+			if (friendship.status === 'ACCEPTED') {
+				friendshipStatus = 'ACCEPTED';
+			} else if (friendship.status === 'BLOCKED') {
+				friendshipStatus = 'BLOCKED';
+			} else if (friendship.status === 'PENDING') {
+				friendshipStatus = friendship.requesterId === currentUserId ? 'PENDING_SENT' : 'PENDING_RECEIVED';
+			}
+		}
+
+		return {
+			...user,
+			friendshipStatus,
+		};
 	}
 }

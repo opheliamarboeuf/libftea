@@ -1,13 +1,17 @@
 import { friendsApi } from "./api";
+import { useUser } from "../context/UserContext";
 
 interface Props {
 	userId: number;
 }
 
 export function AddFriendButton({ userId }: Props) {
+	const { refreshUser } = useUser();
+
 	const handleClick = async () => {
 		try {
-			const response = await friendsApi.sendFriendRequest(userId);
+			await friendsApi.sendFriendRequest(userId);
+			await refreshUser();
 			alert('Friend request sent');
 		} catch (error) {
 			console.error('Error:', error);

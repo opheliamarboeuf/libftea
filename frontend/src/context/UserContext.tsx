@@ -1,5 +1,12 @@
 import { createContext, useContext } from "react";
 
+// Type for friend data
+export type Friend = {
+	id: number;
+	username: string;
+	avatarUrl: string | null;
+};
+
 // Defines the shape of a user object
 export type User = {
 	id: number;
@@ -13,11 +20,14 @@ export type User = {
 		avatarUrl: string | null;
 		coverUrl: string | null;
 	};
+	friends: Friend[];
+	pendingRequests: Friend[];
 };
 // Defines the shape of the context, meaning the fields the context must contain
 interface UserContextType {
 	user: User | null;	// holds the current user, or null if no user is logged in
-	  setUser: React.Dispatch<React.SetStateAction<User | null>>;	// Dispatch<SetStateAction<T>> allows pass either a value of type T or a function (prev: T) => T that receives the previous state and returns a new state
+	setUser: React.Dispatch<React.SetStateAction<User | null>>;	// Dispatch<SetStateAction<T>> allows pass either a value of type T or a function (prev: T) => T that receives the previous state and returns a new state
+	refreshUser: () => Promise<void>;	// Function to refresh user data from server
 }
 
 // Creates a new React context using the UserContextType
@@ -25,6 +35,7 @@ interface UserContextType {
 const defaultUserContext: UserContextType = {
   user: null, // // default: no user is logged
   setUser: () => {}, // default: dummy function, does nothing
+  refreshUser: async () => {}, // default: dummy function, does nothing
 };
 
 // Creates the React context

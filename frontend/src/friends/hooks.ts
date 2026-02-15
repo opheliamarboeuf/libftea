@@ -1,33 +1,19 @@
-import { useEffect, useState } from "react";
-import { friendsApi } from "./api";
-import { User } from "./types";
+import { useUser } from "../context/UserContext";
 
 export function useFriends() {
-	const [friends, setFriends] = useState<User[]>([]);
+	const { user, refreshUser } = useUser();
 
-	const fetchFriends = async () => {
-		const data = await friendsApi.getFriends();
-		setFriends(data);
-	}
-
-	useEffect(() => {
-		fetchFriends();
-	}, []);
-
-	return { friends, refetch: fetchFriends };
+	return {
+		friends: user?.friends ?? [],
+		refetch: refreshUser,
+	};
 }
 
 export function usePendingRequests() {
-	const [pending, setPending] = useState<User[]>([]);
+	const { user, refreshUser } = useUser();
 
-	const fetchPending = async () => {
-		const data = await friendsApi.getPendingRequests();
-		setPending(data);
-	}
-
-	useEffect(() => {
-		fetchPending();
-	}, []);
-
-	return { pending, refetch: fetchPending };
+	return {
+		pending: user?.pendingRequests ?? [],
+		refetch: refreshUser,
+	};
 }

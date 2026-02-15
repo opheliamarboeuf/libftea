@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { UserContext, User } from "./context/UserContext";
 import RegisterPage from './pages/RegisterPage';
@@ -16,39 +16,45 @@ const [user, setUser] = useState<User | null>(null);
 const token = localStorage.getItem("token");
 const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!token)
-      {
-        setLoading(false);
-        return;
-      }
-
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/auth/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!res.ok){
-          localStorage.removeItem("token");
-          throw new Error("Token invalid or user unauthorized");
-        }
-        const data = await res.json();
-        setUser(data);
-      }
-      catch(err){
-        console.log("Fetch error:", (err as Error).message);
-      }
-      finally{
-        setLoading(false);
-      }
+  const fetchUser = useCallback(async () => {
+    const currentToken = localStorage.getItem("token");
+    if (!currentToken) {
+      setUser(null);
+      return;
     }
-      fetchUser()
-  }, [token]);
+    try {
+      const res = await fetch("http://localhost:3000/auth/me", {
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+        },
+      });
+      if (!res.ok){
+        localStorage.removeItem("token");
+        throw new Error("Token invalid or user unauthorized");
+      }
+      const data = await res.json();
+      setUser(data);
+    }
+    catch(err){
+      console.log("Fetch error:", (err as Error).message);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    const initUser = async () => {
+      await fetchUser();
+      setLoading(false);
+    };
+    initUser();
+  }, [token, fetchUser]);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, refreshUser: fetchUser }}>
       <BrowserRouter>
 	  <Header />
     <LeftMenu />

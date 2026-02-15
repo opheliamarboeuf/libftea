@@ -47,5 +47,23 @@ export const friendsApi = {
 				Authorization: `Bearer ${localStorage.getItem("token")}`,
 		} });
 	},
+
+	removeFriend: async (friendId: number) => {
+		await fetch(`${API_URL}/remove/${friendId}`, {
+			method: 'DELETE',
+			credentials: 'include',
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+		} });
+	},
+
+	cancelRequest: async (addresseId: number) => {
+		await fetch(`${API_URL}/cancel/${addresseId}`, {
+			method: 'DELETE',
+			credentials: 'include',
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+		} });
+	},
 };
 

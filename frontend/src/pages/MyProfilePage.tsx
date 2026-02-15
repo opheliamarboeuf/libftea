@@ -29,7 +29,7 @@ const ProfilePage = () => {
 					</div>
 					<h2 className="display-name">{user.profile.displayName || user.username}</h2>
 					<div className="stats">
-						<span>Friends: 10</span>
+						<span>Friends: {user.friends?.length ?? 0}</span>
 						<span>Posts: 5</span>
 					</div>
 					<div className="bio">

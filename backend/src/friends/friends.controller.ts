@@ -37,4 +37,16 @@ export class FriendsController {
 		const userId = req.user.id;
 		return this.friendsService.getPendingRequests(userId);
 	}
+
+	@Delete('remove/:friendId')
+	async removeFriend(@Req() req: Request, @Param('friendId') friendId: string) {
+		const userId = req.user.id;
+		return this.friendsService.removeFriend(userId, Number(friendId));
+	}
+
+	@Delete('cancel/:addresseId')
+	async cancelRequest(@Req() req: Request, @Param('addresseId') addresseId: string) {
+		const requesterId = req.user.id;
+		return this.friendsService.cancelRequest(requesterId, Number(addresseId));
+	}
 }
