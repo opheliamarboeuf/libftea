@@ -1,11 +1,13 @@
 import { createPortal } from "react-dom";
 
+// Props definition for the confirmation dialog
 interface ConfirmDialogProps {
 	message: string;
 	onConfirm: () => void;
 	onCancel: () => void;
 }
 
+// Confirmation dialog component rendered using a React portal
 export function ConfirmDialog({ message, onConfirm, onCancel }: ConfirmDialogProps) {
 	return createPortal(
 		<div className="confirm-overlay">

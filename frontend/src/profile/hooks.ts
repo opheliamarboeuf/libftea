@@ -7,8 +7,10 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 export function useProfileEdit() {
+	// Get current user and setter from global context
 	const { user, setUser } = useUser();
 
+	// Form state initialized with existing user profile values
 	const [bio, setBio] = useState(user?.profile.bio ?? "");
 	const [displayName, setDisplayName] = useState(user?.profile.displayName ?? "");
 	const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -80,9 +82,11 @@ export function useProfileEdit() {
 		}
 
 		setIsLoading(true);
+		// Send update request to backend
 		try {
 			const data = await profileApi.updateProfile(bio, displayName, avatarFile, coverFile);
 
+			// Update user context with new profile data
 			setUser((prevUser) =>
 				prevUser
 					? {
@@ -99,6 +103,7 @@ export function useProfileEdit() {
 			);
 			return true;
 		} catch (error) {
+			// Handle API or network errors
 			if (error instanceof Error) {
 				setErrorMessage(error.message);
 			} else {
@@ -110,6 +115,7 @@ export function useProfileEdit() {
 		}
 	};
 
+	// Expose state and handlers to components
 	return {
 		bio,
 		setBio,

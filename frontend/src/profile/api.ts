@@ -1,7 +1,9 @@
 import { ProfileUpdateResponse } from "./types";
 
+// Base URL of the backend API
 const API_URL = "http://localhost:3000";
 
+// API object that handles all profile-related requests
 export const profileApi = {
 	async updateProfile(
 		bio: string,
@@ -9,12 +11,14 @@ export const profileApi = {
 		avatarFile: File | null,
 		coverFile: File | null
 	): Promise<ProfileUpdateResponse> {
+		// Create a FormData object to send text fields and optional files
 		const formData = new FormData();
 		formData.append("bio", bio);
 		formData.append("displayName", displayName);
 		if (avatarFile) formData.append("avatar", avatarFile);
 		if (coverFile) formData.append("cover", coverFile);
 
+		// Send the request to the backend with Authorization header
 		const res = await fetch(`${API_URL}/profile/edit`, {
 			method: "POST",
 			headers: {
@@ -23,8 +27,10 @@ export const profileApi = {
 			body: formData,
 		});
 
+		// Parse JSON response from the server
 		const data = await res.json();
 
+		// If the request failed, extract the error message and throw an error
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]

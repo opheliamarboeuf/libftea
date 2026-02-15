@@ -8,6 +8,7 @@ interface EditProfileModalProps {
 }
 
 export function EditProfileModal({ onClose }: EditProfileModalProps) {
+	// Custom hook that manages all profile editing logic and state
 	const {
 		bio,
 		setBio,
@@ -46,6 +47,7 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 		onClose();
 	};
 
+	// Save profile changes via API
 	const handleSave = async () => {
 		const success = await saveProfile();
 		if (success) {
