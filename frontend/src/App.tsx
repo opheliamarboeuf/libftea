@@ -9,6 +9,7 @@ import FriendsPage from "./pages/FriendsPage";
 import { Header } from './components/Header';
 import { LeftMenu } from './components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
+import { ModalProvider } from "./context/ModalContext";
 
 const App = () => {
 
@@ -55,33 +56,35 @@ const [loading, setLoading] = useState(true);
 
   return (
     <UserContext.Provider value={{ user, setUser, refreshUser: fetchUser }}>
+      <ModalProvider>
       <BrowserRouter>
-	  <Header />
-    <LeftMenu />
-        <Routes>
-          <Route 
-            path="/"
-            element={loading ? null : <Navigate to = {user ? "/feed" : "/login"} replace/>} />
-          <Route
-            path="/register"
-            element={<RegisterPage />} />
-        <Route
-            path = "/login"
-            element = {<LoginPage />} />
-          <Route
-            path = "/myprofile"
-            element = {loading ? null : user ? <MyProfilePage/> : <Navigate to = "/" replace />} />
-		  <Route
-			path="/friends"
-			element={loading ? null : user ? <FriendsPage/> : <Navigate to = "/" replace />} />
-        <Route
-            path = "/feed"
-            element = {loading ? null : user ? <FeedPage/> : <Navigate to = "/" replace />} />
-		<Route
-			path="/users/:id"
-			element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
-        </Routes>
-      </BrowserRouter>
+        <Header />
+        <LeftMenu />
+          <Routes>
+            <Route 
+              path="/"
+              element={loading ? null : <Navigate to = {user ? "/feed" : "/login"} replace/>} />
+            <Route
+              path="/register"
+              element={<RegisterPage />} />
+            <Route
+              path = "/login"
+              element = {<LoginPage />} />
+            <Route
+              path = "/myprofile"
+              element = {loading ? null : user ? <MyProfilePage/> : <Navigate to = "/" replace />} />
+            <Route
+              path="/friends"
+              element={loading ? null : user ? <FriendsPage/> : <Navigate to = "/" replace />} />
+            <Route
+              path = "/feed"
+              element = {loading ? null : user ? <FeedPage/> : <Navigate to = "/" replace />} />
+            <Route
+              path="/users/:id"
+              element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
+          </Routes>
+        </BrowserRouter>
+        </ModalProvider>
     </UserContext.Provider>
   );
 };

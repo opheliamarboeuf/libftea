@@ -1,5 +1,6 @@
 import { friendsApi } from "./api";
 import { useUser } from "../context/UserContext";
+import { useModal } from "../context/ModalContext";
 
 interface Props {
 	userId: number;
@@ -7,16 +8,17 @@ interface Props {
 
 export function AddFriendButton({ userId }: Props) {
 	const { refreshUser } = useUser();
-
+	const { showModal } = useModal();
+	
 	const handleClick = async () => {
 		try {
 			await friendsApi.sendFriendRequest(userId);
 			await refreshUser();
-			alert('Friend request sent');
+			showModal("Friend request sent");
 		} catch (error) {
 			console.error('Error:', error);
-			alert('Erreur lors de l\'envoi de la demande');
+			showModal("Error sending the request");
 		}
 	}
-	return <button onClick={handleClick}>Ajouter en ami</button>;
+	return <button onClick={handleClick}>Add Friend</button>;
 }
