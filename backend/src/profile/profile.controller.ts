@@ -7,7 +7,6 @@ import { ProfileService } from './profile.service';
 import { EditDto } from './dto/edit.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ImageResizeService } from './image-resize.service';
-import { NestExpressApplication } from '@nestjs/platform-express';
 
 
 @Controller('profile')
