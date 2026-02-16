@@ -57,7 +57,15 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /generated/prisma
 
-# Uploaded files
+# Ignore everything in uploads
 uploads/*
+# Except these subfolders
 !uploads/avatar/
 !uploads/cover/
+# Ignore all files inside these subfolders
+uploads/avatar/*
+uploads/cover/*
+
+# Placeholder file so Git tracks the folders
+!uploads/avatar/.gitkeep
+!uploads/cover/.gitkeep
