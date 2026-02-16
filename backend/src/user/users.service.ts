@@ -23,6 +23,7 @@ export class UsersService {
 						avatarUrl: true,
 						bio: true,
 						coverUrl: true,
+						displayName: true,
 					},
 				},
 			},
@@ -43,12 +44,24 @@ export class UsersService {
 						avatarUrl: true,
 						coverUrl: true,
 						bio: true,
+						displayName: true,
 					}
 				}
 			},
 		});
 
 		if (!user) return null;
+
+		// Count friends (accepted friendships)
+		const friendsCount = await this.prisma.friendship.count({
+			where: {
+				status: 'ACCEPTED',
+				OR: [
+					{ requesterId: id },
+					{ addresseId: id },
+				],
+			},
+		});
 
 		// Check friendship status with current user
 		const friendship = await this.prisma.friendship.findFirst({
@@ -73,6 +86,7 @@ export class UsersService {
 
 		return {
 			...user,
+			friendsCount,
 			friendshipStatus,
 		};
 	}

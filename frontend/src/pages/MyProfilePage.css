@@ -43,6 +43,41 @@
   	display: block;
 }
 
+.profile-actions {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	display: flex;
+	gap: 0.5rem;
+  	z-index: 5;
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.profile-action-btn {
+	/* position: absolute; */
+	bottom: 10px;
+	right: 10px;
+	padding: 0.4rem 0.8rem;
+	font-size: 0.8rem;
+	background-color: rgba(80, 80, 80, 0.302);
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	opacity: 0.9;
+	transition: opacity 0.2s ease;
+	z-index: 5;
+}
+
+.profile-action-btn:hover {
+	background-color: rgba(107, 107, 107, 0.302);
+	opacity: 1;
+}
+
+
 /* Main content */
 .main-content {
   display: flex;
@@ -63,7 +98,16 @@
 }
 
 .profile-info .display-name {
-  margin: 1rem 0 0.5rem 0;
+  width: 100%;
+  font-weight: bold;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-info .display-username {
+  font-weight: bold;
 }
 
 .profile-info .stats {
@@ -81,6 +125,9 @@
 	white-space: pre-line;
 }
 
+.block-user {
+	margin-top: 0.5rem;
+}
 .cover-and-posts .posts {
   flex: 1;
   background-color: #dacbb5;

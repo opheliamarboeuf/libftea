@@ -17,6 +17,9 @@ const ProfilePage = () => {
 			<div className="main-content">
 				{/* PROFILE INFO COLUMN */}
 				<div className="profile-info">
+					<p className="display-name">
+						{user.profile.displayName ? user.profile.displayName : '\u00A0'} {/*space to keep the height*/}
+					</p>
 					<div className="profile-pic">
 						<img
 							src={
@@ -27,7 +30,7 @@ const ProfilePage = () => {
 							alt="Profile Avatar"
 						/>
 					</div>
-					<h2 className="display-name">{user.profile.displayName || user.username}</h2>
+					<p className="display-username">{user.username}</p>
 					<div className="stats">
 						<span>Friends: {user.friends?.length ?? 0}</span>
 						<span>Posts: 5</span>

@@ -4,19 +4,22 @@ html, body {
 }
 
 /* Buttons */
-.regular-button {
-	padding: 0.5rem 1rem;
+.regular-btn {
+	padding: 0.4rem 0.8rem;
+	font-size: 0.85rem;
+	background-color: rgba(0, 0, 0, 0.661);
+	color: white;
 	border: none;
-	background-color: #1d1c1cea;
-	border-radius: 10px;
+	border-radius: 6px;
 	cursor: pointer;
-	flex-shrink: 0;
-	transition: background-color 0.2s;
+	transition: 0.2s ease;
+	z-index: 5;
 }
 
-.regular-button:hover {
-	background-color: #5c5c5c;
+.regular-btn:hover {
+	background-color: rgba(107, 107, 107, 0.576);
 }
+
 
 /* Form */
 form {
