@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { friendsApi } from "../friends/api";
-import "./MyProfilePage.css"
+import { useModal } from "../context/ModalContext";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -30,6 +30,7 @@ const UserProfilePage = () => {
 	const [loading, setLoading] = useState(false);
 	const { user, refreshUser } = useUser();
 	const navigate = useNavigate();
+	const { showModal } = useModal();
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
@@ -62,9 +63,10 @@ const UserProfilePage = () => {
 			await friendsApi.sendFriendRequest(userData.id);
 			await refreshUser();
 			await fetchProfile();
+			showModal("Friend request sent");
 		} catch (error) {
 			console.error('Error:', error);
-			alert('Erreur lors de l\'envoi de la demande');
+			showModal("Error sending the request");
 		} finally {
 			setLoading(false);
 		}
@@ -77,9 +79,10 @@ const UserProfilePage = () => {
 			await friendsApi.cancelRequest(userData.id);
 			await refreshUser();
 			await fetchProfile();
+			showModal("Friend request canceled");
 		} catch (error) {
 			console.error('Error:', error);
-			alert('Erreur lors de l\'annulation');
+			showModal("Error canceling the request"); 
 		} finally {
 			setLoading(false);
 		}
@@ -92,9 +95,10 @@ const UserProfilePage = () => {
 			await friendsApi.acceptFriendRequest(userData.id);
 			await refreshUser();
 			await fetchProfile();
+			showModal("Friend request accepted");
 		} catch (error) {
 			console.error('Error:', error);
-			alert('Erreur lors de l\'acceptation');
+			showModal("Error accepting the requuest");
 		} finally {
 			setLoading(false);
 		}
@@ -107,9 +111,10 @@ const UserProfilePage = () => {
 			await friendsApi.rejectFriendRequest(userData.id);
 			await refreshUser();
 			await fetchProfile();
+			showModal("Friend request rejected");
 		} catch (error) {
 			console.error('Error:', error);
-			alert('Erreur lors du refus');
+			showModal("Error rejeting the request");
 		} finally {
 			setLoading(false);
 		}
@@ -122,9 +127,10 @@ const UserProfilePage = () => {
 			await friendsApi.removeFriend(userData.id);
 			await refreshUser();
 			await fetchProfile();
+			showModal("Friend removed");
 		} catch (error) {
 			console.error('Error:', error);
-			alert('Erreur lors de la suppression');
+			showModal("Error removing friend")
 		} finally {
 			setLoading(false);
 		}

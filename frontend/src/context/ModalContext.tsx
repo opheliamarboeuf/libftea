@@ -18,14 +18,14 @@ export function ModalProvider({ children }: { children: ReactNode }) {
 
   return (
     <ModalContext.Provider value={{ showModal, hideModal }}>
-	{/* Render all the components that are wrapped by this provider */}
+  {/* Render all the components that are wrapped by this provider */}
       {children}
       {message && (
         <div className="modal-overlay" onClick={hideModal}>
-		{/* Modal content box; stop clicks from closing the modal */}
+    {/* Modal content box; stop clicks from closing the modal */}
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <p>{message}</p>
-            <button onClick={hideModal}>Close</button>
+            <button className="modal-btn" onClick={hideModal}>Close</button>
           </div>
         </div>
       )}

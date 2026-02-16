@@ -73,15 +73,17 @@ form {
 }
 
 .modal-content {
-	background-color: #000000c9;
+	background-color: #000000a1;
 	color: white;
-	padding: 2rem;
+	padding: 1rem;
 	border-radius: 8px;
-	width: 400px;
+	width: 200px;
 	max-width: 90%;
 	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
+	text-align: center;
+	justify-content: center;
 	gap: 10px;
 	overflow-y: auto; 
 }
@@ -105,6 +107,10 @@ form {
 	padding: 0.35rem 0.75rem;
 	font-size: 0.85rem;
 	border-radius: 6px;
+	width: 70px;
+	cursor: pointer;
+	align-self: center;
+	background-color: #00000070;
 }
 
 .confirm-overlay {

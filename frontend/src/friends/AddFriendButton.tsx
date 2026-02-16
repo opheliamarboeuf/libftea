@@ -17,7 +17,7 @@ export function AddFriendButton({ userId }: Props) {
 			showModal("Friend request sent");
 		} catch (error) {
 			console.error('Error:', error);
-			showModal("Error sending the request");
+			showModal("Failed to send friend request");
 		}
 	}
 	return <button onClick={handleClick}>Add Friend</button>;

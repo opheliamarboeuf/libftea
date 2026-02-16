@@ -66,7 +66,7 @@ const LoginPage = () => {
 		<div className="login-page">
 			<div className="login-left">
 				<div className="bg-image kenburns-bottom-right"></div>
-				<h1 className="app-title text-focus-in ">WebApp</h1>
+				<h1 className="app-title text-focus-in ">Libftea</h1>
 				<p className="app-subtitle">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis p</p>
 			</div>
 			<div className="login-right">

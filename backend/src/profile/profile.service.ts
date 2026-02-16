@@ -47,6 +47,9 @@ export class ProfileService {
 	async deleteOldImage(imageUrl: string): Promise<void> {
 		if (!imageUrl)
 			return;
+		// Ignore default images
+    	if (imageUrl.startsWith('/assets/default/'))
+			return;
 		const relativePath = imageUrl.startsWith('/')
     	? imageUrl.slice(1)
     	: imageUrl;

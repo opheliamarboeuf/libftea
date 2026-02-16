@@ -1,20 +1,23 @@
 import { useState } from "react";
 import { friendsApi } from "./api";
 import { usePendingRequests } from "./hooks";
+import { useModal
 
+ } from "../context/ModalContext";
 export function PendingRequests() {
 	const { pending, refetch } = usePendingRequests();
 	const [ loading, setLoading ] = useState(false);
+	const { showModal } = useModal();
 
 	const handleAccept = async (userId: number) => {
 		setLoading(true);
 		try {
 			await friendsApi.acceptFriendRequest(userId);
-			alert('Demande acceptée!');
+			showModal("Friend request accepted");
 			await refetch();
 		} catch (error) {
-			console.error('Error:', error);
-			alert('Erreur');
+			console.error('Failed to process request', error);
+			showModal("Failed to process request");
 		} finally {
 			setLoading(false);
 		}
@@ -24,11 +27,11 @@ export function PendingRequests() {
 		setLoading(true);
 		try {
 			await friendsApi.rejectFriendRequest(userId);
-			alert('Demande refusée!');
+			showModal("Friend request rejected");
 			await refetch();
 		} catch (error) {
-			console.error('Error:', error);
-			alert('Erreur');
+			console.error('Failed to process request:', error);
+			showModal("Failed to process request");
 		} finally {
 			setLoading(false);
 		}
@@ -36,18 +39,18 @@ export function PendingRequests() {
 
 	return (
 		<div>
-			<h3>Demandes d'amis</h3>
-			{pending.length === 0 && <p>Aucune demande en attente</p>}
+			<h3>Friend Requests</h3>
+			{pending.length === 0 && <p>No pending requests</p>}
 			{pending.map(user => (
 				<div key={user.id}>
 					<span>{user.username}</span>
 
 					<button onClick={() => handleAccept(user.id)} disabled={loading}>
-						Accepter
+						Accept
 					</button>
 
 					<button onClick={() => handleReject(user.id)} disabled={loading}>
-						Refuser
+						Reject
 					</button>
 				</div>
 			))}

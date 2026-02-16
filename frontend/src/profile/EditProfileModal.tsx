@@ -60,7 +60,7 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 			{createPortal(
 				<div className="modal-overlay" onClick={handleCancel}>
 					<div
-						className={`modal-content ${fadeOut ? "fade-out" : "fade-in"}`}
+						className={`modal-content-profile ${fadeOut ? "fade-out" : "fade-in"}`}
 						onClick={(e) => e.stopPropagation()}
 					>
 						<h2>Edit Profile</h2>
