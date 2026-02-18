@@ -1,6 +1,6 @@
 import { IsString, IsOptional, MaxLength, IsNotEmpty } from "class-validator";
 
-export class PostDto {
+export class PostsDto {
 @IsString()
 @IsNotEmpty()
 @MaxLength(120)
