@@ -7,6 +7,14 @@ export type Friend = {
 	avatarUrl: string | null;
 };
 
+// Type for post data
+export type Post = {
+	id: number;
+	title: string;
+	caption?: string;
+	createdAt: string;
+};
+
 // Defines the shape of a user object
 export type User = {
 	id: number;
@@ -22,6 +30,7 @@ export type User = {
 	};
 	friends: Friend[];
 	pendingRequests: Friend[];
+	posts: Post[];
 };
 // Defines the shape of the context, meaning the fields the context must contain
 interface UserContextType {

@@ -19,4 +19,10 @@ export class UsersController {
 	async getUserId(@Param('id') id: string, @Req() req: Request) {
 		return this.usersService.findId(Number(id), req.user.id);
 	}
+
+	@Get('posts')
+	async getUserPosts(){
+		return this.usersService.getUserPosts();
+	}
+
 }
