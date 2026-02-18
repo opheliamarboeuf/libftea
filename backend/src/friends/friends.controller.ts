@@ -49,4 +49,10 @@ export class FriendsController {
 		const requesterId = req.user.id;
 		return this.friendsService.cancelRequest(requesterId, Number(addresseId));
 	}
+
+	@Delete('block/:friendId')
+	async blockFriend(@Req() req: Request, @Param('friendId') friendId: string) {
+		const userId = req.user.id;
+		return this.friendsService.blockFriend(userId, Number(friendId));
+	}
 }

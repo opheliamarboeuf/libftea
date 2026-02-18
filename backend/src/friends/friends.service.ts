@@ -22,8 +22,6 @@ export class FriendsService {
 			where: { id: addresseId },
 		});
 
-		console.log('Friend found:', friend);
-
 		if (!friend) {
 			throw new NotFoundException('User not found');
 		}
@@ -34,6 +32,7 @@ export class FriendsService {
 					{ requesterId, addresseId },
 					{ requesterId: addresseId, addresseId: requesterId },
 				],
+				NOT: { status: 'BLOCKED'},
 			},
 		});
 
@@ -49,8 +48,6 @@ export class FriendsService {
 				addresseId,
 			},
 		});
-
-		console.log('Friendship created:', created);
 
 		return created;
 	}
@@ -192,6 +189,27 @@ export class FriendsService {
 
 		await this.prisma.friendship.delete({
 			where: { id: friendship.id },
+		});
+	}
+
+	async blockFriend(userId: number, friendId: number): Promise<void> {
+		const friendship = await this.prisma.friendship.findFirst({
+			where: {
+				status: 'ACCEPTED',
+				OR: [
+					{ requesterId: userId, addresseId: friendId },
+					{ requesterId: friendId, addresseId: userId },
+				],
+			},
+		});
+
+		if (!friendship) {
+			throw new BadRequestException('Friendship does not exist');
+		}
+
+		await this.prisma.friendship.update({
+			where: { id: friendship.id },
+			data: { status: 'BLOCKED' },
 		});
 	}
 }
