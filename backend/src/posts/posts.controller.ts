@@ -5,13 +5,13 @@ import { PostsService } from './posts.service';
 import { PostsDto } from './dto/create.dto';
 
 @Controller('posts')
+@UseGuards(JwtAuthGuard)
 export class PostsController {
 	constructor(
 		private readonly postService: PostsService,
 		/*private readonly imageResizeService: ImageResizeService, */
 	 ) {}
 
-	@UseGuards(JwtAuthGuard)
 	@Post('create')
 		async create(
 			// @UploadedFiles() files: Express.Multer.File[],
