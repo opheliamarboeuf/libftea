@@ -44,7 +44,7 @@ useEffect(() => { fetchUsersPosts(); }, []);
 			<h3>{post.title}</h3>
 			{post.caption && <p>{post.caption}</p>}
 			<p style={{ fontSize: '0.8em', color: '#666' }}>
-				Créé le {post.createdAt ? new Date(post.createdAt).toLocaleString() : 'date inconnue'}
+				Créé le {post.createdAt ? new Date(post.createdAt).toLocaleString() : 'date inconnue'} par {post.authorId}
 			</p>
 			</div>
 		))}
@@ -70,7 +70,7 @@ export default FeedPage;
 // 	// Création d'un post
 // 	const createPost = async () => {
 // 		const profile = {
-// 			title: "Ceci est un titreeeeeee",
+// 			title: "Ceci est un titre",
 // 			caption: "Ceci est une caption",
 // 		};
 
