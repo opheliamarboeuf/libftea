@@ -15,14 +15,14 @@ export class UsersController {
 		return this.usersService.searchUsername(username);
 	}
 
-	@Get(':id')
-	async getUserId(@Param('id') id: string, @Req() req: Request) {
-		return this.usersService.findId(Number(id), req.user.id);
-	}
-
 	@Get('posts')
 	async getUserPosts(){
 		return this.usersService.getUserPosts();
+	}
+
+	@Get(':id')
+	async getUserId(@Param('id') id: string, @Req() req: Request) {
+		return this.usersService.findId(Number(id), req.user.id);
 	}
 
 }
