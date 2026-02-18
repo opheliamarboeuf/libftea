@@ -42,7 +42,15 @@ export function PendingRequests() {
 			<h3>Friend Requests</h3>
 			{pending.length === 0 && <p>No pending requests</p>}
 			{pending.map(user => (
-				<div key={user.id}>
+				<div 
+					key={user.id}
+					style={{
+					display: "flex",
+					alignItems: "center",
+					gap: "20px",
+					marginBottom: "8px",
+					}}
+				>
 					<span>{user.username}</span>
 
 					<button onClick={() => handleAccept(user.id)} disabled={loading}>

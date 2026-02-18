@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { friendsApi } from "../friends/api";
 import { useModal } from "../context/ModalContext";
+import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -31,6 +32,8 @@ const UserProfilePage = () => {
 	const { user, refreshUser } = useUser();
 	const navigate = useNavigate();
 	const { showModal } = useModal();
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState();
+	const [showBlockConfirm, setShowBlockConfirm] = useState();
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
@@ -133,8 +136,24 @@ const UserProfilePage = () => {
 			showModal("Error removing friend")
 		} finally {
 			setLoading(false);
+			setShowDeleteConfirm(false);
 		}
 	};
+
+	const handleBlock = async () => {
+        try {
+            await friendsApi.blockFriend(userData.id);
+            await refreshUser();
+			await fetchProfile();
+            showModal("Friend blocked");
+        } catch (error) {
+            console.error('Error:', error);
+            showModal("Failed to block friend");
+        } finally {
+            setLoading(false);
+            setShowBlockConfirm(false);
+        }
+    }
 
 	const renderFriendshipButton = () => {
 		if (!userData) return null;
@@ -169,9 +188,16 @@ const UserProfilePage = () => {
 					<button className="profile-action-btn" onClick={() => navigate("/chat")} disabled={loading}>
 						Send Message
 					</button>
-					<button className="profile-action-btn" onClick={handleRemoveFriend} disabled={loading}>
-						Remove Friend
+					<button className="profile-action-btn" onClick={() => setShowDeleteConfirm(true)} disabled={loading}>
+						Delete friend
 					</button>
+					{showDeleteConfirm && (
+									<ConfirmBlockDelete
+										message="Are you sure you want to delete this friend from your friendlist?"
+										onYes={handleRemoveFriend}
+										onNo={() => setShowDeleteConfirm(false)}
+									/>
+					)}
 					</div>
 				);
 			case 'BLOCKED':
@@ -210,12 +236,22 @@ const UserProfilePage = () => {
 						<span>Posts: 5</span>
 					</div>
 					<div className="block-user">
-						<button className="regular-btn" >Block User</button> 
+						<button onClick={() => setShowBlockConfirm(true)} disabled={loading}>
+							Block user
+						</button>
+						{showBlockConfirm && (
+							<ConfirmBlockDelete
+								message="Are you sure you want to block this user?"
+								onYes={handleBlock}
+								onNo={() => setShowBlockConfirm(false)}
+							/>
+						)}
 					</div>
+
 					<div className="bio">
 						<p>{userData.profile?.bio || "Write your bio here..."}</p>
 					</div>
-				</div>
+					</div>
 
 				{/* COVER, USER INTERACTIONS AND POSTS*/}
 				<div className="cover-and-posts">

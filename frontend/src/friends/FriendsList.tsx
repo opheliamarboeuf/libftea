@@ -1,6 +1,7 @@
 import { useFriends } from "./hooks";
 import { BlockFriendButton } from "./BlockFriendButton";
 import { RemoveFriendButton } from "./RemoveFriendButton";
+import { Link } from "react-router-dom"
 
 export function FriendsList() {
 	const { friends } = useFriends();
@@ -15,11 +16,16 @@ export function FriendsList() {
 				style={{
 					display: "flex",
 					alignItems: "center",
-					gap: "10px",
+					gap: "20px",
 					marginBottom: "8px",
 				}}
 				>
-				<span>{friend.username}</span>
+				<Link
+					to={`/users/${friend.id}`}
+					style={{ textDecoration: "none", color: "inherit" }}
+				>
+					{friend.username}
+				</Link>
 
 				{
 					<>
