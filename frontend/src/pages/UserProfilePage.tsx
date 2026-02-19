@@ -5,6 +5,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { friendsApi } from "../friends/api";
 import { useModal } from "../context/ModalContext";
+import { Post } from "../context/UserContext";
+import { postsApi } from "../posts/api";
+import { UserPostsList } from "../posts/components/userPostsList";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -25,12 +28,13 @@ interface UserProfile {
 }
 
 const UserProfilePage = () => {
+	const { user, refreshUser } = useUser();
+	const { showModal } = useModal();
 	const { id} = useParams<{ id: string }>();
 	const [userData, setUserData] = useState<UserProfile | null>(null);
 	const [loading, setLoading] = useState(false);
-	const { user, refreshUser } = useUser();
+	const [posts, setPosts] = useState<Post[]>([]);
 	const navigate = useNavigate();
-	const { showModal } = useModal();
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
@@ -46,8 +50,16 @@ const UserProfilePage = () => {
 		}
 	};
 
+	const loadPosts = async () => {
+		if (!id)
+			return ;
+		const data = await postsApi.fetchUserPosts(Number(id));
+		setPosts(data);
+	}
+
 	useEffect(() => {
 		fetchProfile();
+		loadPosts();
 	}, [id]);
 
 	useEffect(() => {
@@ -192,7 +204,7 @@ const UserProfilePage = () => {
 				{/* PROFILE INFO COLUMN */}
 				<div className="profile-info">
 					<p className="display-name">
-						{userData.profile?.displayName ? user.profile.displayName : '\u00A0'} {/*space to keep the height*/}
+						{userData.profile?.displayName ? userData.profile.displayName : '\u00A0'} {/*space to keep the height*/}
 					</p>
 					<div className="profile-pic">
 						<img
@@ -233,9 +245,7 @@ const UserProfilePage = () => {
 							</div>
 					</div>
 					<div className="posts">
-						<p>Post 1</p>
-						<p>Post 2</p>
-						<p>Post 3</p>
+						<UserPostsList posts={posts} />
 					</div>
 				</div>
 			</div>
