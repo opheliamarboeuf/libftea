@@ -2,15 +2,29 @@ import "../App.css";
 import "./MyProfilePage.css";
 import { Navigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EditProfileModal, API_URL } from "../profile";
+import { CreatePostButton } from "../posts/components/createPostButton";
+import { Post } from "../context/UserContext";
+import { fetchUserPosts } from "../posts/components/fetchUserPosts";
+import { UserPostsList } from "../posts/components/userPostsList";
 
 const ProfilePage = () => {
 	const { user } = useUser();
 	const [showModal, setShowModal] = useState(false);
+	const [posts, setPosts] = useState<Post[]>([]);
 
 	if (!user) return <Navigate to="/" replace />;
 
+	const loadPosts = async () => {
+		const data =  await fetchUserPosts(user.id);
+		setPosts(data);
+	}
+
+	useEffect(() => {
+		loadPosts();
+	}, []);
+	
 	return (
 		<div className="profile-page">
 			{/* MAIN CONTENT */}
@@ -56,9 +70,8 @@ const ProfilePage = () => {
 						</button>
 					</div>
 					<div className="posts">
-						<p>Post 1</p>
-						<p>Post 2</p>
-						<p>Post 3</p>
+						<CreatePostButton onPostCreated={loadPosts}/>
+						<UserPostsList posts = {posts} />
 					</div>
 				</div>
 			</div>

@@ -16,8 +16,8 @@ export class UsersController {
 	}
 
 	@Get('posts')
-	async getUserPosts(){
-		return this.usersService.getUserPosts();
+	async getAllUserPosts(){
+		return this.usersService.getAllUserPosts();
 	}
 
 	@Get(':id')
@@ -25,4 +25,8 @@ export class UsersController {
 		return this.usersService.findId(Number(id), req.user.id);
 	}
 
+	@Get(':id/posts')
+	async getUserPosts(@Param('id') id: string){
+		return this.usersService.getUserPosts(Number(id));
+	}
 }
