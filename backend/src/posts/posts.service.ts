@@ -26,19 +26,24 @@ export class PostsService {
 			throw new InternalServerErrorException("Could not create post");
 		}
 	}
-	async getUserPosts(userId: number) {
-		try {
-			const postsData = await this.prisma.post.findMany({
-				where: {authorId: userId},
-				orderBy: { createdAt: 'desc'}
-			});
-			if (!postsData)
-				throw new NotFoundException("Posts not found");
-			return (postsData);
-		}
-		catch (error){
-			console.log("Error getting user's posts:", error);
-			throw new InternalServerErrorException("Could not get user's posts");
-		}
-		}
-	}
+	async getUserPosts(id: number) {
+		const userPosts = await this.prisma.post.findMany({
+			where: { authorId: id },
+			select: {
+				id: true,
+				authorId: true,
+				title: true, 
+				caption: true,
+				createdAt: true,
+				author: {
+					select: {
+						id: true, 
+						username: true,
+					}
+				}
+			},
+			orderBy: {createdAt: 'desc'}
+		})
+		return (userPosts)
+	};
+}

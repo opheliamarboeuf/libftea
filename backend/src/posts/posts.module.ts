@@ -7,6 +7,7 @@ import { AuthModule } from "src/auth/auth.module";
 	imports: [AuthModule],
 	controllers: [PostsController],
 	providers: [PostsService],
+	exports: [PostsService],
 })
 
 export class PostsModule {}
