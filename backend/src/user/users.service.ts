@@ -99,21 +99,12 @@ export class UsersService {
 				title: true, 
 				caption: true,
 				createdAt: true,
-			},
-			orderBy: {createdAt: 'desc'}
-		})
-		return (userPosts)
-	};
-
-	async getUserPosts(id: number) {
-		const userPosts = await this.prisma.post.findMany({
-			where: { authorId: id },
-			select: {
-				id: true,
-				authorId: true,
-				title: true, 
-				caption: true,
-				createdAt: true,
+				author: {
+					select: {
+						id: true, 
+						username: true,
+					}
+				}
 			},
 			orderBy: {createdAt: 'desc'}
 		})

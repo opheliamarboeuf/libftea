@@ -13,6 +13,10 @@ export type Post = {
 	title: string;
 	caption?: string;
 	createdAt: string;
+	author: {
+		id: number;
+		username: string;
+	};
 };
 
 // Defines the shape of a user object

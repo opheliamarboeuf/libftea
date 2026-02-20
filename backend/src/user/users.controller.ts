@@ -2,12 +2,14 @@ import { Controller, Get, Query, Param, UseGuards, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request } from 'express';
+import { PostsService } from 'src/posts/posts.service';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
 	constructor(
-		private readonly usersService: UsersService
+		private readonly usersService: UsersService,
+		private readonly postService: PostsService
 	) {}
 
 	@Get('search')
@@ -27,6 +29,6 @@ export class UsersController {
 
 	@Get(':id/posts')
 	async getUserPosts(@Param('id') id: string){
-		return this.usersService.getUserPosts(Number(id));
+		return this.postService.getUserPosts(Number(id));
 	}
 }
