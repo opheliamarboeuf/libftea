@@ -4,14 +4,15 @@ import { Navigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { useEffect, useState } from "react";
 import { EditProfileModal, API_URL } from "../profile";
-import { CreatePostButton } from "../posts/components/createPostButton";
+import { CreatePostModal } from "../posts/CreatePostModal";
 import { Post } from "../context/UserContext";
 import { fetchUserPosts } from "../posts/components/fetchUserPosts";
 import { UserPostsList } from "../posts/components/userPostsList";
 
 const ProfilePage = () => {
 	const { user } = useUser();
-	const [showModal, setShowModal] = useState(false);
+	const [showEditModal, setShowEditModal] = useState(false);
+	const [showPostModal, setShowPostModal] = useState(false);
 	const [posts, setPosts] = useState<Post[]>([]);
 
 	if (!user) return <Navigate to="/" replace />;
@@ -65,18 +66,20 @@ const ProfilePage = () => {
 							}
 							alt="Cover"
 						/>
-						<button className="edit-profile-btn" onClick={() => setShowModal(true)}>
+						<button className="edit-profile-btn" onClick={() => setShowEditModal(true)}>
 							Edit Profile
 						</button>
 					</div>
 					<div className="posts">
-						<CreatePostButton onPostCreated={loadPosts}/>
+						<button className="regular-btn" onClick={() => setShowPostModal(true)}>
+						Post an outfit
+						</button>
 						<UserPostsList posts = {posts} />
 					</div>
 				</div>
 			</div>
-
-			{showModal && <EditProfileModal onClose={() => setShowModal(false)} />}
+			{showEditModal && <EditProfileModal onClose={() => setShowEditModal(false)} />}
+			{showPostModal && <CreatePostModal onPostCreated={loadPosts} onClose={() => setShowPostModal(false)} />}
 		</div>
 	);
 };

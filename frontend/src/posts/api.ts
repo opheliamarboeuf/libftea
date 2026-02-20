@@ -1,25 +1,20 @@
 import { Post } from '../context/UserContext';
+import { PostPayload } from './types';
 
 const API_URL = "http://localhost:3000";
 
 export const postsApi = {
 
 	createPost: async (
-		// title: string,
-		// caption?: string,
+		payload: PostPayload
 	): Promise<Post> => {
-		const postPayload = {
-			title: "Ceci est un titre",
-			caption: "Ceci est une caption",
-		};
-
 		const res = await fetch(`${API_URL}/posts/create`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${localStorage.getItem("token")}`,
 			},
-			body: JSON.stringify(postPayload),
+			body: JSON.stringify(payload),
 		});
 		const data = await res.json();
 		if (!res.ok) {
