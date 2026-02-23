@@ -3,6 +3,7 @@ import "./MyProfilePage.css";
 import { Navigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { EditProfileModal, API_URL } from "../profile";
 import { CreatePostModal } from "../posts/components/CreatePostModal";
 import { Post } from "../context/UserContext";
@@ -14,8 +15,21 @@ const ProfilePage = () => {
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showPostModal, setShowPostModal] = useState(false);
 	const [posts, setPosts] = useState<Post[]>([]);
+	const [showEditModal, setShowEditModal] = useState(false);
+	const [showPostModal, setShowPostModal] = useState(false);
+	const [posts, setPosts] = useState<Post[]>([]);
 
 	if (!user) return <Navigate to="/" replace />;
+
+	const loadPosts = async () => {
+		const data =  await fetchUserPosts(user.id);
+		setPosts(data);
+	}
+
+	useEffect(() => {
+		loadPosts();
+	}, []);
+	
 
 	const loadPosts = async () => {
 		const data =  await fetchUserPosts(user.id);
@@ -67,6 +81,7 @@ const ProfilePage = () => {
 							alt="Cover"
 						/>
 						<button className="edit-profile-btn" onClick={() => setShowEditModal(true)}>
+						<button className="edit-profile-btn" onClick={() => setShowEditModal(true)}>
 							Edit Profile
 						</button>
 					</div>
@@ -75,9 +90,15 @@ const ProfilePage = () => {
 						Post an outfit
 						</button>
 						<UserPostsList posts = {posts} />
+						<button className="regular-btn" onClick={() => setShowPostModal(true)}>
+						Post an outfit
+						</button>
+						<UserPostsList posts = {posts} />
 					</div>
 				</div>
 			</div>
+			{showEditModal && <EditProfileModal onClose={() => setShowEditModal(false)} />}
+			{showPostModal && <CreatePostModal onPostCreated={loadPosts} onClose={() => setShowPostModal(false)} />}
 			{showEditModal && <EditProfileModal onClose={() => setShowEditModal(false)} />}
 			{showPostModal && <CreatePostModal onPostCreated={loadPosts} onClose={() => setShowPostModal(false)} />}
 		</div>
