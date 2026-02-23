@@ -26,6 +26,7 @@
 }
 
 /* Modal */
+/* Edit Profile */
 .modal-content-profile {
 	background-color: #000000c9;
 	color: white;
@@ -40,7 +41,22 @@
 	overflow-y: auto; 
 }
 
-.modal-content-posts {
+.modal-content-profile form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: flex-start;
+}
+
+.modal-content-profile textarea,
+.modal-content-profile input {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+/* Create / Edit a Post */
+
+.modal-content-post {
 	background-color: #000000c9;
 	color: white;
 	padding: 2rem;
@@ -53,6 +69,20 @@
 	gap: 10px;
 	overflow-y: auto; 
 }
+
+.modal-content-post form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: flex-start;
+}
+
+.modal-content-post textarea,
+.modal-content-post input {
+	width: 100%;
+	box-sizing: border-box;
+}
+
 /* Cover and posts */
 .cover-and-posts {
 	flex: 1;
@@ -71,13 +101,11 @@
   	display: block;
 }
 
-.profile-actions {
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
+.modal-actions {
 	display: flex;
+	justify-content: flex-end;
 	gap: 0.5rem;
-  	z-index: 5;
+	width: 100%;
 }
 
 .btn-group {

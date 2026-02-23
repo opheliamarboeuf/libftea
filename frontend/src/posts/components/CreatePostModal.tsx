@@ -1,11 +1,10 @@
-import "../App.css";
-import { useState } from "react";
+import "../../App.css"
 import { createPortal } from "react-dom";
-import { useModalAnimation } from "../common/hooks/useModalAnimation";
-import { usePostCreation } from "./components/hooks/hooks";
-import { useBeforeUnload } from "../common/hooks/useBeforeUnload";
-import { ConfirmDialog } from "../common/components/ConfirmDialog";
-import { useUnsavedChangesGuard } from "../common/hooks/useUnsavedChangesGuard";
+import { useModalAnimation } from "../../common/hooks/useModalAnimation";
+import { usePostCreation } from "./hooks/hooks";
+import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
+import { ConfirmDialog } from "../../common/components/ConfirmDialog";
+import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
 
 interface CreatePostModalProps {
 	onPostCreated: () => void;
@@ -62,14 +61,13 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 		{createPortal(
 			<div className="modal-overlay" onClick={requestClose}>
 				<div 
-					className={`modal-content-posts ${fadeOut ? "fade-out" : "fade-in"}`}
+					className={`modal-content-post ${fadeOut ? "fade-out" : "fade-in"}`}
 					onClick={(e) => e.stopPropagation()}
 				>
 					<h2>Post an outfit</h2>
 					<form onSubmit={handleSubmit}>
 						<label>Title</label>
 						<textarea
-							placeholder="title"
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
 							className="create-post-input"
@@ -83,7 +81,6 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 						</div>
 						<label>Caption</label>
 						<textarea
-							placeholder="caption"
 							value={caption}
 							onChange={(e) => setCaption(e.target.value)}
 							rows={5}
@@ -101,7 +98,10 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 								{errorMessage}
 							</div>
 						)}
-						<button type="submit"> Submit </button>
+						<div className="modal-actions">
+							<button type="submit"  className="modal-btn"> Submit </button>
+							<button type="button" className="modal-btn" onClick={requestClose}> Cancel </button>
+						</div>
 					</form>
 				</div>
 			</div>,

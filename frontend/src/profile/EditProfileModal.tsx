@@ -23,6 +23,7 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 		hasChanges,
 		saveProfile,
 		MAX_BIO_LENGTH,
+		MAX_DISPLAYNAME_LENGTH,
 	} = useProfileEdit();
 
 	// Function that runs the closing animation and then calls onClose() after the specified duration
@@ -67,6 +68,13 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 							value={displayName}
 							onChange={(e) => setDisplayName(e.target.value)}
 						/>
+						<div
+							className={`char-counter ${
+								displayName.length > MAX_DISPLAYNAME_LENGTH ? "error" : ""
+							}`}
+						>
+							{displayName.length} / {MAX_DISPLAYNAME_LENGTH}
+						</div>
 						<label>Bio</label>
 						<textarea
 							value={bio}

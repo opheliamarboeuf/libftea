@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { useEffect, useState } from "react";
 import { EditProfileModal, API_URL } from "../profile";
-import { CreatePostModal } from "../posts/CreatePostModal";
+import { CreatePostModal } from "../posts/components/CreatePostModal";
 import { Post } from "../context/UserContext";
 import { fetchUserPosts } from "../posts/components/fetchUserPosts";
 import { UserPostsList } from "../posts/components/userPostsList";
