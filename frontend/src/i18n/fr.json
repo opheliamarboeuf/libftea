@@ -44,5 +44,13 @@
 		"friends": "Amis: ",
 		"posts": "Posts: 5",
 		"writebio": "Ecrivez votre bio ici..."
+	},
+
+	"loginpage": {
+		"login": "Connexion",
+		"username": "Nom d'utilisateur",
+		"password": "Mot de passe",
+		"noaccount": "Pas de compte ?",
+		"create": "Créer un compte"
 	}
 }
