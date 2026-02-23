@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { postsApi } from "./api";
 import { PostPayload } from "./types";
+import { createPortal } from "react-dom";
 
 interface CreatePostModalProps {
 	onPostCreated: () => void;
@@ -12,7 +13,17 @@ interface CreatePostModalProps {
 export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProps) {
 	const [ title, setTitle ] = useState("");
 	const [ caption, setCaption ] = useState("");
-	
+	const [showConfirm, setShowConfirm] = useState(false);
+	const [fadeOut, setFadeOut] = useState(false);
+
+	const closeWithAnimation = () => {
+		setFadeOut(true);
+		setTimeout(() => {
+			onClose();
+		}, 250);
+	};
+
+
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
 			// setErrorMessage(null);
