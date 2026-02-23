@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { friendsApi } from "./api";
 import { usePendingRequests } from "./hooks";
-import { useModal
+import { useModal } from "../context/ModalContext";
+import { Link } from "react-router-dom";
 
- } from "../context/ModalContext";
 export function PendingRequests() {
 	const { pending, refetch } = usePendingRequests();
 	const [ loading, setLoading ] = useState(false);
@@ -51,7 +51,12 @@ export function PendingRequests() {
 					marginBottom: "8px",
 					}}
 				>
-					<span>{user.username}</span>
+					<Link
+						to={`/users/${user.id}`}
+						style={{ textDecoration: "none", color: "inherit" }}
+					>
+						{user.username}
+					</Link>
 
 					<button onClick={() => handleAccept(user.id)} disabled={loading}>
 						Accept
