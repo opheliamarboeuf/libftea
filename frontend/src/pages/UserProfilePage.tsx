@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { friendsApi } from "../friends/api";
 import { useModal } from "../context/ModalContext";
+import { useTranslation } from 'react-i18next';
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -31,6 +32,7 @@ const UserProfilePage = () => {
 	const { user, refreshUser } = useUser();
 	const navigate = useNavigate();
 	const { showModal } = useModal();
+	const { t } = useTranslation();
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
@@ -63,10 +65,10 @@ const UserProfilePage = () => {
 			await friendsApi.sendFriendRequest(userData.id);
 			await refreshUser();
 			await fetchProfile();
-			showModal("Friend request sent");
+			showModal(t('friends.sent'));
 		} catch (error) {
 			console.error('Error:', error);
-			showModal("Error sending the request");
+			showModal(t('friends.sentfail'));
 		} finally {
 			setLoading(false);
 		}
@@ -79,10 +81,10 @@ const UserProfilePage = () => {
 			await friendsApi.cancelRequest(userData.id);
 			await refreshUser();
 			await fetchProfile();
-			showModal("Friend request canceled");
+			showModal(t('friends.canceled'));
 		} catch (error) {
 			console.error('Error:', error);
-			showModal("Error canceling the request"); 
+			showModal(t('friends.errorcancel')); 
 		} finally {
 			setLoading(false);
 		}
@@ -95,10 +97,10 @@ const UserProfilePage = () => {
 			await friendsApi.acceptFriendRequest(userData.id);
 			await refreshUser();
 			await fetchProfile();
-			showModal("Friend request accepted");
+			showModal(t('friends.accepted'));
 		} catch (error) {
 			console.error('Error:', error);
-			showModal("Error accepting the requuest");
+			showModal(t('friends.requestfail'));
 		} finally {
 			setLoading(false);
 		}
@@ -111,10 +113,10 @@ const UserProfilePage = () => {
 			await friendsApi.rejectFriendRequest(userData.id);
 			await refreshUser();
 			await fetchProfile();
-			showModal("Friend request rejected");
+			showModal(t('friends.rejected'));
 		} catch (error) {
 			console.error('Error:', error);
-			showModal("Error rejeting the request");
+			showModal(t('friends.requestfail'));
 		} finally {
 			setLoading(false);
 		}
@@ -127,10 +129,10 @@ const UserProfilePage = () => {
 			await friendsApi.removeFriend(userData.id);
 			await refreshUser();
 			await fetchProfile();
-			showModal("Friend removed");
+			showModal(t('friends.removed'));
 		} catch (error) {
 			console.error('Error:', error);
-			showModal("Error removing friend")
+			showModal(t('friends.requestfail'))
 		} finally {
 			setLoading(false);
 		}
@@ -143,23 +145,23 @@ const UserProfilePage = () => {
 			case 'NONE':
 				return (
 					<button className="profile-action-btn" onClick={handleAddFriend} disabled={loading}>
-						Add Friend
+						{t('friends.addfriend')}
 					</button>
 				);
 			case 'PENDING_SENT':
 				return (
 					<button className="profile-action-btn" onClick={handleCancelRequest} disabled={loading}>
-						Cancel Request
+						{t('friends.cancelrequest')}
 					</button>
 				);
 			case 'PENDING_RECEIVED':
 				return (
 					<div className="btn-group">
 						<button className="profile-action-btn" onClick={handleAccept} disabled={loading}>
-							Accept Friend Request
+							{t('friends.acceptrequest')}
 						</button>
 						<button className="profile-action-btn" onClick={handleReject} disabled={loading}>
-							Reject Friend Request
+							{t('friends.rejectrequest')}
 						</button>
 					</div>
 				);
@@ -167,22 +169,22 @@ const UserProfilePage = () => {
 				return (
 					<div className="btn-group">
 					<button className="profile-action-btn" onClick={() => navigate("/chat")} disabled={loading}>
-						Send Message
+						{t('userprofile.sendmessage')}
 					</button>
 					<button className="profile-action-btn" onClick={handleRemoveFriend} disabled={loading}>
-						Remove Friend
+						{t('friends.remove')}
 					</button>
 					</div>
 				);
 			case 'BLOCKED':
-				return <span>User Blocked</span>;
+				return <span>{t('friends.blocked')}</span>;
 			default:
 				return null;
 		}
 	};
 	
 	if (!userData) {
-		return <div>Loading...</div>;
+		return <div>{t('userprofile.loading')}</div>;
 	}
 
 	return (
@@ -206,14 +208,14 @@ const UserProfilePage = () => {
 					</div>
 					<p className="display-username">{userData.username}</p>
 					<div className="stats">
-						<span>Friends: {userData.friendsCount}</span>
-						<span>Posts: 5</span>
+						<span>{t('userprofile.friends')}{userData.friendsCount}</span>
+						<span>{t('userprofile.posts')}</span>
 					</div>
 					<div className="block-user">
-						<button className="regular-btn" >Block User</button> 
+						<button className="regular-btn" >{t('friends.block')}</button> 
 					</div>
 					<div className="bio">
-						<p>{userData.profile?.bio || "Write your bio here..."}</p>
+						<p>{userData.profile?.bio || t('userprofile.writebio') }</p>
 					</div>
 				</div>
 

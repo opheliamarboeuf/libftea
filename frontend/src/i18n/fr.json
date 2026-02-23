@@ -1,0 +1,48 @@
+{
+	"header": {
+		"profile": "Mon profil",
+		"settings": "Paramètres",
+		"logout": "Déconnexion"
+	},
+
+	"leftmenu": {
+		"feed": "Mur",
+		"profile": "Profil",
+		"friends": "Amis"
+	},
+
+	"searchbar": {
+		"search": "Rechercher..."
+	},
+
+	"friends": {
+		"addfriend": "Ajouter en ami",
+		"myfriends": "Mes amis",
+		"requests": "Mes demandes en ami",
+		"accept": "Accepter",
+		"reject": "Refuser",
+		"sent": "Demande en ami envoyée",
+		"sentfail": "Echec d'envoi de la demande en ami",
+		"accepted": "Demande en ami acceptée",
+		"rejected": "Demande en ami rejetée",
+		"requestfail": "Echec de la demande",
+		"nopending": "Pas de demande en ami",
+		"cancelrequest": "Annuler la demande en ami",
+		"canceled": "Demande annulée",
+		"errorcancel": "Echec d'annulation",
+		"remove": "Retirer ami",
+		"removed": "Utilisateur retiré de la liste d'amis",
+		"acceptrequest": "Accepter la demande en ami",
+		"rejectrequest": "Refuser la demande en ami",
+		"block": "Bloquer l'utilisateur",
+		"blocked": "Utilisateur bloqué"
+	},
+
+	"userprofile": {
+		"sendmessage": "Envoyer un message",
+		"loading": "Chargement...",
+		"friends": "Amis: ",
+		"posts": "Posts: 5",
+		"writebio": "Ecrivez votre bio ici..."
+	}
+}

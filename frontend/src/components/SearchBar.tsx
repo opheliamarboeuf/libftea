@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import "./SearchBar.css";
 
 const URL = 'http://localhost:3000/users';
@@ -16,6 +17,8 @@ export const SearchBar = () => {
 	const [showResults, setShowResults] = useState(false);
 	const searchRef = useRef<HTMLDivElement>(null);
 	const navigate = useNavigate();
+	//pour les langues
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		if (!query.trim()) {
@@ -64,7 +67,7 @@ export const SearchBar = () => {
 		<div className="search-container" ref={searchRef}>
 			<input
 				type="text"
-				placeholder="Search..."
+				placeholder={t('searchbar.search')}
 				value={query}
 				onChange={(e) => setQuery(e.target.value)}
 				onFocus={() => setShowResults(true)}

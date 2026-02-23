@@ -1,0 +1,48 @@
+{
+	"header": {
+		"profile": "My profile",
+		"settings": "Settings",
+		"logout": "Logout"
+	},
+
+	"leftmenu": {
+		"feed": "Feed",
+		"profile": "Profile",
+		"friends": "Friends"
+	},
+
+	"searchbar": {
+		"search": "Search..."
+	},
+
+	"friends": {
+		"addfriend": "Add friend",
+		"myfriends": "My friends",
+		"requests": "Pending requests",
+		"accept": "Accept",
+		"reject": "Reject",
+		"sent": "Friend request sent",
+		"sentfail": "Failed to send friend request",
+		"accepted": "Friend request accepted",
+		"rejected": "Friend request rejected",
+		"requestfail": "Failed to process request",
+		"nopending": "No pending requests",
+		"cancelrequest": "Cancel friend request",
+		"canceled": "Friend request canceled",
+		"errorcancel": "Error canceling the request",
+		"remove": "Remove friend",
+		"removed": "User removed from friend list",
+		"acceptrequest": "Accept friend request",
+		"rejectrequest": "Reject friend request",
+		"block": "Block user",
+		"blocked": "User blocked"
+	},
+
+	"userprofile": {
+		"sendmessage": "Send message",
+		"loading": "Loading...",
+		"friends": "Friends: ",
+		"posts": "Posts: 5",
+		"writebio": "Write your bio here..."
+	}
+}

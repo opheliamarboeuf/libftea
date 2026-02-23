@@ -1,23 +1,24 @@
 import { useState } from "react";
 import { friendsApi } from "./api";
 import { usePendingRequests } from "./hooks";
-import { useModal
+import { useModal } from "../context/ModalContext";
+import { useTranslation } from 'react-i18next';
 
- } from "../context/ModalContext";
 export function PendingRequests() {
 	const { pending, refetch } = usePendingRequests();
 	const [ loading, setLoading ] = useState(false);
 	const { showModal } = useModal();
+	const { t } = useTranslation();
 
 	const handleAccept = async (userId: number) => {
 		setLoading(true);
 		try {
 			await friendsApi.acceptFriendRequest(userId);
-			showModal("Friend request accepted");
+			showModal(t('friends.accepted'));
 			await refetch();
 		} catch (error) {
 			console.error('Failed to process request', error);
-			showModal("Failed to process request");
+			showModal(t('friends.requestfail'));
 		} finally {
 			setLoading(false);
 		}
@@ -27,11 +28,11 @@ export function PendingRequests() {
 		setLoading(true);
 		try {
 			await friendsApi.rejectFriendRequest(userId);
-			showModal("Friend request rejected");
+			showModal(t('friends.rejected'));
 			await refetch();
 		} catch (error) {
 			console.error('Failed to process request:', error);
-			showModal("Failed to process request");
+			showModal(t('friends.requestfail'));
 		} finally {
 			setLoading(false);
 		}
@@ -39,18 +40,18 @@ export function PendingRequests() {
 
 	return (
 		<div>
-			<h3>Friend Requests</h3>
-			{pending.length === 0 && <p>No pending requests</p>}
+			<h3>{t('friends.requests')}</h3>
+			{pending.length === 0 && <p>{t('friends.nopending')}</p>}
 			{pending.map(user => (
 				<div key={user.id}>
 					<span>{user.username}</span>
 
 					<button onClick={() => handleAccept(user.id)} disabled={loading}>
-						Accept
+						{t('friends.accept')}
 					</button>
 
 					<button onClick={() => handleReject(user.id)} disabled={loading}>
-						Reject
+						{t('friends.reject')}
 					</button>
 				</div>
 			))}
