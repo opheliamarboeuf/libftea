@@ -39,6 +39,20 @@
 	gap: 10px;
 	overflow-y: auto; 
 }
+
+.modal-content-posts {
+	background-color: #000000c9;
+	color: white;
+	padding: 2rem;
+	border-radius: 8px;
+	width: 400px;
+	max-width: 90%;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	overflow-y: auto; 
+}
 /* Cover and posts */
 .cover-and-posts {
 	flex: 1;

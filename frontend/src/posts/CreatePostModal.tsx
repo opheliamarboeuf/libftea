@@ -1,67 +1,119 @@
+import "../App.css";
 import { useState } from "react";
-import { postsApi } from "./api";
-import { PostPayload } from "./types";
 import { createPortal } from "react-dom";
+import { useModalAnimation } from "../common/hooks/useModalAnimation";
+import { usePostCreation } from "./components/hooks/hooks";
+import { useBeforeUnload } from "../common/hooks/useBeforeUnload";
+import { ConfirmDialog } from "../common/components/ConfirmDialog";
+import { useUnsavedChangesGuard } from "../common/hooks/useUnsavedChangesGuard";
 
 interface CreatePostModalProps {
 	onPostCreated: () => void;
 	onClose: () => void;
 }
 
-// A FAIRE : Désactiver le bouton pendant la soumission pour éviter les doubles clics.
-
 export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProps) {
-	const [ title, setTitle ] = useState("");
-	const [ caption, setCaption ] = useState("");
-	const [showConfirm, setShowConfirm] = useState(false);
-	const [fadeOut, setFadeOut] = useState(false);
 
-	const closeWithAnimation = () => {
-		setFadeOut(true);
-		setTimeout(() => {
-			onClose();
-		}, 250);
-	};
+	// Function that runs the closing animation and then calls onClose() after the specified duration
+	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });
 
+	// Custom hook that manages a post creation
+	const {
+		title, 
+		setTitle,
+		caption,
+		setCaption,
+		errorMessage,
+		isLoading,
+		resetFields,
+		hasChanges,
+		MAX_TITLE_LENGTH,
+		MAX_CAPTION_LENGTH,
+		handlePostCreation,
+	} = usePostCreation();
+
+
+		// Guard unsaved changes
+		const {
+			showConfirm,
+			requestClose,
+			confirmDiscard,
+			cancelDiscard,
+		} = useUnsavedChangesGuard({
+			hasChanges,
+			onDiscard: resetFields,
+			onClose: closeWithAnimation,
+		});
+	
 
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
-			// setErrorMessage(null);
-			
-		const payload: PostPayload = {title, caption}; 
-		try {
-			await postsApi.createPost(payload);
-			setTitle("");
-			setCaption("");
-			onPostCreated();
-			onClose();
-			
+		const sucess = await handlePostCreation();
+		if (sucess) {
+			onPostCreated(); 
+			closeWithAnimation();
 		}
-		catch (error) {
-				console.log("Could not submit Post:", error);
-			}
-		}
+	};
+
+	useBeforeUnload(hasChanges);
 
 	return (
-		<div className="create-post-form">
-			<form onSubmit={handleSubmit}>
-				<input
-					type="text"
-					placeholder="title"
-					value={title}
-					onChange={(e) => setTitle(e.target.value)}
-					// onFocus={() => setShowResults(true)}
-					className="create-post-input"
-					/>
-				<textarea
-					placeholder="caption"
-					value={caption}
-					onChange={(e) => setCaption(e.target.value)}
-					// onFocus={() => setShowResults(true)}
-					className="create-post-input"
-				/>
-				<button type="submit"> Submit </button>
-			</form>
-		</div>
+		<>
+		{createPortal(
+			<div className="modal-overlay" onClick={requestClose}>
+				<div 
+					className={`modal-content-posts ${fadeOut ? "fade-out" : "fade-in"}`}
+					onClick={(e) => e.stopPropagation()}
+				>
+					<h2>Post an outfit</h2>
+					<form onSubmit={handleSubmit}>
+						<label>Title</label>
+						<textarea
+							placeholder="title"
+							value={title}
+							onChange={(e) => setTitle(e.target.value)}
+							className="create-post-input"
+						/>
+						<div
+							className={`char-counter ${
+							title.length > MAX_TITLE_LENGTH ? "error" : ""
+							}`}
+						>
+							{title.length} / {MAX_TITLE_LENGTH}
+						</div>
+						<label>Caption</label>
+						<textarea
+							placeholder="caption"
+							value={caption}
+							onChange={(e) => setCaption(e.target.value)}
+							rows={5}
+							className="create-post-input"
+						/>
+						<div
+						className={`char-counter ${
+						caption.length > MAX_CAPTION_LENGTH ? "error" : ""
+						}`}
+						>
+							{caption.length} / {MAX_CAPTION_LENGTH}
+						</div>
+						{errorMessage && (
+							<div className="error-message shake-horizontal">
+								{errorMessage}
+							</div>
+						)}
+						<button type="submit"> Submit </button>
+					</form>
+				</div>
+			</div>,
+			document.body
+		)}
+		{showConfirm && (
+			<ConfirmDialog
+				message="Looks like you've made some changes. Are you sure you want to exit without saving?"
+				onConfirm={confirmDiscard}
+				onCancel={cancelDiscard}
+			/>
+		)}
+		</>
 	);
 }

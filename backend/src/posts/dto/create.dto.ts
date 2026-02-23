@@ -8,5 +8,6 @@ title: string
 
 @IsString()
 @IsOptional()
+@MaxLength(500)
 caption?: string
 }

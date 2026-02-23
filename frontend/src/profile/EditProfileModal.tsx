@@ -29,7 +29,8 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });
 
 	// Save profile changes via API
-	const handleSave = async () => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
 		const success = await saveProfile();
 		if (success) {
 			closeWithAnimation();
@@ -60,7 +61,7 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 						onClick={(e) => e.stopPropagation()}
 					>
 						<h2>Edit Profile</h2>
-
+						<form onSubmit={handleSubmit}>
 						<label>Name</label>
 						<textarea
 							value={displayName}
@@ -103,13 +104,14 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 							</div>
 						)}
 						<div className="modal-actions">
-							<button className="modal-btn" onClick={handleSave}>
+							<button type="submit" className="modal-btn">
 								Save
 							</button>
-							<button className="modal-btn" onClick={requestClose}>
+							<button type="button" className="modal-btn" onClick={requestClose}>
 								Cancel
 							</button>
 						</div>
+						</form>
 					</div>
 				</div>,
 				document.body
