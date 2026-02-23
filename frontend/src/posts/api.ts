@@ -6,15 +6,14 @@ const API_URL = "http://localhost:3000";
 export const postsApi = {
 
 	createPost: async (
-		payload: PostPayload
+		payload: FormData
 	): Promise<Post> => {
 		const res = await fetch(`${API_URL}/posts/create`, {
 			method: "POST",
 			headers: {
-				"Content-Type": "application/json",
 				Authorization: `Bearer ${localStorage.getItem("token")}`,
 			},
-			body: JSON.stringify(payload),
+			body: payload,
 		});
 		const data = await res.json();
 		if (!res.ok) {

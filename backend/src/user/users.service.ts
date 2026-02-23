@@ -98,6 +98,7 @@ export class UsersService {
 				authorId: true,
 				title: true, 
 				caption: true,
+				imageUrl: true,
 				createdAt: true,
 				author: {
 					select: {

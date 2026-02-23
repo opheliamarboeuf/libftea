@@ -10,7 +10,7 @@ async resizeAvatar(filePath: string): Promise<string> {
 	const ext = filePath.split('.').pop()?.toLowerCase();
 	const outputPath = filePath.replace(/(\.\w+)$/, `-resized.${ext}`); // extract the file extension
 
-	// Create a Sharp transformer and resize the image to 800x800
+	// Create a Sharp transformer and resize the image to 200x200
 	let transformer = sharp(filePath).resize(200, 200, {
 		fit: 'cover', // Crop to fit perfectly
 		position: 'center', // Center the crop
@@ -52,7 +52,7 @@ async resizePost(filePath: string): Promise<string> {
 	const ext = filePath.split('.').pop(); 
 	const outputPath = filePath.replace(/(\.\w+)$/, `-resized.${ext}`);
 
-	let transformer = sharp(filePath).resize(800, 800, {
+	let transformer = sharp(filePath).resize(500, 500, {
 		fit: 'cover',
 		position: 'center',
  	});

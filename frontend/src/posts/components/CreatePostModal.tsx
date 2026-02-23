@@ -28,6 +28,7 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 		hasChanges,
 		MAX_TITLE_LENGTH,
 		MAX_CAPTION_LENGTH,
+		handleImageChange,
 		handlePostCreation,
 	} = usePostCreation();
 
@@ -79,6 +80,12 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 						>
 							{title.length} / {MAX_TITLE_LENGTH}
 						</div>
+						<label>Outfit Picture</label>
+						<input
+						type = "file"
+						accept="image/jpeg,image/jpg,image/png,image/webp"
+						onChange={handleImageChange}
+						/>
 						<label>Caption</label>
 						<textarea
 							value={caption}
@@ -99,7 +106,8 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 							</div>
 						)}
 						<div className="modal-actions">
-							<button type="submit"  className="modal-btn"> Submit </button>
+							<button type="submit"  className="modal-btn" disabled={isLoading}> 
+								{isLoading ? "Posting..." : "Submit"} </button>
 							<button type="button" className="modal-btn" onClick={requestClose}> Cancel </button>
 						</div>
 					</form>

@@ -11,6 +11,7 @@
 	background-color: white;
 	color: black;
 	overflow: hidden;
+	overflow-y: auto
 }
 
 /* Profile info column */

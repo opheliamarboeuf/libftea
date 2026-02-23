@@ -4,22 +4,51 @@ import { PostPayload } from "../../types";
 
 const MAX_TITLE_LENGTH = 120;
 const MAX_CAPTION_LENGTH = 500;
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 export function usePostCreation() {
 	const [title, setTitle] = useState("");
 	const [caption, setCaption] = useState("");
+	const [imageFile, setImageFile] = useState<File | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+	const validateImage = (file: File, type: string): string | null => {
+		if (!ALLOWED_TYPES.includes(file.type)) {
+			return `${type} must be JPEG, PNG, or WebP`;
+		}
+		if (file.size > MAX_FILE_SIZE) {
+			return `${type} must be under 5MB`;
+		}
+		return null;
+	};
+	
+		const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0] || null;
+		if (file) {
+			const error = validateImage(file, "Post picture");
+			if (error) {
+				setErrorMessage(error);
+				e.target.value = "";
+				return;
+			}
+		}
+		setImageFile(file);
+		setErrorMessage(null);
+	};
 
 	const hasChanges = () => {
 		return (
 			title !== "") || 
-			caption !== "";
+			caption !== "" || 
+			imageFile !== null;
 	}
 
 	const resetFields = () => {
 		setTitle("");
 		setCaption("");
+		setImageFile(null);
 		setErrorMessage(null);
 	}
 
@@ -40,11 +69,16 @@ export function usePostCreation() {
 		}
 
 		setIsLoading(true);
-		const payload: PostPayload = {title, caption}; 
 		try {
-			await postsApi.createPost(payload);
+			const formData = new FormData();
+			formData.append("image", imageFile);
+			formData.append("title", title);
+			formData.append("caption", caption);
+			
+			await postsApi.createPost(formData);
 			setTitle("");
 			setCaption("");	
+			setImageFile(null);
 			setErrorMessage(null);		
 			return true;
 		}
@@ -71,6 +105,7 @@ export function usePostCreation() {
 		hasChanges,
 		MAX_TITLE_LENGTH,
 		MAX_CAPTION_LENGTH,
+		handleImageChange,
 		handlePostCreation,
 	}
 }

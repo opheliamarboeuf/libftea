@@ -13,6 +13,7 @@ export class PostsDto {
 	caption?: string
 
 	@IsString()
-  	imageUrl: string;
+	@IsOptional()
+  	imageUrl?: string;
 }
 
