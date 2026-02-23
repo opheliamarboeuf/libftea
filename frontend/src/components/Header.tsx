@@ -42,7 +42,7 @@ export const Header = () => {
 						<p className="header-username">{user.username || ""}</p>
 						<div className="small-avatar">
 							<img
-								src={user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}` : "/default-avatar.png"}
+								src={user.profile?.avatarUrl ? `${API_URL}${user.profile.avatarUrl}` : "/default-avatar.png"}
 								alt="Small Avatar"
 							/>
 						</div>

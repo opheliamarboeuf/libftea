@@ -10,6 +10,7 @@ import { Header } from './components/Header';
 import { LeftMenu } from './components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
 import { ModalProvider } from "./context/ModalContext";
+import ChatPage from './pages/ChatPage';
 
 const App = () => {
 
@@ -82,6 +83,9 @@ const [loading, setLoading] = useState(true);
             <Route
               path="/users/:id"
               element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
+			<Route
+			  path="/chat/:friendId"
+			  element={loading ? null :user ? <ChatPage/> : <Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
         </ModalProvider>
