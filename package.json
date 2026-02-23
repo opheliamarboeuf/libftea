@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@nestjs/platform-express": "^11.1.13",
     "class": "^0.1.4",
     "transformer": "^1.2.8",
     "react-icons": "^5.5.0"

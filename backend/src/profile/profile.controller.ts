@@ -9,6 +9,9 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ImageResizeService } from './image-resize.service';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
+export interface RequestWithUser extends Request {
+	user: any;
+}
 
 @Controller('profile')
 export class ProfileController {
@@ -40,10 +43,9 @@ export class ProfileController {
 
 	@Post('edit')
 	async editProfile(
-		@UploadedFiles() files: Express.Multer.File[],
-		@Body() dto: EditDto,
-		@Req() req: Request & { user: { id: number } },
-	) {
+	@UploadedFiles() files: File[], // Gets all files sent by the client
+	@Body() dto: EditDto,
+	@Req() req: RequestWithUser,) {
 	const userId = req.user.id; 
 
 	const currentProfile = await this.profileService.getProfile(userId);
