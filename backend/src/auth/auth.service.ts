@@ -99,6 +99,7 @@ export class AuthService {
 					select: {
 						title: true,
 						caption: true,
+						imageUrl : true,
 						createdAt: true,
 					},
 					orderBy: { createdAt: 'desc'}

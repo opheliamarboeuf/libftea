@@ -12,7 +12,7 @@ export class PostsService {
 			const post = await this.prisma.post.create({
 				data: {
 					authorId: userId,
-					imageUrl: "default-image.jpeg", //A CHANGER
+					imageUrl: dto.imageUrl,
 					title: dto.title,
 					caption: dto.caption,
 				}
@@ -26,6 +26,7 @@ export class PostsService {
 			throw new InternalServerErrorException("Could not create post");
 		}
 	}
+	
 	async getUserPosts(id: number) {
 		const userPosts = await this.prisma.post.findMany({
 			where: { authorId: id },
@@ -34,6 +35,7 @@ export class PostsService {
 				authorId: true,
 				title: true, 
 				caption: true,
+				imageUrl: true,
 				createdAt: true,
 				author: {
 					select: {

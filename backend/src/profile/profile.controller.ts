@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Req, UseGuards, UseInterceptors, UploadedFile, UploadedFiles } from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, UseGuards, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -6,7 +6,7 @@ import { Request } from 'express';
 import { ProfileService } from './profile.service';
 import { EditDto } from './dto/edit.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { ImageResizeService } from './image-resize.service';
+import { ImageResizeService } from '../common/service/image-resize.service';
 
 
 @Controller('profile')

@@ -1,23 +1,50 @@
-import { Controller, UseGuards, UseInterceptors, Post, Body, Get, Req } from '@nestjs/common';
-import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { Controller, UseGuards, UseInterceptors, Post, Body, Get, Req, UploadedFile, BadRequestException} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PostsService } from './posts.service';
 import { PostsDto } from './dto/create.dto';
+import { ImageResizeService } from 'src/common/service/image-resize.service';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller('posts')
 @UseGuards(JwtAuthGuard)
 export class PostsController {
 	constructor(
 		private readonly postService: PostsService,
-		/*private readonly imageResizeService: ImageResizeService, */
+		private readonly imageResizeService: ImageResizeService,
 	 ) {}
+
+@UseInterceptors(
+	FileInterceptor('image', {
+		storage: diskStorage({
+			destination: './uploads/post',
+			filename: (req, file, cb) => {
+				const uniqueSuffix =
+				Date.now() + '-' + Math.round(Math.random() * 1e9);
+				cb(null, uniqueSuffix + extname(file.originalname));
+			},
+		}),
+	}),
+)
 
 	@Post('create')
 		async create(
-			// @UploadedFiles() files: Express.Multer.File[],
+			@UploadedFile() file: Express.Multer.File,
 			@Body() dto: PostsDto,
 			@Req() req: Request & { user: { id: number } },
 		){
+			if (!file)
+				throw new BadRequestException('Image is required');
+			
+			// Generate image
+			const imageUrl = `/uploads/post/${file.filename}`;
+			// Resize the picture
+			const resizedPath = await this.imageResizeService.resizePost(file.path);
+			// Extract file name
+			const filename = resizedPath.split('/').pop() || resizedPath.split('\\').pop(); // Handle Windows/Linux paths
+			// Set the image URL for the DTO
+			dto.imageUrl = `/uploads/post/${filename}`;
 			return this.postService.create(req.user.id, dto);
 		}
 	
