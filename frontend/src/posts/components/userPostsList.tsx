@@ -66,9 +66,10 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 				posts: updatePosts,
 			})
 			setOpenMenuId(null);
+			showModal("You post has been deleted")
 		}
 		else {
-			showModal(errorMessage);
+			showModal("Failed to delete post");
 		}
 	};
 
