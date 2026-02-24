@@ -4,10 +4,12 @@ import { Navigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { useState } from "react";
 import { EditProfileModal, API_URL } from "../profile";
+import { useTranslation } from "react-i18next";
 
 const ProfilePage = () => {
 	const { user } = useUser();
 	const [showModal, setShowModal] = useState(false);
+	const { t } = useTranslation();
 
 	if (!user) return <Navigate to="/" replace />;
 
@@ -32,11 +34,11 @@ const ProfilePage = () => {
 					</div>
 					<p className="display-username">{user.username}</p>
 					<div className="stats">
-						<span>Friends: {user.friends?.length ?? 0}</span>
-						<span>Posts: 5</span>
+						<span>{t('userprofile.friends')}{user.friends?.length ?? 0}</span>
+						<span>{t('userprofile.posts')}</span>
 					</div>
 					<div className="bio">
-						<p>{user.profile.bio || "Write your bio here..."}</p>
+						<p>{user.profile.bio || t('userprofile.writebio')}</p>
 					</div>
 				</div>
 
@@ -52,7 +54,7 @@ const ProfilePage = () => {
 							alt="Cover"
 						/>
 						<button className="edit-profile-btn" onClick={() => setShowModal(true)}>
-							Edit Profile
+							{t('editprofile.edit')}
 						</button>
 					</div>
 					<div className="posts">

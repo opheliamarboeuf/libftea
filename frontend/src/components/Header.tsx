@@ -3,22 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { SearchBar } from "./SearchBar";
 import { useTranslation } from 'react-i18next';
-import i18n from "../i18n";
 import "./Header.css"
 import "../App.css"
+import "./LanguageMenu"
+import LanguageMenu from "./LanguageMenu";
 
 export const Header = () => {
 	const navigate = useNavigate();
 	const { user, setUser } = useUser();
 	const API_URL = "http://localhost:3000";
 	const [menuHidden, setMenuHidden] = useState(false);
-	//pour les langues
 	const { t } = useTranslation();
-	const languages = [ 
-		{ code: 'fr', label: 'FR'},
-		{ code: 'en', label: 'EN'},
-	];
-	const [ langMenuHidden, setLangMenuHidden ] = useState(true);
 
 	if (!user) return null;
 
@@ -43,29 +38,7 @@ export const Header = () => {
 			</div>
 			<div className="search-bar-container"><SearchBar /></div>
 			<div className="header-right">
-				<div
-					className="language-menu"
-					onMouseLeave={() => setLangMenuHidden(true)}
-				>
-					<button onClick={() => setLangMenuHidden(!langMenuHidden)}>
-						{i18n.language.toUpperCase()} ▼
-					</button>
-					{ !langMenuHidden && (
-						<div className="language-dropdown">
-							{languages.map(lang => (
-								<button
-									key={lang.code}
-									onClick={() => {
-										i18n.changeLanguage(lang.code);
-										setLangMenuHidden(true);
-									}}
-								>
-									{lang.label}
-								</button>
-							))}
-						</div>
-					)}
-				</div>
+				<LanguageMenu />
 				<div 
 					className={`avatar-menu ${menuHidden ? 'menu-hidden' : ''}`}
 					onMouseLeave={() => setMenuHidden(false)}

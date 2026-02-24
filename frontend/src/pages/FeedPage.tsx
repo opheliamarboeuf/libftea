@@ -9,6 +9,7 @@ const HomePage = () => {
 	const { user, setUser } = useUser();
 	const navigate = useNavigate();
 
+	//demander si c'est pas mieux de mettre juste your feed
 	return (
 		<div className='feed-page'>
 		<h1>

@@ -4,7 +4,7 @@ import { useState, ChangeEvent } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import i18n from "../i18n";
+import LanguageMenu from "../components/LanguageMenu";
 
 const LoginPage = () => {
 	const [username, setUsername] = useState("");
@@ -13,11 +13,6 @@ const LoginPage = () => {
 	const { setUser } = useUser();
 	const navigate = useNavigate();
 	const { t } = useTranslation();
-	const languages = [ 
-		{ code: 'fr', label: 'FR'},
-		{ code: 'en', label: 'EN'},
-	];
-	const [ langMenuHidden, setLangMenuHidden ] = useState(true);
 
 	const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) =>{
 		setUsername(e.target.value);
@@ -78,29 +73,7 @@ const LoginPage = () => {
 				<p className="app-subtitle">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis p</p>
 			</div>
 			<div className="login-right">
-				<div
-					className="language-menu"
-					onMouseLeave={() => setLangMenuHidden(true)}
-				>
-					<button onClick={() => setLangMenuHidden(!langMenuHidden)}>
-						{i18n.language.toUpperCase()} ▼
-					</button>
-					{ !langMenuHidden && (
-						<div className="language-dropdown">
-							{languages.map(lang => (
-								<button
-									key={lang.code}
-									onClick={() => {
-										i18n.changeLanguage(lang.code);
-										setLangMenuHidden(true);
-									}}
-								>
-									{lang.label}
-								</button>
-							))}
-						</div>
-					)}
-				</div>
+				<LanguageMenu />
 				<h1>{t('loginpage.login')}</h1>
 				<form onSubmit={handleSubmit}>
 					<div className="field">

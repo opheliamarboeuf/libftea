@@ -52,5 +52,30 @@
 		"password": "Mot de passe",
 		"noaccount": "Pas de compte ?",
 		"create": "Créer un compte"
+	},
+
+	"registerpage" : {
+		"register": "S'inscrire",
+		"loginto": "Se connecter",
+		"alreadyhave": "Vous avez déjà un compte ?",
+		"registerfail": "Echec de l'inscription",
+		"serverfail": "Echec serveur"
+	},
+
+	"editprofile": {
+		"edit": "Modifier le profil",
+		"name": "Nom",
+		"bio": "Bio",
+		"picture": "Photo de profil",
+		"cover": "Photo de couverture",
+		"format": "Formats acceptés: JPEG, PNG, WebP (Max 5MB)",
+		"save": "Sauvegarder",
+		"cancel": "Annuler",
+		"changes": "Vous avez modifié votre profil. Etes-vous sûr de vouloir quitter sans sauvegarder ?"
+	},
+
+	"confirmdialog": {
+		"discard": "Ignorer",
+		"stay": "Rester"
 	}
 }

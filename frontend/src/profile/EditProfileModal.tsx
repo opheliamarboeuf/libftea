@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useProfileEdit } from "./hooks";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { useTranslation } from "react-i18next";
 
 interface EditProfileModalProps {
 	onClose: () => void;
@@ -25,6 +26,7 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [fadeOut, setFadeOut] = useState(false);
+	const { t } = useTranslation();
 
 	const closeWithAnimation = () => {
 		setFadeOut(true);
@@ -63,35 +65,35 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 						className={`modal-content-profile ${fadeOut ? "fade-out" : "fade-in"}`}
 						onClick={(e) => e.stopPropagation()}
 					>
-						<h2>Edit Profile</h2>
-						<label>Name</label>
+						<h2>{t('editprofile.edit')}</h2>
+						<label>{t('editprofile.name')}</label>
 						<textarea value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
-						<label>Bio</label>
+						<label>{t('editprofile.bio')}</label>
 						<textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={5} />
 						<div className={`char-counter ${bio.length > MAX_BIO_LENGTH ? "error" : ""}`}>
 							{bio.length} / {MAX_BIO_LENGTH}
 						</div>
-						<label>Profile Picture</label>
+						<label>{t('editprofile.picture')}</label>
 						<input
 							type="file"
 							accept="image/jpeg,image/jpg,image/png,image/webp"
 							onChange={handleAvatarChange}
 						/>
-						<small className="helper-text">Accepted formats: JPEG, PNG, WebP (Max 5MB)</small>
-						<label>Cover Picture</label>
+						<small className="helper-text">{t('editprofile.format')}</small>
+						<label>{t('editprofile.cover')}</label>
 						<input
 							type="file"
 							accept="image/jpeg,image/jpg,image/png,image/webp"
 							onChange={handleCoverChange}
 						/>
-						<small className="helper-text">Accepted formats: JPEG, PNG, WebP (Max 5MB)</small>
+						<small className="helper-text">{t('editprofile.format')}</small>
 						{errorMessage && <div className="error-message shake-horizontal">{errorMessage}</div>}
 						<div className="modal-actions">
 							<button className="modal-btn" onClick={handleSave}>
-								Save
+								{t('editprofile.save')}
 							</button>
 							<button className="modal-btn" onClick={handleCancel}>
-								Cancel
+								{t('editprofile.cancel')}
 							</button>
 						</div>
 					</div>
@@ -101,7 +103,7 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 
 			{showConfirm && (
 				<ConfirmDialog
-					message="Looks like you've made some changes. Are you sure you want to exit without saving?"
+					message={t('editprofile.changes')}
 					onConfirm={handleConfirmDiscard}
 					onCancel={() => setShowConfirm(false)}
 				/>

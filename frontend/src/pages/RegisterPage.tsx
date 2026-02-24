@@ -3,6 +3,8 @@ import "./RegisterPage.css";
 import { useState, ChangeEvent } from 'react'
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
+import LanguageMenu from "../components/LanguageMenu";
 
 const RegisterPage = () => {
 	
@@ -16,6 +18,8 @@ const RegisterPage = () => {
 
 	// Access setUser from the global UserContext
 	const { setUser } = useUser();
+
+	const { t } = useTranslation();
 
 	// Update username when input changes
 	// e = ChangeEvent<HTMLInputElement> object
@@ -54,7 +58,7 @@ const RegisterPage = () => {
 				if (Array.isArray(data.message)){ // if it's an Array, set the message of the first array in errorMessage
 					setErrorMessage(data.message[0]);} 
 				else {
-					setErrorMessage(data.message || "Registration Failed") // if it is a string, set "Registration Failed" is the string is empty
+					setErrorMessage(data.message || t('registerpage.regiterfail')) // if it is a string, set "Registration Failed" is the string is empty
 				}
 				return ;
 			}
@@ -73,21 +77,22 @@ const RegisterPage = () => {
 			navigate("/feed", {replace: true}) ;
 		}
 		catch (err){
-			console.log("Server unreachable");
+			console.log(t('registerpage.serverfail'));
 		}
 	};
 
 	return (
 		<div className="register-page">
 			<div className="form">
+			<LanguageMenu />
 				<form onSubmit={handleSubmit}>
-					<h1>Register</h1>
+					<h1>{t('registerpage.register')}</h1>
 					<div className = "field">
-						<label htmlFor="username" className="sr-only">Username</label>
+						<label htmlFor="username" className="sr-only">{t('loginpage.username')}</label>
 							<input
 								type = "text"
 								name = "username"
-								placeholder='Username'
+								placeholder= {t('loginpage.username')}
 								value = {username}
 								onChange = {handleUsernameChange} // call handleUsernameChange
 								required
@@ -105,11 +110,11 @@ const RegisterPage = () => {
 							/>
 					</div>
 					<div className = "field">
-						<label htmlFor="password" className="sr-only">Password</label>
+						<label htmlFor="password" className="sr-only">{t('loginpage.password')}</label>
 							<input
 								type = "password"
 								name = "password"
-								placeholder="Password"
+								placeholder={t('loginpage.password')}
 								value = {password}
 								onChange = {handlePasswordChange}
 								required
@@ -120,12 +125,12 @@ const RegisterPage = () => {
 					)}
 					<div className="form-button">
 						<button type="submit">
-							Register
+							{t('registerpage.register')}
 						</button>
-						<p className="no-account">Already have an account?</p>
+						<p className="no-account">{t('registerpage.alreadyhave')}</p>
 						<button onClick={() =>
 							navigate("/login")}>
-							Log in to account
+							{t('registerpage.loginto')}
 						</button>
 					</div>
 				</form>
