@@ -28,7 +28,7 @@
 .post-header {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 1px;
 }
 
 .post-title {
@@ -37,9 +37,23 @@
   font-weight: bold;
 }
 
-.post-author, .post-date {
-  margin: 0;
-  font-size: 0.85rem;
+.post-meta {
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.post-author {
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.post-date {
+  font-size: 0.8rem;
   color: #555;
 }
 
@@ -71,7 +85,7 @@
   flex-direction: column;
   gap: 10px;
   max-height: 100%;
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 /* Caption */
@@ -79,6 +93,7 @@
   margin: 0;
   font-size: 1rem;
   color: #333;
+  font-size: 0.9rem;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
@@ -88,8 +103,8 @@
   font-size: 0.9rem;
   color: #777;
   flex-grow: 1; /* Take available space if needed */
-    overflow-y: auto;
-   word-wrap: break-word;
+  overflow-y: auto;
+  word-wrap: break-word;
 }
 
 /* Footer: interactions/buttons at the bottom */
@@ -99,6 +114,11 @@
   justify-content: space-between;
   gap: 10px;
   margin-top: 10px;
+}
+
+.post-footer .interactions {
+  display: flex;
+  gap: 5px;
 }
 
 .post-footer button {
