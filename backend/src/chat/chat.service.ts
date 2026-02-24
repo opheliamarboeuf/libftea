@@ -6,51 +6,95 @@ import { Conversation, Message } from '@prisma/client';
 export class ChatService {
 	constructor(private prisma: PrismaService) {}
 
-	//get or create conv between 2 users
 	async getOrCreateConversation(userId1: number, userId2: number) {
-
-		// search existing conv
-		let conversation: any = await this.prisma.conversation.findFirst({
+		const Userconversations = await this.prisma.conversation.findMany({
 			where: {
-				AND: [
-					{ users: { some: { id: userId1 } } },
-					{ users: { some: { id: userId2 } } },
-				],
+				users: { some: { id: userId1 } },
 			},
 			include: {
+				users: { select: { id: true } },
+			},
+		});
+
+		let conversation = Userconversations.find((conv) => {
+			const userIds = conv.users.map((u) => u.id).sort();
+			return userIds.length === 2 && userIds.includes(userId1) && userIds.includes(userId2);
+		});
+
+		if (!conversation) {
+			conversation = await this.prisma.conversation.create({
+				data: {
+					users: {
+						connect: [{ id: userId1 }, { id: userId2 }],
+					},
+				},
+				include: {
+					users: { select: { id: true } },
+				},
+			});
+		}
+
+		return this.prisma.conversation.findUnique({
+			where: { id: conversation.id },
+			include: {
 				users: {
-					select: { id: true, username: true, profile: true},
+					select: { id: true, username: true, profile: true },
 				},
 				messages: {
-					orderBy: { createdAt: 'asc'},
+					orderBy: { createdAt: 'asc' },
 					include: {
 						sender: {
-							select: { id: true, username: true, profile: true},
+							select: { id: true, username: true, profile: true },
 						},
 					},
 				},
 			},
 		});
-
-		// if not, create conv
-		if (!conversation) {
-			conversation = await this.prisma.conversation.create({
-				data: {
-					users: {
-						connect: [{ id: userId1}, {id: userId2}],
-					},
-				},
-				include: {
-					users: {
-						select: {id: true, username: true, profile: true},
-					},
-					messages: true,
-				},
-			});
-		}
-	
-	return conversation;
 	}
+	//get or create conv between 2 users
+	// async getOrCreateConversation(userId1: number, userId2: number) {
+
+	// 	// search existing conv
+	// 	let conversation: any = await this.prisma.conversation.findFirst({
+	// 		where: {
+	// 			AND: [
+	// 				{ users: { some: { id: userId1 } } },
+	// 				{ users: { some: { id: userId2 } } },
+	// 			],
+	// 		},
+	// 		include: {
+	// 			users: {
+	// 				select: { id: true, username: true, profile: true},
+	// 			},
+	// 			messages: {
+	// 				orderBy: { createdAt: 'asc'},
+	// 				include: {
+	// 					sender: {
+	// 						select: { id: true, username: true, profile: true},
+	// 					},
+	// 				},
+	// 			},
+	// 		},
+	// 	});
+
+	// 	// if not, create conv
+	// 	if (!conversation) {
+	// 		conversation = await this.prisma.conversation.create({
+	// 			data: {
+	// 				users: {
+	// 					connect: [{ id: userId1}, {id: userId2}],
+	// 				},
+	// 			},
+	// 			include: {
+	// 				users: {
+	// 					select: {id: true, username: true, profile: true},
+	// 				},
+	// 				messages: true,
+	// 			},
+	// 		});
+	// 	}
+	
+	// return conversation;
 
 	// create new message
 
@@ -80,7 +124,7 @@ export class ChatService {
 
 	// get all users conv
 	async getUserconversations(userId: number): Promise<any> {
-		return this.prisma.conversation.findMany({
+		const conversations = await this.prisma.conversation.findMany({
 			where: {
 				users: { some: { id: userId } },
 			},
@@ -95,6 +139,28 @@ export class ChatService {
 			},
 			orderBy: {
 				createdAt: 'desc',
+			},
+		});
+
+		const conversationWithUnread = await Promise.all(
+			conversations.map(async (conv) => {
+				const unreadCount = await this.getUnreadMessagesCount(userId, conv.id);
+				return {
+					...conv,
+					unreadCount,
+				};
+			})
+		);
+
+		return conversationWithUnread;
+	}
+
+	async getUnreadMessagesCount(userId: number, conversationId: number): Promise<number> {
+		return this.prisma.message.count({
+			where: {
+				conversationId: conversationId,
+				senderId: { not: userId },
+				Read: false,
 			},
 		});
 	}

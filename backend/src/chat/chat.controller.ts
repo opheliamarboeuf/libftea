@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Param, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, UseGuards, Req, Patch } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ChatService } from './chat.service';
 import { Request } from 'express';
+import path from 'path';
 
 @Controller('chat')
 @UseGuards(JwtAuthGuard)
@@ -21,5 +22,12 @@ export class ChatController {
 	) {
 		const userId = req.user.id;
 		return this.chatService.getOrCreateConversation(userId, Number(friendId));
+	}
+
+	@Patch('messages/:messageId/read')
+	async markMessageAsRead(
+		@Param('messageId') messageId: string,
+	) {
+		return this.chatService.markAsRead(Number(messageId));
 	}
 }
