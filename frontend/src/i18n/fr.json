@@ -43,7 +43,8 @@
 		"loading": "Chargement...",
 		"friends": "Amis: ",
 		"posts": "Posts: 5",
-		"writebio": "Ecrivez votre bio ici..."
+		"writebio": "Ecrivez votre bio ici...",
+		"feed": "Votre mur"
 	},
 
 	"loginpage": {

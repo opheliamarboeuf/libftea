@@ -43,7 +43,8 @@
 		"loading": "Loading...",
 		"friends": "Friends: ",
 		"posts": "Posts: 5",
-		"writebio": "Write your bio here..."
+		"writebio": "Write your bio here...",
+		"feed": "Your feed"
 	},
 
 	"loginpage": {
