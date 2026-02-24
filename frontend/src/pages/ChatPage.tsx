@@ -4,6 +4,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { useState, useEffect, useRef } from "react";
 import { useChat } from "../hooks/useChat";
+import { useModal } from "../context/ModalContext";
 import { useDebounce } from "../hooks/useDebounce";
 
 interface Message {
@@ -45,6 +46,7 @@ const ChatPage = () => {
 	const [friendInfo, setFriendInfo] = useState<any>(null);
 	const [conversations, setConversations] = useState<Conversation[]>([]);
 	const messagesEndRef = useRef<HTMLDivElement>(null);
+	const { showModal } = useModal();
 
 	const token = localStorage.getItem('token') || '';
 	const { messages, setMessages, isTyping, sendMessage, startTyping, stopTyping } =
@@ -75,7 +77,7 @@ const ChatPage = () => {
 		if (!friendId || !user) return;
 
 		if (Number(friendId) === user.id) {
-			alert("Honey, you're talking to yourself?");
+			showModal("Honey, you're talking to yourself?");
 			navigate('/feed');
 			return;
 		}

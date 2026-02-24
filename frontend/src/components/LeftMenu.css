@@ -54,3 +54,29 @@
 .left-menu:hover .label {
 	opacity: 1;
 }
+
+.chat-menu-item {
+	position: relative;
+}
+
+.icon-with-bagde {
+	position: relative;
+	display: inline-block;
+}
+
+.menu-badge {
+	position: absolute;
+	top: 8px;
+	right: 28px;
+	background-color: #e74c3c;
+	color: white;
+	font-size: 0.65rem;
+	font-weight: bold;
+	padding: 0.1rem 0.35rem;
+	border-radius: 10px;
+	min-width: 16px;
+	text-align: center;
+	border: 2px solid white;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	z-index: 10;
+}
