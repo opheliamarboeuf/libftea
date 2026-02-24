@@ -2,6 +2,7 @@ import { friendsApi } from "./api";
 import { useUser } from "../context/UserContext";
 import { useModal } from "../context/ModalContext";
 import { useState } from "react"
+import { useEffect } from "react";
 import { ConfirmBlockDelete } from "./ConfirmBlockDelete";
 
 interface Props {
@@ -9,18 +10,34 @@ interface Props {
 }
 
 export function BlockFriendButton({ userId }: Props) {
-    const { refreshUser } = useUser();
+    const { refreshUser, user } = useUser();
     const { showModal } = useModal();
     const [loading, setLoading] = useState(false);
+	const [blockSent, setBlockSent] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     
+	useEffect(() => {
+		if (user?.blockedUsers?.includes(userId)) {
+			setBlockSent(true);
+		} else {
+			setBlockSent(false);
+		}
+	}, [userId, userId]);
 
     const handleClick = async () => {
+        setLoading(true);
         try {
-            setLoading(true);
-            await friendsApi.blockFriend(userId);
-            await refreshUser();
-            showModal("Friend blocked");
+			if (!blockSent) {
+				await friendsApi.blockFriend(userId);
+				showModal("User blocked");
+				setBlockSent(true);
+			} else {
+				await friendsApi.unBlockFriend(userId);
+				showModal("User unblocked");
+				setBlockSent(false);
+				setShowConfirm(false);
+			}
+			await refreshUser();
         } catch (error) {
             console.error('Error:', error);
             showModal("Failed to block friend");
@@ -35,7 +52,7 @@ export function BlockFriendButton({ userId }: Props) {
                 onClick={() => setShowConfirm(true)}
                 disabled={loading}
                 >
-                    {loading ? "Blocking..." : "Block"}
+                    {loading ? "Processing..." : blockSent ? "Unblock User" : "Block User"}
             </button>
 
             {showConfirm && (

@@ -192,10 +192,35 @@ export class FriendsService {
 		});
 	}
 
-	async blockFriend(userId: number, friendId: number): Promise<void> {
+	async blockFriend(userId: number, targetId: number): Promise<void> {
+		if (userId === targetId) throw new BadRequestException("Cannot block yourself");
+
+		const existing = await this.prisma.friendship.findFirst({
+			where: {
+				OR: [
+					{ requesterId: userId, addresseId: friendId },
+					{ requesterId: friendId, addresseId: userId },
+				],
+			},
+		});
+
+		if (existing) {
+			await this.prisma.friendship.update({
+				where: { id: existing.id },
+				data: { status: 'BLOCKED' },
+			});
+		} else {
+			await this.prisma.friendship.create({
+				where: { id: existing.id },
+				data: { status: 'BLOCKED' },
+			});
+		}
+	}
+
+	async unBlockFriend(userId: number, friendId: number): Promise<void> {
 		const friendship = await this.prisma.friendship.findFirst({
 			where: {
-				status: 'ACCEPTED',
+				status: 'BLOCKED',
 				OR: [
 					{ requesterId: userId, addresseId: friendId },
 					{ requesterId: friendId, addresseId: userId },
@@ -207,9 +232,8 @@ export class FriendsService {
 			throw new BadRequestException('Friendship does not exist');
 		}
 
-		await this.prisma.friendship.update({
+		await this.prisma.friendship.delete({
 			where: { id: friendship.id },
-			data: { status: 'BLOCKED' },
 		});
 	}
 }

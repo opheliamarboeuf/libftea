@@ -22,6 +22,7 @@ export type User = {
 	};
 	friends: Friend[];
 	pendingRequests: Friend[];
+	blockedUsers: number[];
 };
 // Defines the shape of the context, meaning the fields the context must contain
 interface UserContextType {
