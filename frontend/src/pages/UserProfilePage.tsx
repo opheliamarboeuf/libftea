@@ -166,7 +166,7 @@ const UserProfilePage = () => {
 			case 'ACCEPTED':
 				return (
 					<div className="btn-group">
-					<button className="profile-action-btn" onClick={() => navigate("/chat")} disabled={loading}>
+					<button className="profile-action-btn" onClick={() => navigate(`/chat/${id}`)} disabled={loading}>
 						Send Message
 					</button>
 					<button className="profile-action-btn" onClick={handleRemoveFriend} disabled={loading}>
