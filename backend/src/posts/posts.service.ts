@@ -1,6 +1,8 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PostsDto } from "./dto/create.dto";
+import { join } from "path";
+import { unlink } from "fs/promises";
 
 @Injectable()
 export class PostsService {
@@ -26,6 +28,42 @@ export class PostsService {
 			throw new InternalServerErrorException("Could not create post");
 		}
 	}
+
+	async deletePost(postId:number) {
+		try {
+			await this.prisma.post.delete({
+				where: { id: postId },
+			})
+			return true;
+		}
+		catch (error) {
+			console.log("Error deleting post:", error);
+			throw new InternalServerErrorException("Could not delete post");
+		}
+	}
+
+	async deletePostImage(imageUrl: string): Promise<void> {
+		if (!imageUrl)
+			return;
+
+		// Normalise path (removes the / if there is one)
+		const relativePath = imageUrl.startsWith("/") ? imageUrl.slice(1) : imageUrl;
+		// Build absolute path
+		const filePath = join(process.cwd(), relativePath);
+		try {
+			// Delete the file
+			await unlink(filePath);
+		} catch (error: any) {
+			console.log("Could not delete post image:", error.message);
+		}
+	}
+
+	async getPostById(id: number){
+		const post = await this.prisma.post.findUnique({
+			where: { id },
+		})
+		return post;
+	}
 	
 	async getUserPosts(id: number) {
 		const userPosts = await this.prisma.post.findMany({
@@ -47,5 +85,5 @@ export class PostsService {
 			orderBy: {createdAt: 'desc'}
 		})
 		return (userPosts)
-	};
+	}
 }

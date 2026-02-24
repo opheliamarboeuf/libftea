@@ -1,4 +1,4 @@
-import { Controller, UseGuards, UseInterceptors, Post, Body, Get, Req, UploadedFile, BadRequestException} from '@nestjs/common';
+import { Controller, UseGuards, UseInterceptors, Post, Body, Get, Req, UploadedFile, BadRequestException, ParseIntPipe, Param, Delete, NotFoundException} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PostsService } from './posts.service';
@@ -51,5 +51,16 @@ export class PostsController {
 	@Get('me')
 		async getUserPosts(@Req() req: Request & { user: { id: number } }){
 			return this.postService.getUserPosts(req.user.id);
+		}
+	
+	@Delete('delete/:id')
+		async deletePost(@Param('id', ParseIntPipe) id: number) {
+			const post = await this.postService.getPostById(id);
+			if (!post)
+					throw new NotFoundException('Post not found');
+			if (post.imageUrl) {
+				await this.postService.deletePostImage(post.imageUrl);
+			}
+			return this.postService.deletePost(id);
 		}
 }

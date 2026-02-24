@@ -24,7 +24,7 @@ export const postsApi = {
 		return data;
 	},
 
-	deletePost: async (postId: number): Promise<Post[]> => {
+	deletePost: async (postId: number): Promise<boolean> => {
 		const res = await fetch(`${API_URL}/posts/delete/${postId}`, {
 			method: "DELETE",
 			headers: {
@@ -33,14 +33,18 @@ export const postsApi = {
 			},
 		});
 
-		const data = await res.json();
 		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || "Posts deletion failed";
+			let message = "Posts deletion failed";
+			try {
+				const data = await res.json();
+				message = Array.isArray(data.message) ? data.message[0] : data.message || message;
+			} catch {
+				// If parsing the response as JSON fails (e.g., no JSON returned), ignore it
+    			// and fall back to the generic error message.
+			}
 			throw new Error(message);
 		}
-		return data;
+		return true;
 	},
 
 	fetchUserPosts:  async (userId: number): Promise<Post[]>  => {

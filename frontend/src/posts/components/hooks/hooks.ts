@@ -134,7 +134,6 @@ export function usePostDeletion() {
 		finally{
 			setIsDeleting(false);
 		}
-
 	}
 	return {
 		errorMessage,
