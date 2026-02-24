@@ -1,9 +1,9 @@
+import "./userPostsList.css";
 import { Post, useUser } from "../../context/UserContext";
 import { API_URL } from "../../profile";
-import "./userPostsList.css";
 import { FaArrowUp, FaArrowDown, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function UserPostsList({ posts }: { posts: Post[] }) {
 	if (!Array.isArray(posts)) return null;
@@ -16,6 +16,27 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 	const { user } = useUser();
 
 	const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  	
+	// Detect clicks outside of the  menu
+	const menuRef = useRef<HTMLDivElement>(null);
+
+	// Function called whenever the user clicks anywhere on the page
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			// If the menu exists and the clicked element is NOT inside the menu
+			if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+				// Close the menu
+				setOpenMenuId(null);
+			}
+		};
+		// Add an event listener for mouse clicks
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			// Cleanup function: remove the event listener when component unmounts
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
 
 	const toggleMenu = (postId: number) => {
 		setOpenMenuId(openMenuId === postId ? null : postId);
@@ -56,7 +77,7 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 			</div>
 
 			{/* Post menu */}
-			<div className="post-menu">
+			<div className="post-menu" ref={openMenuId === post.id ? menuRef : null} >
 				<FaEllipsisV onClick={() => toggleMenu(post.id)} />
 				{openMenuId === post.id && (
 					<div className="menu-dropdown">
@@ -97,7 +118,6 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 			</div>
 			<div className="counters">
 			<span className="count">0 Upvotes </span>
-			<span className="count">0 Downvotes</span>
 			</div>
 		</div>
 		</div>
