@@ -48,7 +48,7 @@ const ProfilePage = () => {
 					<p className="display-username">{user.username}</p>
 					<div className="stats">
 						<span>Friends: {user.friends?.length ?? 0}</span>
-						<span>Posts: 5</span>
+						<span>Posts: {user.posts?.length ?? 0}</span>
 					</div>
 					<div className="bio">
 						<p>{user.profile.bio || "Write your bio here..."}</p>
