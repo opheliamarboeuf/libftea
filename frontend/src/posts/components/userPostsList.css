@@ -50,6 +50,11 @@
   font-weight: 500;
   cursor: pointer;
   display: inline-block;
+  transition: color 0.2s ease;
+}
+
+.post-author:hover {
+  color: #bebebe;
 }
 
 .post-date {

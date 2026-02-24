@@ -53,7 +53,7 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 				<button><FaArrowDown /></button>
 			</div>
 			<div className="counters">
-				<span className="count">0 Upvotes</span>
+				<span className="count">0 Upvotes </span>
 				<span className="count">0 Downvotes</span>
 			</div>
 			</div>
