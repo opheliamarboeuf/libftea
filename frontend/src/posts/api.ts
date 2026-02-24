@@ -1,5 +1,4 @@
 import { Post } from '../context/UserContext';
-import { PostPayload } from './types';
 
 const API_URL = "http://localhost:3000";
 
@@ -20,6 +19,25 @@ export const postsApi = {
 			const message = Array.isArray(data.message)
 				? data.message[0]
 				: data.message || "Post creation failed";
+			throw new Error(message);
+		}
+		return data;
+	},
+
+	deletePost: async (postId: number): Promise<Post[]> => {
+		const res = await fetch(`${API_URL}/posts/delete/${postId}`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || "Posts deletion failed";
 			throw new Error(message);
 		}
 		return data;

@@ -32,7 +32,6 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 		handlePostCreation,
 	} = usePostCreation();
 
-
 		// Guard unsaved changes
 		const {
 			showConfirm,
@@ -48,8 +47,8 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const sucess = await handlePostCreation();
-		if (sucess) {
+		const success = await handlePostCreation();
+		if (success) {
 			onPostCreated(); 
 			closeWithAnimation();
 		}

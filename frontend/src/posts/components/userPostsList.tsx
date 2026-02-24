@@ -4,6 +4,8 @@ import { API_URL } from "../../profile";
 import { FaArrowUp, FaArrowDown, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { usePostDeletion } from "./hooks/hooks";
+import { useModal } from "../../context/ModalContext";
 
 export function UserPostsList({ posts }: { posts: Post[] }) {
 	if (!Array.isArray(posts)) return null;
@@ -13,7 +15,14 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 		navigate(`/users/${userId}`);
 	}
 	
-	const { user } = useUser();
+	const {
+		errorMessage,
+		isDeleting,
+		handlePostDeletion,
+	} = usePostDeletion();
+
+	const { user, setUser } = useUser();
+	const { showModal } = useModal();
 
 	const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   	
@@ -47,9 +56,20 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 		setOpenMenuId(null);
 	};
 
-	const handleDelete = (postId: number) => {
-		console.log("Delete post", postId);
-		setOpenMenuId(null);
+	const handleDelete = async (postId: number) => {
+		const success = await handlePostDeletion(postId);
+		if (success && user){
+			// Create a new table without the deleted post
+			const updatePosts = user.posts.filter(p => p.id !== postId);
+			setUser({
+				...user, 
+				posts: updatePosts,
+			})
+			setOpenMenuId(null);
+		}
+		else {
+			showModal(errorMessage);
+		}
 	};
 
 		const handleReport = (postId: number) => {
@@ -83,11 +103,11 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 					<div className="menu-dropdown">
 						{post.author.id === user.id ? (
 							<>
-								<button onClick={() => handleEdit(post.id)}>Edit post</button>
-								<button onClick={() => handleDelete(post.id)}>Delete post</button>
+								<button onClick={() => handleEdit(post.id)}>Edit</button>
+								<button onClick={() => handleDelete(post.id)}>Delete</button>
 							</>
 						) : (
-							<button onClick={() => handleReport(post.id)}>Report post</button>
+							<button onClick={() => handleReport(post.id)}>Report</button>
 						)}
 					</div>
 				)}
