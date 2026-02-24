@@ -14,14 +14,14 @@
 
 /* Individual post card */
 .post-card {
-  /* width: 100%; */
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
   display: flex;
-  flex-direction: column; /* Header top, content middle, footer bottom */
+  flex-direction: column;
   gap: 10px;
   padding: 15px;
+  width: 750px;
 }
 
 /* Post header: title + author + date */
