@@ -224,7 +224,7 @@
 }
 
 /* Hide profile-info on small screens */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
 	.profile-info {
 		display: none;
 	}
