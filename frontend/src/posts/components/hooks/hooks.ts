@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { postsApi } from "../../api";
 
-const MAX_TITLE_LENGTH = 65;
+const MAX_TITLE_LENGTH = 50;
 const MAX_CAPTION_LENGTH = 500;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];

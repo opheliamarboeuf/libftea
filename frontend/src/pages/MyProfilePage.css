@@ -194,6 +194,7 @@
 .block-user {
 	margin-top: 0.5rem;
 }
+
 .cover-and-posts .posts {
   flex: 1;
   padding: 1rem;
@@ -224,7 +225,7 @@
 }
 
 /* Hide profile-info on small screens */
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
 	.profile-info {
 		display: none;
 	}

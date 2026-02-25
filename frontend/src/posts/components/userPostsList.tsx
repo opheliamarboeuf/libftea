@@ -6,8 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { usePostDeletion } from "./hooks/hooks";
 import { useModal } from "../../context/ModalContext";
+import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 
-export function UserPostsList({ posts }: { posts: Post[] }) {
+interface UserPostsListProps {
+	posts: Post[];
+	onPostDeleted?: () => void;
+}
+
+export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 	if (!Array.isArray(posts)) return null;
     
 	const navigate = useNavigate();
@@ -16,7 +22,6 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 	}
 	
 	const {
-		errorMessage,
 		isDeleting,
 		handlePostDeletion,
 	} = usePostDeletion();
@@ -25,7 +30,9 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 	const { showModal } = useModal();
 
 	const [openMenuId, setOpenMenuId] = useState<number | null>(null);
-  	
+  	const [postToDelete, setPostToDelete] = useState<number | null>(null);
+	
+	const showConfirm = postToDelete !== null;
 	// Detect clicks outside of the  menu
 	const menuRef = useRef<HTMLDivElement>(null);
 
@@ -67,14 +74,29 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 			})
 			setOpenMenuId(null);
 			showModal("You post has been deleted")
+			// Notify parent component to refresh
+			if (onPostDeleted) {
+				onPostDeleted();
+			}
 		}
 		else {
 			showModal("Failed to delete post");
 		}
 	};
 
-		const handleReport = (postId: number) => {
-			console.log("Report post", postId);
+	const confirmDelete = async () => {
+		if (postToDelete === null)
+			return;
+		await handleDelete(postToDelete)
+		setPostToDelete(null);
+	}
+
+	const cancelDelete = () => {
+ 		setPostToDelete(null);
+	};
+
+	const handleReport = (postId: number) => {
+		console.log("Report post", postId);
 		setOpenMenuId(null);
 	};
 
@@ -105,7 +127,12 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 						{post.author.id === user.id ? (
 							<>
 								<button onClick={() => handleEdit(post.id)}>Edit</button>
-								<button onClick={() => handleDelete(post.id)}>Delete</button>
+								<button 
+									onClick={() => setPostToDelete(post.id)}
+									disabled={isDeleting}
+								>
+									{isDeleting? "Deleting..." : "Delete"}
+								</button>
 							</>
 						) : (
 							<button onClick={() => handleReport(post.id)}>Report</button>
@@ -143,6 +170,13 @@ export function UserPostsList({ posts }: { posts: Post[] }) {
 		</div>
 		</div>
 	))}
+		{showConfirm && (
+			<ConfirmDialog
+				message="Are you sure you want to delete your post?"
+				onConfirm={confirmDelete}
+				onCancel={cancelDelete}
+			/>
+			)}
 	</div>
 	);
 };

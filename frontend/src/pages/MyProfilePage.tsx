@@ -24,7 +24,7 @@ const ProfilePage = () => {
 
 	useEffect(() => {
 		loadPosts();
-	}, []);
+	}, [user]);
 	
 	return (
 		<div className="profile-page">
@@ -74,7 +74,7 @@ const ProfilePage = () => {
 						<button className="regular-btn" onClick={() => setShowPostModal(true)}>
 						Post an outfit
 						</button>
-						<UserPostsList posts = {posts} />
+					<UserPostsList posts = {posts} onPostDeleted={loadPosts} />
 					</div>
 				</div>
 			</div>

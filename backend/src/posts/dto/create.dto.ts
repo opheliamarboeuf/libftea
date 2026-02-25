@@ -4,7 +4,7 @@ export class PostsDto {
 
 	@IsString()
 	@IsNotEmpty()
-	@MaxLength(65, {message: "The title must be 65 characters or less"})
+	@MaxLength(50, {message: "The title must be 65 characters or less"})
 	title: string
 
 	@IsString()

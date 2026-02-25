@@ -32,11 +32,10 @@ const FeedPage = () => {
 		</h1>
 
 		<div className='posts-list'>
-			<UserPostsList posts={usersPosts} />
+			<UserPostsList posts={usersPosts} onPostDeleted={loadPosts} />
 		</div>
 	</div>
 	);
-
 };
 
 export default FeedPage;
