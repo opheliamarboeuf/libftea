@@ -17,12 +17,11 @@ export function BlockFriendButton({ userId }: Props) {
     const [showConfirm, setShowConfirm] = useState(false);
     
 	useEffect(() => {
-		if (user?.blockedUsers?.includes(userId)) {
-			setBlockSent(true);
-		} else {
-			setBlockSent(false);
-		}
-	}, [userId, userId]);
+		const isBlocked = user?.blockedUsers?.some(
+			u => u.id === userId
+		) ?? false;
+		setBlockSent(isBlocked);
+	}, [userId, user]);
 
     const handleClick = async () => {
         setLoading(true);

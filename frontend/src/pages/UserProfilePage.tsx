@@ -6,6 +6,8 @@ import { useUser } from "../context/UserContext";
 import { friendsApi } from "../friends/api";
 import { useModal } from "../context/ModalContext";
 import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
+import { BlockFriendButton } from "../friends/BlockFriendButton";
+import { RemoveFriendButton } from "../friends/RemoveFriendButton";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -32,8 +34,7 @@ const UserProfilePage = () => {
 	const { user, refreshUser } = useUser();
 	const navigate = useNavigate();
 	const { showModal } = useModal();
-	const [showDeleteConfirm, setShowDeleteConfirm] = useState();
-	const [showBlockConfirm, setShowBlockConfirm] = useState();
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
@@ -140,21 +141,6 @@ const UserProfilePage = () => {
 		}
 	};
 
-	const handleBlock = async () => {
-        try {
-            await friendsApi.blockFriend(userData.id);
-            await refreshUser();
-			await fetchProfile();
-            showModal("Friend blocked");
-        } catch (error) {
-            console.error('Error:', error);
-            showModal("Failed to block friend");
-        } finally {
-            setLoading(false);
-            setShowBlockConfirm(false);
-        }
-    }
-
 	const renderFriendshipButton = () => {
 		if (!userData) return null;
 
@@ -236,16 +222,7 @@ const UserProfilePage = () => {
 						<span>Posts: 5</span>
 					</div>
 					<div className="block-user">
-						<button onClick={() => setShowBlockConfirm(true)} disabled={loading}>
-							Block user
-						</button>
-						{showBlockConfirm && (
-							<ConfirmBlockDelete
-								message="Are you sure you want to block this user?"
-								onYes={handleBlock}
-								onNo={() => setShowBlockConfirm(false)}
-							/>
-						)}
+						<BlockFriendButton userId={userData.id} />
 					</div>
 
 					<div className="bio">

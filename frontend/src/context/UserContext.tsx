@@ -7,6 +7,12 @@ export type Friend = {
 	avatarUrl: string | null;
 };
 
+export type Blocked = {
+	id: number;
+	username: string;
+	avatarUrl: string | null;
+}
+
 // Defines the shape of a user object
 export type User = {
 	id: number;
@@ -22,7 +28,7 @@ export type User = {
 	};
 	friends: Friend[];
 	pendingRequests: Friend[];
-	blockedUsers: number[];
+	blockedUsers: Blocked[];
 };
 // Defines the shape of the context, meaning the fields the context must contain
 interface UserContextType {

@@ -1,4 +1,4 @@
-import { FriendsList, PendingRequests } from "../friends";
+import { FriendsList, PendingRequests, BlockedList } from "../friends";
 import "./FriendsPage.css"
 const FriendsPage = () => {
 	return (
@@ -10,6 +10,11 @@ const FriendsPage = () => {
 			<hr/>
 			
 			<FriendsList />
+
+			<hr/>
+
+			<BlockedList />
+
 		</div>
 	);
 };

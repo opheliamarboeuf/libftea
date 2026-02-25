@@ -198,8 +198,8 @@ export class FriendsService {
 		const existing = await this.prisma.friendship.findFirst({
 			where: {
 				OR: [
-					{ requesterId: userId, addresseId: friendId },
-					{ requesterId: friendId, addresseId: userId },
+					{ requesterId: userId, addresseId: targetId },
+					{ requesterId: targetId, addresseId: userId },
 				],
 			},
 		});
@@ -211,29 +211,46 @@ export class FriendsService {
 			});
 		} else {
 			await this.prisma.friendship.create({
-				where: { id: existing.id },
-				data: { status: 'BLOCKED' },
+				data: { 
+					requesterId: userId,
+					addresseId: targetId,
+					status: 'BLOCKED',
+				},
 			});
 		}
 	}
 
-	async unBlockFriend(userId: number, friendId: number): Promise<void> {
-		const friendship = await this.prisma.friendship.findFirst({
+	async unBlockFriend(userId: number, targetId: number): Promise<void> {
+		const blocked = await this.prisma.friendship.findFirst({
 			where: {
 				status: 'BLOCKED',
 				OR: [
-					{ requesterId: userId, addresseId: friendId },
-					{ requesterId: friendId, addresseId: userId },
+					{ requesterId: userId, addresseId: targetId },
+					{ requesterId: targetId, addresseId: userId },
 				],
 			},
 		});
 
-		if (!friendship) {
-			throw new BadRequestException('Friendship does not exist');
+		if (!blocked) {
+			throw new BadRequestException('No block relation found');
 		}
 
 		await this.prisma.friendship.delete({
-			where: { id: friendship.id },
+			where: { id: blocked.id },
 		});
+	}
+
+	async getBlockedUsers(userId: number) {
+		const blocked = await this.prisma.friendship.findMany({
+			where: {
+				requesterId: userId,
+				status: 'BLOCKED',
+			},
+			include: {
+				addresse: true,
+			},
+		});
+
+		return blocked.map(b => b.addresse);
 	}
 }
