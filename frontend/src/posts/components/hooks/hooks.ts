@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { postsApi } from "../../api";
-import { PostPayload } from "../../types";
 
-const MAX_TITLE_LENGTH = 120;
+const MAX_TITLE_LENGTH = 65;
 const MAX_CAPTION_LENGTH = 500;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -65,6 +64,11 @@ export function usePostCreation() {
 
 		if (caption.length > MAX_CAPTION_LENGTH) {
 			setErrorMessage(`Caption cannot exceed ${MAX_CAPTION_LENGTH} characters`);
+			return false;
+		}
+
+		if (!imageFile) {
+			setErrorMessage("Please select an image to upload");
 			return false;
 		}
 
