@@ -23,7 +23,7 @@ export function usePostCreation() {
 		return null;
 	};
 	
-		const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0] || null;
 		if (file) {
 			const error = validateImage(file, "Post picture");
@@ -111,37 +111,5 @@ export function usePostCreation() {
 		MAX_CAPTION_LENGTH,
 		handleImageChange,
 		handlePostCreation,
-	}
-}
-
-export function usePostDeletion() {
-	const [isDeleting, setIsDeleting] = useState(false);
-	const [errorMessage, setErrorMessage] = useState<string | null>(null);
-	
-	const handlePostDeletion = async (postId: number): Promise<boolean> => {
-
-		setIsDeleting(true);
-		try {
-			await postsApi.deletePost(postId);
-			setErrorMessage(null);
-			return true;
-		}
-		catch (error) {
-			if (error instanceof Error) {
-				setErrorMessage(error.message);
-			}
-			else {
-				setErrorMessage("Server unreachable");
-			}
-			return false
-		}
-		finally{
-			setIsDeleting(false);
-		}
-	}
-	return {
-		errorMessage,
-		isDeleting,
-		handlePostDeletion,
 	}
 }

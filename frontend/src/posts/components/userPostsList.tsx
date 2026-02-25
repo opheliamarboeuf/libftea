@@ -3,9 +3,7 @@ import { Post, useUser } from "../../context/UserContext";
 import { API_URL } from "../../profile";
 import { FaArrowUp, FaArrowDown, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
-import { usePostDeletion } from "./hooks/hooks";
-import { useModal } from "../../context/ModalContext";
+import { usePostMenu } from "./hooks/usePostMenu";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 
 interface UserPostsListProps {
@@ -17,87 +15,23 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 	if (!Array.isArray(posts)) return null;
     
 	const navigate = useNavigate();
-	const goToProfile = (userId: number) => {
-		navigate(`/users/${userId}`);
-	}
+	const { user } = useUser();
 	
 	const {
+		openMenuId,
 		isDeleting,
-		handlePostDeletion,
-	} = usePostDeletion();
+		menuRef,
+		showConfirm,
+		toggleMenu,
+		handleEdit,
+		confirmDelete,
+		cancelDelete,
+		handleReport,
+		setPostToDelete,
+	} = usePostMenu(onPostDeleted);
 
-	const { user, setUser } = useUser();
-	const { showModal } = useModal();
-
-	const [openMenuId, setOpenMenuId] = useState<number | null>(null);
-  	const [postToDelete, setPostToDelete] = useState<number | null>(null);
-	
-	const showConfirm = postToDelete !== null;
-	// Detect clicks outside of the  menu
-	const menuRef = useRef<HTMLDivElement>(null);
-
-	// Function called whenever the user clicks anywhere on the page
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			// If the menu exists and the clicked element is NOT inside the menu
-			if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-				// Close the menu
-				setOpenMenuId(null);
-			}
-		};
-		// Add an event listener for mouse clicks
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => {
-			// Cleanup function: remove the event listener when component unmounts
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
-	}, []);
-
-
-	const toggleMenu = (postId: number) => {
-		setOpenMenuId(openMenuId === postId ? null : postId);
-	};
-
-	const handleEdit = (postId: number) => {
-		console.log("Edit post", postId);
-		setOpenMenuId(null);
-	};
-
-	const handleDelete = async (postId: number) => {
-		const success = await handlePostDeletion(postId);
-		if (success && user){
-			// Create a new table without the deleted post
-			const updatePosts = user.posts.filter(p => p.id !== postId);
-			setUser({
-				...user, 
-				posts: updatePosts,
-			})
-			setOpenMenuId(null);
-			showModal("You post has been deleted")
-			// Notify parent component to refresh
-			if (onPostDeleted) {
-				onPostDeleted();
-			}
-		}
-		else {
-			showModal("Failed to delete post");
-		}
-	};
-
-	const confirmDelete = async () => {
-		if (postToDelete === null)
-			return;
-		await handleDelete(postToDelete)
-		setPostToDelete(null);
-	}
-
-	const cancelDelete = () => {
- 		setPostToDelete(null);
-	};
-
-	const handleReport = (postId: number) => {
-		console.log("Report post", postId);
-		setOpenMenuId(null);
+	const goToProfile = (userId: number) => {
+		navigate(`/users/${userId}`);
 	};
 
 	return (
@@ -118,7 +52,6 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				{new Date(post.createdAt).toLocaleString()}
 			</span>
 			</div>
-
 			{/* Post menu */}
 			<div className="post-menu" ref={openMenuId === post.id ? menuRef : null} >
 				<FaEllipsisV onClick={() => toggleMenu(post.id)} />
@@ -141,7 +74,6 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				)}
 			</div>
 		</div>
-
 		{/* Image + comments row */}
 		<div className="post-content">
 			<div className="post-image">
@@ -151,14 +83,12 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 			<div className="post-comments">Comments placeholder</div>
 			</div>
 		</div>
-
 		{/* Caption */}
 		{post.caption && (
 			<div className="post-caption">
 			<p>{post.caption}</p>
 			</div>
 		)}
-
 		<div className="post-footer">
 			<div className="interactions">
 			<button><FaArrowUp /></button>
