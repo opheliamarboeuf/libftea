@@ -65,12 +65,12 @@ export class PostsController {
 					throw new NotFoundException('Post not found');
 			if (post.authorId !== req.user.id) {
 				throw new ForbiddenException('You cannot delete this post');
+			}
 			if (post.imageUrl) {
 				await this.postService.deletePostImage(post.imageUrl);
 			}
 			return this.postService.deletePost(id);
 		}
-	}
 
 	@Put('edit/:id')
 		async editPost(
@@ -83,7 +83,7 @@ export class PostsController {
 					throw new NotFoundException('Post not found');
 			if (post.authorId !== req.user.id) {
 				throw new ForbiddenException('You cannot edit this post');
+			}
 			return this.postService.editPost(id, dto);
 		}
-	}
 }

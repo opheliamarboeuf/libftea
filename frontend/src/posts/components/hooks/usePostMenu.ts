@@ -6,16 +6,18 @@ import { useModal } from "../../../context/ModalContext";
 export interface UsePostMenuResult {
 	openMenuId: number | null;
 	postToDelete: number | null;
+	postToEdit: any | null;
 	isDeleting: boolean;
 	menuRef: React.RefObject<HTMLDivElement>;
 	showConfirm: boolean;
 	toggleMenu: (postId: number) => void;
-	handleEdit: (postId: number) => void;
+	handleEdit: (post: any) => void;
 	handleDelete: (postId: number) => Promise<void>;
 	confirmDelete: () => Promise<void>;
 	cancelDelete: () => void;
 	handleReport: (postId: number) => void;
 	setPostToDelete: (postId: number | null) => void;
+	closeModal: () => void;
 }
 
 export function usePostMenu(onPostDeleted?: () => void): UsePostMenuResult {
@@ -25,6 +27,7 @@ export function usePostMenu(onPostDeleted?: () => void): UsePostMenuResult {
 
 	const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 	const [postToDelete, setPostToDelete] = useState<number | null>(null);
+	const [postToEdit, setPostToEdit] = useState<any | null>(null);
 	const menuRef = useRef<HTMLDivElement>(null);
 
 	const showConfirm = postToDelete !== null;
@@ -50,8 +53,8 @@ export function usePostMenu(onPostDeleted?: () => void): UsePostMenuResult {
 		setOpenMenuId(openMenuId === postId ? null : postId);
 	};
 
-	const handleEdit = (postId: number) => {
-		console.log("Edit post", postId);
+	const handleEdit = (post: any) => {
+		setPostToEdit(post);
 		setOpenMenuId(null);
 	};
 
@@ -76,7 +79,8 @@ export function usePostMenu(onPostDeleted?: () => void): UsePostMenuResult {
 	};
 
 	const confirmDelete = async () => {
-		if (postToDelete === null) return;
+		if (postToDelete === null)
+			return;
 		await handleDelete(postToDelete);
 		setPostToDelete(null);
 	};
@@ -90,9 +94,14 @@ export function usePostMenu(onPostDeleted?: () => void): UsePostMenuResult {
 		setOpenMenuId(null);
 	};
 
+	const closeModal = () => {
+		setPostToEdit(null);
+	};
+
 	return {
 		openMenuId,
 		postToDelete,
+		postToEdit,
 		isDeleting,
 		menuRef,
 		showConfirm,
@@ -103,5 +112,6 @@ export function usePostMenu(onPostDeleted?: () => void): UsePostMenuResult {
 		cancelDelete,
 		handleReport,
 		setPostToDelete,
+		closeModal,
 	};
 }

@@ -5,6 +5,7 @@ import { FaArrowUp, FaArrowDown, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostMenu } from "./hooks/usePostMenu";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
+import { EditPostModal } from "./EditPostModal";
 
 interface UserPostsListProps {
 	posts: Post[];
@@ -28,6 +29,8 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		cancelDelete,
 		handleReport,
 		setPostToDelete,
+		postToEdit,
+		closeModal,
 	} = usePostMenu(onPostDeleted);
 
 	const goToProfile = (userId: number) => {
@@ -59,7 +62,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 					<div className="menu-dropdown">
 						{post.author.id === user.id ? (
 							<>
-								<button onClick={() => handleEdit(post.id)}>Edit</button>
+								<button onClick={() => handleEdit(post)}>Edit</button>
 								<button 
 									onClick={() => setPostToDelete(post.id)}
 									disabled={isDeleting}
@@ -100,6 +103,13 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		</div>
 		</div>
 	))}
+		{postToEdit && (
+			<EditPostModal 
+				post={postToEdit} 
+				onPostEdited={onPostDeleted} 
+				onClose={closeModal}
+			/>
+		)}
 		{showConfirm && (
 			<ConfirmDialog
 				message="Are you sure you want to delete your post?"

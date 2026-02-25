@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Post } from "../../../context/UserContext";
+import { Post, useUser } from "../../../context/UserContext";
 import { postsApi } from "../../api";
 import { PostEditPayload } from "../../types";
 
@@ -7,6 +7,7 @@ const MAX_TITLE_LENGTH = 50;
 const MAX_CAPTION_LENGTH = 500;
 
 export function usePostEdition(post: Post, onPostEdited: () => void) {
+	const { user, setUser } = useUser();
 	
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -44,6 +45,18 @@ export function usePostEdition(post: Post, onPostEdited: () => void) {
 			setTitle(updatedPost.title);
 			setCaption(updatedPost.caption || "");
 			setErrorMessage(null);
+			
+			// Update the user context with the new post
+			if (user) {
+				const updatedPosts = user.posts.map(p => 
+					p.id === post.id ? updatedPost : p
+				);
+				setUser({
+					...user,
+					posts: updatedPosts,
+				});
+			}
+			
 			return updatedPost;
 		}
 		catch (error) {
