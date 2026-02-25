@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PostsDto } from "./dto/create.dto";
+import { UpdatePostDto } from "./dto/update.dto";
 import { join } from "path";
 import { unlink } from "fs/promises";
 
@@ -26,6 +27,26 @@ export class PostsService {
 		{
 			console.log("Error creating post:", error);
 			throw new InternalServerErrorException("Could not create post");
+		}
+	}
+
+	async editPost(postId:number, dto: UpdatePostDto) {
+		try { 
+			const dataToUpdate: any = {};
+			if (dto.title !== undefined)
+				dataToUpdate.title = dto.title;
+			if (dto.caption !== undefined)
+					dataToUpdate.caption = dto.caption;
+
+			const updatedPost = await this.prisma.post.update({
+				where: { id: postId },
+				data: dataToUpdate,
+			});
+			return (updatedPost);
+		}
+		catch (error) {
+			console.log("Error editing post:", error);
+			throw new InternalServerErrorException("Could not edit post");
 		}
 	}
 

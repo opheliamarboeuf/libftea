@@ -1,4 +1,5 @@
 import { Post } from '../context/UserContext';
+import { PostEditPayload } from './types';
 
 const API_URL = "http://localhost:3000";
 
@@ -45,6 +46,25 @@ export const postsApi = {
 			throw new Error(message);
 		}
 		return true;
+	},
+
+	updatePost: async (postId: number, payload: PostEditPayload):  Promise<Post> => {
+			const res = await fetch(`${API_URL}/posts/edit/${postId}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+			body: JSON.stringify(payload),
+		});
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || "Post creation failed";
+			throw new Error(message);
+		}
+		return data;
 	},
 
 	fetchUserPosts:  async (userId: number): Promise<Post[]>  => {

@@ -1,4 +1,4 @@
-import { Controller, UseGuards, UseInterceptors, Post, Body, Get, Req, UploadedFile, BadRequestException, ParseIntPipe, Param, Delete, NotFoundException} from '@nestjs/common';
+import { Controller, UseGuards, UseInterceptors, Post, Body, Get, Req, Put, UploadedFile, BadRequestException, ForbiddenException, ParseIntPipe, Param, Delete, NotFoundException} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { PostsService } from './posts.service';
@@ -6,6 +6,7 @@ import { PostsDto } from './dto/create.dto';
 import { ImageResizeService } from 'src/common/service/image-resize.service';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { UpdatePostDto } from './dto/update.dto';
 
 @Controller('posts')
 @UseGuards(JwtAuthGuard)
@@ -54,13 +55,35 @@ export class PostsController {
 		}
 	
 	@Delete('delete/:id')
-		async deletePost(@Param('id', ParseIntPipe) id: number) {
+		async deletePost(
+			@Param('id', ParseIntPipe) id: number,
+			@Req() req: Request & { user: { id: number }},
+
+		) {
 			const post = await this.postService.getPostById(id);
 			if (!post)
 					throw new NotFoundException('Post not found');
+			if (post.authorId !== req.user.id) {
+				throw new ForbiddenException('You cannot delete this post');
 			if (post.imageUrl) {
 				await this.postService.deletePostImage(post.imageUrl);
 			}
 			return this.postService.deletePost(id);
 		}
+	}
+
+	@Put('edit/:id')
+		async editPost(
+			@Param('id', ParseIntPipe) id: number,
+			@Body() dto: UpdatePostDto,
+			@Req() req: Request & { user: { id: number }},	
+	) {
+			const post = await this.postService.getPostById(id);
+			if (!post)
+					throw new NotFoundException('Post not found');
+			if (post.authorId !== req.user.id) {
+				throw new ForbiddenException('You cannot edit this post');
+			return this.postService.editPost(id, dto);
+		}
+	}
 }

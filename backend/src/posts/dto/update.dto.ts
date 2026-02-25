@@ -1,9 +1,9 @@
-import { IsString, IsOptional, MaxLength, IsNotEmpty } from "class-validator";
+import { IsString, IsOptional, MaxLength } from "class-validator";
 
-export class PostsDto {
+export class UpdatePostDto {
 
 	@IsString()
-	@IsNotEmpty()
+	@IsOptional()
 	@MaxLength(50, {message: "The title must be 65 characters or less"})
 	title: string
 
@@ -11,9 +11,5 @@ export class PostsDto {
 	@IsOptional()
 	@MaxLength(500, {message: "The caption must be 500 characters or less"})
 	caption?: string
-
-	@IsString()
-	@IsOptional()
-  	imageUrl?: string;
 }
 
