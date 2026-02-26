@@ -34,7 +34,6 @@ datasource db {
 
 // @ symbols are Prisma directives > they define rules that apply to the column
 model User {
-<<<<<<< HEAD
 	id			Int     	@id @default(autoincrement())	//@id > clé primaire de la table 
 	//	Each table MUST have a primary key. This key uniquely identifies each row.
 	email		String  	@unique
@@ -42,14 +41,6 @@ model User {
 	password 	String
 	createdAt	DateTime	@default(now())
 	updatedAt	DateTime	@default(now()) @updatedAt
-=======
-    id			Int			@id @default(autoincrement())	//@id > clé primaire de la table 
-    //	Each table MUST have a primary key. This key uniquely identifies each row.
-    email		String  	@unique
-    username	String		@unique
-    password 	String
-    createdAt	DateTime	@default(now())
->>>>>>> 184a44f (creation battle)
 
     role	Role	@default(USER)
 

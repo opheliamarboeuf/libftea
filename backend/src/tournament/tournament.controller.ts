@@ -8,6 +8,8 @@ export class TournamentController {
 	// on le stocke dans une variable privee tournamentService de type TournamentService
 	// readonly pour ne pas la modifier, provate pour que la variable soit accessible seulement dans cette classe
 	constructor(private readonly tournamentService: TournamentService) {}
+
+	// @Roles('ADMIN')
 	@Post()
 	// @Body() on prend le corps de la requete HTTP
 	// data = nom de la variable, any = type TS 
