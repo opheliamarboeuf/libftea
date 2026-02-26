@@ -1,7 +1,7 @@
 import "./UserPostsList.css";
 import { Post, useUser } from "../../context/UserContext";
 import { API_URL } from "../../profile";
-import { FaArrowUp, FaArrowDown, FaEllipsisV } from "react-icons/fa";
+import { FaHeart, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostMenu } from "./hooks/usePostMenu";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
@@ -98,11 +98,10 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		)}
 		<div className="post-footer">
 			<div className="interactions">
-			<button><FaArrowUp /></button>
-			<button><FaArrowDown /></button>
+			<button><FaHeart /></button>
 			</div>
 			<div className="counters">
-			<span className="count">0 Upvotes </span>
+			<span className="count">0 Likes </span>
 			</div>
 		</div>
 		</div>

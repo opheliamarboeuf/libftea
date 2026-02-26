@@ -25,6 +25,9 @@ const FeedPage = () => {
 							<span className="expand-btn-text">Post an outfit</span>
 						</button>
 					<div className="feed-tabs">
+						<div
+							className={`tab-indicator ${feedType === "friends" ? "right" : ""}`}
+						/>
 						<button className={feedType === "all" ? "active" : ""} onClick={() => setFeedType("all")}>Discover</button>
 						<button className={feedType === "friends" ? "active" : ""} onClick={() => setFeedType("friends")}>Friends</button>
 					</div>

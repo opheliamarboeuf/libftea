@@ -86,7 +86,7 @@ html, body {
 }
 
 /* Display text */
-.expand-btn:hover .expand-btn-text{
+.expand-btn:hover .expand-btn-text {
 	opacity: 1;
 }
 
