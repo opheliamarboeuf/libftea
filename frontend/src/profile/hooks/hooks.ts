@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { profileApi } from "./api";
-import { useUser } from "../context/UserContext";
+import { profileApi } from "../api";
+import { useUser } from "../../context/UserContext";
 
 const MAX_BIO_LENGTH = 400;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
