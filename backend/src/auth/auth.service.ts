@@ -164,7 +164,13 @@ export class AuthService {
 			},
 			include: {
 				addresse: {
-					select: { id: true, username: true}
+					select: {
+						id: true,
+						username: true,
+						profile: {
+							select: { avatarUrl: true }
+						}
+					}
 				}
 			}
 		});
@@ -172,6 +178,7 @@ export class AuthService {
 		const blockedUsers = blocked.map((f) => ({
 			id: f.addresse.id,
 			username: f.addresse.username,
+			avatarUrl: f.addresse.profile?.avatarUrl,
 		}));
 
 		return {
