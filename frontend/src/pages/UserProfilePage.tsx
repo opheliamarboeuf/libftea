@@ -7,7 +7,6 @@ import { friendsApi } from "../friends/api";
 import { useModal } from "../context/ModalContext";
 import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
 import { BlockFriendButton } from "../friends/BlockFriendButton";
-import { RemoveFriendButton } from "../friends/RemoveFriendButton";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
