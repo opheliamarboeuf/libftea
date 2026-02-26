@@ -96,6 +96,7 @@ export class PostsService {
 				caption: true,
 				imageUrl: true,
 				createdAt: true,
+				updatedAt: true,
 				author: {
 					select: {
 						id: true, 

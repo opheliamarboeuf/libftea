@@ -100,6 +100,7 @@ export class UsersService {
 				caption: true,
 				imageUrl: true,
 				createdAt: true,
+				updatedAt: true,
 				author: {
 					select: {
 						id: true, 

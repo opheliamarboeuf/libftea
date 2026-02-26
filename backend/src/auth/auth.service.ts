@@ -101,6 +101,7 @@ export class AuthService {
 						caption: true,
 						imageUrl : true,
 						createdAt: true,
+						updatedAt: true,
 					},
 					orderBy: { createdAt: 'desc'}
 				},
