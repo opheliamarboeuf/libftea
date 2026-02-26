@@ -41,11 +41,11 @@
   margin-bottom: 3px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 10px;
 }
 
 .post-author {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: #555;
   font-weight: 500;
   cursor: pointer;
@@ -101,7 +101,7 @@
 }
 
 .menu-dropdown button:hover {
-  background-color: #f5f5f5;
+  background-color: #f0f0f0;
 }
 
 /* Post content area: image + caption/comments */
@@ -169,29 +169,20 @@
 }
 
 .post-footer button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 5px 10px;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   cursor: pointer;
   border: none;
-  background-color: transparent;
-  color: rgb(255, 144, 163);
+  border-radius: 5px;
+  background-color: #000000a3;
   transition: background-color 0.2s;
 }
 
 .post-footer button:hover {
-  color: rgb(255, 110, 134);
-}
-
-.post-footer button:focus {
-  outline: none;
-  box-shadow: none;
+  background-color: #ddd;
 }
 
 .count {
   font-size: 0.85rem;
   color: #555;
-  margin-right: 15px;
 }

@@ -1,11 +1,10 @@
 import "./UserPostsList.css";
 import { Post, useUser } from "../../context/UserContext";
 import { API_URL } from "../../profile";
-import { FaHeart, FaEllipsisV } from "react-icons/fa";
+import { FaArrowUp, FaArrowDown, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostMenu } from "./hooks/usePostMenu";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
-import { EditPostModal } from "./EditPostModal";
 
 interface UserPostsListProps {
 	posts: Post[];
@@ -29,8 +28,6 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		cancelDelete,
 		handleReport,
 		setPostToDelete,
-		postToEdit,
-		closeModal,
 	} = usePostMenu(onPostDeleted);
 
 	const goToProfile = (userId: number) => {
@@ -49,14 +46,10 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				className="post-author"
 				onClick={() => goToProfile(post.author.id)}
 			>
-				{post.author.username},
+				{post.author.username}
 			</span>
 			<span className="post-date">
-			{
-				post.updatedAt && post.updatedAt !== post.createdAt
-				? `edited ${new Date(post.updatedAt).toLocaleString()}`
-				: `created ${new Date(post.createdAt).toLocaleString()}`
-			}
+				{new Date(post.createdAt).toLocaleString()}
 			</span>
 			</div>
 			{/* Post menu */}
@@ -66,7 +59,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 					<div className="menu-dropdown">
 						{post.author.id === user.id ? (
 							<>
-								<button onClick={() => handleEdit(post)}>Edit</button>
+								<button onClick={() => handleEdit(post.id)}>Edit</button>
 								<button 
 									onClick={() => setPostToDelete(post.id)}
 									disabled={isDeleting}
@@ -98,21 +91,15 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		)}
 		<div className="post-footer">
 			<div className="interactions">
-			<button><FaHeart /></button>
+			<button><FaArrowUp /></button>
+			<button><FaArrowDown /></button>
 			</div>
 			<div className="counters">
-			<span className="count">0 Likes </span>
+			<span className="count">0 Upvotes </span>
 			</div>
 		</div>
 		</div>
 	))}
-		{postToEdit && (
-			<EditPostModal 
-				post={postToEdit} 
-				onPostEdited={onPostDeleted} 
-				onClose={closeModal}
-			/>
-		)}
 		{showConfirm && (
 			<ConfirmDialog
 				message="Are you sure you want to delete your post?"
