@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { FriendsModule } from './friends/friends.module';
 import { UsersModule } from './user/users.module';
 import { ProfileModule } from './profile/profile.module';
+import { TournamentModule } from './tournament/tournament.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProfileModule } from './profile/profile.module';
 	FriendsModule,
 	UsersModule,
 	ProfileModule,
+	TournamentModule,
   ],
   controllers: [AppController], 
   providers: [
