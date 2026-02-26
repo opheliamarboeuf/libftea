@@ -20,7 +20,7 @@ export function BlockedList() {
 				}}
 				>
 				<Link
-					to={`/users/${blocked}`}
+					to={`/users/${blocked.id}`}
 					style={{ textDecoration: "none", color: "inherit" }}
 				>
 					{blocked.username}

@@ -11,8 +11,8 @@ export class UsersController {
 	) {}
 
 	@Get('search')
-	async searchUsers(@Query('username') username: string) {
-		return this.usersService.searchUsername(username);
+	async searchUsers(@Query('username') username: string, @Req() req) {
+		return this.usersService.searchUsername(username, req.user.id);
 	}
 
 	@Get(':id')

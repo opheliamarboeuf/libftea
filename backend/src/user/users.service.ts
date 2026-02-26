@@ -7,13 +7,31 @@ export class UsersService {
 		private readonly prisma: PrismaService,
 	) {}
 
-	async searchUsername(username: string) {
+	async searchUsername(username: string, currentId: number) {
+		const blocked = await this.prisma.friendship.findMany({
+			where: {
+				status: 'BLOCKED',
+				OR: [
+					{ requesterId: currentId },
+					{ addresseId: currentId },
+				],
+			},
+			select: {
+				requesterId: true,
+			}
+		});
+
+		const blockedIds = blocked.map(f => f.requesterId);
+
 		return this.prisma.user.findMany({
 			where: {
 				username: {
 					contains: username,
 					mode: 'insensitive',
 				},
+				NOT: {
+					id: {in: blockedIds },
+				}
 			},
 			select: {
 				id: true,

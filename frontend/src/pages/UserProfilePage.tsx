@@ -222,7 +222,7 @@ const UserProfilePage = () => {
 						<span>Posts: 5</span>
 					</div>
 					<div className="block-user">
-						<BlockFriendButton userId={userData.id} />
+						<BlockFriendButton userId={userData.id} onAction={fetchProfile} />
 					</div>
 
 					<div className="bio">

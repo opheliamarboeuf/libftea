@@ -160,20 +160,19 @@ export class AuthService {
 		const blocked = await this.prisma.friendship.findMany({
 			where: {
 				status: 'BLOCKED',
-				OR: [
-					{ requesterId: userId },
-					{ addresseId: userId },
-				],
+				requesterId: userId,
 			},
-			select: {
-				requesterId: true,
-				addresseId: true,
-			},
+			include: {
+				addresse: {
+					select: { id: true, username: true}
+				}
+			}
 		});
 
-		const blockedUsers = blocked.map((f) =>
-			f.addresseId === userId ? f.addresseId : f.requesterId
-		);
+		const blockedUsers = blocked.map((f) => ({
+			id: f.addresse.id,
+			username: f.addresse.username,
+		}));
 
 		return {
 			...user,

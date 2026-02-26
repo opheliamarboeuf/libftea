@@ -207,7 +207,11 @@ export class FriendsService {
 		if (existing) {
 			await this.prisma.friendship.update({
 				where: { id: existing.id },
-				data: { status: 'BLOCKED' },
+				data: { 
+					status: 'BLOCKED',
+					requesterId: userId,
+					addresseId: targetId,
+				},
 			});
 		} else {
 			await this.prisma.friendship.create({
