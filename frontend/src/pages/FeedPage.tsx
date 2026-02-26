@@ -25,8 +25,8 @@ const FeedPage = () => {
 							<span className="expand-btn-text">Post an outfit</span>
 						</button>
 					<div className="feed-tabs">
-						<button className={feedType === "all" ? "active" : ""} onClick={() => setFeedType("all")}>All Posts</button>
-						<button className={feedType === "friends" ? "active" : ""} onClick={() => setFeedType("friends")}>My Friends Posts</button>
+						<button className={feedType === "all" ? "active" : ""} onClick={() => setFeedType("all")}>Discover</button>
+						<button className={feedType === "friends" ? "active" : ""} onClick={() => setFeedType("friends")}>Friends</button>
 					</div>
 				</div>
 			</div>

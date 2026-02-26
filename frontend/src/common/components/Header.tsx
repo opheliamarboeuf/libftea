@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../../context/UserContext";
 import { SearchBar } from "./SearchBar";
 import "./Header.css"
-import "../App.css"
+import "../../App.css"
 
 export const Header = () => {
 	const navigate = useNavigate();
