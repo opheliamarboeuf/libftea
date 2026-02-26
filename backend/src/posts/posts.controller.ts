@@ -53,6 +53,11 @@ export class PostsController {
 		async getUserPosts(@Req() req: Request & { user: { id: number } }){
 			return this.postService.getUserPosts(req.user.id);
 		}
+
+	@Get('friends')
+		async getFriendsPosts(@Req() req: Request & { user: { id: number } }){
+			return this.postService.getFriendsPosts(req.user.id);
+		}
 	
 	@Delete('delete/:id')
 		async deletePost(

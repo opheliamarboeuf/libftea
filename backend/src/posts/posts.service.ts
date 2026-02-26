@@ -108,4 +108,37 @@ export class PostsService {
 		})
 		return (userPosts)
 	}
+
+	async getFriendsPosts(userId: number) {
+		//  Get all friendships where the status is ACCEPTED
+		const friendships = await this.prisma.friendship.findMany({
+			where: {
+				status: 'ACCEPTED',
+				OR: [
+					{ requesterId: userId }, // user sent the friend request
+					{ addresseId: userId }, // user received the friend request
+				]
+			},
+			select: {
+				requesterId: true, 
+				addresseId: true
+			}
+		});
+		
+		// Convert friendships to a list of friend IDs
+  		// If the user is the requester, the friend is the addressee, and vice versa
+		const friendIds = friendships.map(f => 
+			f.requesterId === userId ? f.addresseId : f.requesterId
+		);
+		
+		if (friendIds.length === 0)
+			return [];
+
+		// Fetch posts authored by these friends
+		return this.prisma.post.findMany({
+			where: { authorId: { in: friendIds } },
+			orderBy: { createdAt: 'desc' },
+			include: { author: true },
+ 	 });
+	}
 }
