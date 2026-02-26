@@ -20,6 +20,75 @@ html, body {
 	background-color: rgba(107, 107, 107, 0.576);
 }
 
+/* Expansion */
+
+.expand-btn {
+	width: 50px;
+	height: 50px;
+	border-radius: 50px;
+	border: none;
+
+	background-color: #b1b1b1;
+	color: white;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	cursor: pointer;
+	overflow: hidden;
+	position: relative;
+
+	transition: width 0.4s ease;
+}
+
+.expand-btn-right {
+	margin-right: auto;
+}
+
+.expand-btn-right:hover {
+	width: 190px;
+}
+
+.expand-btn-left {
+	margin-left: auto;
+}
+
+.expand-btn-left:hover {
+	width: 190px;
+}
+
+.expand-btn:hover {
+	width: 190px;
+}
+
+/* Icon */
+.expand-btn .icon {
+	font-size: 18px;
+	transition: opacity 0.3s ease;
+	color: white;
+}
+
+/* Hide icon */
+.expand-btn:hover .icon {
+	opacity: 0;
+}
+
+/* Text */
+.expand-btn .expand-btn-text {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	text-align: center;
+	opacity: 0;
+	font-size: 0.9rem;
+	transition: opacity 0.3s ease;
+}
+
+/* Display text */
+.expand-btn:hover .expand-btn-text{
+	opacity: 1;
+}
 
 /* Form */
 form {

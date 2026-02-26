@@ -143,6 +143,10 @@
 	background-color: rgba(107, 107, 107, 0.302);
 }
 
+/* Post an outfout button */
+.expand-btn-right {
+	margin-left: 30px; 
+}
 
 /* Main content */
 .main-content {

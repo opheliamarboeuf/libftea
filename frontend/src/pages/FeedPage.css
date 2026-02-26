@@ -7,5 +7,68 @@
 	width: calc(100vw - 60px);
 	height: calc(100vh - 50px);
 	color: black;
+	align-items: center;
 	overflow-y: auto
 }
+
+.feed-header {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 10px 20px;
+	margin-top: 10px;
+}
+
+.page-name {
+	position: absolute;
+	left: 5vw; 
+	font-size: 30px;
+	font-weight: bold;
+}
+/* Tabs + btn */
+.feed-center {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.feed-tabs {
+	display: flex;
+	gap: 0;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.feed-tabs button {
+	background-color: white;
+	border: none;
+	padding: 10px 20px;
+	font-size: 0.95rem;
+	cursor: pointer;
+	position: relative;
+	color: black;
+	border-radius: 0;
+	transition: background-color 0.2s ease, color 0.2s ease;
+	outline: none;
+	min-width: 140px;
+}
+
+.feed-tabs button:first-child {
+	border-radius: 8px 0 0 8px;
+}
+
+.feed-tabs button:last-child {
+	border-radius: 0 8px 8px 0;
+}
+
+.feed-tabs button:hover {
+	background-color: #f0f0f0;
+}
+
+.feed-tabs button.active {
+	background-color: #f0f0f0;
+	font-weight: 600;
+}
+

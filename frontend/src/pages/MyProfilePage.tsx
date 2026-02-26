@@ -7,7 +7,7 @@ import { EditProfileModal, API_URL } from "../profile";
 import { CreatePostModal } from "../posts/components/CreatePostModal";
 import { Post } from "../context/UserContext";
 import { fetchUserPosts } from "../posts/components/fetchUserPosts";
-import { UserPostsList } from "../posts/components/userPostsList";
+import { UserPostsList } from "../posts/components/UserPostsList";
 
 const ProfilePage = () => {
 	const { user } = useUser();
@@ -48,7 +48,7 @@ const ProfilePage = () => {
 					<p className="display-username">{user.username}</p>
 					<div className="stats">
 						<span>Friends: {user.friends?.length ?? 0}</span>
-						<span>Posts: {user.posts?.length ?? 0}</span>
+						<span>Posts: {posts.length}</span>
 					</div>
 					<div className="bio">
 						<p>{user.profile.bio || "Write your bio here..."}</p>
@@ -71,8 +71,9 @@ const ProfilePage = () => {
 						</button>
 					</div>
 					<div className="posts">
-						<button className="regular-btn" onClick={() => setShowPostModal(true)}>
-						Post an outfit
+						<button className="expand-btn expand-btn-right" onClick={() => setShowPostModal(true)}>
+							<span className="icon">＋</span>
+  							<span className="expand-btn-text">Post an outfit</span>
 						</button>
 					<UserPostsList posts = {posts} onPostDeleted={loadPosts} />
 					</div>

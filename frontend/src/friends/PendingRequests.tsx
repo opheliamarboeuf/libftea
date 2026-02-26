@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { friendsApi } from "./api";
 import { usePendingRequests } from "./hooks";
-import { useModal
-
- } from "../context/ModalContext";
+import { useModal } from "../context/ModalContext";
 export function PendingRequests() {
 	const { pending, refetch } = usePendingRequests();
 	const [ loading, setLoading ] = useState(false);

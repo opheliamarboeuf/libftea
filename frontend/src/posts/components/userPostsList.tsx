@@ -1,4 +1,4 @@
-import "./userPostsList.css";
+import "./UserPostsList.css";
 import { Post, useUser } from "../../context/UserContext";
 import { API_URL } from "../../profile";
 import { FaArrowUp, FaArrowDown, FaEllipsisV } from "react-icons/fa";
@@ -49,10 +49,14 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				className="post-author"
 				onClick={() => goToProfile(post.author.id)}
 			>
-				{post.author.username}
+				{post.author.username},
 			</span>
 			<span className="post-date">
-				{new Date(post.createdAt).toLocaleString()}
+			{
+				post.updatedAt && post.updatedAt !== post.createdAt
+				? `edited ${new Date(post.updatedAt).toLocaleString()}`
+				: `created ${new Date(post.createdAt).toLocaleString()}`
+			}
 			</span>
 			</div>
 			{/* Post menu */}

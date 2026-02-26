@@ -7,7 +7,7 @@ import { friendsApi } from "../friends/api";
 import { useModal } from "../context/ModalContext";
 import { Post } from "../context/UserContext";
 import { postsApi } from "../posts/api";
-import { UserPostsList } from "../posts/components/userPostsList";
+import { UserPostsList } from "../posts/components/UserPostsList";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';

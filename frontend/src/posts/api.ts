@@ -85,6 +85,30 @@ export const postsApi = {
 		return data ?? [];
 	},
 
+	fetchFriendsPosts: async (): Promise<Post[]> => {
+		const res = await fetch(`${API_URL}/posts/friends`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
+
+		let data;
+		try {
+			data = await res.json();
+		} catch {
+		// in case body is not JSON
+		data = null;
+		}
+		if (!res.ok) {
+			const message = Array.isArray(data?.message)
+				? data.message[0]
+				: data?.message || res.statusText || "Échec de la récupération des posts des amis";
+			throw new Error(message);
+		}
+		return data ?? [];
+	},
+
 	fetchAllUserPosts: async (): Promise<Post[]> => {
 		const res = await fetch(`${API_URL}/users/posts`, {
 			headers: {

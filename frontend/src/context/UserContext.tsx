@@ -14,6 +14,7 @@ export type Post = {
 	caption?: string;
 	imageUrl: string;
 	createdAt: string;
+	updatedAt: string;
 	author: {
 		id: number;
 		username: string;
