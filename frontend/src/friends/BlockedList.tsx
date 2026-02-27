@@ -10,7 +10,7 @@ export function BlockedList() {
 
 	return (
 		<div>
-			<h3>Blocked users</h3>
+			{blocked.length === 0 && <p>No blocked users</p>}
 				{blocked.map(blocked => (
 					<div
 					key={blocked.id}

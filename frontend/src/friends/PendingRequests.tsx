@@ -41,7 +41,6 @@ export function PendingRequests() {
 
 	return (
 		<div>
-			<h3>Friend Requests</h3>
 			{pending.length === 0 && <p>No pending requests</p>}
 			<div style={{ maxWidth: "300px" }}>
 				{pending.map(user => (

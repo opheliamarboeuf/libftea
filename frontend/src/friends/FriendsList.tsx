@@ -10,7 +10,7 @@ export function FriendsList() {
 
 	return (
 		<div>
-			<h3>My friends</h3>
+			{friends.length === 0 && <p>No friends yet</p>}
 			<div style={{ maxWidth: "300px" }}>
 				{friends.map(friend => (
 					<div
