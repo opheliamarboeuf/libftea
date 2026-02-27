@@ -37,7 +37,6 @@ const UserProfilePage = () => {
 	const [loading, setLoading] = useState(false);
 	const [posts, setPosts] = useState<Post[]>([]);
 	const navigate = useNavigate();
-	const { showModal } = useModal();
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
 	const fetchProfile = async () => {
