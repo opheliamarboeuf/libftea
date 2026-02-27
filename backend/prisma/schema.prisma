@@ -53,7 +53,6 @@ model User {
     friendRequestSent	  	Friendship[]		    @relation("FriendRequester")
     friendRequestReceived	Friendship[]	    	@relation("FriendAddresse")
     battleParticipants		BattleParticipant[]
-    votes					        Vote[]
     notifications		      Notification[]
     battlesWon            Battle[]            @relation("BattleWinner")
     battlesCreated        Battle[]            @relation("CreatedBattles")
@@ -88,15 +87,18 @@ model	Post {
     likes				Like[]
     comments			Comment[]
     battleParticipants	BattleParticipant[]
-    votes				Vote[]
     postTags			PostTag[]
 }
 
 model	Like {
-    id		Int	@id @default(autoincrement())
+    id		    Int	@id @default(autoincrement())
 
-    userId	Int
-    postId	Int
+    userId  	Int
+    postId	    Int
+    createdAt   DateTime @default(now())
+
+    battleId    Int?
+    battle      Battle? @relation(fields: [battleId], references: [id])
 
     user	User	@relation(fields: [userId], references: [id])
     post	Post	@relation(fields: [postId], references: [id])
@@ -169,7 +171,7 @@ model Battle {
   winner    User?         @relation("BattleWinner", fields: [winnerId], references: [id])
 
   participants BattleParticipant[]
-  votes        Vote[]
+  likes        Like[]
 
   createdById Int?
   createdBy   User? @relation("CreatedBattles", fields: [createdById], references: [id])
@@ -182,29 +184,11 @@ model BattleParticipant {
     postId		  Int
     submittedAt DateTime?
 
-    votes       Vote[]
-
     battle	Battle	@relation(fields: [battleId], references: [id])
     user	  User	@relation(fields: [userId], references: [id])
     post	  Post?	@relation(fields: [postId], references: [id])
 
     @@unique([battleId, userId])
-}
-
-model Vote {
-    id			      Int @id @default(autoincrement())
-    battleId	    Int	// for which battle is this vote
-    voterId	    	Int
-    postId		    Int?
-    createdAt     DateTime @default(now())
-
-    battleParticipant BattleParticipant[]
-
-    battle	Battle	@relation(fields: [battleId], references: [id])
-    voter	  User	  @relation(fields: [voterId], references: [id])
-    post	  Post? 	@relation(fields: [postId], references: [id])
-
-    @@unique([battleId, voterId])
 }
 
 model Notification {
