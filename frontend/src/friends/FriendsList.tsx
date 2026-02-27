@@ -10,7 +10,7 @@ export function FriendsList() {
 
 	return (
 		<div>
-			<h3>Mes amis</h3>
+			<h3>My friends</h3>
 			<div style={{ maxWidth: "300px" }}>
 				{friends.map(friend => (
 					<div
@@ -40,7 +40,7 @@ export function FriendsList() {
 					</div>
 
 					{
-						<div style={{ display: "flex", gap: "10px", marginLeft: "auto" }}>
+						<div style={{ display: "flex", gap: "8px", marginLeft: "auto"}}>
 						<BlockFriendButton userId={friend.id} />
 						<RemoveFriendButton userId={friend.id} />
 						</div>

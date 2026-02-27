@@ -7,4 +7,79 @@
 	width: calc(100vw - 60px);
 	height: calc(100vh - 50px);
 	color: black;
+	align-items: center;
+	overflow-y: auto;
+}
+
+.friends-header {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 10px 20px;
+	margin-top: 10px;
+}
+
+.page-name {
+	position: absolute;
+	left: 5vw;
+	font-size: 30px;
+	font-weight: bold;
+}
+
+.friends-tabs {
+	position: relative;
+	display: flex;
+	border-radius: 8px;
+	overflow: hidden;
+	background-color: white;
+}
+
+.friends-tabs button {
+	flex: 1;
+	background-color: transparent;
+	border: none;
+	padding: 10px 20px;
+	font-size: 0.95rem;
+	cursor: pointer;
+	position: relative;
+	z-index: 2;
+	color: black;
+	transition: color 0.2s ease;
+	outline: none;
+	min-width: 140px;
+}
+
+.friends-tabs button:hover {
+	background-color: transparent;
+}
+
+.friends-tabs button.active {
+	color: black;
+	font-weight: 600;
+}
+
+.tab-indicator {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: calc(100% / 3);
+	height: 100%;
+	background-color: #f0f0f0;
+	border-radius: 8px;
+	transition: transform 0.25s ease;
+	z-index: 1;
+}
+
+.tab-indicator.friends {
+	transform: translateX(0%);
+}
+
+.tab-indicator.pending {
+	transform: translateX(100%);
+}
+
+.tab-indicator.blocked {
+	transform: translateX(200%);
 }

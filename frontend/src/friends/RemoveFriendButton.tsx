@@ -33,6 +33,7 @@ export function RemoveFriendButton({ userId }: Props) {
             <button 
                 onClick={() => setShowConfirm(true)}
                 disabled={loading}
+				className="friend-action-btn"
                 >
                     {loading ? "Deleting..." : "Delete"}
             </button>

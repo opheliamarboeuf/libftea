@@ -52,15 +52,7 @@ export function BlockFriendButton({ userId, onAction }: Props) {
             <button
                 onClick={() => setShowConfirm(true)}
                 disabled={loading}
-				style={{
-					backgroundColor: "#c44536",
-					color: "white",
-					border: "none",
-					borderRadius: "6px",
-					cursor: "pointer",
-					opacity: 0.9,
-					transition: "opacity 0.2s ease",
-				}}
+				className="friend-action-btn"
                 >
                     {loading ? "Processing..." : blockSent ? "Unblock User" : "Block User"}
             </button>

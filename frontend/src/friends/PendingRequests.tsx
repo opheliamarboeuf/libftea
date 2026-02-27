@@ -50,34 +50,41 @@ export function PendingRequests() {
 						style={{
 						display: "flex",
 						alignItems: "center",
+						justifyContent: "space-between",
 						marginBottom: "8px",
 						}}
 					>
 						<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-						<div className="small-avatar-container">
-							<div className="small-avatar">
-								<img
-									src={user.avatarUrl ? `${API_URL}${user.avatarUrl}` : "/default-avatar.png"}
-									alt="Small Avatar"
-								/>
+							<div className="small-avatar-container">
+								<div className="small-avatar">
+									<img
+										src={user.avatarUrl ? `${API_URL}${user.avatarUrl}` : "/default-avatar.png"}
+										alt="Small Avatar"
+									/>
+								</div>
 							</div>
-						</div>
-						<Link
-							to={`/users/${user.id}`}
-							style={{ textDecoration: "none", color: "inherit" }}
-						>
-							{user.username}
-						</Link>
-						</div>
-
-						<div style={{ display: "flex", gap: "10px", marginLeft: "auto" }}>
-						<button onClick={() => handleAccept(user.id)} disabled={loading}>
-							Accept
-						</button>
-
-						<button onClick={() => handleReject(user.id)} disabled={loading}>
-							Reject
-						</button>
+							<Link
+								to={`/users/${user.id}`}
+								style={{ textDecoration: "none", color: "inherit" }}
+							>
+								{user.username}
+							</Link>
+							<div style={{ display: "flex", gap: "8px" }}>
+								<button
+									className="friend-action-btn"
+									onClick={() => handleAccept(user.id)}
+									disabled={loading}
+								>
+									Accept
+								</button>
+								<button
+									className="friend-action-btn"
+									onClick={() => handleReject(user.id)}
+									disabled={loading}
+								>
+									Reject
+								</button>
+							</div>
 						</div>
 					</div>
 				))}

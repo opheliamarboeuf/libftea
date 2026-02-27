@@ -10,44 +10,38 @@ export function BlockedList() {
 
 	return (
 		<div>
-			<h3>Utilisateurs bloqués</h3>
-
-			<div style={{ maxWidth: "300px" }}>
+			<h3>Blocked users</h3>
 				{blocked.map(blocked => (
 					<div
 					key={blocked.id}
 					style={{
 						display: "flex",
 						alignItems: "center",
-						gap: "20px",
 						marginBottom: "8px",
+						gap: "8px",
 					}}
-					>
-						<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-						<div className="small-avatar-container">
-							<div className="small-avatar">
-								<img
-									src={blocked.avatarUrl ? `${API_URL}${blocked.avatarUrl}` : "/default-avatar.png"}
-									alt="Small Avatar"
-								/>
-							</div>
+			>
+				<div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+					<div className="small-avatar-container">
+						<div className="small-avatar">
+							<img
+								src={blocked.avatarUrl ? `${API_URL}${blocked.avatarUrl}` : "/default-avatar.png"}
+								alt="Small Avatar"
+							/>
 						</div>
+					</div>
 					<Link
 						to={`/users/${blocked.id}`}
 						style={{ textDecoration: "none", color: "inherit" }}
 					>
 						{blocked.username}
 					</Link>
-					</div>
-
-					{
-						<div style={{ display: "flex", gap: "10px", marginLeft: "auto" }}>
-						<BlockFriendButton userId={blocked.id} />
-						</div>
-					}
-					</div>
+				</div>
+				<div style={{ display: "flex", gap: "8px" }}>
+					<BlockFriendButton userId={blocked.id} />
+				</div>
+				</div>
 				))}
-			</div>
 		</div>
 	);
 }
