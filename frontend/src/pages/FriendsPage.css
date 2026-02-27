@@ -60,7 +60,7 @@
 	font-weight: 600;
 }
 
-.tab-indicator {
+.friends-tab-indicator {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -72,14 +72,14 @@
 	z-index: 1;
 }
 
-.tab-indicator.friends {
+.friends-tab-indicator.friends {
 	transform: translateX(0%);
 }
 
-.tab-indicator.pending {
+.friends-tab-indicator.pending {
 	transform: translateX(100%);
 }
 
-.tab-indicator.blocked {
+.friends-tab-indicator.blocked {
 	transform: translateX(200%);
 }

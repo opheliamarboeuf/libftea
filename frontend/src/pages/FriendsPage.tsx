@@ -10,7 +10,7 @@ const FriendsPage = () => {
 				<div className="page-name">My friends</div>
 				<div className="friends-tabs">
 					<div
-						className={`tab-indicator ${friendsType }`}
+						className={`friends-tab-indicator ${friendsType }`}
 					/>
 					<button
 						className={friendsType === "friends" ? "active" : "" }
