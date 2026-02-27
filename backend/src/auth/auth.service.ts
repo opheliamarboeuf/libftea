@@ -95,6 +95,16 @@ export class AuthService {
 						coverUrl: true,
 					},
 				},
+				posts: {
+					select: {
+						title: true,
+						caption: true,
+						imageUrl : true,
+						createdAt: true,
+						updatedAt: true,
+					},
+					orderBy: { createdAt: 'desc'}
+				},
 			},
 		});
 

@@ -7,6 +7,20 @@ export type Friend = {
 	avatarUrl: string | null;
 };
 
+// Type for post data
+export type Post = {
+	id: number;
+	title: string;
+	caption?: string;
+	imageUrl: string;
+	createdAt: string;
+	updatedAt: string;
+	author: {
+		id: number;
+		username: string;
+	};
+};
+
 export type Blocked = {
 	id: number;
 	username: string;
@@ -28,6 +42,7 @@ export type User = {
 	};
 	friends: Friend[];
 	pendingRequests: Friend[];
+	posts: Post[];
 	blockedUsers: Blocked[];
 };
 // Defines the shape of the context, meaning the fields the context must contain

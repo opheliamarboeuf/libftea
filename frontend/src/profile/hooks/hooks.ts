@@ -2,6 +2,7 @@ import { useState } from "react";
 import { profileApi } from "../api";
 import { useUser } from "../../context/UserContext";
 
+const MAX_DISPLAYNAME_LENGTH = 30;
 const MAX_BIO_LENGTH = 400;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -81,6 +82,12 @@ export function useProfileEdit() {
 			return false;
 		}
 
+		if (displayName.length > MAX_DISPLAYNAME_LENGTH) {
+			setErrorMessage(`Name cannot exceed ${MAX_DISPLAYNAME_LENGTH} characters`);
+			return false;
+		}
+
+
 		setIsLoading(true);
 		// Send update request to backend
 		try {
@@ -131,5 +138,6 @@ export function useProfileEdit() {
 		hasChanges,
 		saveProfile,
 		MAX_BIO_LENGTH,
+		MAX_DISPLAYNAME_LENGTH,
 	};
 }

@@ -108,4 +108,26 @@ export class UsersService {
 			friendshipStatus,
 		};
 	}
+
+	async getAllUserPosts() {
+		const userPosts = await this.prisma.post.findMany({
+			select: {
+				id: true,
+				authorId: true,
+				title: true, 
+				caption: true,
+				imageUrl: true,
+				createdAt: true,
+				updatedAt: true,
+				author: {
+					select: {
+						id: true, 
+						username: true,
+					}
+				}
+			},
+			orderBy: {createdAt: 'desc'}
+		})
+		return (userPosts)
+	};
 }

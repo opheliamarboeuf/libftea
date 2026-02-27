@@ -23,13 +23,15 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 		hasChanges,
 		saveProfile,
 		MAX_BIO_LENGTH,
+		MAX_DISPLAYNAME_LENGTH,
 	} = useProfileEdit();
 
 	// Function that runs the closing animation and then calls onClose() after the specified duration
 	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });
 
 	// Save profile changes via API
-	const handleSave = async () => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
 		const success = await saveProfile();
 		if (success) {
 			closeWithAnimation();
@@ -60,12 +62,19 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 						onClick={(e) => e.stopPropagation()}
 					>
 						<h2>Edit Profile</h2>
-
+						<form onSubmit={handleSubmit}>
 						<label>Name</label>
 						<textarea
 							value={displayName}
 							onChange={(e) => setDisplayName(e.target.value)}
 						/>
+						<div
+							className={`char-counter ${
+								displayName.length > MAX_DISPLAYNAME_LENGTH ? "error" : ""
+							}`}
+						>
+							{displayName.length} / {MAX_DISPLAYNAME_LENGTH}
+						</div>
 						<label>Bio</label>
 						<textarea
 							value={bio}
@@ -103,13 +112,14 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 							</div>
 						)}
 						<div className="modal-actions">
-							<button className="modal-btn" onClick={handleSave}>
+							<button type="submit" className="modal-btn">
 								Save
 							</button>
-							<button className="modal-btn" onClick={requestClose}>
+							<button type="button" className="modal-btn" onClick={requestClose}>
 								Cancel
 							</button>
 						</div>
+						</form>
 					</div>
 				</div>,
 				document.body

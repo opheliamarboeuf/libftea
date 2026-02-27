@@ -6,8 +6,8 @@ import LoginPage from './pages/LoginPage';
 import MyProfilePage from './pages/MyProfilePage';
 import FeedPage from "./pages/FeedPage";
 import FriendsPage from "./pages/FriendsPage";
-import { Header } from './components/Header';
-import { LeftMenu } from './components/LeftMenu';
+import { Header } from './common/components/Header';
+import { LeftMenu } from './common/components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
 import { ModalProvider } from "./context/ModalContext";
 
