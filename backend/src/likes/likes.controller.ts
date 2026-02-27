@@ -23,4 +23,12 @@ export class LikesController {
 	) {
 		return this.likesService.countLikes(postId);
 	}
+
+	@Get(':postId/status')
+	async isLiked(
+		@Param('postId', ParseIntPipe) postId: number,
+		@Req() req: any,
+	) {
+		return this.likesService.isLiked(postId, req.user.id);
+	}
 }

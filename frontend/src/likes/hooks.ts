@@ -8,27 +8,38 @@ export const useLike = (postId: number) => {
 
 	useEffect(() => {
 		let isMounted = true;
-		const fetchCount = async () => {
+		const fetchData = async () => {
 			try {
-				const c = await likesApi.countLikes(postId);
-				if (isMounted) setCount(c);
+				const [c, status] = await Promise.all([
+					likesApi.countLikes(postId),
+					likesApi.isLiked(postId),
+				]);
+
+				if (isMounted) {
+					setCount(c);
+					setLiked(status.liked);
+				}
 			} catch (err) {
 				console.error(err);
 			} finally {
 				if (isMounted) setLoading(false);
 			}
 		};
-		fetchCount();
+		fetchData();
 		return () => { isMounted = false };
 	}, [postId]);
 
 	const toggleLike = async () => {
+		setLiked(prev => !prev);
+		setCount(prev => liked ? prev - 1 : prev + 1);
 		try {
 			const result = await likesApi.toggleLike(postId);
 			setLiked(result.liked);
 			setCount(result.count);
 		} catch (err) {
 			console.error(err);
+			setLiked(prev => !prev);
+			setCount(prev => liked ? prev + 1 : prev - 1);
 		}
 	};
 

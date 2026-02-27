@@ -35,14 +35,17 @@ export class LikesService {
 					userId_postId: { userId, postId },
 				},
 			});
-			return { liked: false };
+			const count = await this.prisma.like.count({ where: { postId }});
+			return { liked: false, count };
 		} else {
 			await this.prisma.like.create({
 				data: {
 					userId,
 					postId,
 				},
-			}); return { liked: true };
+			});
+			const count = await this.prisma.like.count({ where: { postId }});
+			return { liked: true, count };
 		}
 	}
 
@@ -53,5 +56,19 @@ export class LikesService {
 			where: { postId },
 		});
 		return (count);
+	}
+
+	async isLiked(
+		postId: number,
+		userId: number,
+	) {
+		const like = await this.prisma.like.findFirst({
+			where: {
+				postId,
+				userId,
+			},
+		});
+
+		return { liked: !!like };
 	}
 }

@@ -28,18 +28,12 @@ export function LikeButton({ postId }: Props) {
 	return (
 		<>
 			<button
+				className={liked ? "liked" : "" }
 				onClick={handleClick}
 				disabled={btnLoading}
-				style={{
-					display: "flex",
-					alignItems: "center",
-					gap: "0.3rem",
-					color: liked ? "red" : "gray",
-					cursor: btnLoading ? "not-allowed" : "pointer",
-				}}
 			>
-				<FaHeart />
-				<span>{count}</span>
+				<FaHeart className="heart-icon" />
+				<span className="count">{typeof count === "number" ? count : 0} likes</span>
 			</button>
 		</>
 	);
