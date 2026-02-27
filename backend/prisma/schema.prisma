@@ -92,17 +92,17 @@ model	Like {
 
     userId  	Int
     postId	    Int
+    battleId    Int?
     createdAt   DateTime @default(now())
 
-    battleId    Int?
-    battle      Battle? @relation(fields: [battleId], references: [id])
 
     user	User	@relation(fields: [userId], references: [id])
     post	Post	@relation(fields: [postId], references: [id])
+    battle  Battle? @relation(fields: [battleId], references: [id])
 
     //	A user can only like a specific post once (no duplicate likes)
     //	@@ > applies a rule at the model level, not just a single field
-    @@unique([userId, postId])
+    @@unique([userId, postId, battleId])
 }
 
 model	Comment {
