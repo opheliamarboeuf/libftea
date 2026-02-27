@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { usePostMenu } from "./hooks/usePostMenu";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { EditPostModal } from "./EditPostModal";
+import { LikeButton } from "../../likes/LikeButton";
 
 interface UserPostsListProps {
 	posts: Post[];
@@ -98,11 +99,11 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		)}
 		<div className="post-footer">
 			<div className="interactions">
-			<button><FaHeart /></button>
+				<LikeButton postId={post.id} />
 			</div>
-			<div className="counters">
+			{/* <div className="counters">
 			<span className="count">0 Likes </span>
-			</div>
+			</div> */}
 		</div>
 		</div>
 	))}
