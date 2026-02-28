@@ -12,6 +12,7 @@ import { UsersModule } from './user/users.module';
 import { ProfileModule } from './profile/profile.module';
 import { PostsModule } from './posts/posts.module';
 import { TournamentModule } from './tournament/tournament.module';
+import { RolesGuard } from './auth/roles.guard';
 
 @Module({
   imports: [
@@ -34,6 +35,10 @@ import { TournamentModule } from './tournament/tournament.module';
 		// All routes are now protected by JWT by default
 		provide: APP_GUARD,
 		useClass: JwtAuthGuard,
+	},
+	{
+    	provide: APP_GUARD,
+    	useClass: RolesGuard,
 	},
   ],
 })

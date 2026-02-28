@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { TournamentService } from './tournament.service';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
+import { Roles } from '../auth/roles.decorator'
 
 @Controller('tournament')
 export class TournamentController {
@@ -9,7 +10,7 @@ export class TournamentController {
 	// readonly pour ne pas la modifier, provate pour que la variable soit accessible seulement dans cette classe
 	constructor(private readonly tournamentService: TournamentService) {}
 
-	// @Roles('ADMIN')
+	@Roles('ADMIN')
 	@Post()
 	// @Body() on prend le corps de la requete HTTP
 	// data = nom de la variable, any = type TS 
