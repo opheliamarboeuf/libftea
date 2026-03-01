@@ -14,11 +14,13 @@ export class TournamentController {
 	@Post()
 	// @Body() on prend le corps de la requete HTTP
 	// data = nom de la variable, any = type TS 
-	createTournament(@Body() data: CreateTournamentDto) {
+	createTournament(@Body() data: CreateTournamentDto)
+	{
 		return this.tournamentService.createTournament(data);
 	}
 	@Get('current')
-	getCurrentTournament() {
+	getCurrentTournament()
+	{
 		return this. tournamentService.getCurrentTournament();
 	}
 }
