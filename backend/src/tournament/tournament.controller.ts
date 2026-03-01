@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
 import { TournamentService } from './tournament.service';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { Roles } from '../auth/roles.decorator'
@@ -22,5 +22,14 @@ export class TournamentController {
 	getCurrentTournament()
 	{
 		return this. tournamentService.getCurrentTournament();
+	}
+	@Post(':battleId/join')
+	// @Req car c'est JwtAuthGuard stock notre utilisateur dans req.user
+	joinTournament(@Param('battleId') battleId: string, @Body() data: JoinTournamentDto, @Req() req: any)
+	{
+		// user.id > informations récolté par JWT
+		const userId = req.user.id;
+		// Number(battleId) > conversion de battleId de string à int
+		return this.tournamentService.joinTournament(Number(battleId), userId, data.postId);
 	}
 }
