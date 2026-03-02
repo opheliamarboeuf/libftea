@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, ForbiddenException } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -7,22 +7,30 @@ export class UsersService {
 		private readonly prisma: PrismaService,
 	) {}
 
-	async searchUsername(username: string, currentId: number) {
+	async getBlockedIds(currentUserId: number): Promise<number[]> { 
 		const blocked = await this.prisma.friendship.findMany({
 			where: {
 				status: 'BLOCKED',
 				OR: [
-					{ requesterId: currentId },
-					{ addresseId: currentId },
+					{ requesterId: currentUserId },
+					{ addresseId: currentUserId },
 				],
 			},
 			select: {
 				requesterId: true,
+				addresseId: true,
 			}
 		});
-
-		const blockedIds = blocked.map(f => f.requesterId);
-
+	
+		const blockedIds = blocked.map(f => 
+			f.requesterId === currentUserId ? f.addresseId : f.requesterId
+		);
+		 return blockedIds;
+	}
+	
+	async searchUsername(username: string, currentUserId: number) {
+	
+		const blockedIds = await this.getBlockedIds(currentUserId);
 		return this.prisma.user.findMany({
 			where: {
 				username: {
@@ -70,6 +78,22 @@ export class UsersService {
 
 		if (!user) return null;
 
+		// Check the block status
+		const blocked = await this.prisma.friendship.findFirst({
+		where: {
+			status: 'BLOCKED',
+			OR: [
+				{ requesterId: currentUserId, addresseId: id },
+				{ requesterId: id, addresseId: currentUserId },
+			],
+		},
+	});
+
+	if (blocked && blocked.addresseId === currentUserId) {
+		// If blocked, return exception 403
+		throw new ForbiddenException("You cannot access this profile");
+	}
+
 		// Count friends (accepted friendships)
 		const friendsCount = await this.prisma.friendship.count({
 			where: {
@@ -109,8 +133,10 @@ export class UsersService {
 		};
 	}
 
-	async getAllUserPosts() {
+	async getAllUserPosts(currentUserId: number) {
+		const blockedIds = await this.getBlockedIds(currentUserId);
 		const userPosts = await this.prisma.post.findMany({
+			where: { authorId: { notIn: blockedIds } },
 			select: {
 				id: true,
 				authorId: true,

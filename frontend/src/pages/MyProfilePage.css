@@ -14,6 +14,21 @@
 	overflow-y: auto
 }
 
+/* Blocking interactions */
+.blocked {
+	display: flex;
+	margin-top: 50px;
+	justify-content: center;
+	font-size: 1.2rem;
+}
+
+.profile-page.blocked {
+	justify-content: flex-start;
+	align-items: center;
+	padding-top: 2rem;
+}
+
+
 /* Profile info column */
 .profile-info {
 	flex: 0 1 250px;
