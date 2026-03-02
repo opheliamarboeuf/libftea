@@ -35,7 +35,11 @@ const FeedPage = () => {
 			</div>
 
 			{error && <p style={{ color: "red" }}>{error}</p>}
-			<UserPostsList posts={posts} onPostDeleted={refresh} />
+			{posts.length === 0 ? (
+				<p className="no-posts-message">No posts to display</p>
+				) : (
+				<UserPostsList posts={posts} onPostDeleted={refresh} />
+				)}
 			{showPostModal && <CreatePostModal onPostCreated={refresh} onClose={() => setShowPostModal(false)} />}
 		</div>
 	);
