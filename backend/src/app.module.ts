@@ -13,6 +13,7 @@ import { ProfileModule } from './profile/profile.module';
 import { PostsModule } from './posts/posts.module';
 import { TournamentModule } from './tournament/tournament.module';
 import { RolesGuard } from './auth/roles.guard';
+import { LikesModule } from './likes/likes.module';
 
 @Module({
   imports: [
@@ -27,6 +28,8 @@ import { RolesGuard } from './auth/roles.guard';
 	ProfileModule,
 	PostsModule,
 	TournamentModule,
+	LikesModule,
+
   ],
   controllers: [AppController], 
   providers: [

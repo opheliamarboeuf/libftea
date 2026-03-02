@@ -19,6 +19,7 @@ export type Post = {
 		id: number;
 		username: string;
 	};
+	likes: number;
 };
 
 // Defines the shape of a user object

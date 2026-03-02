@@ -172,6 +172,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* ajout */
+  gap: 6px;
   padding: 5px 10px;
   font-size: 1.2rem;
   cursor: pointer;
@@ -182,12 +184,24 @@
 }
 
 .post-footer button:hover {
+	opacity: 1;
   color: rgb(255, 110, 134);
 }
 
 .post-footer button:focus {
   outline: none;
   box-shadow: none;
+}
+
+/* ajout */
+.post-footer .heart-icon {
+	opacity: 0.5;
+	transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.post-footer button.liked .heart-icon {
+	opacity: 1;
+	color: rgb(255, 60, 90);
 }
 
 .count {
