@@ -68,7 +68,8 @@ const UserProfilePage = () => {
 				setBlockedPosts(true);
 			}
 			else {
-				setBlockedPosts(false)}
+				setBlockedPosts(false)};
+				await loadPosts();
 			}    
 		catch (error) {
 			console.error(error);
