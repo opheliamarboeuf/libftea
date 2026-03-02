@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../../context/UserContext";
 import { FaCrown, FaHome, FaUser, FaUsers } from "react-icons/fa";
 import "./LeftMenu.css"
 import "../../App.css"
