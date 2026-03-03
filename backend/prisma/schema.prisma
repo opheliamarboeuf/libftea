@@ -101,11 +101,10 @@ model	Like {
 
     user	User	@relation(fields: [userId], references: [id])
     post	Post	@relation(fields: [postId], references: [id])
-    battle  Battle? @relation(fields: [battleId], references: [id])
 
     //	A user can only like a specific post once (no duplicate likes)
     //	@@ > applies a rule at the model level, not just a single field
-    @@unique([userId, postId, battleId])
+    @@unique([userId, postId])
 }
 
 model	Comment {
@@ -171,7 +170,6 @@ model Battle {
   winner    User?         @relation("BattleWinner", fields: [winnerId], references: [id])
 
   participants BattleParticipant[]
-  likes        Like[]
 
   createdById Int?
   createdBy   User? @relation("CreatedBattles", fields: [createdById], references: [id])
