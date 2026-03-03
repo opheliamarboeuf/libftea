@@ -55,7 +55,7 @@ async function main() {
 await createUserIfNotExists(
 	"admin@test.com",
 	"admin",
-	"AdminPassword0+",
+	"AdminPswd0+",
 	Role.ADMIN,
 	"Administrator",
 	"Admin account"
@@ -64,7 +64,7 @@ await createUserIfNotExists(
 await createUserIfNotExists(
 	"mod@test.com",
 	"mod",
-	"AdminMod0+",
+	"ModPswd0+",
 	Role.MOD,
 	"Moderator",
 	"Moderator account"

@@ -52,32 +52,41 @@ export class PostsService {
 		}
 	}
 
-	async deletePost(userId: number, userRole: Role, postId:number) {
-		const post = await this.prisma.post.findUnique({
-			where: {id: postId}
+	async deletePost(userId: number, userRole: Role, postId: number) {
+		const post = await this.prisma.post.findUnique({ where: { id: postId } });
+		if (!post)
+			return;
+
+		// Check if the user is the post author or has the permission to delete the post
+		if (userId !== post.authorId && !hasPermission(userRole, "DELETE_ANY_POST")) {
+			throw new BadRequestException("You do not have the right to delete this post");
+		}
+
+		try {
+			// A transaction ensures that multiple database operations either all succeed together or all fail, keeping data consistent
+			await this.prisma.$transaction(async (prisma) => {
+			const deletedPost = await prisma.post.delete({ where: { id: postId } });
+
+			// Log the post deletion if the user is not the author
+			if (userId !== post.authorId) {
+				await prisma.moderationLog.create({
+					data: {
+						action: "DELETE_ANY_POST",
+						actorId: userId,
+						targetUserId: post.authorId,
+						targetPostId: postId,
+					},
+				});
+			}
 		});
 
-		if (!post)
-			return ;
-
-		// Check if the user is the author
-		if (userId !== post.authorId)
-		{
-			if (!hasPermission(userRole, "DELETE_ANY_POST"))
-				throw new  BadRequestException("You do not have the right to delete this post");
-		}
-		try {
-
-			await this.prisma.post.delete({
-				where: { id: postId },
-			})
-			return true;
-		}
-		catch (error) {
+		return true;
+		} catch (error) {
 			console.log("Error deleting post:", error);
 			throw new InternalServerErrorException("Could not delete post");
 		}
 	}
+
 
 	async deletePostImage(imageUrl: string): Promise<void> {
 		if (!imageUrl)
