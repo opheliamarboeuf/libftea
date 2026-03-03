@@ -117,7 +117,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message="Are you sure you want to delete your post?"
+				message="Are you sure you want to delete this post?"
 				onConfirm={confirmDelete}
 				onCancel={cancelDelete}
 			/>

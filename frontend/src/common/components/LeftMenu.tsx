@@ -1,15 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
-import { FaHome, FaUser, FaUsers } from "react-icons/fa";
+import { FaHome, FaUser, FaUsers, FaTachometerAlt } from "react-icons/fa";
 import "./LeftMenu.css"
 import "../../App.css"
 
 export const LeftMenu = () => {
 	
 	const navigate = useNavigate();
-	const { user, setUser } = useUser();
+	const { user } = useUser();
 	if (!user)
 		return ;
+	
 	
 	return (
 		<div className="left-menu">
@@ -27,6 +28,12 @@ export const LeftMenu = () => {
 				<FaUsers className="icon" />
 				<span className="label">Friends</span>
 			</div>
-		</div>
+			{/* Only show Dashboard if user is ADMIN or MOD */}
+			{user.role === "ADMIN" || user.role === "MOD" ? (
+			<div className="menu-item" onClick={() => navigate("/dashboard")}>
+				<FaTachometerAlt className="icon" />
+				<span className="label">Dashboard</span>
+			</div> ) : null}
+			</div>
 	);
 }

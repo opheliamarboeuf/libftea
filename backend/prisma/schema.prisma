@@ -106,7 +106,7 @@ model	Like {
 	postId	Int
 
 	user	User	@relation(fields: [userId], references: [id])
-	post	Post	@relation(fields: [postId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
 
 	//	A user can only like a specific post once (no duplicate likes)
 	//	@@ > applies a rule at the model level, not just a single field
@@ -122,7 +122,7 @@ model	Comment {
 	postId		Int
 
 	user	User	@relation(fields: [userId], references: [id])
-	post	Post	@relation(fields: [postId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model	Conversation {
@@ -181,7 +181,7 @@ model BattleParticipant {
 
 	battle	Battle	@relation(fields: [battleId], references: [id])
 	user	User	@relation(fields: [userId], references: [id])
-	post	Post	@relation(fields: [postId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
 
 	@@unique([battleId, userId])
 }
@@ -194,7 +194,7 @@ model Vote {
 
 	battle	Battle	@relation(fields: [battleId], references: [id])
 	voter	User	@relation(fields: [voterId], references: [id])
-	post	Post	@relation(fields: [postId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
 
 	@@unique([battleId, voterId])
 }
@@ -207,7 +207,7 @@ model ModerationLog {
 	targetUserId   Int?
 	targetUser     User?           @relation("TargetUserRelation", fields: [targetUserId], references: [id])
 	targetPostId   Int?
-	targetPost     Post?           @relation("TargetPostRelation", fields: [targetPostId], references: [id])
+	targetPost     Post?           @relation("TargetPostRelation", fields: [targetPostId], references: [id], onDelete: SetNull)
 	targetBattleId Int?
 	targetBattle   Battle?         @relation("TargetBattleRelation", fields: [targetBattleId], references: [id])
 	createdAt      DateTime        @default(now())
@@ -235,7 +235,7 @@ model PostTag {
 	postId	Int
 	tagId	Int
 
-	post	Post	@relation(fields: [postId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
 	tag		Tag		@relation(fields: [tagId], references: [id])
 
 	@@unique([postId, tagId])

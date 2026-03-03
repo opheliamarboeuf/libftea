@@ -65,22 +65,23 @@ export class PostsService {
 		try {
 			// A transaction ensures that multiple database operations either all succeed together or all fail, keeping data consistent
 			await this.prisma.$transaction(async (prisma) => {
-			const deletedPost = await prisma.post.delete({ where: { id: postId } });
+				// Log the post deletion if the user is not the author (MUST be done before deletion)
+				if (userId !== post.authorId) {
+					await prisma.moderationLog.create({
+						data: {
+							action: "DELETE_ANY_POST",
+							actorId: userId,
+							targetUserId: post.authorId,
+							targetPostId: postId,
+						},
+					});
+				}
 
-			// Log the post deletion if the user is not the author
-			if (userId !== post.authorId) {
-				await prisma.moderationLog.create({
-					data: {
-						action: "DELETE_ANY_POST",
-						actorId: userId,
-						targetUserId: post.authorId,
-						targetPostId: postId,
-					},
-				});
-			}
-		});
+				// Delete the post after logging
+				const deletedPost = await prisma.post.delete({ where: { id: postId } });
+			});
 
-		return true;
+			return true;
 		} catch (error) {
 			console.log("Error deleting post:", error);
 			throw new InternalServerErrorException("Could not delete post");
