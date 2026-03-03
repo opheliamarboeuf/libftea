@@ -64,9 +64,11 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				<FaEllipsisV onClick={() => toggleMenu(post.id)} />
 				{openMenuId === post.id && (
 					<div className="menu-dropdown">
-						{post.author.id === user.id ? (
+						{post.author.id === user.id || user.role === "ADMIN" || user.role === "MOD" ? (
 							<>
-								<button onClick={() => handleEdit(post)}>Edit</button>
+								{/* Edit only if owner */}
+								{post.author.id === user.id && <button onClick={() => handleEdit(post)}>Edit</button>}
+								{/* Delete if owner or admin/mod */}
 								<button 
 									onClick={() => setPostToDelete(post.id)}
 									disabled={isDeleting}
