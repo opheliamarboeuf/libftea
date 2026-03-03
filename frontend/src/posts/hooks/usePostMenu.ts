@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { usePostDeletion } from "./usePostDeletion";
-import { useUser } from "../../../context/UserContext";
-import { useModal } from "../../../context/ModalContext";
+import { useUser } from "../../context/UserContext";
+import { useModal } from "../../context/ModalContext";
 
 export interface UsePostMenuResult {
 	openMenuId: number | null;

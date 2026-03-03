@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Post } from "../../../context/UserContext";
-import { postsApi } from "../../api";
+import { Post } from "../../context/UserContext";
+import { postsApi } from "../api";
 
 type FeedType = "all" | "friends";
 

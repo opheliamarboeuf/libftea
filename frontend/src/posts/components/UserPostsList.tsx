@@ -3,7 +3,7 @@ import { Post, useUser } from "../../context/UserContext";
 import { API_URL } from "../../profile";
 import { FaHeart, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { usePostMenu } from "./hooks/usePostMenu";
+import { usePostMenu } from "../hooks/usePostMenu";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { EditPostModal } from "./EditPostModal";
 

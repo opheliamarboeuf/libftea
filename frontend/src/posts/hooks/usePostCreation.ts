@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { postsApi } from "../../api";
+import { postsApi } from "../api";
 
 const MAX_TITLE_LENGTH = 50;
 const MAX_CAPTION_LENGTH = 500;

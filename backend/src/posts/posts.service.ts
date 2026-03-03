@@ -1,9 +1,11 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PostsDto } from "./dto/create.dto";
 import { UpdatePostDto } from "./dto/update.dto";
 import { join } from "path";
 import { unlink } from "fs/promises";
+import { hasPermission } from "src/auth/permissions";
+import { Role } from "@prisma/client";
 
 @Injectable()
 export class PostsService {
@@ -50,8 +52,22 @@ export class PostsService {
 		}
 	}
 
-	async deletePost(postId:number) {
+	async deletePost(userId: number, userRole: Role, postId:number) {
+		const post = await this.prisma.post.findUnique({
+			where: {id: postId}
+		});
+
+		if (!post)
+			return ;
+
+		// Check if the user is the author
+		if (userId !== post.authorId)
+		{
+			if (!hasPermission(userRole, "DELETE_ANY_POST"))
+				throw new  BadRequestException("You do not have the right to delete this post");
+		}
 		try {
+
 			await this.prisma.post.delete({
 				where: { id: postId },
 			})

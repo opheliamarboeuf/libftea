@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Post, useUser } from "../../../context/UserContext";
-import { postsApi } from "../../api";
-import { PostEditPayload } from "../../types";
+import { Post, useUser } from "../../context/UserContext";
+import { postsApi } from "../api";
+import { PostEditPayload } from "../types";
 
 const MAX_TITLE_LENGTH = 50;
 const MAX_CAPTION_LENGTH = 500;
