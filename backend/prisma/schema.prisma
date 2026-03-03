@@ -1,5 +1,6 @@
 enum	Role {
 	USER
+	MOD
 	ADMIN
 }
 
@@ -14,6 +15,14 @@ enum	NotificationType {
 	COMMENT
 	BATTLE_WIN
 	FRIEND_REQUEST
+}
+
+enum  ModerationType {
+	DELETE_ANY_POST
+	CHANGE_ROLE
+	BAN_USER
+	CREATE_TOURNAMENT
+	REVIEW_REPORT
 }
 
 generator client {
@@ -35,7 +44,8 @@ model User {
 	createdAt	DateTime	@default(now())
 	updatedAt	DateTime	@default(now()) @updatedAt
 
-	role	Role	@default(USER)
+	role		Role	@default(USER)
+	bannedAt	DateTime?
 
 	profile					Profile?
 	posts					Post[]
@@ -48,6 +58,10 @@ model User {
 	battleParticipants		BattleParticipant[]
 	votes					Vote[]
 	notifications			Notification[]
+	
+	// relations for ModerationLog
+	moderationLogsAuthored ModerationLog[] @relation("ActorRelation")
+  	moderationLogsTargeted ModerationLog[] @relation("TargetUserRelation")
 }
 
 model	Profile {
@@ -80,6 +94,9 @@ model	Post {
 	battleParticipants	BattleParticipant[]
 	votes				Vote[]
 	postTags			PostTag[]
+
+	// relation for ModerationLog
+	moderationLogs ModerationLog[] @relation("TargetPostRelation")
 }
 
 model	Like {
@@ -151,6 +168,9 @@ model Battle {
 
   participants BattleParticipant[]
   votes        Vote[]
+  
+  // relation for ModerationLog
+  moderationLogs ModerationLog[] @relation("TargetBattleRelation")
 }
 
 model BattleParticipant {
@@ -177,6 +197,20 @@ model Vote {
 	post	Post	@relation(fields: [postId], references: [id])
 
 	@@unique([battleId, voterId])
+}
+
+model ModerationLog {
+	id             Int             @id @default(autoincrement())
+	action         ModerationType
+	actorId        Int
+	actor          User            @relation("ActorRelation", fields: [actorId], references: [id])
+	targetUserId   Int?
+	targetUser     User?           @relation("TargetUserRelation", fields: [targetUserId], references: [id])
+	targetPostId   Int?
+	targetPost     Post?           @relation("TargetPostRelation", fields: [targetPostId], references: [id])
+	targetBattleId Int?
+	targetBattle   Battle?         @relation("TargetBattleRelation", fields: [targetBattleId], references: [id])
+	createdAt      DateTime        @default(now())
 }
 
 model Notification {
