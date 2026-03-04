@@ -103,9 +103,13 @@ model	Comment {
 
 	userId		Int
 	postId		Int
+	parentId	Int?
 
 	user	User	@relation(fields: [userId], references: [id])
 	post	Post	@relation(fields: [postId], references: [id])
+
+	parent Comment? @relation("Comment replies", fields: [parentId], references: [id])
+	replies Comment[] @relation("Comment replies")
 }
 
 model	Conversation {

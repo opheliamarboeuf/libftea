@@ -12,6 +12,7 @@ import { UsersModule } from './user/users.module';
 import { ProfileModule } from './profile/profile.module';
 import { PostsModule } from './posts/posts.module';
 import { LikesModule } from './likes/likes.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { LikesModule } from './likes/likes.module';
 	ProfileModule,
 	PostsModule,
 	LikesModule,
+	CommentsModule,
 
   ],
   controllers: [AppController], 

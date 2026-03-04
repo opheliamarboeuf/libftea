@@ -1,0 +1,125 @@
+.comment-section {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+.new-comment {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.new-comment input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #333;
+    background-color: #f0f2f5;
+    outline: none;
+    transition: border 0.2s, background-color 0.2s;
+}
+
+.new-comment input::placeholder {
+    color: #999;
+}
+
+.new-comment input:focus {
+    border-color: #1877f2;
+    background-color: #fff;
+}
+
+.new-comment button {
+    padding: 6px 12px;
+    background-color: #1877f2;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 14px;
+    display: none;
+}
+
+.new-comment input:not(:placeholder-shown) + button,
+.new-comment button.show {
+    display: inline-block;
+}
+
+.comments-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.comment-item {
+    background-color: #f0f2f5;
+    padding: 6px 10px;
+    border-radius: 12px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.comment-actions {
+    margin-top: 4px;
+    display: flex;
+    gap: 8px;
+}
+
+.comment-actions button {
+    border: none;
+    background: none;
+    color: #1877f2;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 2px 4px;
+}
+
+.comment-actions button:hover {
+    text-decoration: underline;
+}
+
+.reply-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    margin-left: 16px;
+}
+
+.reply-box input {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 16px;
+    border: 1px solid #ddd;
+    font-size: 13px;
+    background-color: #fff;
+}
+
+.reply-box button {
+    padding: 4px 8px;
+    border-radius: 16px;
+    border: none;
+    background-color: #1877f2;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.replies-list {
+    list-style: none;
+    padding-left: 20px;
+    margin-top: 4px;
+}
+
+.reply-item {
+    background-color: #e4e6eb;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
