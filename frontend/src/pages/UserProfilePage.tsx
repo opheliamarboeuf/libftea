@@ -8,6 +8,8 @@ import { useModal } from "../context/ModalContext";
 import { Post } from "../context/UserContext";
 import { postsApi } from "../posts/api";
 import { UserPostsList } from "../posts/components/UserPostsList";
+import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
+import { BlockFriendButton } from "../friends/BlockFriendButton";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -35,20 +37,45 @@ const UserProfilePage = () => {
 	const [loading, setLoading] = useState(false);
 	const [posts, setPosts] = useState<Post[]>([]);
 	const navigate = useNavigate();
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+	const [blockedByUser, setBlockedByUser] = useState(false);
+	const [blockedPosts, setBlockedPosts] = useState(false);
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
-		const res = await fetch(`${API_URL}/${id}`, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
+		try {
+			const res = await fetch(`${API_URL}/${id}`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+	
+			// if blocked by the current user
+			if (res.status === 403)
+			{
+				setBlockedByUser(true);
+				return ;
+			}
 
-		if (res.ok) {
+			if (!res.ok) {
+				throw new Error("Error fetching profile");
+			}
+
 			const data = await res.json();
 			setUserData(data);
+			// if the current user has blocked the user's profile
+			if (data.friendshipStatus === 'BLOCKED') {
+				setBlockedPosts(true);
+			}
+			else {
+				setBlockedPosts(false)};
+				await loadPosts();
+			}    
+		catch (error) {
+			console.error(error);
+			showModal?.("Could not fetch profile");
 		}
-	};
+	}
 
 	const loadPosts = async () => {
 		if (!id)
@@ -145,6 +172,7 @@ const UserProfilePage = () => {
 			showModal("Error removing friend")
 		} finally {
 			setLoading(false);
+			setShowDeleteConfirm(false);
 		}
 	};
 
@@ -181,20 +209,30 @@ const UserProfilePage = () => {
 					<button className="profile-action-btn" onClick={() => navigate("/chat")} disabled={loading}>
 						Send Message
 					</button>
-					<button className="profile-action-btn" onClick={handleRemoveFriend} disabled={loading}>
-						Remove Friend
+					<button className="profile-action-btn" onClick={() => setShowDeleteConfirm(true)} disabled={loading}>
+						Delete friend
 					</button>
+					{showDeleteConfirm && (
+									<ConfirmBlockDelete
+										message="Are you sure you want to delete this friend from your friendlist?"
+										onYes={handleRemoveFriend}
+										onNo={() => setShowDeleteConfirm(false)}
+									/>
+					)}
 					</div>
 				);
 			case 'BLOCKED':
-				return <span>User Blocked</span>;
+				return <span> </span>;
 			default:
 				return null;
 		}
 	};
 	
+	if (blockedByUser) {
+		return <div className="profile-page blocked">You cannot access this profile</div>;
+	}
 	if (!userData) {
-		return <div>Loading...</div>;
+		return <div className="profile-page">Loading...</div>;
 	}
 
 	return (
@@ -219,15 +257,16 @@ const UserProfilePage = () => {
 					<p className="display-username">{userData.username}</p>
 					<div className="stats">
 						<span>Friends: {userData.friendsCount}</span>
-						<span>Posts: 5</span>
+						<span>Posts: {posts.length}</span>
 					</div>
 					<div className="block-user">
-						<button className="regular-btn" >Block User</button> 
+						<BlockFriendButton userId={userData.id} onAction={fetchProfile} />
 					</div>
+
 					<div className="bio">
 						<p>{userData.profile?.bio || "Write your bio here..."}</p>
 					</div>
-				</div>
+					</div>
 
 				{/* COVER, USER INTERACTIONS AND POSTS*/}
 				<div className="cover-and-posts">
@@ -245,7 +284,7 @@ const UserProfilePage = () => {
 							</div>
 					</div>
 					<div className="posts">
-						<UserPostsList posts={posts} />
+						{blockedPosts ? <div className="blocked">You have blocked this user</div> : <UserPostsList posts={posts} />}
 					</div>
 				</div>
 			</div>
