@@ -1,4 +1,8 @@
 .comment-section {
+	list-style: none;
+	padding: 0;
+	max-height: 490px;
+	overflow-y: auto;
     width: 100%;
     max-width: 600px;
     margin: 0 auto;
@@ -6,8 +10,12 @@
 }
 
 .new-comment {
+	position: sticky;
+	top: 0;
+	background: white;
+	padding-bottom: 6px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 8px;
     margin-bottom: 12px;
 }
@@ -61,7 +69,8 @@
     border-radius: 12px;
     margin-bottom: 6px;
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 1;
+	word-break: break-word;
 }
 
 .comment-actions {
@@ -85,7 +94,7 @@
 
 .reply-box {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 6px;
     margin-top: 6px;
     margin-left: 16px;
@@ -98,6 +107,7 @@
     border: 1px solid #ddd;
     font-size: 13px;
     background-color: #fff;
+	color: #333;
 }
 
 .reply-box button {
@@ -122,4 +132,5 @@
     border-radius: 12px;
     margin-bottom: 4px;
     font-size: 13px;
+	word-break: break-word;
 }

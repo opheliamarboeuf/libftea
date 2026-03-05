@@ -1,4 +1,3 @@
-import { likesApi } from "./api";
 import { useComments } from "./hooks";
 import { useUser } from "../context/UserContext";
 import { useState } from "react";
@@ -36,9 +35,11 @@ export function CommentSection({ postId }: Props) {
                         <strong>{reply.user.username}</strong> • {new Date(reply.createdAt).toLocaleString()}
                     </p>
                     <p>{reply.content}</p>
+					<div className="comment-actions">
                     {reply.userId === user?.id && (
                         <button onClick={() => deleteComment(reply.id)}>Delete</button>
                     )}
+					</div>
                 </li>
             ))}
         </ul>
@@ -49,7 +50,7 @@ export function CommentSection({ postId }: Props) {
             <div className="new-comment">
                 <input
                     type="text"
-                    placeholer="Leave a comment..."
+                    placeholder="Leave a comment..."
                     value={newComment}
                     onChange={(e) => setNewcomment(e.target.value)}
                     onFocus={() => setActiveReplyId(null)}
@@ -68,7 +69,7 @@ export function CommentSection({ postId }: Props) {
                         </p>
                         <p>{comment.content}</p>
                         <div className="comment-actions">
-                            <button onClick={() => setActiveReplyId(comment.id)}>Reply</button>
+								<button onClick={() => setActiveReplyId(comment.id)}>Reply</button>
                             {comment.userId === user?.id && (
                                 <button onClick={() => deleteComment(comment.id)}>Delete</button>
                             )}
@@ -77,7 +78,7 @@ export function CommentSection({ postId }: Props) {
                             <div className="reply-box">
                                 <input
                                     type="text"
-                                    placeholer="Reply to this comment..."
+                                    placeholder="Reply to this comment..."
                                     value={replyContent}
                                     onChange={(e) => setReplyContent(e.target.value)}
                                 />
