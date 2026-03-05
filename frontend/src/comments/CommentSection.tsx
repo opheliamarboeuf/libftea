@@ -2,6 +2,8 @@ import { useComments } from "./hooks";
 import { useUser } from "../context/UserContext";
 import { useState } from "react";
 import "./CommentSection.css";
+import { ConfirmDialog } from "../common/components/ConfirmDialog";
+import { Link } from "react-router-dom";
 
 interface Props {
     postId: number;
@@ -13,6 +15,8 @@ export function CommentSection({ postId }: Props) {
     const [newComment, setNewcomment] = useState("");
     const [activeReplyId, setActiveReplyId] = useState<number | null>(null);
     const [replyContent, setReplyContent] = useState("");
+	const [showConfirm, setShowConfirm] = useState(false);
+	const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
 
     const handleCommentSubmit = async () => {
         if (!newComment.trim()) return;
@@ -32,12 +36,24 @@ export function CommentSection({ postId }: Props) {
             {replies.map(reply => (
                 <li key={reply.id} className="reply-item">
                     <p>
-                        <strong>{reply.user.username}</strong> • {new Date(reply.createdAt).toLocaleString()}
+                        <strong>
+							<Link
+								to={`/users/${reply.user.id}`}
+								style={{ textDecoration: "none", color: "inherit" }}
+							>
+							{reply.user.username}
+							</Link>
+						</strong> • {new Date(reply.createdAt).toLocaleString()}
                     </p>
                     <p>{reply.content}</p>
 					<div className="comment-actions">
                     {reply.userId === user?.id && (
-                        <button onClick={() => deleteComment(reply.id)}>Delete</button>
+                        <button onClick={() => {
+							setCommentToDelete(reply.id);
+							setShowConfirm(true);
+						}}>
+							Delete
+						</button>
                     )}
 					</div>
                 </li>
@@ -65,13 +81,25 @@ export function CommentSection({ postId }: Props) {
                 {comments.map(comment => (
                     <li key={comment.id} className="comment-item">
                         <p>
-                           <strong>{comment.user.username}</strong> • {new Date(comment.createdAt).toLocaleString()}
+                           <strong>
+								<Link
+									to={`/users/${comment.user.id}`}
+									style={{ textDecoration: "none", color: "inherit" }}
+								>
+								{comment.user.username}
+								</Link>
+							</strong> • {new Date(comment.createdAt).toLocaleString()}
                         </p>
                         <p>{comment.content}</p>
                         <div className="comment-actions">
 								<button onClick={() => setActiveReplyId(comment.id)}>Reply</button>
                             {comment.userId === user?.id && (
-                                <button onClick={() => deleteComment(comment.id)}>Delete</button>
+                                <button onClick={() => {
+							setCommentToDelete(comment.id);
+							setShowConfirm(true);
+						}}>
+							Delete
+						</button>
                             )}
                         </div>
                         {activeReplyId === comment.id && (
@@ -86,9 +114,26 @@ export function CommentSection({ postId }: Props) {
                             </div>
                         )}
                         {comment.replies && comment.replies.length > 0 && renderReplies(comment.replies)}
+						
                     </li>
                 ))}
             </ul>
-        </div>
+			{showConfirm && commentToDelete !== null && (
+								<ConfirmDialog
+									message="Are you sure you want to delete this comment?"
+									onConfirm={async () => {
+										if (commentToDelete !== null) {
+											await deleteComment(commentToDelete);
+											setCommentToDelete(null);
+											setShowConfirm(false);
+										}
+									}}
+									onCancel={() => {
+										setCommentToDelete(null);
+										setShowConfirm(false);
+									}}
+								/>
+							)}
+		</div>
 	);
 }
