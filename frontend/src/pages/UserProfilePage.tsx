@@ -10,6 +10,7 @@ import { postsApi } from "../posts/api";
 import { UserPostsList } from "../posts/components/UserPostsList";
 import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
 import { BlockFriendButton } from "../friends/BlockFriendButton";
+import { UserProfileMenu } from "../profile/UserProfileMenu";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -241,6 +242,7 @@ const UserProfilePage = () => {
 			<div className="main-content">
 				{/* PROFILE INFO COLUMN */}
 				<div className="profile-info">
+					<UserProfileMenu/>
 					<p className="display-name">
 						{userData.profile?.displayName ? userData.profile.displayName : '\u00A0'} {/*space to keep the height*/}
 					</p>

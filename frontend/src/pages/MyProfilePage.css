@@ -31,6 +31,7 @@
 
 /* Profile info column */
 .profile-info {
+	position: relative;
 	flex: 0 1 250px;
 	min-width: 150px;
 	background-color: white; 
