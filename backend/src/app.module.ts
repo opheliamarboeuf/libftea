@@ -11,6 +11,8 @@ import { FriendsModule } from './friends/friends.module';
 import { UsersModule } from './user/users.module';
 import { ProfileModule } from './profile/profile.module';
 import { PostsModule } from './posts/posts.module';
+import { LikesModule } from './likes/likes.module';
+import { CommentsModule } from './comments/comments.module';
 import { ModerationModule } from './moderation/moderation.module';
 
 @Module({
@@ -25,6 +27,8 @@ import { ModerationModule } from './moderation/moderation.module';
 	UsersModule,
 	ProfileModule,
 	PostsModule,
+	LikesModule,
+	CommentsModule,
 	ModerationModule,
   ],
   controllers: [AppController], 
