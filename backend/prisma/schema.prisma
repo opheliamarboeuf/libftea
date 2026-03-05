@@ -25,6 +25,13 @@ enum  ModerationType {
 	REVIEW_REPORT
 }
 
+enum ReportType { 
+	SPAM
+	HARASSMENT
+	INAPPROPRIATE_CONTENT
+	OTHER
+}
+
 generator client {
 	provider = "prisma-client-js"
 }
@@ -62,6 +69,12 @@ model User {
 	// relations for ModerationLog
 	moderationLogsAuthored ModerationLog[] @relation("ActorRelation")
   	moderationLogsTargeted ModerationLog[] @relation("TargetUserRelation")
+
+	// relations for Reports
+
+	reportsAuthored   Report[] @relation("ReporterRelation")    // reports creat by the user
+	reportsAgainst    Report[] @relation("ReportedUserRelation") // reports agaist the user
+	reportsHandled    Report[] @relation("ModeratorRelation")   // reports handled by the user
 }
 
 model	Profile {
@@ -97,6 +110,9 @@ model	Post {
 
 	// relation for ModerationLog
 	moderationLogs ModerationLog[] @relation("TargetPostRelation")
+	
+	// relation for Reports
+	reports     Report[] @relation("ReportedPostRelation") //
 }
 
 model	Like {
@@ -215,6 +231,23 @@ model ModerationLog {
 	targetBattleId Int?
 	targetBattle   Battle?         @relation("TargetBattleRelation", fields: [targetBattleId], references: [id])
 	createdAt      DateTime        @default(now())
+}
+
+model Report {
+	id						Int       @id @default(autoincrement())
+	reporterId			Int
+	reporter			User        @relation("ReporterRelation", fields: [reporterId], references: [id], onDelete: Cascade)
+	reportedUserId 		Int?		// reported user
+	reportedUser		User?       @relation("ReportedUserRelation", fields: [reportedUserId], references: [id], onDelete: Cascade)
+	reportedPostId		Int?		// reported post
+	reportedPost		Post?       @relation("ReportedPostRelation", fields: [reportedPostId], references: [id], onDelete: Cascade)
+	reportReason		ReportType
+	reportContext		String?
+	moderatorMessage	String?
+	createdAt			DateTime  @default(now())
+	handled				Boolean   @default(false)
+	handledById			Int?
+	handledBy			User? @relation("ModeratorRelation", fields: [handledById], references: [id])
 }
 
 model Notification {

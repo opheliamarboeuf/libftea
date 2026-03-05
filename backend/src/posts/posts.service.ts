@@ -6,6 +6,7 @@ import { join } from "path";
 import { unlink } from "fs/promises";
 import { hasPermission } from "src/auth/permissions";
 import { Role } from "@prisma/client";
+import { ReportPostDto } from "./dto/report.dto";
 
 @Injectable()
 export class PostsService {
@@ -202,5 +203,28 @@ export class PostsService {
 			orderBy: { createdAt: 'desc' },
 			include: { author: true },
  	 });
+	}
+
+	async reportPost(postId: number, dto: ReportPostDto, currentUserId: number) {
+		try {
+			const reportedPost = await this.prisma.post.findUnique({ where: { id: postId }})
+			if (!reportedPost) {
+				throw new NotFoundException("Post not found");
+			}
+			const report = await this.prisma.report.create({
+				data: {
+					reporterId: currentUserId,
+					reportedPostId: postId,
+					reportReason: dto.reason,
+					reportContext: dto.context,
+				}
+			})
+			return (report);
+		}
+		catch (error)
+		{ 
+			console.log("Error reporting post:", error);
+			throw new InternalServerErrorException("Could not report post");
+		}
 	}
 }
