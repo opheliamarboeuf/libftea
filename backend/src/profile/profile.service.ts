@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException, InternalServerErrorException} from "@nestjs/common";
+import { Injectable, NotFoundException, InternalServerErrorException, ForbiddenException} from "@nestjs/common";
+import { UsersService } from "src/user/users.service";
 import { PrismaService } from "src/prisma/prisma.service";
 import { Prisma } from '@prisma/client';
 import { EditDto } from "./dto/edit.dto";
@@ -9,6 +10,7 @@ import { join } from 'path';
 export class ProfileService {
 	constructor(
 		private prisma: PrismaService,
+		private usersService: UsersService,
 	) {}
 	async edit(userId:number, dto: EditDto) {
 		try {
@@ -67,6 +69,12 @@ export class ProfileService {
 
 	async getProfile(userId: number) {
 		try {
+				const blockedIds = await this.usersService.getBlockedIds(userId);
+				
+				if (blockedIds.includes(userId)) {
+					throw new ForbiddenException("You cannot access this profile");
+				}
+
 				const profile = await this.prisma.profile.findUnique({
 					where: {userId},
 					select: {
