@@ -78,6 +78,11 @@ export function usePostMenu(onPostDeleted?: () => void): UsePostMenuResult {
 		}
 	};
 
+	const handleReport = (postId: number) => {
+		console.log("Report post", postId);
+		setOpenMenuId(null);
+	};
+
 	const confirmDelete = async () => {
 		if (postToDelete === null)
 			return;
@@ -87,11 +92,6 @@ export function usePostMenu(onPostDeleted?: () => void): UsePostMenuResult {
 
 	const cancelDelete = () => {
 		setPostToDelete(null);
-	};
-
-	const handleReport = (postId: number) => {
-		console.log("Report post", postId);
-		setOpenMenuId(null);
 	};
 
 	const closeModal = () => {

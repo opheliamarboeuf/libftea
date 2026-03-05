@@ -1,37 +1,34 @@
 import "../../App.css"
 import { createPortal } from "react-dom";
 import { useModalAnimation } from "../../common/hooks/useModalAnimation";
-import { usePostEdition } from "../hooks/usePostEdition";
 import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
 import { Post } from "../../context/UserContext";
+import { usePostReport } from "../hooks/usePostReport";
 
-interface EditPostModalProps {
+interface ReportPostModalProps {
 	post: Post,
-	onPostEdited: () => void;
+	onPostReported: () => void;
 	onClose: () => void;
 }
 
-export function EditPostModal ({ post, onPostEdited, onClose }: EditPostModalProps) {
+export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostModalProps) {
 
 	// Function that runs the closing animation and then calls onClose() after the specified duration
 	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });
 
 	// Custom hook that manages a post creation
 	const {
-		title, 
-		setTitle,
-		caption,
-		setCaption,
+		context,
+		setContext,
+		MAX_CONTEXT_LENGTH,
 		errorMessage,
 		isLoading,
 		resetFields,
 		hasChanges,
-		MAX_TITLE_LENGTH,
-		MAX_CAPTION_LENGTH,
-		handlePostEdition,
-	} = usePostEdition(post, onPostEdited);
+		handlePostReport,
+	} = usePostReport(post, onPostReported);
 
 	// Guard unsaved changes
 	const {
@@ -47,9 +44,9 @@ export function EditPostModal ({ post, onPostEdited, onClose }: EditPostModalPro
 
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const res = await handlePostEdition();
+		const res = await handlePostReport();
 		if (res) {
-			onPostEdited(); 
+			onPostReported(); 
 			closeWithAnimation();
 		}
 	};
@@ -63,34 +60,27 @@ export function EditPostModal ({ post, onPostEdited, onClose }: EditPostModalPro
 					className={`modal-content-post ${fadeOut ? "fade-out" : "fade-in"}`}
 					onClick={(e) => e.stopPropagation()}
 				>
-					<h2>Edit your post</h2>
+					<h2>Report a post</h2>
 					<form onSubmit={handleSubmit}>
-						<label>Title</label>
+						<label>Reason</label>
 						<textarea
-							value={title}
-							onChange={(e) => setTitle(e.target.value)}
+							value="text"
+							// onChange={(e) => setTitle(e.target.value)}
 							className="create-post-input"
 						/>
-						<div
-							className={`char-counter ${
-							title.length > MAX_TITLE_LENGTH ? "error" : ""
-							}`}
-						>
-							{title.length} / {MAX_TITLE_LENGTH}
-						</div>
-						<label>Caption</label>
+						<label>Context</label>
 						<textarea
-							value={caption}
-							onChange={(e) => setCaption(e.target.value)}
+							value={context}
+							onChange={(e) => setContext(e.target.value)}
 							rows={5}
 							className="create-post-input"
 						/>
 						<div
 						className={`char-counter ${
-						caption.length > MAX_CAPTION_LENGTH ? "error" : ""
+						context.length > MAX_CONTEXT_LENGTH ? "error" : ""
 						}`}
 						>
-							{caption.length} / {MAX_CAPTION_LENGTH}
+							{context.length} / {MAX_CONTEXT_LENGTH}
 						</div>
 						{errorMessage && (
 							<div className="error-message shake-horizontal">

@@ -1,13 +1,15 @@
 import "./UserPostsList.css";
 import { Post, useUser } from "../../context/UserContext";
 import { API_URL } from "../../profile";
-import { FaHeart, FaEllipsisV } from "react-icons/fa";
+import { FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostMenu } from "../hooks/usePostMenu";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { EditPostModal } from "./EditPostModal";
 import { LikeButton } from "../../likes/LikeButton";
 import { CommentSection } from "../../comments/CommentSection";
+import { useState } from "react";
+import { ReportPostModal } from "./ReportPostModal";
 
 interface UserPostsListProps {
 	posts: Post[];
@@ -19,6 +21,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
     
 	const navigate = useNavigate();
 	const { user } = useUser();
+	const [postToReport, setPostToReport] = useState<Post | null>(null);
 	
 	const {
 		openMenuId,
@@ -79,7 +82,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 								</button>
 							</>
 						) : (
-							<button onClick={() => handleReport(post.id)}>Report</button>
+							<button onClick={() => {setPostToReport(post); toggleMenu(post.id);}}>Report</button>
 						)}
 					</div>
 				)}
@@ -110,6 +113,13 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		</div>
 		</div>
 	))}
+	{postToReport && (
+  		<ReportPostModal
+		post={postToReport}
+		onPostReported={() => setPostToReport(null)}
+		onClose={() => setPostToReport(null)}
+  			/>
+		)}
 		{postToEdit && (
 			<EditPostModal 
 				post={postToEdit} 
