@@ -1,6 +1,7 @@
 enum	Role {
-    USER
-    ADMIN
+	USER
+	MOD
+	ADMIN
 }
 
 enum	FriendshipStatus{
@@ -23,6 +24,14 @@ enum	BattleStatus {
     CANCELLED
 }
 
+enum  ModerationType {
+	DELETE_ANY_POST
+	CHANGE_ROLE
+	BAN_USER
+	CREATE_TOURNAMENT
+	REVIEW_REPORT
+}
+
 generator client {
     provider = "prisma-client-js"
 }
@@ -42,21 +51,25 @@ model User {
 	createdAt	DateTime	@default(now())
 	updatedAt	DateTime	@default(now()) @updatedAt
 
-    role	Role	@default(USER)
+    role	    Role	@default(USER)
+	bannedAt	DateTime?
 
-    profile					      Profile?
-    posts					        Post[]
-    likes					        Like[]
-    comments				      Comment[]
-    conversations		      Conversation[]	    @relation("UserConversations")
-    messages				      Message[]			      @relation("MessageSender")
+    profile				    Profile?
+    posts			        Post[]
+    likes			        Like[]
+    comments                Comment[]
+    conversations           Conversation[]	        @relation("UserConversations")
+    messages		        Message[]	            @relation("MessageSender")
     friendRequestSent	  	Friendship[]		    @relation("FriendRequester")
     friendRequestReceived	Friendship[]	    	@relation("FriendAddresse")
     battleParticipants		BattleParticipant[]
-    notifications		      Notification[]
-    battlesWon            Battle[]            @relation("BattleWinner")
-    battlesCreated        Battle[]            @relation("CreatedBattles")
-
+    notifications           Notification[]
+    battlesWon              Battle[]                @relation("BattleWinner")
+    battlesCreated          Battle[]                @relation("CreatedBattles")
+	
+	// relations for ModerationLog
+	moderationLogsAuthored ModerationLog[]          @relation("ActorRelation")
+  	moderationLogsTargeted ModerationLog[]          @relation("TargetUserRelation")
 }
 
 model	Profile {
@@ -84,10 +97,13 @@ model	Post {
     authorId	Int
     author		User	@relation(fields: [authorId], references: [id])
 
-    likes				Like[]
-    comments			Comment[]
-    battleParticipants	BattleParticipant[]
-    postTags			PostTag[]
+	likes				Like[]
+	comments			Comment[]
+	battleParticipants	BattleParticipant[]
+	postTags			PostTag[]
+
+	// relation for ModerationLog
+	moderationLogs ModerationLog[] @relation("TargetPostRelation")
 }
 
 model	Like {
@@ -98,9 +114,8 @@ model	Like {
     battleId    Int?
     createdAt   DateTime @default(now())
 
-
-    user	User	@relation(fields: [userId], references: [id])
-    post	Post	@relation(fields: [postId], references: [id])
+	user	User	@relation(fields: [userId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
 
     //	A user can only like a specific post once (no duplicate likes)
     //	@@ > applies a rule at the model level, not just a single field
@@ -115,8 +130,8 @@ model	Comment {
     userId		Int
     postId		Int
 
-    user	User	@relation(fields: [userId], references: [id])
-    post	Post	@relation(fields: [postId], references: [id])
+	user	User	@relation(fields: [userId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model	Conversation {
@@ -173,6 +188,9 @@ model Battle {
 
   createdById Int?
   createdBy   User? @relation("CreatedBattles", fields: [createdById], references: [id])
+  
+  // relation for ModerationLog
+  moderationLogs ModerationLog[] @relation("TargetBattleRelation")
 }
 
 model BattleParticipant {
@@ -182,11 +200,25 @@ model BattleParticipant {
     postId		  Int
     submittedAt DateTime?
 
-    battle	Battle	@relation(fields: [battleId], references: [id])
-    user	  User	@relation(fields: [userId], references: [id])
-    post	  Post?	@relation(fields: [postId], references: [id])
+	battle	Battle	@relation(fields: [battleId], references: [id])
+	user	User	@relation(fields: [userId], references: [id])
+	post	Post?	@relation(fields: [postId], references: [id], onDelete: Cascade)
 
-    @@unique([battleId, userId])
+	@@unique([battleId, userId])
+}
+
+model ModerationLog {
+	id             Int             @id @default(autoincrement())
+	action         ModerationType
+	actorId        Int
+	actor          User            @relation("ActorRelation", fields: [actorId], references: [id])
+	targetUserId   Int?
+	targetUser     User?           @relation("TargetUserRelation", fields: [targetUserId], references: [id])
+	targetPostId   Int?
+	targetPost     Post?           @relation("TargetPostRelation", fields: [targetPostId], references: [id], onDelete: SetNull)
+	targetBattleId Int?
+	targetBattle   Battle?         @relation("TargetBattleRelation", fields: [targetBattleId], references: [id])
+	createdAt      DateTime        @default(now())
 }
 
 model Notification {
@@ -211,8 +243,8 @@ model PostTag {
     postId	Int
     tagId	Int
 
-    post	Post	@relation(fields: [postId], references: [id])
-    tag		Tag		@relation(fields: [tagId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
+	tag		Tag		@relation(fields: [tagId], references: [id])
 
     @@unique([postId, tagId])
 }

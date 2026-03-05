@@ -4,7 +4,7 @@ import { useUser } from '../context/UserContext';
 import { Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { UserPostsList } from "../posts/components/UserPostsList";
-import { useFeed } from "../posts/components/hooks/useFeed";
+import { useFeed } from "../posts/hooks/useFeed";
 import { CreatePostModal } from "../posts/components/CreatePostModal";
 
 const FeedPage = () => {
@@ -35,7 +35,11 @@ const FeedPage = () => {
 			</div>
 
 			{error && <p style={{ color: "red" }}>{error}</p>}
-			<UserPostsList posts={posts} onPostDeleted={refresh} />
+			{posts.length === 0 ? (
+				<p className="no-posts-message">No posts to display</p>
+				) : (
+				<UserPostsList posts={posts} onPostDeleted={refresh} />
+				)}
 			{showPostModal && <CreatePostModal onPostCreated={refresh} onClose={() => setShowPostModal(false)} />}
 		</div>
 	);

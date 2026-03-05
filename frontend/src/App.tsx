@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import MyProfilePage from './pages/MyProfilePage';
 import FeedPage from "./pages/FeedPage";
 import FriendsPage from "./pages/FriendsPage";
+import Dashboard from './pages/Dashboard';
 import { Header } from './common/components/Header';
 import { LeftMenu } from './common/components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
@@ -55,42 +56,45 @@ const [loading, setLoading] = useState(true);
 		initUser();
 	}, [token, fetchUser]);
 
-	return (
-		<UserContext.Provider value={{ user, setUser, refreshUser: fetchUser }}>
-			<ModalProvider>
-			<BrowserRouter>
-				<Header />
-				<LeftMenu />
-					<Routes>
-						<Route 
-							path="/"
-							element={loading ? null : <Navigate to = {user ? "/feed" : "/login"} replace/>} />
-						<Route
-							path="/register"
-							element={<RegisterPage />} />
-						<Route
-							path = "/login"
-							element = {<LoginPage />} />
-						<Route
-							path = "/myprofile"
-							element = {loading ? null : user ? <MyProfilePage/> : <Navigate to = "/" replace />} />
-						<Route
-							path="/friends"
-							element={loading ? null : user ? <FriendsPage/> : <Navigate to = "/" replace />} />
-						<Route
-							path = "/feed"
-							element = {loading ? null : user ? <FeedPage/> : <Navigate to = "/" replace />} />
-						<Route
-							path="/users/:id"
-							element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
-						<Route
-							path="/tournament"
-							element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />
-					</Routes>
-				</BrowserRouter>
-				</ModalProvider>
-		</UserContext.Provider>
-	);
+  return (
+    <UserContext.Provider value={{ user, setUser, refreshUser: fetchUser }}>
+      <ModalProvider>
+      <BrowserRouter>
+        <Header />
+        <LeftMenu />
+          <Routes>
+            <Route 
+              path="/"
+              element={loading ? null : <Navigate to = {user ? "/feed" : "/login"} replace/>} />
+            <Route
+              path="/register"
+              element={<RegisterPage />} />
+            <Route
+              path = "/login"
+              element = {<LoginPage />} />
+            <Route
+              path = "/myprofile"
+              element = {loading ? null : user ? <MyProfilePage/> : <Navigate to = "/" replace />} />
+            <Route
+              path="/friends"
+              element={loading ? null : user ? <FriendsPage/> : <Navigate to = "/" replace />} />
+            <Route
+              path = "/feed"
+              element = {loading ? null : user ? <FeedPage/> : <Navigate to = "/" replace />} />
+            <Route
+              path="/users/:id"
+              element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
+			<Route
+				path="/tournament"
+				element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />
+            <Route
+              path="/dashboard"
+              element={loading ? null : user ? <Dashboard/> : <Navigate to = "/" replace />} />
+          </Routes>
+        </BrowserRouter>
+        </ModalProvider>
+    </UserContext.Provider>
+  );
 };
 
 export default App

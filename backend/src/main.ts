@@ -20,12 +20,12 @@ async function bootstrap() {
   );
   
   // Expose the 'uploads' folder so uploaded images are accessible
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads/', // Accessible via http://localhost:3000/uploads/...
   });
   
   // Expose the 'assets' folder for default images
-  app.useStaticAssets(join(__dirname, '..', 'assets'), {
+  app.useStaticAssets(join(process.cwd(), 'assets'), {
     prefix: '/assets/',
   });
 

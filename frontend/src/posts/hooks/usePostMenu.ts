@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { usePostDeletion } from "./usePostDeletion";
-import { useUser } from "../../../context/UserContext";
-import { useModal } from "../../../context/ModalContext";
+import { useUser } from "../../context/UserContext";
+import { useModal } from "../../context/ModalContext";
 
 export interface UsePostMenuResult {
 	openMenuId: number | null;
@@ -68,7 +68,7 @@ export function usePostMenu(onPostDeleted?: () => void): UsePostMenuResult {
 				posts: updatePosts,
 			});
 			setOpenMenuId(null);
-			showModal("You post has been deleted");
+			showModal("This post has been deleted");
 			// Notify parent component to refresh
 			if (onPostDeleted) {
 				onPostDeleted();

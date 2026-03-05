@@ -4,7 +4,7 @@ import { useUser } from '../context/UserContext';
 import { Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { UserPostsList } from "../posts/components/UserPostsList";
-import { useFeed } from "../posts/components/hooks/useFeed";
+import { useFeed } from "../posts/hooks/useFeed";
 import { CreateTournamentModal } from "../tournament/components/CreateTournamentModal";
 import { tournamentApi } from "../tournament/api";
 

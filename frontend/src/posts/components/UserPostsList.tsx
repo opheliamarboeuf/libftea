@@ -3,7 +3,7 @@ import { Post, useUser } from "../../context/UserContext";
 import { API_URL } from "../../profile";
 import { FaHeart, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { usePostMenu } from "./hooks/usePostMenu";
+import { usePostMenu } from "../hooks/usePostMenu";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { EditPostModal } from "./EditPostModal";
 import { LikeButton } from "../../likes/LikeButton";
@@ -65,9 +65,11 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				<FaEllipsisV onClick={() => toggleMenu(post.id)} />
 				{openMenuId === post.id && (
 					<div className="menu-dropdown">
-						{post.author.id === user.id ? (
+						{post.author.id === user.id || user.role === "ADMIN" || user.role === "MOD" ? (
 							<>
-								<button onClick={() => handleEdit(post)}>Edit</button>
+								{/* Edit only if owner */}
+								{post.author.id === user.id && <button onClick={() => handleEdit(post)}>Edit</button>}
+								{/* Delete if owner or admin/mod */}
 								<button 
 									onClick={() => setPostToDelete(post.id)}
 									disabled={isDeleting}
@@ -116,7 +118,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message="Are you sure you want to delete your post?"
+				message="Are you sure you want to delete this post?"
 				onConfirm={confirmDelete}
 				onCancel={cancelDelete}
 			/>

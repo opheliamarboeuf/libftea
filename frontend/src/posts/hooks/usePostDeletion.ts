@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { postsApi } from "../../api";
+import { postsApi } from "../api";
 
 export function usePostDeletion() {
 	const [isDeleting, setIsDeleting] = useState(false);
