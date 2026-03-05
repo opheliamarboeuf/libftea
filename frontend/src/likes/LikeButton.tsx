@@ -14,10 +14,10 @@ export function LikeButton({ postId }: Props) {
 
 	console.log("COUNT =", count);
 
-	const handleClick = async () => {
+	const handleClick = () => {
 		setBtnLoading(true);
 		try {
-			await toggleLike();
+			toggleLike();
 		} catch (err) {
 			console.error(err);
 		} finally {
