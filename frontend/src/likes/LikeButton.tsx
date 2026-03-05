@@ -33,7 +33,9 @@ export function LikeButton({ postId }: Props) {
 				disabled={btnLoading}
 			>
 				<FaHeart className="heart-icon" />
-				<span className="count">{typeof count === "number" ? count : 0} likes</span>
+				<span className="count">
+					{count ?? 0} {count <= 1 ? "like" : "likes"}
+				</span>
 			</button>
 		</>
 	);
