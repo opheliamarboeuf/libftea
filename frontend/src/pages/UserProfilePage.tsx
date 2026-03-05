@@ -9,7 +9,6 @@ import { Post } from "../context/UserContext";
 import { postsApi } from "../posts/api";
 import { UserPostsList } from "../posts/components/UserPostsList";
 import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
-import { BlockFriendButton } from "../friends/BlockFriendButton";
 import { UserProfileMenu } from "../profile/UserProfileMenu";
 
 const API_URL = 'http://localhost:3000/users';
@@ -242,7 +241,7 @@ const UserProfilePage = () => {
 			<div className="main-content">
 				{/* PROFILE INFO COLUMN */}
 				<div className="profile-info">
-					<UserProfileMenu/>
+					<UserProfileMenu userId={userData.id} onAction={fetchProfile}/>
 					<p className="display-name">
 						{userData.profile?.displayName ? userData.profile.displayName : '\u00A0'} {/*space to keep the height*/}
 					</p>
@@ -261,10 +260,6 @@ const UserProfilePage = () => {
 						<span>Friends: {userData.friendsCount}</span>
 						<span>Posts: {posts.length}</span>
 					</div>
-					<div className="block-user">
-						<BlockFriendButton userId={userData.id} onAction={fetchProfile} />
-					</div>
-
 					<div className="bio">
 						<p>{userData.profile?.bio || "Write your bio here..."}</p>
 					</div>

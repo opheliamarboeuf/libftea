@@ -1,15 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { friendsApi } from "../../friends/api";
 
 export interface useUserProfileMenuResult {
 	menuRef: React.RefObject<HTMLDivElement>;
 	openMenu: boolean;
 	toggleMenu: () => void;
-	handleReport: () => void;
-	handleBlock: () => void;
 }
 
-export function useUserProfileMenu() {
+export function useDropdownMenu() {
 
 	const [openMenu, setOpenMenu] = useState(false);
 	const menuRef = useRef<HTMLDivElement>(null);	
@@ -34,18 +31,10 @@ export function useUserProfileMenu() {
 	const toggleMenu = () => {
 		setOpenMenu(prev => !prev);
 	}
-	const handleBlock = async () => {
-		console.log("is blocked");
-	}
 
-	const handleReport = async () => {
-		console.log("is reported");
-	}
 	return {
 		menuRef,
 		openMenu,
-		toggleMenu,
-		handleBlock, 
-		handleReport,
+		toggleMenu, 
 	};
 }
