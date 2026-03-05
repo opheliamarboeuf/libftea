@@ -29,7 +29,7 @@ export type User = {
 	username: string;
 	role: string;
 	createdAt: string;
-	profile: {
+	profile?: {
 		bio: string | null;
 		displayName: string | null;
 		avatarUrl: string | null;
