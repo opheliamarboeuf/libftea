@@ -46,24 +46,13 @@ export const useLike = (postId: number) => {
 	}, [postId]);
 
 	const toggleLike = () => {
+		setLiked(prev => !prev);
+		setCount(prev => liked ? prev - 1 : prev + 1);
 		socket.emit("toggle_like", {
 			postId,
 			userId:user.id,
 		});
 	};
-	// const toggleLike = async () => {
-	// 	setLiked(prev => !prev);
-	// 	setCount(prev => liked ? prev - 1 : prev + 1);
-	// 	try {
-	// 		const result = await likesApi.toggleLike(postId);
-	// 		setLiked(result.liked);
-	// 		setCount(result.count);
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 		setLiked(prev => !prev);
-	// 		setCount(prev => liked ? prev + 1 : prev - 1);
-	// 	}
-	// };
 
 	return { liked, count, loading, toggleLike };
 };

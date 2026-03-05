@@ -12,7 +12,8 @@ import { LikesService } from './likes.service';
 
 @WebSocketGateway({
 	cors: {
-		origin: '*',
+		origin: 'http://localhost:5173',
+		credentials: true,
 	},
 })
 
