@@ -48,12 +48,31 @@ export const useComments = (postId: number) => {
 			setComments(prev => removeComment(prev, commentId));
 		};
 
+		const handleRepliedComment = (reply: Comment & { parentCommentId: number }) => {
+			const addReply = (arr: Comment[]) : Comment[] => {
+                return arr.map(c => {
+                    if (c.id === reply.parentCommentId) {
+						const alreadyExists = c.replies?.some(r => r.id === reply.id);
+						if (alreadyExists) return c;
+                        return {...c, replies: [...(c.replies || []), reply]};
+                    }
+                    if (c.replies && c.replies.length > 0) {
+                        return {...c, replies: addReply(c.replies)};
+                    }
+                    return c;
+                });
+            };
+            setComments(prev => addReply(prev));
+		};
+
 		socket.on("comment_created", handleNewComment);
 		socket.on("comment_deleted", handleDeletedComment);
+		socket.on("comment_replied", handleRepliedComment);
 
 		return () => {
 			socket.off("comment_created", handleNewComment);
 			socket.off("comment_deleted", handleDeletedComment);
+			socket.off("comment_replied", handleRepliedComment);
 		}
 	}, [postId]);
 
@@ -77,23 +96,11 @@ export const useComments = (postId: number) => {
     };
 
     const replyComment = async (parentCommentId: number, content: string) => {
-        try {
-            const reply = await commentsApi.replyComment(parentCommentId, content);
-            const addReply = (arr: Comment[]) : Comment[] => {
-                return arr.map(c => {
-                    if (c.id === parentCommentId) {
-                        return {...c, replies: [...(c.replies || []), reply]};
-                    }
-                    if (c.replies && c.replies.length > 0) {
-                        return {...c, replies: addReply(c.replies)};
-                    }
-                    return c;
-                });
-            };
-            setComments(prev => addReply(prev));
-        } catch (err) {
-            setError(err.message || "Failed to reply to comment");
-        }
+       socket.emit("reply_comment", {
+			parentCommentId,
+			userId:user.id,
+			content,
+		});
     };
 
     return { comments, loading, error, createComment, deleteComment, replyComment };

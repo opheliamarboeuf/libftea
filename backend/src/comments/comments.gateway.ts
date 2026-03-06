@@ -65,13 +65,13 @@ export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect
 		@MessageBody() data: { parentCommentId: number; userId: number, content: string },
 		@ConnectedSocket() client: Socket,
 	) {
-		const result = await this.commentsService.createComment(
+		const result = await this.commentsService.replyComment(
 			data.parentCommentId,
 			data.userId,
 			data.content,
 		);
 
-		this.server.emit('comment_created', result);
+		this.server.emit('comment_replied', result);
 		return result;
 	}
 }
