@@ -7,11 +7,11 @@ export enum ReportType {
 	OTHER = "OTHER",
 }
 export class ReportPostDto {
-	@IsEnum(ReportType, { message: "Reason must be a valid report type" })
-	reason: ReportType;
+	@IsEnum(ReportType, { message: "Category must be a valid report type" })
+	category: ReportType;
 
 	@IsString()
 	@IsOptional()
-	@MaxLength(350, {message: "The caption must be 350 characters or less"})
-	context?: string
+	@MaxLength(350, {message: "The description must be 350 characters or less"})
+	description?: string
 }

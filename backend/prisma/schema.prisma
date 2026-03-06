@@ -241,13 +241,15 @@ model Report {
 	reportedUser		User?       @relation("ReportedUserRelation", fields: [reportedUserId], references: [id], onDelete: Cascade)
 	reportedPostId		Int?		// reported post
 	reportedPost		Post?       @relation("ReportedPostRelation", fields: [reportedPostId], references: [id], onDelete: Cascade)
-	reportReason		ReportType
-	reportContext		String?
+	reportCategory		ReportType
+	reportDescription	String?
 	moderatorMessage	String?
 	createdAt			DateTime  @default(now())
 	handled				Boolean   @default(false)
 	handledById			Int?
 	handledBy			User? @relation("ModeratorRelation", fields: [handledById], references: [id])
+
+	@@unique([reporterId, reportedPostId])
 }
 
 model Notification {

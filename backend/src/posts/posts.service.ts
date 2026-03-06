@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, HttpException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PostsDto } from "./dto/create.dto";
 import { UpdatePostDto } from "./dto/update.dto";
@@ -211,18 +211,32 @@ export class PostsService {
 			if (!reportedPost) {
 				throw new NotFoundException("Post not found");
 			}
+
+			const existingReport = await this.prisma.report.findUnique({
+			where: {
+				reporterId_reportedPostId: {
+					reporterId: currentUserId,
+					reportedPostId: postId,
+				},
+			},});
+			if (existingReport)
+				throw new BadRequestException("You have already reported this post");
+
 			const report = await this.prisma.report.create({
 				data: {
 					reporterId: currentUserId,
 					reportedPostId: postId,
-					reportReason: dto.reason,
-					reportContext: dto.context,
-				}
-			})
+					reportCategory: dto.category,
+					reportDescription: dto.description,
+				},
+			});
 			return (report);
 		}
 		catch (error)
-		{ 
+		{
+			if (error instanceof HttpException) {
+				throw error;
+			}
 			console.log("Error reporting post:", error);
 			throw new InternalServerErrorException("Could not report post");
 		}

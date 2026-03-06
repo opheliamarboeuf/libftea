@@ -98,4 +98,4 @@ export class PostsController {
 		) {
 			return this.postService.reportPost(id, dto, req.user.id);
 		}
-}
+	}
