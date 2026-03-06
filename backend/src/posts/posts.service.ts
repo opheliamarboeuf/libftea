@@ -73,7 +73,7 @@ export class PostsService {
 	async deletePost(userId: number, userRole: Role, postId: number) {
 		const post = await this.prisma.post.findUnique({ where: { id: postId } });
 		if (!post)
-			return;
+			throw new NotFoundException("Post not found");
 
 		// Check if the user is the post author or has the permission to delete the post
 		if (userId !== post.authorId && !hasPermission(userRole, "DELETE_ANY_POST")) {
@@ -96,9 +96,12 @@ export class PostsService {
 				}
 
 				// Delete the post after logging
-				const deletedPost = await prisma.post.delete({ where: { id: postId } });
+				await prisma.post.delete({ where: { id: postId } });
 			});
-
+				// Delete the image
+			if (post.imageUrl) {
+				await this.deletePostImage(post.imageUrl);
+			}
 			return true;
 		} catch (error) {
 			console.log("Error deleting post:", error);
@@ -216,25 +219,29 @@ export class PostsService {
 			include: { author: true },
  	 });
 	}
-
 	async reportPost(postId: number, dto: ReportPostDto, currentUserId: number) {
 		try {
-			const reportedPost = await this.prisma.post.findUnique({ where: { id: postId }})
-			if (!reportedPost) {
+			const reportedPost = await this.prisma.post.findUnique({
+				where: { id: postId },
+				select: { authorId: true },
+			});
+			if (!reportedPost)
 				throw new NotFoundException("Post not found");
-			}
-
+			if (reportedPost.authorId === currentUserId)
+				throw new BadRequestException("You cannot report your own post");
 			const existingReport = await this.prisma.report.findUnique({
-			where: {
-				reporterId_reportedPostId: {
+				where: {
+					reporterId_reportedPostId: {
 					reporterId: currentUserId,
 					reportedPostId: postId,
 				},
-			},});
-			if (existingReport)
-				throw new BadRequestException("You have already reported this post");
+			},
+		});
+		if (existingReport)
+			throw new BadRequestException("You have already reported this post");
 
-			const report = await this.prisma.report.create({
+		const report = await this.prisma.$transaction(async (tx) => {
+			const createdReport = await tx.report.create({
 				data: {
 					reporterId: currentUserId,
 					reportedPostId: postId,
@@ -242,21 +249,28 @@ export class PostsService {
 					reportDescription: dto.description,
 				},
 			});
-			await this.prisma.postHiddenForUser.create({
-                data: {
+
+			await tx.postHiddenForUser.upsert({
+				where: {
+					postId_userId: {
+						postId,
+						userId: currentUserId,
+					},
+				},
+				update: {},
+				create: {
 					postId,
 					userId: currentUserId,
 				},
-            });
-			return (report);
-		}
-		catch (error)
-		{
-			if (error instanceof HttpException) {
-				throw error;
-			}
-			console.log("Error reporting post:", error);
-			throw new InternalServerErrorException("Could not report post");
-		}
+			});
+			return createdReport;
+		});
+		return report;
+	} catch (error) {
+		if (error instanceof HttpException)
+			throw error;
+		console.log("Error reporting post:", error);
+		throw new InternalServerErrorException("Could not report post");
 	}
+}
 }

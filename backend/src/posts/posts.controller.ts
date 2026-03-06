@@ -66,12 +66,6 @@ export class PostsController {
 			@Param('id', ParseIntPipe) id: number,
 			@Req() req: Request & { user: { id: number; role: Role }},
 		) {
-			const post = await this.postService.getPostById(id);
-			if (!post)
-					throw new NotFoundException('Post not found');
-			if (post.imageUrl) {
-				await this.postService.deletePostImage(post.imageUrl);
-			}
 			return this.postService.deletePost(req.user.id, req.user.role, id);
 		}
 

@@ -18,3 +18,15 @@ export interface ProfileUpdateResponse {
 	avatarUrl: string | null;
 	coverUrl: string | null;
 }
+
+export enum ReportUserCategoryType {
+	SPAM = "SPAM",
+	HARASSMENT = "HARASSMENT",
+	INAPPROPRIATE_CONTENT = "INAPPROPRIATE_CONTENT",
+	OTHER = "OTHER",
+}
+
+export interface ReportUserType {
+	category: ReportUserCategoryType; 
+	description?: string;
+}

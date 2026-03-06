@@ -1,4 +1,5 @@
 import { ProfileUpdateResponse } from "./types";
+import { ReportUserType } from "./types";
 
 // Base URL of the backend API
 const API_URL = "http://localhost:3000";
@@ -40,6 +41,27 @@ export const profileApi = {
 
 		return data;
 	},
+
+	reportUser: async (
+			payload: ReportUserType,
+			targetId: number,
+		): Promise<void> => {
+			const res = await fetch(`${API_URL}/users/${targetId}/report`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+				body: JSON.stringify(payload),
+			});
+			const data = await res.json();
+			if (!res.ok) {
+				const message = Array.isArray(data.message)
+					? data.message[0]
+					: data.message || "User report failed";
+				throw new Error(message);
+			}
+		},
 };
 
 export { API_URL };

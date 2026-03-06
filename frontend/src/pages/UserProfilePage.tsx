@@ -9,7 +9,7 @@ import { Post } from "../context/UserContext";
 import { postsApi } from "../posts/api";
 import { UserPostsList } from "../posts/components/UserPostsList";
 import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
-import { UserProfileMenu } from "../profile/UserProfileMenu";
+import { UserProfileMenu } from "../profile/components/UserProfileMenu";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';

@@ -66,6 +66,10 @@ model User {
 	votes					Vote[]
 	notifications			Notification[]
 	
+	// relation for UserHiddenForUser
+	hiddenUsers    UserHiddenForUser[] @relation("UserHider") // list of users hidden by the current user
+  	hiddenByUsers  UserHiddenForUser[] @relation("UserTarget") // list of users that hid the current user
+
 	// relation for PostHiddenForUser
 	hiddenPosts		PostHiddenForUser[]
 
@@ -78,6 +82,17 @@ model User {
 	reportsAuthored   Report[] @relation("ReporterRelation")    // reports creat by the user
 	reportsAgainst    Report[] @relation("ReportedUserRelation") // reports agaist the user
 	reportsHandled    Report[] @relation("ModeratorRelation")   // reports handled by the user
+}
+
+model UserHiddenForUser {
+	id      Int   @id @default(autoincrement())
+	userId  Int
+	targetUserId  Int
+
+	user		User @relation("UserHider", fields: [userId], references: [id], onDelete: Cascade)
+	targetUser	User @relation("UserTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+	@@unique([targetUserId, userId])
 }
 
 model	Profile {
@@ -121,14 +136,14 @@ model	Post {
 }
 
 model PostHiddenForUser {
-  id      Int   @id @default(autoincrement())
-  postId  Int
-  userId  Int
+	id      Int   @id @default(autoincrement())
+	postId  Int
+	userId  Int
 
-  post    Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+	post    Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+	user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([postId, userId])
+	@@unique([postId, userId])
 }
 
 model	Like {
@@ -266,6 +281,7 @@ model Report {
 	handledBy			User? @relation("ModeratorRelation", fields: [handledById], references: [id])
 
 	@@unique([reporterId, reportedPostId])
+	@@unique([reporterId, reportedUserId])
 }
 
 model Notification {

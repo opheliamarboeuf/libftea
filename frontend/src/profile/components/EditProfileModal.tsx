@@ -1,9 +1,9 @@
 import { createPortal } from "react-dom";
-import { useProfileEdit } from "./hooks/hooks";
-import { useModalAnimation } from "../common/hooks/useModalAnimation";
-import { ConfirmDialog } from "../common/components/ConfirmDialog";
-import { useUnsavedChangesGuard } from "../common/hooks/useUnsavedChangesGuard";
-import { useBeforeUnload } from "../common/hooks/useBeforeUnload";
+import { useProfileEdit } from "../hooks/hooks";
+import { useModalAnimation } from "../../common/hooks/useModalAnimation";
+import { ConfirmDialog } from "../../common/components/ConfirmDialog";
+import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
+import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
 
 interface EditProfileModalProps {
 	onClose: () => void;
