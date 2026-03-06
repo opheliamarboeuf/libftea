@@ -59,4 +59,19 @@ export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect
 		this.server.emit('comment_deleted', result.deletedId);
 		return result;
 	}
+
+	@SubscribeMessage('reply_comment')
+	async handleReplyComment(
+		@MessageBody() data: { parentCommentId: number; userId: number, content: string },
+		@ConnectedSocket() client: Socket,
+	) {
+		const result = await this.commentsService.createComment(
+			data.parentCommentId,
+			data.userId,
+			data.content,
+		);
+
+		this.server.emit('comment_created', result);
+		return result;
+	}
 }

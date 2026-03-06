@@ -63,12 +63,6 @@ export const useComments = (postId: number) => {
 			userId:user.id,
 			content,
 		});
-        // try {
-        //     const newComment = await commentsApi.createComment(postId, content);
-        //     if (newComment) setComments(prev => [...prev, newComment]);
-        // } catch (err) {
-        //     setError(err.message || "Failed to create comment");
-        // }
     };
 
     const removeComment = (arr: Comment[], commentId: number): Comment[] => {
@@ -80,12 +74,6 @@ export const useComments = (postId: number) => {
 			commentId,
 			userId:user.id,
 		});
-        // try {
-        //     await commentsApi.deleteComment(commentId);
-        //     setComments(prev => removeComment(prev, commentId));
-        // } catch (err) {
-        //     setError(err.message || "Failed to delete comment");
-        // }
     };
 
     const replyComment = async (parentCommentId: number, content: string) => {
