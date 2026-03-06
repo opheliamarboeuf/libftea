@@ -49,27 +49,27 @@ const TournamentFeedPage = () => {
 
 	return (
 		<div className="tournament-page">
-			<div className="tournament-header">
-				<div className="tournament-theme">
-					{ battle ? (
-						<>
+			{!battle ? ( 
+				<div className= "no-tournament">
+					<h2>No active tournament</h2>
+				</div>
+			) : (
+				<>
+					<div className="tournament-header">
+						<div className="tournament-theme">
 							<h2>{battle.theme}</h2>
 							<p>
 								{new Date(battle.endsAt).toLocaleDateString()}
 							</p>
-						</>
-					) : (
-						<p>No active tournament</p>
-					)}
-				</div>
-				<div className="tournament-center">
-					<button className="expand-btn expand-btn-left" onClick={() => setShowPostModal(true)}>
-						<span className="icon">＋</span>
-					   <span className="expand-btn-text">Enter the contest</span>
-					</button>
-				</div>
-			</div>
+					</div>
 
+					<div className="tournament-center">
+						<button className="expand-btn expand-btn-left" onClick={() => setShowPostModal(true)}>
+							<span className="icon">＋</span>
+							<span className="expand-btn-text">Enter the contest</span>
+						</button>
+					</div>
+				</div>
 			{battleError && <p style={{ color: "red" }}>{battleError}</p>}
 			<UserPostsList posts={posts} onPostDeleted={refresh} />
 			{showPostModal && (
@@ -78,6 +78,8 @@ const TournamentFeedPage = () => {
 				onJoined={refresh}
 				onClose={() => setShowPostModal(false)}
 			/>
+		)}
+		</>
 		)}
 		</div>
 	);

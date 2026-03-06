@@ -83,3 +83,14 @@
 .tab-indicator.right {
 	transform: translateX(100%);
 }
+
+.no-tournament {
+	width: 100%;
+	height: calc(100vh - 50px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 1.8rem;
+	font-weight: 500;
+	color: #555;
+}
