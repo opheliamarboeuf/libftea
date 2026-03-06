@@ -49,4 +49,22 @@ export class FriendsController {
 		const requesterId = req.user.id;
 		return this.friendsService.cancelRequest(requesterId, Number(addresseId));
 	}
+
+	@Delete('block/:targetId')
+	async blockFriend(@Req() req: Request, @Param('targetId') targetId: string) {
+		const userId = req.user.id;
+		return this.friendsService.blockFriend(userId, Number(targetId));
+	}
+
+	@Delete('unblock/:targetId')
+	async unBlockFriend(@Req() req: Request, @Param('targetId') targetId: string) {
+		const userId = req.user.id;
+		return this.friendsService.unBlockFriend(userId, Number(targetId));
+	}
+
+	@Get('blocked')
+	async getBlockedUsers(@Req() req: Request) {
+		const userId = req.user.id;
+		return this.friendsService.getBlockedUsers(userId);
+	}
 }

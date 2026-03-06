@@ -22,8 +22,6 @@ export class FriendsService {
 			where: { id: addresseId },
 		});
 
-		console.log('Friend found:', friend);
-
 		if (!friend) {
 			throw new NotFoundException('User not found');
 		}
@@ -34,6 +32,7 @@ export class FriendsService {
 					{ requesterId, addresseId },
 					{ requesterId: addresseId, addresseId: requesterId },
 				],
+				NOT: { status: 'BLOCKED'},
 			},
 		});
 
@@ -49,8 +48,6 @@ export class FriendsService {
 				addresseId,
 			},
 		});
-
-		console.log('Friendship created:', created);
 
 		return created;
 	}
@@ -193,5 +190,71 @@ export class FriendsService {
 		await this.prisma.friendship.delete({
 			where: { id: friendship.id },
 		});
+	}
+
+	async blockFriend(userId: number, targetId: number): Promise<void> {
+		if (userId === targetId) throw new BadRequestException("Cannot block yourself");
+
+		const existing = await this.prisma.friendship.findFirst({
+			where: {
+				OR: [
+					{ requesterId: userId, addresseId: targetId },
+					{ requesterId: targetId, addresseId: userId },
+				],
+			},
+		});
+
+		if (existing) {
+			await this.prisma.friendship.update({
+				where: { id: existing.id },
+				data: { 
+					status: 'BLOCKED',
+					requesterId: userId,
+					addresseId: targetId,
+				},
+			});
+		} else {
+			await this.prisma.friendship.create({
+				data: { 
+					requesterId: userId,
+					addresseId: targetId,
+					status: 'BLOCKED',
+				},
+			});
+		}
+	}
+
+	async unBlockFriend(userId: number, targetId: number): Promise<void> {
+		const blocked = await this.prisma.friendship.findFirst({
+			where: {
+				status: 'BLOCKED',
+				OR: [
+					{ requesterId: userId, addresseId: targetId },
+					{ requesterId: targetId, addresseId: userId },
+				],
+			},
+		});
+
+		if (!blocked) {
+			throw new BadRequestException('No block relation found');
+		}
+
+		await this.prisma.friendship.delete({
+			where: { id: blocked.id },
+		});
+	}
+
+	async getBlockedUsers(userId: number) {
+		const blocked = await this.prisma.friendship.findMany({
+			where: {
+				requesterId: userId,
+				status: 'BLOCKED',
+			},
+			include: {
+				addresse: true,
+			},
+		});
+
+		return blocked.map(b => b.addresse);
 	}
 }

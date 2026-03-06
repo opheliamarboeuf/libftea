@@ -127,11 +127,15 @@ model	Comment {
     content		String
     createdAt	DateTime	@default(now())
 
-    userId		Int
-    postId		Int
+	userId		Int
+	postId		Int
+	parentId	Int?
 
 	user	User	@relation(fields: [userId], references: [id])
 	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
+
+	parent Comment? @relation("Comment replies", fields: [parentId], references: [id])
+	replies Comment[] @relation("Comment replies")
 }
 
 model	Conversation {

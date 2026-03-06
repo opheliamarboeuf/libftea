@@ -12,6 +12,23 @@ export class PostsService {
 	constructor(
 		private prisma: PrismaService,
 	) {}
+
+	private async getBlockedIds(currentUserId: number): Promise<number[]> {
+		const  blocked = await this.prisma.friendship.findMany({
+			where: {
+				status: 'BLOCKED',
+				OR: [
+					{ requesterId: currentUserId },
+					{ addresseId: currentUserId },
+				],
+			},
+		});
+
+		return blocked.map(f =>
+		f.requesterId === currentUserId ? f.addresseId : f.requesterId
+	); 
+	}
+
 	async create(userId:number, dto: PostsDto) {
 		try {
 			const post = await this.prisma.post.create({
@@ -112,7 +129,24 @@ export class PostsService {
 		return post;
 	}
 	
-	async getUserPosts(id: number) {
+	async getUserPosts(id: number, currentUserId?: number) {
+		// If currentUserId is provided, check if viewing user is blocked
+		if (currentUserId !== undefined) {
+			const isBlocked = await this.prisma.friendship.findFirst({
+				where: {
+					status: 'BLOCKED',
+					OR: [
+						{ requesterId: id, addresseId: currentUserId },
+						{ requesterId: currentUserId, addresseId: id },
+					],
+				},
+			});
+
+			if (isBlocked) {
+				return [];
+			}
+		}
+
 		const userPosts = await this.prisma.post.findMany({
 			where: { authorId: id },
 			select: {
@@ -136,6 +170,8 @@ export class PostsService {
 	}
 
 	async getFriendsPosts(userId: number) {
+		const blockedIds = await this.getBlockedIds(userId);
+		
 		//  Get all friendships where the status is ACCEPTED
 		const friendships = await this.prisma.friendship.findMany({
 			where: {
@@ -153,9 +189,9 @@ export class PostsService {
 		
 		// Convert friendships to a list of friend IDs
   		// If the user is the requester, the friend is the addressee, and vice versa
-		const friendIds = friendships.map(f => 
-			f.requesterId === userId ? f.addresseId : f.requesterId
-		);
+		const friendIds = friendships
+		.map(f => f.requesterId === userId ? f.addresseId : f.requesterId)
+		.filter(id => !blockedIds.includes(id));
 		
 		if (friendIds.length === 0)
 			return [];

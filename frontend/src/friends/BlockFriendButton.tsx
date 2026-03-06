@@ -7,9 +7,10 @@ import { ConfirmBlockDelete } from "./ConfirmBlockDelete";
 
 interface Props {
     userId: number;
+	onAction?: () => Promise<void>;
 }
 
-export function BlockFriendButton({ userId }: Props) {
+export function BlockFriendButton({ userId, onAction }: Props) {
     const { refreshUser, user } = useUser();
     const { showModal } = useModal();
     const [loading, setLoading] = useState(false);
@@ -29,14 +30,15 @@ export function BlockFriendButton({ userId }: Props) {
 			if (!blockSent) {
 				await friendsApi.blockFriend(userId);
 				showModal("User blocked");
-				setBlockSent(true);
+				// setBlockSent(true);
 			} else {
 				await friendsApi.unBlockFriend(userId);
 				showModal("User unblocked");
-				setBlockSent(false);
+				// setBlockSent(false);
 				setShowConfirm(false);
 			}
 			await refreshUser();
+			if (onAction) await onAction();
         } catch (error) {
             console.error('Error:', error);
             showModal("Failed to block friend");
@@ -47,16 +49,17 @@ export function BlockFriendButton({ userId }: Props) {
     }
     return (
         <>
-            <button 
+            <button
                 onClick={() => setShowConfirm(true)}
                 disabled={loading}
+				className="friend-action-btn"
                 >
                     {loading ? "Processing..." : blockSent ? "Unblock User" : "Block User"}
             </button>
 
             {showConfirm && (
                 <ConfirmBlockDelete
-                    message="Are you sure you want to block this user?"
+                    message={ blockSent ? "Are you sure you want to unblock this user?" : "Are you sure you want to block this user?" }
                     onYes={handleClick}
                     onNo={() => setShowConfirm(false)}
                 />

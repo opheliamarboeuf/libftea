@@ -15,6 +15,7 @@ import { TournamentModule } from './tournament/tournament.module';
 import { RolesGuard } from './auth/roles.guard';
 import { LikesModule } from './likes/likes.module';
 import { ModerationModule } from './moderation/moderation.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ModerationModule } from './moderation/moderation.module';
 	PostsModule,
 	TournamentModule,
 	LikesModule,
+	CommentsModule,
 
 	ModerationModule,
   ],
