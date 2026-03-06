@@ -136,7 +136,12 @@ export class UsersService {
 	async getAllUserPosts(currentUserId: number) {
 		const blockedIds = await this.getBlockedIds(currentUserId);
 		const userPosts = await this.prisma.post.findMany({
-			where: { authorId: { notIn: blockedIds } },
+			where: { 
+				authorId: { notIn: blockedIds },
+				hiddenForUsers: {
+					none: { userId: currentUserId }
+				}
+			},
 			select: {
 				id: true,
 				authorId: true,

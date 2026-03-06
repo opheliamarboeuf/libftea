@@ -66,6 +66,9 @@ model User {
 	votes					Vote[]
 	notifications			Notification[]
 	
+	// relation for PostHiddenForUser
+	hiddenPosts		PostHiddenForUser[]
+
 	// relations for ModerationLog
 	moderationLogsAuthored ModerationLog[] @relation("ActorRelation")
   	moderationLogsTargeted ModerationLog[] @relation("TargetUserRelation")
@@ -98,7 +101,6 @@ model	Post {
 	caption		String?
 	createdAt	DateTime	@default(now())
 	updatedAt	DateTime	@default(now()) @updatedAt
-
 	authorId	Int
 	author		User	@relation(fields: [authorId], references: [id])
 
@@ -108,11 +110,25 @@ model	Post {
 	votes				Vote[]
 	postTags			PostTag[]
 
+	// relation for PostHiddenForUser
+	hiddenForUsers         PostHiddenForUser[]
+
 	// relation for ModerationLog
 	moderationLogs ModerationLog[] @relation("TargetPostRelation")
 	
 	// relation for Reports
 	reports     Report[] @relation("ReportedPostRelation") //
+}
+
+model PostHiddenForUser {
+  id      Int   @id @default(autoincrement())
+  postId  Int
+  userId  Int
+
+  post    Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
 }
 
 model	Like {

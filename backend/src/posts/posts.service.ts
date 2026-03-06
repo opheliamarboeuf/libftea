@@ -149,7 +149,14 @@ export class PostsService {
 		}
 
 		const userPosts = await this.prisma.post.findMany({
-			where: { authorId: id },
+			where: { 
+				authorId: id,
+				...(currentUserId !== undefined && {
+					hiddenForUsers: {
+						none: { userId: currentUserId }
+					}
+				})
+			},
 			select: {
 				id: true,
 				authorId: true,
@@ -199,7 +206,12 @@ export class PostsService {
 
 		// Fetch posts authored by these friends
 		return this.prisma.post.findMany({
-			where: { authorId: { in: friendIds } },
+			where: { 
+				authorId: { in: friendIds },
+			hiddenForUsers: {
+					none: { userId: userId }
+				}
+			},
 			orderBy: { createdAt: 'desc' },
 			include: { author: true },
  	 });
@@ -230,6 +242,12 @@ export class PostsService {
 					reportDescription: dto.description,
 				},
 			});
+			await this.prisma.postHiddenForUser.create({
+                data: {
+					postId,
+					userId: currentUserId,
+				},
+            });
 			return (report);
 		}
 		catch (error)
