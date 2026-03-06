@@ -32,7 +32,6 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		handleEdit,
 		confirmDelete,
 		cancelDelete,
-		handleReport,
 		setPostToDelete,
 		postToEdit,
 		closeModal,

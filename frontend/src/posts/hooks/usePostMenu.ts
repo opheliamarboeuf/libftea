@@ -15,7 +15,6 @@ export interface UsePostMenuResult {
 	handleDelete: (postId: number) => Promise<void>;
 	confirmDelete: () => Promise<void>;
 	cancelDelete: () => void;
-	handleReport: (postId: number) => void;
 	setPostToDelete: (postId: number | null) => void;
 	closeModal: () => void;
 }
@@ -78,11 +77,6 @@ export function usePostMenu(onPostDeleted?: () => void): UsePostMenuResult {
 		}
 	};
 
-	const handleReport = (postId: number) => {
-		console.log("Report post", postId);
-		setOpenMenuId(null);
-	};
-
 	const confirmDelete = async () => {
 		if (postToDelete === null)
 			return;
@@ -110,7 +104,6 @@ export function usePostMenu(onPostDeleted?: () => void): UsePostMenuResult {
 		handleDelete,
 		confirmDelete,
 		cancelDelete,
-		handleReport,
 		setPostToDelete,
 		closeModal,
 	};

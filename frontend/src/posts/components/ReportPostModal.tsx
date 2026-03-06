@@ -6,6 +6,8 @@ import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
 import { Post } from "../../context/UserContext";
 import { usePostReport } from "../hooks/usePostReport";
+import { ReportPostCategoryType } from "../types";
+import { useModal } from "../../context/ModalContext";
 
 interface ReportPostModalProps {
 	post: Post,
@@ -17,18 +19,21 @@ export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostMo
 
 	// Function that runs the closing animation and then calls onClose() after the specified duration
 	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });
+	const { showModal } = useModal();
 
 	// Custom hook that manages a post creation
 	const {
-		context,
-		setContext,
-		MAX_CONTEXT_LENGTH,
+		category,
+		setCategory,
+		description,
+		setDescription,
+		MAX_DESCRIPTION_LENGTH,
 		errorMessage,
 		isLoading,
 		resetFields,
 		hasChanges,
 		handlePostReport,
-	} = usePostReport(post, onPostReported);
+	} = usePostReport(post);
 
 	// Guard unsaved changes
 	const {
@@ -46,6 +51,7 @@ export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostMo
 		e.preventDefault();
 		const res = await handlePostReport();
 		if (res) {
+			showModal("Report submitted successfully");
 			onPostReported(); 
 			closeWithAnimation();
 		}
@@ -62,25 +68,31 @@ export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostMo
 				>
 					<h2>Report a post</h2>
 					<form onSubmit={handleSubmit}>
-						<label>Reason</label>
+						<label>Category</label>
+						<select
+							value={category || ""}
+							 onChange={(e) => setCategory(e.target.value as ReportPostCategoryType)}
+							className="report-post-input"
+						>
+						<option value="" disabled>Select a report category</option>
+						  {Object.values(ReportPostCategoryType).map((r) => (
+							<option key={r} value={r}>{r.replaceAll("_", " ")}</option>
+							))}
+						</select>
+						<label>Description</label>
 						<textarea
-							value="text"
-							// onChange={(e) => setTitle(e.target.value)}
-							className="create-post-input"
-						/>
-						<label>Context</label>
-						<textarea
-							value={context}
-							onChange={(e) => setContext(e.target.value)}
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
 							rows={5}
-							className="create-post-input"
+							placeholder="You can add more details here"
+							className="report-post-input"
 						/>
 						<div
 						className={`char-counter ${
-						context.length > MAX_CONTEXT_LENGTH ? "error" : ""
+						description.length > MAX_DESCRIPTION_LENGTH ? "error" : ""
 						}`}
 						>
-							{context.length} / {MAX_CONTEXT_LENGTH}
+							{description.length} / {MAX_DESCRIPTION_LENGTH}
 						</div>
 						{errorMessage && (
 							<div className="error-message shake-horizontal">

@@ -8,7 +8,7 @@ export interface PostEditPayload {
 	caption?: string;
 }
 
-export enum ReportPostReasonType {
+export enum ReportPostCategoryType {
 	SPAM = "SPAM",
 	HARASSMENT = "HARASSMENT",
 	INAPPROPRIATE_CONTENT = "INAPPROPRIATE_CONTENT",
@@ -16,6 +16,6 @@ export enum ReportPostReasonType {
 }
 
 export interface ReportPostType {
-	reason: ReportPostReasonType; 
-	context?: string;
+	category: ReportPostCategoryType; 
+	description?: string;
 }

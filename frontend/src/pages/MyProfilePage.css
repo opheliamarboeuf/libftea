@@ -101,6 +101,17 @@
 	box-sizing: border-box;
 }
 
+.modal-content-post select {
+	width: 100%;
+	box-sizing: border-box;
+	background-color: #1a1a1a;
+	color: white;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 6px;
+	outline: none;
+	padding: 0.6rem;
+}
+
 /* Cover and posts */
 .cover-and-posts {
 	flex: 1;

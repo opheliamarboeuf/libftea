@@ -1,41 +1,42 @@
 import { useState } from "react";
 import { Post } from "../../context/UserContext";
 import { postsApi } from "../api";
-import { ReportPostType, ReportPostReasonType } from "../types";
+import { ReportPostType, ReportPostCategoryType } from "../types";
 
-const MAX_CONTEXT_LENGTH = 350;
+const MAX_DESCRIPTION_LENGTH = 350;
 
-export function usePostReport(post: Post, onPostReported: () => void) {
+export function usePostReport(post: Post) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
-	const [context, setContext] = useState("");
-	const [reason, setReason] = useState<ReportPostReasonType | null>(null);
+	const [description, setDescription] = useState("");
+	const [category, setCategory] = useState<ReportPostCategoryType | null>(null);
 
 	const handlePostReport = async () => {
 		setIsLoading(true);
 		
-		if (!reason) {
-			setErrorMessage("Please select a reason for reporting.");
+		if (!category) {
+			setErrorMessage("Please select a category");
 			setIsLoading(false);
 			return false;
 		}
 	
-		if (context.length > MAX_CONTEXT_LENGTH) {
-			setErrorMessage(`Title cannot exceed ${MAX_CONTEXT_LENGTH} characters`);
+		if (description.length > MAX_DESCRIPTION_LENGTH) {
+			setErrorMessage(`Description cannot exceed ${MAX_DESCRIPTION_LENGTH} characters`);
 			setIsLoading(false);
 			return false;
 		}
 
 		try {
 			const payload: ReportPostType = {
-				reason: reason,
-				context,
+				category: category,
+				description,
 			};
 			
 			await postsApi.reportPost(payload, post.id, );
-			setContext("");
-			setReason(null);
+			setDescription("");
+			setCategory(null);
 			setErrorMessage(null);
+			return true;
 		}
 		catch (error) {
 			if (error instanceof Error) {
@@ -51,21 +52,23 @@ export function usePostReport(post: Post, onPostReported: () => void) {
 	}
 
 	const resetFields = () => {
-		setReason(null);
-		setContext("");
+		setCategory(null);
+		setDescription("");
 		setIsLoading(false);
 	}
 
 	const hasChanges = () => {
 		return (
-			reason !==  null || 
-			context !== ""
+			category !==  null || 
+			description !== ""
 		)
 	}
 	return {
-		context,
-		setContext,
-		MAX_CONTEXT_LENGTH,
+		category,
+		setCategory,
+		description,
+		setDescription,
+		MAX_DESCRIPTION_LENGTH,
 		errorMessage,
 		isLoading,
 		resetFields,
