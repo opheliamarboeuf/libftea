@@ -4,6 +4,7 @@ import { useUser, Post } from '../context/UserContext';
 import { Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { UserPostsList } from "../posts/components/UserPostsList";
+import { JoinTournamentModal } from "../tournament/components/JoinTournamentModal";
 import { CreateTournamentModal } from "../tournament/components/CreateTournamentModal";
 import { tournamentApi } from "../tournament/api";
 
@@ -14,6 +15,7 @@ const TournamentFeedPage = () => {
 	const [posts, setPosts] = useState<Post[]>([]);
 
 	const [showPostModal, setShowPostModal] = useState<boolean>(false);
+	const [showCreateTournamentModal, setShowCreateTournamentModal] = useState(false);
 	const [battleError, setBattleError] = useState<string | null>(null);
 
 	const refresh = () => {
@@ -49,38 +51,56 @@ const TournamentFeedPage = () => {
 
 	return (
 		<div className="tournament-page">
-			{!battle ? ( 
-				<div className= "no-tournament">
-					<h2>No active tournament</h2>
-				</div>
-			) : (
-				<>
-					<div className="tournament-header">
-						<div className="tournament-theme">
-							<h2>{battle.theme}</h2>
+			<div className="tournament-header">
+				{battle && (
+					<div className="tournament-theme">
+						<h2>{battle.theme}</h2>
 							<p>
 								{new Date(battle.endsAt).toLocaleDateString()}
 							</p>
 					</div>
-
+					)}
+					{!battle && ( 
+						<div className= "no-tournament">
+							<h2>No active tournament</h2>
+						</div>
+					)}
 					<div className="tournament-center">
-						<button className="expand-btn expand-btn-left" onClick={() => setShowPostModal(true)}>
-							<span className="icon">＋</span>
-							<span className="expand-btn-text">Enter the contest</span>
-						</button>
+						{battle && (
+							<button className="expand-btn expand-btn-left" onClick={() => setShowPostModal(true)}>
+								<span className="icon">＋</span>
+								<span className="expand-btn-text">Enter the contest</span>
+							</button>
+						)}
+						{user?.role === "ADMIN" && (
+							<button className="expand-btn expand-btn-right" onClick={() => setShowCreateTournamentModal(true)}>
+								<span className="icon">＋</span>
+								<span className="expand-btn-text">Create tournament</span>
+							</button>
+						)}
 					</div>
 				</div>
-			{battleError && <p style={{ color: "red" }}>{battleError}</p>}
-			<UserPostsList posts={posts} onPostDeleted={refresh} />
-			{showPostModal && (
-			<CreateTournamentModal
-				battleId={battle?.id ?? 0}
-				onJoined={refresh}
-				onClose={() => setShowPostModal(false)}
-			/>
-		)}
-		</>
-		)}
+			{battle && (
+				<>
+					{battleError && <p style={{ color: "red" }}>{battleError}</p>}
+					<UserPostsList posts={posts} onPostDeleted={refresh} />
+					{showPostModal && (
+					<JoinTournamentModal
+						battleId={battle.id}
+						onJoined={refresh}
+						onClose={() => setShowPostModal(false)} />
+				)}
+				{
+					showCreateTournamentModal && (
+						<CreateTournamentModal
+							onClose={() => setShowCreateTournamentModal(false)}
+							onCreated={() => {setShowCreateTournamentModal(false);
+								refresh();
+							}}
+						/>
+					)}
+				</>
+			)}
 		</div>
 	);
 };

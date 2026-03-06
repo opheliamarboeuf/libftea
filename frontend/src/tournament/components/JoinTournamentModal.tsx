@@ -1,13 +1,18 @@
 import "../../App.css"
 import { createPortal } from "react-dom";
 import { useModalAnimation } from "../../common/hooks/useModalAnimation";
+import { useTournamentJoin } from "./hooks/useTournamentJoin";
+import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
+import { ConfirmDialog } from "../../common/components/ConfirmDialog";
+import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
 
-interface CreateTournamentModalProps {
+interface JoinTournamentModalProps {
+	battleId: number;
+	onJoined: () => void;
 	onClose: () => void;
-	onCreated: () => void;
 }
 
-export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentModalProps) {
+export function JoinTournamentModal ({ battleId, onClose, onJoined }: JoinTournamentModalProps) {
 
 	// Function that runs the closing animation and then calls onClose() after the specified duration
 	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });

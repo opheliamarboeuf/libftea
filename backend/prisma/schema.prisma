@@ -1,254 +1,215 @@
-enum	Role {
-	USER
-	MOD
-	ADMIN
-}
-
-enum	FriendshipStatus{
-    PENDING
-    ACCEPTED
-    BLOCKED
-}
-
-enum	NotificationType {
-    LIKE
-    COMMENT
-    BATTLE_WIN
-    FRIEND_REQUEST
-}
-
-enum	BattleStatus {
-    UPCOMING
-    ACTIVE
-    FINISHED
-    CANCELLED
-}
-
-enum  ModerationType {
-	DELETE_ANY_POST
-	CHANGE_ROLE
-	BAN_USER
-	CREATE_TOURNAMENT
-	REVIEW_REPORT
-}
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-// @ symbols are Prisma directives > they define rules that apply to the column
-model User {
-	id			Int     	@id @default(autoincrement())	//@id > clé primaire de la table 
-	//	Each table MUST have a primary key. This key uniquely identifies each row.
-	email		String  	@unique
-	username	String		@unique
-	password 	String
-	createdAt	DateTime	@default(now())
-	updatedAt	DateTime	@default(now()) @updatedAt
-
-    role	    Role	@default(USER)
-	bannedAt	DateTime?
-
-    profile				    Profile?
-    posts			        Post[]
-    likes			        Like[]
-    comments                Comment[]
-    conversations           Conversation[]	        @relation("UserConversations")
-    messages		        Message[]	            @relation("MessageSender")
-    friendRequestSent	  	Friendship[]		    @relation("FriendRequester")
-    friendRequestReceived	Friendship[]	    	@relation("FriendAddresse")
-    battleParticipants		BattleParticipant[]
-    notifications           Notification[]
-    battlesWon              Battle[]                @relation("BattleWinner")
-    battlesCreated          Battle[]                @relation("CreatedBattles")
-	
-	// relations for ModerationLog
-	moderationLogsAuthored ModerationLog[]          @relation("ActorRelation")
-  	moderationLogsTargeted ModerationLog[]          @relation("TargetUserRelation")
+model Battle {
+  id                            Int                 @id @default(autoincrement())
+  theme                         String
+  createdAt                     DateTime            @default(now())
+  endsAt                        DateTime
+  startsAt                      DateTime
+  createdById                   Int?
+  description                   String?
+  maxPlayers                    Int?
+  rules                         String?
+  status                        BattleStatus        @default(UPCOMING)
+  winnerId                      Int?
+  User_Battle_createdByIdToUser User?               @relation("Battle_createdByIdToUser", fields: [createdById], references: [id])
+  User_Battle_winnerIdToUser    User?               @relation("Battle_winnerIdToUser", fields: [winnerId], references: [id])
+  BattleParticipant             BattleParticipant[]
+  ModerationLog                 ModerationLog[]
 }
 
-model	Profile {
-    //	primary key
-    id			Int		@id @default(autoincrement())
-    avatarUrl	String?
-    coverUrl	String?
-    bio			String?
-    displayName	String?
+model BattleParticipant {
+  id          Int       @id @default(autoincrement())
+  battleId    Int
+  userId      Int
+  postId      Int
+  submittedAt DateTime?
+  Battle      Battle    @relation(fields: [battleId], references: [id])
+  Post        Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  User        User      @relation(fields: [userId], references: [id])
 
-    //	foreign key
-    userId		Int		@unique
-
-    user		User	@relation(fields: [userId], references: [id])
+  @@unique([battleId, userId])
 }
 
-model	Post {
-	id			Int			@id @default(autoincrement())
-	title		String
-	imageUrl	String
-	caption		String?
-	createdAt	DateTime	@default(now())
-	updatedAt	DateTime	@default(now()) @updatedAt
-
-    authorId	Int
-    author		User	@relation(fields: [authorId], references: [id])
-
-	likes				Like[]
-	comments			Comment[]
-	battleParticipants	BattleParticipant[]
-	postTags			PostTag[]
-
-	// relation for ModerationLog
-	moderationLogs ModerationLog[] @relation("TargetPostRelation")
+model Comment {
+  id            Int       @id @default(autoincrement())
+  content       String
+  createdAt     DateTime  @default(now())
+  userId        Int
+  postId        Int
+  parentId      Int?
+  Comment       Comment?  @relation("CommentToComment", fields: [parentId], references: [id])
+  other_Comment Comment[] @relation("CommentToComment")
+  Post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  User          User      @relation(fields: [userId], references: [id])
 }
 
-model	Like {
-    id		    Int	@id @default(autoincrement())
-
-    userId  	Int
-    postId	    Int
-    battleId    Int?
-    createdAt   DateTime @default(now())
-
-	user	User	@relation(fields: [userId], references: [id])
-	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
-
-    //	A user can only like a specific post once (no duplicate likes)
-    //	@@ > applies a rule at the model level, not just a single field
-    @@unique([userId, postId])
-}
-
-model	Comment {
-    id			Int			@id @default(autoincrement())
-    content		String
-    createdAt	DateTime	@default(now())
-
-	userId		Int
-	postId		Int
-	parentId	Int?
-
-	user	User	@relation(fields: [userId], references: [id])
-	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
-
-	parent Comment? @relation("Comment replies", fields: [parentId], references: [id])
-	replies Comment[] @relation("Comment replies")
-}
-
-model	Conversation {
-    id			Int			@id @default(autoincrement())
-    createdAt	DateTime	@default(now())
-
-    users	User[]	@relation("UserConversations")
-
-    messages	Message[]
-}
-
-model	Message {
-    id			Int			@id @default(autoincrement())
-    content		String
-    createdAt	DateTime	@default(now())
-
-    senderId		Int
-    conversationId	Int
-
-    sender			User			@relation("MessageSender", fields: [senderId], references: [id])
-    conversation	Conversation	@relation(fields: [conversationId], references: [id])
+model Conversation {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  Message   Message[]
+  User      User[]    @relation("UserConversations")
 }
 
 model Friendship {
-  id	Int	@id @default(autoincrement())
-
-  requesterId	Int
-  addresseId	Int
-
-  requester	User	@relation("FriendRequester", fields: [requesterId], references: [id])
-  addresse	User	@relation("FriendAddresse", fields: [addresseId], references: [id])
-
-  status FriendshipStatus	@default(PENDING)
+  id                                Int              @id @default(autoincrement())
+  requesterId                       Int
+  addresseId                        Int
+  status                            FriendshipStatus @default(PENDING)
+  User_Friendship_addresseIdToUser  User             @relation("Friendship_addresseIdToUser", fields: [addresseId], references: [id])
+  User_Friendship_requesterIdToUser User             @relation("Friendship_requesterIdToUser", fields: [requesterId], references: [id])
 
   @@unique([requesterId, addresseId])
 }
 
-model Battle {
-  id        	Int			@id @default(autoincrement())
-  theme     	String
-  maxPlayers	Int?
-  rules			  String?
-  description	String?
+model Like {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  battleId  Int?
+  createdAt DateTime @default(now())
+  Post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id])
 
-  createdAt	DateTime	@default(now())
-  startsAt	DateTime
-  endsAt    DateTime
-
-  status    BattleStatus  @default(UPCOMING)
-  winnerId  Int?
-  winner    User?         @relation("BattleWinner", fields: [winnerId], references: [id])
-
-  participants BattleParticipant[]
-
-  createdById Int?
-  createdBy   User? @relation("CreatedBattles", fields: [createdById], references: [id])
-  
-  // relation for ModerationLog
-  moderationLogs ModerationLog[] @relation("TargetBattleRelation")
+  @@unique([userId, postId])
 }
 
-model BattleParticipant {
-    id			    Int	@id @default(autoincrement())
-    battleId  	Int
-    userId		  Int
-    postId		  Int
-    submittedAt DateTime?
-
-	battle	Battle	@relation(fields: [battleId], references: [id])
-	user	User	@relation(fields: [userId], references: [id])
-	post	Post?	@relation(fields: [postId], references: [id], onDelete: Cascade)
-
-	@@unique([battleId, userId])
+model Message {
+  id             Int          @id @default(autoincrement())
+  content        String
+  createdAt      DateTime     @default(now())
+  senderId       Int
+  conversationId Int
+  Conversation   Conversation @relation(fields: [conversationId], references: [id])
+  User           User         @relation(fields: [senderId], references: [id])
 }
 
 model ModerationLog {
-	id             Int             @id @default(autoincrement())
-	action         ModerationType
-	actorId        Int
-	actor          User            @relation("ActorRelation", fields: [actorId], references: [id])
-	targetUserId   Int?
-	targetUser     User?           @relation("TargetUserRelation", fields: [targetUserId], references: [id])
-	targetPostId   Int?
-	targetPost     Post?           @relation("TargetPostRelation", fields: [targetPostId], references: [id], onDelete: SetNull)
-	targetBattleId Int?
-	targetBattle   Battle?         @relation("TargetBattleRelation", fields: [targetBattleId], references: [id])
-	createdAt      DateTime        @default(now())
+  id                                    Int            @id @default(autoincrement())
+  action                                ModerationType
+  actorId                               Int
+  targetUserId                          Int?
+  targetPostId                          Int?
+  targetBattleId                        Int?
+  createdAt                             DateTime       @default(now())
+  User_ModerationLog_actorIdToUser      User           @relation("ModerationLog_actorIdToUser", fields: [actorId], references: [id])
+  Battle                                Battle?        @relation(fields: [targetBattleId], references: [id])
+  Post                                  Post?          @relation(fields: [targetPostId], references: [id])
+  User_ModerationLog_targetUserIdToUser User?          @relation("ModerationLog_targetUserIdToUser", fields: [targetUserId], references: [id])
 }
 
 model Notification {
-    id		Int @id @default(autoincrement())
-    type	NotificationType
-    isRead 	Boolean @default(false)
-
-    userId	Int
-    user	User	@relation(fields: [userId], references: [id])
-
-    createdAt DateTime @default(now())
+  id        Int              @id @default(autoincrement())
+  type      NotificationType
+  isRead    Boolean          @default(false)
+  userId    Int
+  createdAt DateTime         @default(now())
+  User      User             @relation(fields: [userId], references: [id])
 }
 
-model Tag {
-    id		Int		@id @default(autoincrement())
-    name	String	@unique
-
-    postTags	PostTag[]
+model Post {
+  id                Int                 @id @default(autoincrement())
+  imageUrl          String
+  caption           String?
+  createdAt         DateTime            @default(now())
+  authorId          Int
+  title             String
+  updatedAt         DateTime            @default(now())
+  BattleParticipant BattleParticipant[]
+  Comment           Comment[]
+  Like              Like[]
+  ModerationLog     ModerationLog[]
+  User              User                @relation(fields: [authorId], references: [id])
+  PostTag           PostTag[]
 }
 
 model PostTag {
-    postId	Int
-    tagId	Int
+  postId Int
+  tagId  Int
+  Post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  Tag    Tag  @relation(fields: [tagId], references: [id])
 
-	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
-	tag		Tag		@relation(fields: [tagId], references: [id])
+  @@unique([postId, tagId])
+}
 
-    @@unique([postId, tagId])
+model Profile {
+  id          Int     @id @default(autoincrement())
+  avatarUrl   String?
+  bio         String?
+  userId      Int     @unique
+  coverUrl    String?
+  displayName String?
+  User        User    @relation(fields: [userId], references: [id])
+}
+
+model Tag {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  PostTag PostTag[]
+}
+
+model User {
+  id                                             Int                 @id @default(autoincrement())
+  email                                          String              @unique
+  createdAt                                      DateTime            @default(now())
+  password                                       String
+  role                                           Role                @default(USER)
+  username                                       String              @unique
+  updatedAt                                      DateTime            @default(now())
+  bannedAt                                       DateTime?
+  Battle_Battle_createdByIdToUser                Battle[]            @relation("Battle_createdByIdToUser")
+  Battle_Battle_winnerIdToUser                   Battle[]            @relation("Battle_winnerIdToUser")
+  BattleParticipant                              BattleParticipant[]
+  Comment                                        Comment[]
+  Friendship_Friendship_addresseIdToUser         Friendship[]        @relation("Friendship_addresseIdToUser")
+  Friendship_Friendship_requesterIdToUser        Friendship[]        @relation("Friendship_requesterIdToUser")
+  Like                                           Like[]
+  Message                                        Message[]
+  ModerationLog_ModerationLog_actorIdToUser      ModerationLog[]     @relation("ModerationLog_actorIdToUser")
+  ModerationLog_ModerationLog_targetUserIdToUser ModerationLog[]     @relation("ModerationLog_targetUserIdToUser")
+  Notification                                   Notification[]
+  Post                                           Post[]
+  Profile                                        Profile?
+  Conversation                                   Conversation[]      @relation("UserConversations")
+}
+
+enum BattleStatus {
+  UPCOMING
+  ACTIVE
+  FINISHED
+  CANCELLED
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  BLOCKED
+}
+
+enum ModerationType {
+  DELETE_ANY_POST
+  CHANGE_ROLE
+  BAN_USER
+  CREATE_TOURNAMENT
+  REVIEW_REPORT
+}
+
+enum NotificationType {
+  LIKE
+  COMMENT
+  BATTLE_WIN
+  FRIEND_REQUEST
+}
+
+enum Role {
+  USER
+  ADMIN
+  MOD
 }
