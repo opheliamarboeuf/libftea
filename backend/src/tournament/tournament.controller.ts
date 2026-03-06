@@ -63,4 +63,8 @@ export class TournamentController {
 	{
 		return this.tournamentService.getParticipants(Number(battleId));
 	}
+	@Get(':battleId/posts')
+	getBattlePosts(@Param('battleId') battleId: string) {
+		return this.tournamentService.getBattlePosts(Number(battleId));
+	}
 }

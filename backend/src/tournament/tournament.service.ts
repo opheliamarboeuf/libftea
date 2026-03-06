@@ -95,4 +95,22 @@ export class TournamentService {
 			}
 		});
 	}
+	async getBattlePosts(battleId: number) {
+		return this.prisma.post.findMany({
+			where: {
+				battleParticipants: {
+					some: {
+						battleId: battleId,
+					},
+				},
+			},
+			include: {
+				author: true,
+				likes: true,
+			},
+			orderBy: {
+				createdAt: "desc",
+			},
+		});
+	}
 }

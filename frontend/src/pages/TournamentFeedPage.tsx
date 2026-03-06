@@ -1,22 +1,31 @@
 import "./TournamentFeedPage.css"
 import "../App.css"
-import { useUser } from '../context/UserContext';
+import { useUser, Post } from '../context/UserContext';
 import { Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { UserPostsList } from "../posts/components/UserPostsList";
-import { useFeed } from "../posts/hooks/useFeed";
 import { CreateTournamentModal } from "../tournament/components/CreateTournamentModal";
 import { tournamentApi } from "../tournament/api";
 
 const TournamentFeedPage = () => {
 
 	const { user } = useUser();
-	const { posts, error, refresh } = useFeed("all");
-	// `battle` is undefined while we are fetching; once the request finishes
-// it will either be an object or `null` if there's no active tournament.
-const [battle, setBattle] = useState<any | null | undefined>(undefined);
-const [showPostModal, setShowPostModal] = useState(false);
-const [battleError, setBattleError] = useState<string | null>(null);
+	const [battle, setBattle] = useState<any | null | undefined>(undefined);
+	const [posts, setPosts] = useState<Post[]>([]);
+
+	const [showPostModal, setShowPostModal] = useState<boolean>(false);
+	const [battleError, setBattleError] = useState<string | null>(null);
+
+	const refresh = () => {
+		if (!battle) return;
+		tournamentApi.getBattlePosts(battle.id)
+			.then((data) => {
+				setPosts(data);
+			})
+			.catch((err) => {
+				console.error("Failed to fetch posts:", err);
+			});
+	};
 
 	useEffect(() => {
 		// load current tournament on mount
@@ -28,9 +37,13 @@ const [battleError, setBattleError] = useState<string | null>(null);
 			.catch((err) => {
 				console.error("failed to fetch current tournament", err);
 				setBattle(null);
-				setBattleError("Unable to load tournament");
 			});
 	}, []);
+
+	useEffect(() => {
+    if (!battle) return;
+    refresh();
+  }, [battle]);
 
 	if (!user) return <Navigate to="/" replace />;
 
@@ -57,7 +70,7 @@ const [battleError, setBattleError] = useState<string | null>(null);
 				</div>
 			</div>
 
-			{error && <p style={{ color: "red" }}>{error}</p>}
+			{battleError && <p style={{ color: "red" }}>{battleError}</p>}
 			<UserPostsList posts={posts} onPostDeleted={refresh} />
 			{showPostModal && (
 			<CreateTournamentModal
