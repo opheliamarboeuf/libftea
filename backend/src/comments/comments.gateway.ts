@@ -71,7 +71,11 @@ export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect
 			data.content,
 		);
 
-		this.server.emit('comment_replied', result);
+		this.server.emit('comment_replied', 
+			{
+				...result,
+				parentCommentId: data.parentCommentId,
+		});
 		return result;
 	}
 }
