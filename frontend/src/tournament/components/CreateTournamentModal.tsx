@@ -1,6 +1,10 @@
-import "../../App.css"
+import "../../App.css";
 import { createPortal } from "react-dom";
 import { useModalAnimation } from "../../common/hooks/useModalAnimation";
+import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
+import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
+import { ConfirmDialog } from "../../common/components/ConfirmDialog";
+import { useCreateTournament } from "../hooks/useCreateTournament";
 
 interface CreateTournamentModalProps {
 	onClose: () => void;
@@ -14,19 +18,20 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 
 	// Custom hook that manages a tournament join
 	const {
-		title, 
-		setTitle,
-		caption,
-		setCaption,
+		theme, 
+		setTheme,
+		startsAt,
+		setStartsAt,
+		endsAt,
+		setEndsAt,
 		errorMessage,
 		isLoading,
 		resetFields,
 		hasChanges,
-		MAX_TITLE_LENGTH,
-		MAX_CAPTION_LENGTH,
+		MAX_THEME_LENGTH,
 		handleImageChange,
-		handleJoinTournament,
-	} = useTournamentJoin(battleId);
+		handleCreateTournament,
+	} = useCreateTournament();
 
 		// Guard unsaved changes
 		const {
@@ -43,9 +48,9 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const success = await handleJoinTournament();
+		const success = await handleCreateTournament();
 		if (success) {
-			onJoined(); 
+			onCreated(); 
 			closeWithAnimation();
 		}
 	};
@@ -62,39 +67,25 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 				>
 					<h2>Enter the contest</h2>
 					<form onSubmit={handleSubmit}>
-						<label>Title</label>
-						<textarea
-							value={title}
-							onChange={(e) => setTitle(e.target.value)}
-							className="create-post-input"
-						/>
-						<div
-							className={`char-counter ${
-							title.length > MAX_TITLE_LENGTH ? "error" : ""
-							}`}
-						>
-							{title.length} / {MAX_TITLE_LENGTH}
-						</div>
-						<label>Outfit Picture</label>
+						<label>theme</label>
 						<input
-						type = "file"
-						accept="image/jpeg,image/jpg,image/png,image/webp"
-						onChange={handleImageChange}
-						/>
-						<label>Caption</label>
-						<textarea
-							value={caption}
-							onChange={(e) => setCaption(e.target.value)}
-							rows={5}
+							type = "text"
+							value={theme}
+							onChange={(e) => setTheme(e.target.value)}
 							className="create-post-input"
 						/>
-						<div
-						className={`char-counter ${
-						caption.length > MAX_CAPTION_LENGTH ? "error" : ""
-						}`}
-						>
-							{caption.length} / {MAX_CAPTION_LENGTH}
-						</div>
+						<label>Start date</label>
+						<input
+							type = "datetime-local"
+							value={startsAt}
+							onChange={(e) => setStartsAt(e.target.value)}
+						/>
+						<label>End date</label>
+						<input
+							type = "datetime-local"
+							value={endsAt}
+							onChange={(e) => setEndsAt(e.target.value)}
+						/>
 						{errorMessage && (
 							<div className="error-message shake-horizontal">
 								{errorMessage}
@@ -102,7 +93,7 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 						)}
 						<div className="modal-actions">
 							<button type="submit"  className="modal-btn" disabled={isLoading}> 
-								{isLoading ? "Posting..." : "Submit"} </button>
+								{isLoading ? "Creating..." : "Create"} </button>
 							<button type="button" className="modal-btn" onClick={requestClose}> Cancel </button>
 						</div>
 					</form>
