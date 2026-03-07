@@ -55,8 +55,8 @@ const TournamentFeedPage = () => {
 	}, []);
 
 	useEffect(() => {
-    if (!battle) return;
-    refresh();
+	if (!battle) return;
+	refresh();
   }, [battle]);
 
 	if (!user) return <Navigate to="/" replace />;
@@ -68,7 +68,17 @@ const TournamentFeedPage = () => {
 					<div className="tournament-theme">
 						<h2>{battle.theme}</h2>
 							<p>
-								{new Date(battle.endsAt).toLocaleDateString('fr-FR')}
+								{(() => {
+									const now = new Date();
+									const endDate = new Date(battle.endsAt);
+									const diffTime = endDate.getTime() - now.getTime();
+									const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // convert ms → days
+
+									if (diffDays < 0) return "The tournament has ended";
+									if (diffDays === 0) return "The tournament ends today!";
+									if (diffDays === 1) return "The tournament ends tomorrow!";
+									return `The tournament will be active for ${diffDays} more days, until ${endDate.toLocaleDateString('fr-FR')}`;
+								})()}
 							</p>
 					</div>
 					)}
