@@ -32,23 +32,23 @@ model BattleParticipant {
   postId      Int
   submittedAt DateTime?
   Battle      Battle    @relation(fields: [battleId], references: [id])
-  Post        Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
-  User        User      @relation(fields: [userId], references: [id])
+  post        Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id])
 
   @@unique([battleId, userId])
 }
 
 model Comment {
-  id            Int       @id @default(autoincrement())
-  content       String
-  createdAt     DateTime  @default(now())
-  userId        Int
-  postId        Int
-  parentId      Int?
-  Comment       Comment?  @relation("CommentToComment", fields: [parentId], references: [id])
-  other_Comment Comment[] @relation("CommentToComment")
-  Post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
-  User          User      @relation(fields: [userId], references: [id])
+  id       Int       @id @default(autoincrement())
+  content  String
+  createdAt DateTime  @default(now())
+  userId   Int
+  postId   Int
+  parentId Int?
+  parent   Comment?  @relation("CommentToComment", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentToComment")
+  Post     Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  User     User      @relation(fields: [userId], references: [id])
 }
 
 model Conversation {
@@ -59,12 +59,12 @@ model Conversation {
 }
 
 model Friendship {
-  id                                Int              @id @default(autoincrement())
-  requesterId                       Int
-  addresseId                        Int
-  status                            FriendshipStatus @default(PENDING)
-  User_Friendship_addresseIdToUser  User             @relation("Friendship_addresseIdToUser", fields: [addresseId], references: [id])
-  User_Friendship_requesterIdToUser User             @relation("Friendship_requesterIdToUser", fields: [requesterId], references: [id])
+  id          Int              @id @default(autoincrement())
+  requesterId Int
+  addresseId  Int
+  status      FriendshipStatus @default(PENDING)
+  requester   User             @relation("Friendship_requesterIdToUser", fields: [requesterId], references: [id])
+  addresse    User             @relation("Friendship_addresseIdToUser", fields: [addresseId], references: [id])
 
   @@unique([requesterId, addresseId])
 }
@@ -99,7 +99,7 @@ model ModerationLog {
   targetPostId                          Int?
   targetBattleId                        Int?
   createdAt                             DateTime       @default(now())
-  User_ModerationLog_actorIdToUser      User           @relation("ModerationLog_actorIdToUser", fields: [actorId], references: [id])
+  actor                                 User           @relation("ModerationLog_actorIdToUser", fields: [actorId], references: [id])
   Battle                                Battle?        @relation(fields: [targetBattleId], references: [id])
   Post                                  Post?          @relation(fields: [targetPostId], references: [id])
   User_ModerationLog_targetUserIdToUser User?          @relation("ModerationLog_targetUserIdToUser", fields: [targetUserId], references: [id])
@@ -122,11 +122,11 @@ model Post {
   authorId          Int
   title             String
   updatedAt         DateTime            @default(now())
-  BattleParticipant BattleParticipant[]
+  battleParticipants BattleParticipant[]
   Comment           Comment[]
   Like              Like[]
   ModerationLog     ModerationLog[]
-  User              User                @relation(fields: [authorId], references: [id])
+  author            User                @relation(fields: [authorId], references: [id])
   PostTag           PostTag[]
 }
 
@@ -175,8 +175,8 @@ model User {
   ModerationLog_ModerationLog_actorIdToUser      ModerationLog[]     @relation("ModerationLog_actorIdToUser")
   ModerationLog_ModerationLog_targetUserIdToUser ModerationLog[]     @relation("ModerationLog_targetUserIdToUser")
   Notification                                   Notification[]
-  Post                                           Post[]
-  Profile                                        Profile?
+  posts                                          Post[]
+  profile                                        Profile?
   Conversation                                   Conversation[]      @relation("UserConversations")
 }
 

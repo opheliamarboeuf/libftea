@@ -29,6 +29,18 @@ const TournamentFeedPage = () => {
 			});
 	};
 
+	const refetchBattle = () => {
+		tournamentApi.getCurrentTournament()
+			.then((data) => {
+				setBattle(data);
+				setBattleError(null);
+			})
+			.catch((err) => {
+				console.error("failed to fetch current tournament", err);
+				setBattle(null);
+			});
+	};
+
 	useEffect(() => {
 		// load current tournament on mount
 		tournamentApi.getCurrentTournament()
@@ -56,7 +68,7 @@ const TournamentFeedPage = () => {
 					<div className="tournament-theme">
 						<h2>{battle.theme}</h2>
 							<p>
-								{new Date(battle.endsAt).toLocaleDateString()}
+								{new Date(battle.endsAt).toLocaleDateString('fr-FR')}
 							</p>
 					</div>
 					)}
@@ -84,22 +96,23 @@ const TournamentFeedPage = () => {
 				<>
 					{battleError && <p style={{ color: "red" }}>{battleError}</p>}
 					<UserPostsList posts={posts} onPostDeleted={refresh} />
-					{showPostModal && (
-					<JoinTournamentModal
-						battleId={battle.id}
-						onJoined={refresh}
-						onClose={() => setShowPostModal(false)} />
-				)}
-				{
-					showCreateTournamentModal && (
-						<CreateTournamentModal
-							onClose={() => setShowCreateTournamentModal(false)}
-							onCreated={() => {setShowCreateTournamentModal(false);
-								refresh();
-							}}
-						/>
+					{
+						showPostModal && (
+						<JoinTournamentModal
+							battleId={battle.id}
+							onJoined={refresh}
+							onClose={() => setShowPostModal(false)} />
 					)}
 				</>
+			)}
+			{
+				showCreateTournamentModal && (
+				<CreateTournamentModal
+					onClose={() => setShowCreateTournamentModal(false)}
+					onCreated={() => {setShowCreateTournamentModal(false);
+					refetchBattle();
+				}}
+			/>
 			)}
 		</div>
 	);

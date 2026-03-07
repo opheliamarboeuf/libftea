@@ -23,9 +23,9 @@ export class ModerationService {
 				action: true,
 				createdAt: true,
 				actor: {select: {id: true, username: true}},
-				targetUser: { select: { id: true, username: true } },
-				targetPost: { select: { id: true, title: true }},
-				targetBattle: { select: { id: true, theme: true }},
+				User_ModerationLog_targetUserIdToUser: { select: { id: true, username: true } },
+				Post: { select: { id: true, title: true }},
+				Battle: { select: { id: true, theme: true }},
 			},
 			orderBy: {createdAt: 'desc'},
 		});

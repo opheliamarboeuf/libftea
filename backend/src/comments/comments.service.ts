@@ -28,7 +28,7 @@ export class CommentsService {
 					postId,
 				},
                 include: {
-                    user: true,
+                    User: true,
                     replies: true,
                 }
 			});
@@ -89,7 +89,7 @@ export class CommentsService {
                 parentId: parentCommentId,
             },
             include: {
-                user: true,
+                User: true,
                 replies: true,
             },
         });
@@ -99,9 +99,9 @@ export class CommentsService {
         const comments = await this.prisma.comment.findMany({
             where: { postId, parentId: null },
             include: {
-                user: true,
+                User: true,
                 replies: {
-                    include: { user: true },
+                    include: { User: true },
                 },
             },
             orderBy: { createdAt: 'asc' },

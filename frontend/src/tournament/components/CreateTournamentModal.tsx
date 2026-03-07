@@ -4,7 +4,7 @@ import { useModalAnimation } from "../../common/hooks/useModalAnimation";
 import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
 import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
-import { useCreateTournament } from "../hooks/useCreateTournament";
+import { useCreateTournament } from "./hooks/useCreateTournament";
 
 interface CreateTournamentModalProps {
 	onClose: () => void;
@@ -20,16 +20,14 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 	const {
 		theme, 
 		setTheme,
-		startsAt,
-		setStartsAt,
-		endsAt,
-		setEndsAt,
+		startDate,
+		setStartDate,
+		endDate,
+		setEndDate,
 		errorMessage,
 		isLoading,
 		resetFields,
 		hasChanges,
-		MAX_THEME_LENGTH,
-		handleImageChange,
 		handleCreateTournament,
 	} = useCreateTournament();
 
@@ -77,14 +75,14 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 						<label>Start date</label>
 						<input
 							type = "datetime-local"
-							value={startsAt}
-							onChange={(e) => setStartsAt(e.target.value)}
+							value={startDate}
+							onChange={(e) => setStartDate(e.target.value)}
 						/>
 						<label>End date</label>
 						<input
 							type = "datetime-local"
-							value={endsAt}
-							onChange={(e) => setEndsAt(e.target.value)}
+							value={endDate}
+							onChange={(e) => setEndDate(e.target.value)}
 						/>
 						{errorMessage && (
 							<div className="error-message shake-horizontal">

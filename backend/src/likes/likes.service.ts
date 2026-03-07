@@ -18,7 +18,7 @@ export class LikesService {
 				battleParticipants:
 				{
 					include: {
-						battle: true,
+						Battle: true,
 					},
 				},
 			},
@@ -30,7 +30,7 @@ export class LikesService {
 		// si le post fait parti d'un tournoi 
 		if (post.battleParticipants.length > 0)
 		{
-			const battle = post.battleParticipants[0].battle;
+			const battle = post.battleParticipants[0].Battle;
 			const now = new Date();
 			if (now < battle.startsAt || now > battle.endsAt)
 				throw new BadRequestException("Voting is closed for this tournament");

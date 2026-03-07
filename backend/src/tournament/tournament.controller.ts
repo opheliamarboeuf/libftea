@@ -7,16 +7,17 @@ import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { JoinTournamentDto } from './dto/join-tournament.dto'
 import { Roles } from '../auth/roles.decorator'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('tournament')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class TournamentController {
 	// injection de dependances, indique a nestJS que l'on va utiliser TournamentService
 	// on le stocke dans une variable privee tournamentService de type TournamentService
 	// readonly pour ne pas la modifier, provate pour que la variable soit accessible seulement dans cette classe
 	constructor(private readonly tournamentService: TournamentService) {}
 
-	// @Roles('ADMIN')
+	@Roles('ADMIN')
 	@Post()
 	// @Body() on prend le corps de la requete HTTP
 	// data = nom de la variable, any = type TS 

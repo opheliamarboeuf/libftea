@@ -106,7 +106,7 @@ export class TournamentService {
 			},
 			include: {
 				author: true,
-				likes: true,
+				Like: true,
 			},
 			orderBy: {
 				createdAt: "desc",
