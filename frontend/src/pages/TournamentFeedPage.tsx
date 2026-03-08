@@ -96,7 +96,7 @@ const TournamentFeedPage = () => {
 						)}
 						{user?.role === "ADMIN" && (
 							<button className="expand-btn expand-btn-right" onClick={() => setShowCreateTournamentModal(true)}>
-								<span className="icon">＋</span>
+								<span className="icon">👑</span>
 								<span className="expand-btn-text">Create tournament</span>
 							</button>
 						)}

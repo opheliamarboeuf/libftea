@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { tournamentApi } from "../../api";
 
-const MAX_THEME_LENGTH = 100;
+const MAX_THEME_LENGTH = 50;
 
 export function useCreateTournament() {
 
@@ -86,5 +86,6 @@ export function useCreateTournament() {
 		resetFields,
 		hasChanges,
 		handleCreateTournament,
+		MAX_THEME_LENGTH,
 	};
 }

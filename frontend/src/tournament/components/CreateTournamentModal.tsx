@@ -29,6 +29,7 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 		resetFields,
 		hasChanges,
 		handleCreateTournament,
+		MAX_THEME_LENGTH,
 	} = useCreateTournament();
 
 		// Guard unsaved changes
@@ -72,6 +73,13 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 							onChange={(e) => setTheme(e.target.value)}
 							className="create-post-input"
 						/>
+						<div
+							className={`char-counter ${
+							theme.length > MAX_THEME_LENGTH ? "error" : ""
+							}`}
+						>
+							{theme.length} / {MAX_THEME_LENGTH}
+						</div>
 						<label>Start date</label>
 						<input
 							type = "datetime-local"
