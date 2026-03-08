@@ -54,8 +54,8 @@ export const useFriendsSocket = (userId: number | undefined, onEvent: {
 			if (onEvent.onUserRemoved) friendsSocket.off("you_were_removed", onEvent.onUserRemoved);
 			if (onEvent.onUserBlocked) friendsSocket.off("friend_blocked", onEvent.onUserBlocked);
 			if (onEvent.onUserUnblocked) friendsSocket.off("friend_unblocked", onEvent.onUserUnblocked);
-		if (onEvent.onYouWereBlocked) friendsSocket.off("you_were_blocked", onEvent.onYouWereBlocked);
-		if (onEvent.onYouWereUnblocked) friendsSocket.off("you_were_unblocked", onEvent.onYouWereUnblocked);
+			if (onEvent.onYouWereBlocked) friendsSocket.off("you_were_blocked", onEvent.onYouWereBlocked);
+			if (onEvent.onYouWereUnblocked) friendsSocket.off("you_were_unblocked", onEvent.onYouWereUnblocked);
 		};
 	}, [userId]);
 

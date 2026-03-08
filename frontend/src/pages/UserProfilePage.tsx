@@ -58,6 +58,8 @@ const UserProfilePage = () => {
 				return ;
 			}
 
+			setBlockedByUser(false);
+
 			if (!res.ok) {
 				throw new Error("Error fetching profile");
 			}
@@ -111,6 +113,7 @@ const UserProfilePage = () => {
 		},
 		onRequestReceived: () => {
 			refreshUser();
+			fetchProfile();
 		},
 		onRequestAccepted: () => {
 			setLoading(false);
