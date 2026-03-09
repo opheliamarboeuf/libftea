@@ -6,7 +6,7 @@ import LoginPage from './pages/LoginPage';
 import MyProfilePage from './pages/MyProfilePage';
 import FeedPage from "./pages/FeedPage";
 import FriendsPage from "./pages/FriendsPage";
-import Dashboard from './pages/Dashboard';
+import DashboardPage from './pages/DashboardPage';
 import { Header } from './common/components/Header';
 import { LeftMenu } from './common/components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
@@ -85,7 +85,7 @@ const [loading, setLoading] = useState(true);
               element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
             <Route
               path="/dashboard"
-              element={loading ? null : user ? <Dashboard/> : <Navigate to = "/" replace />} />
+              element={loading ? null : user ? <DashboardPage/> : <Navigate to = "/" replace />} />
           </Routes>
         </BrowserRouter>
         </ModalProvider>

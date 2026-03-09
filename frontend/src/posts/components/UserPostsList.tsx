@@ -68,21 +68,27 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				<FaEllipsisV onClick={() => toggleMenu(post.id)} />
 				{openMenuId === post.id && (
 					<div className="menu-dropdown">
-						{post.author.id === user.id || user.role === "ADMIN" || user.role === "MOD" ? (
-							<>
-								{/* Edit only if owner */}
-								{post.author.id === user.id && <button onClick={() => handleEdit(post)}>Edit</button>}
-								{/* Delete if owner or admin/mod */}
-								<button 
-									onClick={() => setPostToDelete(post.id)}
-									disabled={isDeleting}
-								>
-									{isDeleting? "Deleting..." : "Delete"}
-								</button>
-							</>
-						) : (
-							<button onClick={() => {setPostToReport(post); toggleMenu(post.id);}}>Report</button>
-						)}
+					{/* Everyone can report except the owner of the post*/}
+					{post.author.id !== user.id && (
+						<button onClick={() => { setPostToReport(post); toggleMenu(post.id); }}>
+						Report
+						</button>
+					)}
+
+					{/* Edit if owner */}
+					{post.author.id === user.id && (
+						<button onClick={() => handleEdit(post)}>Edit</button>
+					)}
+
+					{/* Delete if owner of admin or mod */}
+					{(post.author.id === user.id || user.role === "ADMIN" || user.role === "MOD") && (
+						<button 
+						onClick={() => setPostToDelete(post.id)}
+						disabled={isDeleting}
+						>
+						{isDeleting ? "Deleting..." : "Delete"}
+						</button>
+					)}
 					</div>
 				)}
 			</div>
@@ -106,9 +112,6 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 			<div className="interactions">
 				<LikeButton postId={post.id} />
 			</div>
-			{/* <div className="counters">
-			<span className="count">0 Likes </span>
-			</div> */}
 		</div>
 		</div>
 	))}
