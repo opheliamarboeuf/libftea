@@ -8,6 +8,7 @@ import { JoinTournamentDto } from './dto/join-tournament.dto'
 import { Roles } from '../auth/roles.decorator'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { Role } from '@prisma/client';
 
 @Controller('tournament')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -21,9 +22,11 @@ export class TournamentController {
 	@Post()
 	// @Body() on prend le corps de la requete HTTP
 	// data = nom de la variable, any = type TS 
-	createTournament(@Body() data: CreateTournamentDto)
+	createTournament(@Body() data: CreateTournamentDto, @Req() req: any)
 	{
-		return this.tournamentService.createTournament(data);
+		const userId = req.user.id;
+		const userRole = req.user.role;
+		return this.tournamentService.createTournament(data, userId, userRole);
 	}
 	@Get('current')
 	getCurrentTournament()

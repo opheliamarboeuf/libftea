@@ -2,19 +2,43 @@ import { Injectable, BadRequestException, InternalServerErrorException, NotFound
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { JoinTournamentDto } from './dto/join-tournament.dto';
+import { hasPermission } from 'src/auth/permissions';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class TournamentService {
 	constructor(private readonly prisma: PrismaService) {}
 	// async = attend une reponse lente
-	async createTournament(data: CreateTournamentDto){
-		return this.prisma.battle.create({
-			data: {
-				theme: data.theme,
-				startsAt: new Date(data.startDate),
-				endsAt: new Date(data.endDate),
-			},
-		});
+	async createTournament(data: CreateTournamentDto, userId: number, userRole: Role){
+		if ( !hasPermission(userRole, "CREATE_TOURNAMENT"))
+        	throw new BadRequestException("You do not have the right to create a tournament");
+		try {
+			const battle = await this.prisma.$transaction(async (prisma) =>
+			{
+				const newBattle = await this.prisma.battle.create({
+					data: {
+						theme: data.theme,
+						startsAt: new Date(data.startDate),
+						endsAt: new Date(data.endDate),
+						createdById: userId,
+					},
+				});
+				await prisma.moderationLog.create({
+					data: {
+						action: "CREATE_TOURNAMENT",
+						actorId: userId,
+						targetBattleId: newBattle.id,
+					},
+				});
+				return newBattle;
+			});
+			return battle;
+		}
+		catch (error)
+		{
+			console.log("Error editing post:", error);
+			throw new InternalServerErrorException("Could not edit post");
+		}
 	}
 	async getCurrentTournament() {
 		// donne moi le premier battle qui correspond a mes conditions
