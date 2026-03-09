@@ -198,7 +198,12 @@ export class PostsService {
 
 		// Fetch posts authored by these friends
 		return this.prisma.post.findMany({
-			where: { authorId: { in: friendIds } },
+			where: {
+				authorId: { in: friendIds },
+				battleParticipants: {
+					none: {},
+				}
+			},
 			orderBy: { createdAt: 'desc' },
 			include: { author: true },
  	 });
