@@ -229,7 +229,7 @@ const UserProfilePage = () => {
 	};
 	
 	if (blockedByUser) {
-		return <div className="profile-page blocked">You cannot access this profile</div>;
+		return <div className="profile-page is-blocked">You cannot access this profile</div>;
 	}
 	if (!userData) {
 		return <div className="profile-page">Loading...</div>;
@@ -284,7 +284,7 @@ const UserProfilePage = () => {
 							</div>
 					</div>
 					<div className="posts">
-						{blockedPosts ? <div className="blocked">You have blocked this user</div> : <UserPostsList posts={posts} />}
+						{blockedPosts ? <div className="blocked-line">You have blocked this user</div> : <UserPostsList posts={posts} />}
 					</div>
 				</div>
 			</div>

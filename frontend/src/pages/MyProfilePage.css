@@ -15,10 +15,17 @@
 }
 
 /* Blocking interactions */
-.blocked {
+.blocked-line {
 	display: flex;
 	margin-top: 50px;
 	justify-content: center;
+	font-size: 1.2rem;
+}
+
+.is-blocked {
+	display: flex;
+	margin-top: 50px;
+	align-items: center;
 	font-size: 1.2rem;
 }
 
@@ -27,7 +34,6 @@
 	align-items: center;
 	padding-top: 2rem;
 }
-
 
 /* Profile info column */
 .profile-info {
