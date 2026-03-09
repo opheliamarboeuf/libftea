@@ -229,7 +229,7 @@ const UserProfilePage = () => {
 	};
 	
 	if (blockedByUser) {
-		return <div className="profile-page is-blocked">You cannot access this profile</div>;
+		return <div className="profile-page is-blocked">This profile is not accessible. The user is blocked or reported.</div>;
 	}
 	if (!userData) {
 		return <div className="profile-page">Loading...</div>;
