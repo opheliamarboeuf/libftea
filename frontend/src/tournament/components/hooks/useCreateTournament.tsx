@@ -50,8 +50,8 @@ export function useCreateTournament() {
 		try {
 			const payload = {
 				theme,
-				startDate: startDate + ':00.000Z',
-				endDate: endDate + ':00.000Z',
+				startDate: new Date(startDate).toISOString(),
+				endDate: new Date(endDate).toISOString(),
 			};
 			console.log('Sending payload:', payload);
 			await tournamentApi.createTournament(payload);
