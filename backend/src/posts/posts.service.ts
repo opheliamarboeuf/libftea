@@ -30,6 +30,19 @@ export class PostsService {
 	); 
 	}
 
+	private async getReporterIdsForUser(userId: number): Promise<number[]> {
+		const reports = await this.prisma.report.findMany({
+			where: {
+				reportedUserId: userId,
+			},
+			select: {
+				reporterId: true,
+			},
+		});
+
+		return reports.map((report) => report.reporterId);
+	}
+
 	async create(userId:number, dto: PostsDto) {
 		try {
 			const post = await this.prisma.post.create({
@@ -136,6 +149,18 @@ export class PostsService {
 	async getUserPosts(id: number, currentUserId?: number) {
 		// If currentUserId is provided, check if viewing user is blocked
 		if (currentUserId !== undefined) {
+			const hasReportedCurrentUser = await this.prisma.report.findFirst({
+				where: {
+					reporterId: id,
+					reportedUserId: currentUserId,
+				},
+				select: { id: true },
+			});
+
+			if (hasReportedCurrentUser) {
+				return [];
+			}
+
 			const isBlocked = await this.prisma.friendship.findFirst({
 				where: {
 					status: 'BLOCKED',
@@ -182,6 +207,7 @@ export class PostsService {
 
 	async getFriendsPosts(userId: number) {
 		const blockedIds = await this.getBlockedIds(userId);
+		const reporterIds = await this.getReporterIdsForUser(userId);
 		
 		//  Get all friendships where the status is ACCEPTED
 		const friendships = await this.prisma.friendship.findMany({
@@ -202,7 +228,7 @@ export class PostsService {
   		// If the user is the requester, the friend is the addressee, and vice versa
 		const friendIds = friendships
 		.map(f => f.requesterId === userId ? f.addresseId : f.requesterId)
-		.filter(id => !blockedIds.includes(id));
+		.filter(id => !blockedIds.includes(id) && !reporterIds.includes(id));
 		
 		if (friendIds.length === 0)
 			return [];
@@ -263,6 +289,23 @@ export class PostsService {
 					userId: currentUserId,
 				},
 			});
+
+			// Remove any existing friendship with the post author (in both directions)
+			const existingFriendship = await tx.friendship.findFirst({
+				where: {
+					OR: [
+						{ requesterId: currentUserId, addresseId: reportedPost.authorId },
+						{ requesterId: reportedPost.authorId, addresseId: currentUserId },
+					],
+				},
+			});
+
+			if (existingFriendship) {
+				await tx.friendship.delete({
+					where: { id: existingFriendship.id },
+				});
+			}
+
 			return createdReport;
 		});
 		return report;

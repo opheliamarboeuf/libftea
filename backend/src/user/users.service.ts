@@ -29,9 +29,47 @@ export class UsersService {
 		 return blockedIds;
 	}
 	
+	async getHiddenUserIds(userId: number) {
+		const hiddenUsers = await this.prisma.userHiddenForUser.findMany({
+			where: {
+			userId: userId
+			},
+			select: {
+			targetUserId: true
+			}
+		})
+		return hiddenUsers.map(u => u.targetUserId)
+	}
+
+	async getReportedUserIds (userId: number) {
+		const reportedUsers = await this.prisma.report.findMany({
+			where: {
+				reporterId: userId,
+				reportedUserId: { not: null } // only the users, not the posts
+			},
+			select: {reportedUserId: true}
+		});
+		return reportedUsers.map(r => r.reportedUserId!)
+	}
+
+	async getReporterIdsForUser(userId: number) {
+		const reporters = await this.prisma.report.findMany({
+			where: {
+				reportedUserId: userId,
+			},
+			select: { reporterId: true }
+		});
+		return reporters.map(r => r.reporterId)
+	}
+
 	async searchUsername(username: string, currentUserId: number) {
 	
 		const blockedIds = await this.getBlockedIds(currentUserId);
+		const hiddenUserIds = await this.getHiddenUserIds(currentUserId);
+		const reportedUserIds = await this.getReportedUserIds(currentUserId);
+		const reporterIds = await this.getReporterIdsForUser(currentUserId);
+		const excludedIds = [...blockedIds, ...hiddenUserIds, ...reportedUserIds, ...reporterIds];
+		
 		return this.prisma.user.findMany({
 			where: {
 				username: {
@@ -39,7 +77,7 @@ export class UsersService {
 					mode: 'insensitive',
 				},
 				NOT: {
-					id: {in: blockedIds },
+					id: {in: excludedIds},
 				}
 			},
 			select: {
@@ -79,6 +117,22 @@ export class UsersService {
 
 		if (!user) return null;
 
+		const hidden = await this.prisma.userHiddenForUser.findUnique({
+			where: { targetUserId_userId: { userId: currentUserId, targetUserId: id}}
+		})
+		if (hidden)
+		    throw new ForbiddenException("You cannot access this profile");
+
+		const hasReportedYou = await this.prisma.report.findFirst({
+			where: {
+				reporterId: id,
+				reportedUserId: currentUserId,
+			},
+			select: { id: true },
+		});
+		if (hasReportedYou)
+			throw new ForbiddenException("You cannot access this profile");
+  			
 		// Check the block status
 		const blocked = await this.prisma.friendship.findFirst({
 		where: {
@@ -178,6 +232,23 @@ export class UsersService {
 						userId: currentUserId,
 					},
 				});
+
+				// Remove any existing friendship (in both directions)
+				const existingFriendship = await tx.friendship.findFirst({
+					where: {
+						OR: [
+							{ requesterId: currentUserId, addresseId: targetId },
+							{ requesterId: targetId, addresseId: currentUserId },
+						],
+					},
+				});
+
+				if (existingFriendship) {
+					await tx.friendship.delete({
+						where: { id: existingFriendship.id },
+					});
+				}
+
 				return createdReport;
 			});
 			return report;
@@ -190,8 +261,16 @@ export class UsersService {
 
 	async getAllUserPosts(currentUserId: number) {
 		const blockedIds = await this.getBlockedIds(currentUserId);
+		const hiddenUserIds = await this.getHiddenUserIds(currentUserId);
+		const reporterIds = await this.getReporterIdsForUser(currentUserId);
+		
 		const userPosts = await this.prisma.post.findMany({
-			where: { authorId: { notIn: blockedIds } },
+			where: { 
+			authorId: { notIn: [...blockedIds, ...hiddenUserIds, ...reporterIds] },
+				hiddenForUsers: {
+					none: { userId: currentUserId }
+				}
+			},
 			select: {
 				id: true,
 				authorId: true,

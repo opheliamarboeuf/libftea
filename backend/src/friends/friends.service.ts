@@ -8,12 +8,24 @@ export class FriendsService {
 		private readonly prisma: PrismaService,
 	) {}
 
+	private async hasReportRelationBetweenUsers(userId: number, targetId: number): Promise<boolean> {
+		const reportRelation = await this.prisma.report.findFirst({
+			where: {
+				OR: [
+					{ reporterId: userId, reportedUserId: targetId },
+					{ reporterId: targetId, reportedUserId: userId },
+				],
+			},
+			select: { id: true },
+		});
+
+		return Boolean(reportRelation);
+	}
+
 	async sendFriendRequest(
 		requesterId: number,
 		addresseId: number,
 	) {
-		
-		console.log('sendFriendRequest called:', { requesterId, addresseId });
 		if (requesterId === addresseId) {
 			throw new BadRequestException('You cannot add yourself as a friend');
 		}
@@ -26,6 +38,11 @@ export class FriendsService {
 			throw new NotFoundException('User not found');
 		}
 
+		const hasReportRelation = await this.hasReportRelationBetweenUsers(requesterId, addresseId);
+		if (hasReportRelation) {
+			throw new BadRequestException('Friend request is not allowed between reported users');
+		}
+
 		const exists = await this.prisma.friendship.findFirst({
 			where: {
 				OR: [
@@ -35,8 +52,6 @@ export class FriendsService {
 				NOT: { status: 'BLOCKED'},
 			},
 		});
-
-		console.log('Existing friendship:', exists);
 
 		if (exists) {
 			throw new BadRequestException('You have already sent a friend request to this user');
@@ -72,6 +87,11 @@ export class FriendsService {
 
 		if (friendship.status !== 'PENDING') {
 			throw new BadRequestException('Friendship request is not pending');
+		}
+
+		const hasReportRelation = await this.hasReportRelationBetweenUsers(requesterId, addresseId);
+		if (hasReportRelation) {
+			throw new BadRequestException('Friend request cannot be accepted due to report relation');
 		}
 
 		const updatedFriendship = await this.prisma.friendship.update({
@@ -131,16 +151,26 @@ export class FriendsService {
 				addresse: true,
 			},
 		});
-		return friendships.map((friendship) => {
+
+		const friends = friendships.map((friendship) => {
 			return friendship.requesterId === userId
 			 ? friendship.addresse
 			 : friendship.requester;
 		});
+
+		// Filter out friends with report relations
+		const filteredFriends = [];
+		for (const friend of friends) {
+			const hasReport = await this.hasReportRelationBetweenUsers(userId, friend.id);
+			if (!hasReport) {
+				filteredFriends.push(friend);
+			}
+		}
+
+		return filteredFriends;
 	}
 
 	async getPendingRequests(userId: number) {
-
-		console.log('getPendingRequests called for userId:', userId);
 		const friendships = await this.prisma.friendship.findMany({
 			where: {
 				status: 'PENDING',
@@ -151,7 +181,18 @@ export class FriendsService {
 			},
 		});
 
-		return friendships.map(f => f.requester);
+		const requesters = friendships.map(f => f.requester);
+
+		// Filter out requesters with report relations
+		const filteredRequesters = [];
+		for (const requester of requesters) {
+			const hasReport = await this.hasReportRelationBetweenUsers(userId, requester.id);
+			if (!hasReport) {
+				filteredRequesters.push(requester);
+			}
+		}
+
+		return filteredRequesters;
 	}
 
 	async removeFriend(userId: number, friendId: number): Promise<void> {
