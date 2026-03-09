@@ -18,7 +18,7 @@ export class TournamentService {
 	}
 	async getCurrentTournament() {
 		// donne moi le premier battle qui correspond a mes conditions
-		return this.prisma.battle.findFirst({
+		const battle = this.prisma.battle.findFirst({
 			// on cherche un tournoi dont la date de fin est dans le futur
 			// nous permet de ne pas recuperer un ancien tournoi
 			// gte: greater then or equal, lte: later or equal
@@ -31,6 +31,13 @@ export class TournamentService {
 				createdAt: 'desc',
 			},
 		});
+		if (!battle)
+				return null;
+		if (new Date() > (await battle).endsAt && !(await battle).winnerId)
+		{
+			await this.computeTournamentWinner((await battle).id);
+		}
+		return battle;
 	}
 	async joinTournament(battleId: number, userId: number, postData: JoinTournamentDto, imageUrl: string) {
 		// await nous permet de recuperer les donnes pour les verifier plus bas
@@ -112,5 +119,43 @@ export class TournamentService {
 				createdAt: "desc",
 			},
 		});
+	}
+	async computeTournamentWinner(battleId: number)
+	{
+		const battle = await this.prisma.battle.findUnique({
+			where : { id: battleId },
+		});
+		if (!battle)
+			throw new NotFoundException ("Tournament doesn't exist");
+		// if (new Date() < battle.endsAt)
+		// 	throw new BadRequestException("Battle is not finished yet");
+		if (battle.winnerId)
+			return battle.winnerId;
+		const forTheWin = await this.prisma.post.findFirst({
+			where: {
+				battleParticipants: { some: { battleId } },
+			},
+			orderBy: {
+				Like: {
+					_count: "desc"
+				},
+			},
+			include: {
+				author: true,
+				_count: {
+					select: { Like: true }
+				}
+			}
+		});
+		if (!forTheWin)
+			throw new NotFoundException ("No one partipated at that tournament");
+		await this.prisma.battle.update({
+			where: {id: battleId },
+			data: {
+				status: "FINISHED",
+				winnerId: forTheWin.authorId,
+			}
+		});
+		return forTheWin;
 	}
 }

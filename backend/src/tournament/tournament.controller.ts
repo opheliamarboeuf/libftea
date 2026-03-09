@@ -65,7 +65,9 @@ export class TournamentController {
 		return this.tournamentService.getParticipants(Number(battleId));
 	}
 	@Get(':battleId/posts')
-	getBattlePosts(@Param('battleId') battleId: string) {
+	async getBattlePosts(@Param('battleId') battleId: string)
+	{
+		await this.tournamentService.computeTournamentWinner(Number(battleId));
 		return this.tournamentService.getBattlePosts(Number(battleId));
 	}
 }
