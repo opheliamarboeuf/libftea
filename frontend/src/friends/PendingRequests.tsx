@@ -1,42 +1,40 @@
 import { useState } from "react";
+import { useUser } from "../context/UserContext";
 import { friendsApi } from "./api";
 import { usePendingRequests } from "./hooks";
 import { useModal } from "../context/ModalContext";
 import { Link } from "react-router-dom";
+import { useFriendsSocket } from "./useFriendsSocket";
 import "./friends.css"
 
 export function PendingRequests() {
 	const { pending, refetch } = usePendingRequests();
 	const [ loading, setLoading ] = useState(false);
 	const { showModal } = useModal();
+	const { refreshUser, user } = useUser();
 	const API_URL = "http://localhost:3000";
+
+	const { emit } = useFriendsSocket(user?.id, {
+		onRequestAccepted: () => {
+			setLoading(false);
+			refreshUser();
+			refetch();
+		},
+		onRequestRejected: async () => {
+			setLoading(false);
+			refreshUser();
+			refetch();
+		}
+	});
 
 	const handleAccept = async (userId: number) => {
 		setLoading(true);
-		try {
-			await friendsApi.acceptFriendRequest(userId);
-			showModal("Friend request accepted");
-			await refetch();
-		} catch (error) {
-			console.error('Failed to process request', error);
-			showModal("Failed to process request");
-		} finally {
-			setLoading(false);
-		}
+		emit("accept_friend_request", { requesterId: userId, addresseId: user?.id });
 	};
 
 	const handleReject = async (userId: number) => {
 		setLoading(true);
-		try {
-			await friendsApi.rejectFriendRequest(userId);
-			showModal("Friend request rejected");
-			await refetch();
-		} catch (error) {
-			console.error('Failed to process request:', error);
-			showModal("Failed to process request");
-		} finally {
-			setLoading(false);
-		}
+		emit("reject_friend_request", { requesterId: userId, addresseId: user?.id });
 	};
 
 	return (

@@ -4,6 +4,7 @@ import { useModal } from "../context/ModalContext";
 import { useState } from "react"
 import { useEffect } from "react";
 import { ConfirmBlockDelete } from "./ConfirmBlockDelete";
+import { useFriendsSocket } from "./useFriendsSocket";
 
 interface Props {
     userId: number;
@@ -24,27 +25,34 @@ export function BlockFriendButton({ userId, onAction }: Props) {
 		setBlockSent(isBlocked);
 	}, [userId, user]);
 
+	const { emit } = useFriendsSocket(user?.id, {
+		onUserBlocked: async () => {
+			setLoading(false);
+			setShowConfirm(false);
+			showModal("User blocked");
+			await refreshUser();
+			if (onAction) await onAction();
+		},
+		onUserUnblocked: async () => {
+			setLoading(false);
+			setShowConfirm(false);
+			showModal("User unblocked");
+			await refreshUser();
+			if (onAction) await onAction();
+		},
+	});
+
     const handleClick = async () => {
         setLoading(true);
         try {
 			if (!blockSent) {
-				await friendsApi.blockFriend(userId);
-				showModal("User blocked");
-				// setBlockSent(true);
+				emit("block_friend",{ userId: user?.id, targetId: userId });
 			} else {
-				await friendsApi.unBlockFriend(userId);
-				showModal("User unblocked");
-				// setBlockSent(false);
-				setShowConfirm(false);
+				emit("unblock_friend", { userId: user?.id, targetId: userId });
 			}
-			await refreshUser();
-			if (onAction) await onAction();
         } catch (error) {
             console.error('Error:', error);
             showModal("Failed to block friend");
-        } finally {
-            setLoading(false);
-            setShowConfirm(false);
         }
     }
     return (

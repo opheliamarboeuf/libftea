@@ -57,7 +57,7 @@ export class FriendsService {
 			throw new BadRequestException('You have already sent a friend request to this user');
 		}
 
-		const created = this.prisma.friendship.create({
+		const created = await this.prisma.friendship.create({
 			data: {
 				requesterId,
 				addresseId,

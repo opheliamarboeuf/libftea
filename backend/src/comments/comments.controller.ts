@@ -39,8 +39,9 @@ export class CommentsController {
 
     @Get('post/:postId')
     async getComments(
-        @Param('postId', ParseIntPipe) postId: number
+        @Param('postId', ParseIntPipe) postId: number,
+        @Req() req
     ) {
-        return this.commentsService.getComments(postId);
+        return this.commentsService.getComments(postId, req.user.id);
     }
 }
