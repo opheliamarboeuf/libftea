@@ -18,13 +18,11 @@ export function PendingRequests() {
 		onRequestAccepted: () => {
 			setLoading(false);
 			refreshUser();
-			showModal("Friend request accepted");
 			refetch();
 		},
 		onRequestRejected: async () => {
 			setLoading(false);
 			refreshUser();
-			showModal("Friend request rejected");
 			refetch();
 		}
 	});

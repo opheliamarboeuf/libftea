@@ -3,7 +3,6 @@ import "./MyProfilePage.css";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
-import { friendsApi } from "../friends/api";
 import { useModal } from "../context/ModalContext";
 import { Post } from "../context/UserContext";
 import { postsApi } from "../posts/api";
@@ -105,13 +104,11 @@ const UserProfilePage = () => {
 			setLoading(false);
 			refreshUser();
 			fetchProfile();
-			showModal("Friend request sent");
 		},
 		onRequestUnsent: () => {
 			setLoading(false);
 			refreshUser();
 			fetchProfile();
-			showModal("Friend request cancelled");
 		},
 		onRequestReceived: () => {
 			refreshUser();
@@ -121,13 +118,11 @@ const UserProfilePage = () => {
 			setLoading(false);
 			refreshUser();
 			fetchProfile();
-			showModal("Friend request accepted");
 		},
 		onRequestRejected: () => {
 			setLoading(false);
 			refreshUser();
 			fetchProfile();
-			showModal("Friend request rejected");
 		},
 		onFriendRemoved: () => {
 			setLoading(false);
