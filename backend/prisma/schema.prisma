@@ -32,6 +32,13 @@ enum ReportType {
 	OTHER
 }
 
+enum ReportStatus {
+	PENDING
+	REVIEWED
+	RESOLVED
+	REJECTED
+}
+
 generator client {
 	provider = "prisma-client-js"
 }
@@ -276,9 +283,10 @@ model Report {
 	reportDescription	String?
 	moderatorMessage	String?
 	createdAt			DateTime  @default(now())
-	handled				Boolean   @default(false)
+	status				ReportStatus @default(PENDING)
 	handledById			Int?
 	handledBy			User? @relation("ModeratorRelation", fields: [handledById], references: [id])
+	handledAt			DateTime?
 
 	@@unique([reporterId, reportedPostId])
 	@@unique([reporterId, reportedUserId])

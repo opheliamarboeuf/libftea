@@ -10,10 +10,27 @@ export class ModerationController {
 		constructor(private readonly moderationService: ModerationService) {}
 	
 	@Roles(Role.ADMIN)
-	@Get('admin')
+	@Get('admin/logs')
 		async getAdminLogs(
 			@Req() req: Request & { user: { id: number,  role: Role } }
 		) {
 			return this.moderationService.getAdminLogs(req.user.id, req.user.role);
 		}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/users/pending')
+	async getAllPendingUserReports(
+		@Req() req: Request & { user: { role: Role } }
+	) {
+		return this.moderationService.getAllPendingUserReports(req.user.role)
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/pending')
+	async getAllPendingPostReports(
+		@Req() req: Request & { user: { role: Role } }
+	) {
+		return this.moderationService.getAllPendingPostReports(req.user.role)
+	}
+
 }

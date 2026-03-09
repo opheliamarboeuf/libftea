@@ -2,12 +2,82 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { Injectable, BadRequestException } from "@nestjs/common";
 import { hasPermission } from "src/auth/permissions";
 import { Role } from "@prisma/client";
+import { InternalServerErrorException, HttpException } from "@nestjs/common";
 
 @Injectable()
 export class ModerationService {
 	constructor(
 		private prisma: PrismaService,
 	) {}
+
+	async getAllPendingPostReports(userRole: Role){
+		try {
+			if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
+				throw new BadRequestException("You do not have the right to review posts reports");
+			}
+			const reportedPosts = await this.prisma.report.findMany({
+				where: {
+					reportedPostId: {not: null},
+					status: 'PENDING'
+				},
+				select: {
+					id: true,
+					reporter: {select: {username: true}},
+					reportedPost: {
+						select: {
+							id: true,
+							title: true, 
+							authorId: true,
+							author: {select: {username: true}}
+							}
+						},
+					reportCategory: true,
+					reportDescription: true,
+					createdAt: true,
+				}
+			})
+			return reportedPosts;
+		}
+		catch (error){
+			if (error instanceof HttpException)
+				throw error;
+			console.error("Error fetching pending post reports:", error);
+			throw new InternalServerErrorException("Could not fetch pending post0 reports");
+		}
+	}
+
+	async getAllPendingUserReports(userRole: Role){
+		try {
+				if (!hasPermission(userRole, "REVIEW_USER_REPORT")) {
+					throw new BadRequestException("You do not have the right to review users reports");
+				}
+				const reportedUsers = await this.prisma.report.findMany({
+					where: {
+						reportedUserId: {not: null},
+						status: 'PENDING'
+					},
+					select: {
+						id: true,
+						reporter: {select: {username: true}},
+						reportedUser: {
+							select: {
+								id: true,
+								username: true,
+							}},
+						reportCategory: true,
+						reportDescription: true,
+						createdAt: true,
+					}
+				})
+			return reportedUsers;
+		}
+		catch (error) {
+			if (error instanceof HttpException)
+				throw error;
+			console.error("Error fetching pending user reports:", error);
+			throw new InternalServerErrorException("Could not fetch pending user reports");
+		}
+	}
 
 	async getAdminLogs(userId: number, userRole: Role){
 
