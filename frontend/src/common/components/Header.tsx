@@ -5,6 +5,7 @@ import { SearchBar } from "./SearchBar";
 import { useFriendsSocket } from "../../friends/useFriendsSocket";
 import "./Header.css"
 import "../../App.css"
+import { friendsSocket } from "../../socket/socket";
 
 export const Header = () => {
 	const navigate = useNavigate();
@@ -24,6 +25,9 @@ export const Header = () => {
 		onUserUnblocked: () => { refreshUser(); },
 		onYouWereBlocked: () => { refreshUser(); },
 		onYouWereUnblocked: () => { refreshUser(); },
+		onUserOnline: () => { refreshUser(); },
+		onUserOffline: () => { refreshUser(); },
+		onOnlineStatus: () => { refreshUser(); },
 	});
 	
 	if (!user) return null;
@@ -31,6 +35,7 @@ export const Header = () => {
 	const handleLogout = () => {
 		setMenuHidden(true);
 		localStorage.removeItem("token");
+		friendsSocket.disconnect();
 		setUser(null);
 		navigate('/')
 	}

@@ -24,12 +24,24 @@ export class FriendsGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
 	constructor(private friendsService: FriendsService) {}
 
+	private onlineUsers = new Set<number>();
+	private socketUserMap = new Map<string, number>();
+
 	handleConnection(client: Socket) {
 		console.log(`Client connected: ${client.id}`);
 	}
 
 	handleDisconnect(client: Socket) {
 		console.log(`Client disconnected: ${client.id}`);
+		const userId = this.socketUserMap.get(client.id);
+		if (userId) {
+			this.socketUserMap.delete(client.id);
+			const stillCo = Array.from(this.socketUserMap.values()).includes(userId);
+			if (!stillCo) {
+				this.onlineUsers.delete(userId);
+				this.server.emit('user_offline', { userId });
+			}
+		}
 	}
 
 	@SubscribeMessage('joinRelations')
@@ -38,8 +50,21 @@ export class FriendsGateway implements OnGatewayConnection, OnGatewayDisconnect 
 		@MessageBody() data: { userId: number },
 	) {
 		client.join(`user_${data.userId}`);
+		this.socketUserMap.set(client.id, data.userId);
+		this.onlineUsers.add(data.userId);
+		this.server.emit('user_online', { userId: data.userId });
 		console.log(`User ${data.userId} joined room user_${data.userId}`);
 	}
+
+	@SubscribeMessage('get_online_status')
+	handleGetOnlineStatus(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() data: { userId: number },
+	) {
+		const isOnline = this.onlineUsers.has(data.userId);
+		client.emit('online_status', { userId: data.userId, isOnline });
+	}
+	
 	
 	@SubscribeMessage('send_friend_request')
 	async handleSendRequest(

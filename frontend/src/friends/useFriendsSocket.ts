@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { friendsSocket } from "../socket/socket";
 
 export const useFriendsSocket = (userId: number | undefined, onEvent: {
+	onUserOnline?: (data: { userId: number }) => void;
+	onUserOffline?: (data: { userId: number }) => void;
+	onOnlineStatus?: (data: { userId: number, isOnline: boolean }) => void;
 	onRequestSent?: (data: any) => void;
 	onRequestReceived?: (data: any) => void;
 	onRequestUnsent?: (data: any) => void;
@@ -31,6 +34,9 @@ export const useFriendsSocket = (userId: number | undefined, onEvent: {
 			friendsSocket.emit("joinRelations", { userId });
 		}
 		
+		if (onEvent.onUserOnline) friendsSocket.on("user_online", onEvent.onUserOnline);
+		if (onEvent.onUserOffline) friendsSocket.on("user_offline", onEvent.onUserOffline);
+		if (onEvent.onOnlineStatus) friendsSocket.on("online_status", onEvent.onOnlineStatus);
 		if (onEvent.onRequestSent) friendsSocket.on("friend_request_sent", onEvent.onRequestSent);
 		if (onEvent.onRequestReceived) friendsSocket.on("friend_request_received", onEvent.onRequestReceived);
 		if (onEvent.onRequestUnsent) friendsSocket.on("friend_request_unsent", onEvent.onRequestUnsent);
@@ -45,6 +51,9 @@ export const useFriendsSocket = (userId: number | undefined, onEvent: {
 		
 
 		return () => {
+			if (onEvent.onUserOnline) friendsSocket.off("user_online", onEvent.onUserOnline);
+			if (onEvent.onUserOffline) friendsSocket.off("user_offline", onEvent.onUserOffline);
+			if (onEvent.onOnlineStatus) friendsSocket.off("online_status", onEvent.onOnlineStatus);
 			if (onEvent.onRequestSent) friendsSocket.off("friend_request_sent", onEvent.onRequestSent);
 			if (onEvent.onRequestReceived) friendsSocket.off("friend_request_received", onEvent.onRequestReceived);
 			if (onEvent.onRequestUnsent) friendsSocket.off("friend_request_unsent", onEvent.onRequestUnsent);

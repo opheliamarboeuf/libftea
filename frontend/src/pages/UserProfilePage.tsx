@@ -41,6 +41,7 @@ const UserProfilePage = () => {
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 	const [blockedByUser, setBlockedByUser] = useState(false);
 	const [blockedPosts, setBlockedPosts] = useState(false);
+	const [isOnline, setIsOnline] = useState(false);
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
@@ -98,6 +99,7 @@ const UserProfilePage = () => {
 		}
 	}, [user, userData, navigate]);
 
+
 	const { emit } = useFriendsSocket(user?.id, {
 		onRequestSent: () => {
 			setLoading(false);
@@ -145,7 +147,22 @@ const UserProfilePage = () => {
 			refreshUser();
 			fetchProfile();
 		},
+		onUserOnline: (data) => {
+			if (data.userId === Number(id)) setIsOnline(true);
+		},
+		onUserOffline: (data) => {
+			if (data.userId === Number(id)) setIsOnline(false);
+		},
+		onOnlineStatus: (data) => {
+			if (data.userId === Number(id)) setIsOnline(data.isOnline);
+		},
 	});
+
+	useEffect(() => {
+		if (id) {
+			emit('get_online_status', { userId: Number(id) });
+		}
+	}, [id]);
 
 	const handleAddFriend = async () => {
 		if (!userData) return;
@@ -243,6 +260,10 @@ const UserProfilePage = () => {
 			<div className="main-content">
 				{/* PROFILE INFO COLUMN */}
 				<div className="profile-info">
+					<div className="online-status">
+						{isOnline ? <span>☀️</span> : <span className="moon">🌙</span>}
+						<span>{isOnline ? 'Online' : 'Offline'}</span>
+					</div>
 					<p className="display-name">
 						{userData.profile?.displayName ? userData.profile.displayName : '\u00A0'} {/*space to keep the height*/}
 					</p>
