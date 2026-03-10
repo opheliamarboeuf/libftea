@@ -1,15 +1,15 @@
 import { PostReportList } from "./PostReportList";
-import { Post } from "../../context/UserContext";
 import { useState, useEffect } from "react";
 import { moderationApi } from "../api";
+import { PostReportType } from "../types";
 
 export function ModDashboard (){
 	
-	const [posts, setPosts] = useState<Post[]>([]);
+	const [reports, setReports] = useState<PostReportType[]>([]);
 	
 		const loadPosts = async () => {
 			const data =  await moderationApi.fetchPendingPostReport();
-			setPosts(data);
+			setReports(data);
 		}
 	
 		useEffect(() => {
@@ -19,7 +19,7 @@ export function ModDashboard (){
 
 	return (
 		<div className="">
-			<PostReportList posts = {posts}/>
+			<PostReportList reports = {reports}/>
 		</div>
 	)
 }

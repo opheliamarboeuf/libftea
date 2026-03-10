@@ -3,7 +3,7 @@ import { Post } from "../../context/UserContext";
 import { postsApi } from "../api";
 import { ReportPostType, ReportPostCategoryType } from "../types";
 
-const MAX_DESCRIPTION_LENGTH = 350;
+const MAX_DESCRIPTION_LENGTH = 250;
 
 export function usePostReport(post: Post) {
 	const [isLoading, setIsLoading] = useState(false);

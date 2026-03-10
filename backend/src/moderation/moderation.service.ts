@@ -22,13 +22,15 @@ export class ModerationService {
 				},
 				select: {
 					id: true,
-					reporter: {select: {username: true}},
+					reporter: {select: {id: true, username: true}},
 					reportedPost: {
 						select: {
 							id: true,
-							title: true, 
-							authorId: true,
-							author: {select: {username: true}}
+							title: true,
+							imageUrl: true,
+							caption: true,
+							createdAt: true,
+							author: {select: {id: true, username: true}}
 							}
 						},
 					reportCategory: true,
@@ -42,7 +44,7 @@ export class ModerationService {
 			if (error instanceof HttpException)
 				throw error;
 			console.error("Error fetching pending post reports:", error);
-			throw new InternalServerErrorException("Could not fetch pending post0 reports");
+			throw new InternalServerErrorException("Could not fetch pending post reports");
 		}
 	}
 
@@ -86,7 +88,6 @@ export class ModerationService {
 			throw new BadRequestException("You do not have the right to see the administrator logs");
 		}
 		
-
 		const logs = await this.prisma.moderationLog.findMany({
 			select: {
 				id: true,

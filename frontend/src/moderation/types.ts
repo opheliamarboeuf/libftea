@@ -1,4 +1,4 @@
-export enum ModerationActionType {
+export enum ReportCategory {
 	DELETE_ANY_POST = "DELETE_ANY_POST",
 	CHANGE_ROLE = "CHANGE_ROLE",
 	BAN_USER = "BAN_USER",
@@ -8,7 +8,7 @@ export enum ModerationActionType {
 
 export interface ModerationLogType {
 	id: number;
-	action: ModerationActionType; 
+	action: ReportCategory; 
 	createdAt: Date;
 	actor: {
 		id: number;
@@ -26,4 +26,26 @@ export interface ModerationLogType {
 		id: number;
 		theme: string;
 	};
+}
+
+export interface PostReportType {
+	id: number;
+	reporter:{
+		id: number
+		username: string;
+	};
+	reportedPost: {
+		id: number;
+		title: string;
+		imageUrl: string,
+		caption?: string,
+		createdAt: string,
+		author: {
+			id: number;
+			username: string;
+		};
+	}
+	reportCategory: ReportCategory;
+	reportDescription: string;
+	createdAt: string;
 }

@@ -1,5 +1,5 @@
 
-import { Post } from "../context/UserContext";
+import { PostReportType } from "./types";
 
 const API_URL = "http://localhost:3000";
 
@@ -23,8 +23,8 @@ export const moderationApi = {
 		return data;
 	},
 
-	fetchPendingPostReport: async() => {
-		const res = await fetch(`${API_URL}/reports/posts/pending`, {
+	fetchPendingPostReport: async(): Promise<PostReportType[]> => {
+		const res = await fetch(`${API_URL}/moderation/reports/posts/pending`, {
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -41,8 +41,8 @@ export const moderationApi = {
 		return data;
 	},
 
-		fetchPendingUserReport: async() => {
-		const res = await fetch(`${API_URL}/reports/users/pending`, {
+	fetchPendingUserReport: async() => {
+		const res = await fetch(`${API_URL}/moderation/reports/users/pending`, {
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${localStorage.getItem("token")}`,

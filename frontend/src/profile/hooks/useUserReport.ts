@@ -2,7 +2,7 @@ import { useState } from "react";
 import { profileApi } from "../api";
 import { ReportUserType, ReportUserCategoryType } from "../types";
 
-const MAX_DESCRIPTION_LENGTH = 350;
+const MAX_DESCRIPTION_LENGTH = 250;
 
 export function useUserReport(targetId) {
 	const [isLoading, setIsLoading] = useState(false);

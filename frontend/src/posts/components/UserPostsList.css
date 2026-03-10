@@ -125,7 +125,7 @@
   object-fit: cover;
 }
 
-/* Caption + comments: 1/3 of the width */
+/* Comments: 1/3 of the width */
 .post-text {
   flex: 1;
   display: flex;

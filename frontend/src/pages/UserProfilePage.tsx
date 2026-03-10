@@ -94,7 +94,7 @@ const UserProfilePage = () => {
 
 	useEffect(() => {
 		if (user && userData && user.id === userData.id) {
-			navigate('/myprofile');
+			navigate('/myprofile', { replace: true });
 		}
 	}, [user, userData, navigate]);
 

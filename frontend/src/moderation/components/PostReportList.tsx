@@ -1,43 +1,78 @@
-import { Post } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { PostReportType } from "../types";
+import "./PostReportList.css";
 
 interface PostReportListProps {
-	posts: Post[];
-	// onPostReviewed?: () => void;
+	reports: PostReportType[];
+	// onreportReviewed?: () => void;
 }
 
-export function PostReportList( {posts}: PostReportListProps ) {
-	if (!Array.isArray(posts)) return null;
+export function PostReportList( {reports}: PostReportListProps ) {
+	if (!Array.isArray(reports)) return null;
 
+	const API_URL = "http://localhost:3000";
 	const navigate = useNavigate();
 	const goToProfile = (userId: number) => {
 		navigate(`/users/${userId}`);
 	};
 
 	return (
-	<div className="post-report-lists">
-		<div className="post-report-list">
-		{posts.map((post) => (
-			<div key={post.id} className="post-card">
-			<div className="post-header">
-				<h3 className="post-title">{post.title}</h3>
-				<div className="post-meta">
+	<div className="report-list">
+		{reports.map((report) => (
+			<div key={report.reportedPost.id} className="report-card">
+			<div className="report-header">
+				<h3 className="report-title">{report.reportedPost.title}</h3>
+				<div className="report-meta">
 				<span
-					className="post-author"
-					onClick={() => goToProfile(post.author.id)}
+					className="report-author"
+					onClick={() => goToProfile(report.reportedPost.author.id)}
 				>
-					{post.author.username},
+					{report.reportedPost.author.username},
 				</span>
-				<span className="post-date">
-					{post.updatedAt && post.updatedAt !== post.createdAt
-					? `edited ${new Date(post.updatedAt).toLocaleString()}`
-					: `created ${new Date(post.createdAt).toLocaleString()}`}
+				<span className="report-date">
+					{` created ${new Date(report.reportedPost.createdAt).toLocaleString()}`}
 				</span>
 				</div>
-			</div>
+				</div>
+				<div className="report-content">
+					<div className="report-image">
+						<img src={`${API_URL}${report.reportedPost.imageUrl}`}
+ 							alt="Post" />
+					</div>
+					<div className="report-action">
+							<div>
+								<strong>Reporter:</strong><br />{" "}
+								<span
+									className="reporter-name"
+									onClick={() => goToProfile(report.reporter.id)}
+									>
+									{report.reporter.username}
+								</span>
+							</div>
+							<div 
+								className="report-category" >
+								<strong>Report Category:</strong><br />
+								{report.reportCategory.replace(/_/g, " ")}
+							</div>
+							<div 
+								className="report-description" >
+								<strong>Report Description:</strong><br />
+								{report.reportDescription}
+							</div>
+							<div 
+								className="report-date" >
+								<strong>Report Creation:</strong><br />
+								{new Date(report.createdAt).toLocaleString()}
+						</div>
+					</div>
+				</div>
+				{report.reportedPost.caption && (
+				<div className="report-caption">
+					<p>{report.reportedPost.caption}</p>
+				</div>
+				)}
 			</div>
 		))}
 		</div>
-	</div>
 	);
 }

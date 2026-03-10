@@ -1,0 +1,148 @@
+/* Container for all posts */
+.report-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* Individual report card */
+.report-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  width: 750px;
+}
+
+/* Post header: title + author + date */
+.report-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.report-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.report-meta {
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.report-author {
+  font-size: 0.8rem;
+  color: #555;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-block;
+  transition: color 0.2s ease;
+}
+
+.report-author:hover {
+  color: #bebebe;
+}
+
+.report-date {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.report-header {
+  position: relative; 
+}
+/* Report content area: image + caption */
+.report-content {
+  display: flex;
+  gap: 15px;
+}
+
+/* Report image: 2/3 of the width */
+.report-image {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.report-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Action : 1/3 of the width */
+.report-action {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 100%;
+  overflow: hidden;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
+  padding: 15px;
+}
+
+.report-action > div {
+  font-size: 0.9rem;
+  color: #333;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.report-action > div:last-child {
+  border-bottom: none;
+}
+
+.reporter-username {
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.reporter-username:hover {
+  color: #888;
+}
+
+.report-category,
+.report-description {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Caption + comments: 1/3 of the width */
+.report-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+/* Caption */
+.report-caption p {
+  margin: 0;
+  font-size: 1rem;
+  color: #333;
+  font-size: 0.9rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
