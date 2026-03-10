@@ -1,16 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { PostReportType } from "../types";
 import "./PostReportList.css";
-
+import { moderationApi } from "../api";
+import { useUser } from "../../context/UserContext";
 interface PostReportListProps {
 	reports: PostReportType[];
-	// onreportReviewed?: () => void;
 }
 
 export function PostReportList( {reports}: PostReportListProps ) {
 	if (!Array.isArray(reports)) return null;
 
 	const API_URL = "http://localhost:3000";
+    const { user } = useUser();
+
+
 	const navigate = useNavigate();
 	const goToProfile = (userId: number) => {
 		navigate(`/users/${userId}`);
@@ -33,13 +36,26 @@ export function PostReportList( {reports}: PostReportListProps ) {
 					{` created ${new Date(report.reportedPost.createdAt).toLocaleString()}`}
 				</span>
 				</div>
+				<div className="report-btn">
+					{report.status === "PENDING" && (
+						<button onClick={() => moderationApi.assignPendingReport(report.id)}>
+							Assign Report
+						</button>
+					)}
+						{report.status === "ASSIGNED" && 
+						   (report.handledBy?.id === user.id || user.role === "ADMIN") && (
+						<button onClick={() => moderationApi.assignPendingReport(report.id)}>
+							Unassign Report
+						</button>
+					)}
+				</div>
 				</div>
 				<div className="report-content">
 					<div className="report-image">
 						<img src={`${API_URL}${report.reportedPost.imageUrl}`}
  							alt="Post" />
 					</div>
-					<div className="report-action">
+					<div className="report-info">
 							<div>
 								<strong>Reporter:</strong><br />{" "}
 								<span

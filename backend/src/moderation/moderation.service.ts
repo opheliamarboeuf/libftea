@@ -36,6 +36,8 @@ export class ModerationService {
 					reportCategory: true,
 					reportDescription: true,
 					createdAt: true,
+					status: true,
+					handledBy: {select: {id: true, username: true}},
 				}
 			})
 			return reportedPosts;

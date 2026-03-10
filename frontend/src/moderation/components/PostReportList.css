@@ -65,6 +65,30 @@
 .report-header {
   position: relative; 
 }
+
+.report-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.report-btn button {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: black
+}
+
+.report-btn button:hover {
+  background-color: #f5f5f5;
+  border-color: #bbb;
+}
+
+
 /* Report content area: image + caption */
 .report-content {
   display: flex;
@@ -87,7 +111,7 @@
 }
 
 /* Action : 1/3 of the width */
-.report-action {
+.report-info {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -100,14 +124,14 @@
   padding: 15px;
 }
 
-.report-action > div {
+.report-info > div {
   font-size: 0.9rem;
   color: #333;
   padding: 8px 0;
   border-bottom: 1px solid #eee;
 }
 
-.report-action > div:last-child {
+.report-info > div:last-child {
   border-bottom: none;
 }
 

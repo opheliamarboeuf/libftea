@@ -5,6 +5,12 @@ export enum ReportCategory {
 	CREATE_TOURNAMENT = "CREATE_TOURNAMENT",
 	REVIEW_REPORT = "REVIEW_REPORT",
 }
+export enum ReportStatus {
+	PENDING = "PENDING",
+	ASSIGNED = "ASSIGNED",
+	ACCEPTED = "ACCEPTED",
+	REJECTED = "REJECTED",
+}
 
 export interface ModerationLogType {
 	id: number;
@@ -26,6 +32,11 @@ export interface ModerationLogType {
 		id: number;
 		theme: string;
 	};
+	status: ReportStatus;
+	handledBy?: {
+		id: number;
+		username: string;
+	}; 
 }
 
 export interface PostReportType {
@@ -47,5 +58,40 @@ export interface PostReportType {
 	}
 	reportCategory: ReportCategory;
 	reportDescription: string;
+	handledBy?: {
+		id: number;
+		username: string;
+	};
+	status: ReportStatus;
 	createdAt: string;
+	handledAt?: string;
 }
+
+// export type ReportType = {
+// 	id: number;
+
+// 	reporter: {
+// 		id: number;
+// 		username: string;
+// 	};
+
+// 	reportedUser?: {
+// 		id: number;
+// 		username: string;
+// 	};
+// 	reportedPost?: {
+// 		id: number;
+// 		title: string;
+// 		caption?: string;
+// 		imageUrl: string;
+// 		createdAt: string;
+// 		author: {
+// 			id: number;
+// 			username: string;
+// 		};
+// 	};
+// 	reportCategory: string;
+// 	reportDescription?: string;
+// 	moderatorMessage?: string;
+// 	status: ReportStatus;
+// };
