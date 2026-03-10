@@ -117,6 +117,45 @@ export class ModerationService {
 		}
 	}
 
+		async unassignReport(reportId: number, userId: number, userRole: Role) {
+		try {
+			const report = await this.prisma.report.findUnique({where: {id: reportId}})
+			if (!report)
+				throw new BadRequestException("Failed to find the report");
+			if (report.reportedUserId) {
+				if (!hasPermission(userRole, "REVIEW_USER_REPORT")) {
+					throw new ForbiddenException("You do not have permission to unassign a user report");
+				}
+			}
+			if (report.reportedPostId) {
+				if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
+					throw new ForbiddenException("You do not have permission to unassign a post report");
+				}
+			}
+
+			if (!report.handledById){
+				throw new BadRequestException("Report is not assigned");
+			}
+			if (report.handledById !== userId && userRole !== Role.ADMIN){
+				throw new ForbiddenException("You cannot unassign this report");
+			}
+
+			const assignedReport = await this.prisma.report.update({
+				where: {id: reportId},
+				data: {
+					handledById: null,
+					status: ReportStatus.PENDING},
+			});
+			return assignedReport
+		}
+		catch (error) {
+			if (error instanceof HttpException)
+				throw error;
+			console.error("Error unassigning the report:", error);
+			throw new InternalServerErrorException("Could not unassgin the report");
+		}
+	}
+
 	async getAdminLogs(userId: number, userRole: Role){
 
 		// Check if the user is the post author or has the permission to delete the post

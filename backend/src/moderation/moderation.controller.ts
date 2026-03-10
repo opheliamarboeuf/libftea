@@ -34,11 +34,18 @@ export class ModerationController {
 	}
 
 	@Roles(Role.ADMIN, Role.MOD)
-	@Put('reports/assign/:id')
-	async assignPostReport(
+	@Put('reports/:id/assign')
+	async assignReport(
 		@Param('id', ParseIntPipe) id: number,
 		@Req() req: Request & { user: { id: number, role: Role } },
 	) {
 		return this.moderationService.assignReport(id, req.user.id, req.user.role)
+	}
+	@Put('reports/:id/unassign')
+	async unassignReport(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number, role: Role } },
+	) {
+		return this.moderationService.unassignReport(id, req.user.id, req.user.role)
 	}
 }
