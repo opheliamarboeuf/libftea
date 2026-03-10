@@ -1,11 +1,13 @@
 import { Injectable, BadRequestException, ForbiddenException, NotFoundException, Inject } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Friendship, User, Post, Comment } from '@prisma/client';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class CommentsService {
     constructor (
         private readonly prisma: PrismaService,
+		private readonly notificationsService: NotificationsService,
     ) {}
 
     async createComment(
@@ -21,7 +23,7 @@ export class CommentsService {
 			throw new NotFoundException('Post not found');
 		}
 
-        return this.prisma.comment.create({
+        const comment = await this.prisma.comment.create({
 				data: {
                     content,
 					userId,
@@ -31,7 +33,15 @@ export class CommentsService {
                     user: true,
                     replies: true,
                 }
-			});
+		});
+
+		//notification
+		const commenter = await this.prisma.user.findUnique({
+			where: { id: userId },
+		});
+		await this.notificationsService.notifyPostCommented(post.authorId, commenter.username);
+
+		return comment;
     }
 
     async deleteComment(

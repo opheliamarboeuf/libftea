@@ -1,11 +1,13 @@
 import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Friendship, User } from '@prisma/client';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class FriendsService {
 	constructor(
 		private readonly prisma: PrismaService,
+		private readonly notificationsService: NotificationsService,
 	) {}
 
 	async sendFriendRequest(
@@ -48,6 +50,12 @@ export class FriendsService {
 				addresseId,
 			},
 		});
+
+		//notification
+		const sender = await this.prisma.user.findUnique({
+			where: { id: requesterId },
+		});
+		await this.notificationsService.notifyFriendRequest(addresseId, sender.username);
 
 		return created;
 	}

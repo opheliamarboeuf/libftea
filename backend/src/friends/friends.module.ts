@@ -4,9 +4,10 @@ import { FriendsController } from './friends.controller';
 import { FriendsGateway } from './friends.gateway';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthModule } from 'src/auth/auth.module';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 
 @Module({
-	imports: [AuthModule],
+	imports: [AuthModule, NotificationsModule],
 	controllers: [FriendsController],
 	providers: [FriendsService, FriendsGateway, PrismaService],
 	exports: [FriendsService],

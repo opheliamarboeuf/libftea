@@ -6,12 +6,16 @@ import { useFriendsSocket } from "../../friends/useFriendsSocket";
 import "./Header.css"
 import "../../App.css"
 import { friendsSocket } from "../../socket/socket";
+import { notifSocket } from "../../socket/socket";
+import { useNotifications } from "../../notifications/useNotifications";
 
 export const Header = () => {
 	const navigate = useNavigate();
 	const { user, setUser, refreshUser } = useUser();
 	const API_URL = "http://localhost:3000";
 	const [menuHidden, setMenuHidden] = useState(false);
+	const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(user?.id);
+	const [notifOpen, setNotifOpen] = useState(false);
 
 	useFriendsSocket(user?.id, {
 		onRequestSent: () => { refreshUser(); },
@@ -36,6 +40,7 @@ export const Header = () => {
 		setMenuHidden(true);
 		localStorage.removeItem("token");
 		friendsSocket.disconnect();
+		notifSocket.disconnect();
 		setUser(null);
 		navigate('/')
 	}
@@ -55,6 +60,27 @@ export const Header = () => {
 			</div>
 			<div className="search-bar-container"><SearchBar /></div>
 			<div className="header-right">
+				<div className="notif-bell">
+					<span onClick={() => setNotifOpen(!notifOpen)}>
+						🔔
+						{unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
+					</span>
+					{notifOpen && (
+						<div className="notif-dropdown">
+							<button onClick={markAllAsRead}>Mark all as read</button>
+							{notifications.length === 0 && <p>No notifications</p>}
+							{notifications.map((n) => (
+								<div
+									key={n.id}
+									className={`notif-item ${n.isRead ? 'read' : 'unread'}`}
+									onClick={() => markAsRead(n.id)}
+								>
+									{n.message}
+								</div>
+							))}
+						</div>
+					)}
+				</div>
 				<div 
 					className={`avatar-menu ${menuHidden ? 'menu-hidden' : ''}`}
 					onMouseLeave={() => setMenuHidden(false)}
