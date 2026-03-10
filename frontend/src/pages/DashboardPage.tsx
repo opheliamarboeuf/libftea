@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import "./DashboardPage.css"
@@ -9,7 +9,14 @@ import { ModDashboard } from "../moderation/components/ModDashboard";
 const DashboardPage = () => {
 	
 	const { user } = useUser();
-	const [activeTab, setActiveTab] = useState<"ADMIN" | "MOD">("ADMIN")
+	const [activeTab, setActiveTab] = useState<"ADMIN" | "MOD">(() => {
+		const saved = localStorage.getItem("dashboardTab");
+		return saved === "MOD" ? "MOD" : "ADMIN";
+	});
+
+	useEffect(() => {
+		localStorage.setItem("dashboardTab", activeTab);
+	}, [activeTab]);
 
 	if (!user) return <Navigate to="/" replace />;
 	if (user.role === "MOD") {
