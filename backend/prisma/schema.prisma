@@ -34,8 +34,8 @@ enum ReportType {
 
 enum ReportStatus {
 	PENDING
-	REVIEWED
-	RESOLVED
+	ASSIGNED
+	ACCEPTED
 	REJECTED
 }
 

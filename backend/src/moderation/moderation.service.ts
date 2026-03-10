@@ -1,7 +1,7 @@
 import { PrismaService } from "src/prisma/prisma.service";
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { Injectable, BadRequestException, ForbiddenException } from "@nestjs/common";
 import { hasPermission } from "src/auth/permissions";
-import { Role } from "@prisma/client";
+import { ReportStatus, Role } from "@prisma/client";
 import { InternalServerErrorException, HttpException } from "@nestjs/common";
 
 @Injectable()
@@ -18,7 +18,7 @@ export class ModerationService {
 			const reportedPosts = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: {not: null},
-					status: 'PENDING'
+					status: ReportStatus.PENDING,
 				},
 				select: {
 					id: true,
@@ -56,7 +56,7 @@ export class ModerationService {
 				const reportedUsers = await this.prisma.report.findMany({
 					where: {
 						reportedUserId: {not: null},
-						status: 'PENDING'
+						status: ReportStatus.PENDING,
 					},
 					select: {
 						id: true,
@@ -78,6 +78,42 @@ export class ModerationService {
 				throw error;
 			console.error("Error fetching pending user reports:", error);
 			throw new InternalServerErrorException("Could not fetch pending user reports");
+		}
+	}
+
+	async assignReport(reportId: number, userId: number, userRole: Role) {
+		try {
+			const report = await this.prisma.report.findUnique({where: {id: reportId}})
+			if (!report)
+				throw new BadRequestException("Failed to find the report");
+			if (report.reportedUserId) {
+				if (!hasPermission(userRole, "REVIEW_USER_REPORT")) {
+					throw new ForbiddenException("You do not have permission to assign a user report");
+				}
+			}
+			if (report.reportedPostId) {
+				if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
+					throw new ForbiddenException("You do not have permission to assign a post report");
+				}
+			}
+
+			if (report.handledById){
+				throw new BadRequestException("Report already assigned");
+			}
+
+			const assignedReport = await this.prisma.report.update({
+				where: {id: reportId},
+				data: {
+					handledById: userId,
+					status: ReportStatus.ASSIGNED},
+			});
+			return assignedReport
+		}
+		catch (error) {
+			if (error instanceof HttpException)
+				throw error;
+			console.error("Error assigning the report:", error);
+			throw new InternalServerErrorException("Could not assgin the report");
 		}
 	}
 

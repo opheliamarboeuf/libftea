@@ -1,5 +1,5 @@
 import { ModerationService } from "./moderation.service";
-import { Controller, UseGuards, Get, Req } from "@nestjs/common";
+import { Controller, UseGuards, Get, Put, Req, Param, ParseIntPipe} from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { Role } from "@prisma/client";
 import { Roles } from "src/auth/roles.decorator";
@@ -33,4 +33,12 @@ export class ModerationController {
 		return this.moderationService.getAllPendingPostReports(req.user.role)
 	}
 
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('reports/assign/:id')
+	async assignPostReport(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number, role: Role } },
+	) {
+		return this.moderationService.assignReport(id, req.user.id, req.user.role)
+	}
 }
