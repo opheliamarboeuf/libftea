@@ -12,6 +12,7 @@ enum	FriendshipStatus{
 enum	NotificationType {
 	LIKE
 	COMMENT
+	COMMENT_REPLY
 	BATTLE_WIN
 	FRIEND_REQUEST
 	POST

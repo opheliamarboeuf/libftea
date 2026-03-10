@@ -91,7 +91,7 @@ export class CommentsService {
             throw new BadRequestException('Cannot reply to a reply');
         }
 
-        return this.prisma.comment.create({
+        const reply = await this.prisma.comment.create({
             data: {
                 content,
                 userId,
@@ -103,6 +103,17 @@ export class CommentsService {
                 replies: true,
             },
         });
+
+		//notification
+		const commenter = await this.prisma.user.findUnique({
+			where: { id: userId },
+		});
+		const recipient = await this.prisma.user.findUnique({
+			where: { id: parentComment.userId },
+		});
+		await this.notificationsService.notifyCommentReplied(recipient.id, commenter.username);
+
+		return reply;
     }
 
     async getComments(postId: number, currentUserId: number) {

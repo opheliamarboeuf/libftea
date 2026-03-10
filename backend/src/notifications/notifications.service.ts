@@ -35,7 +35,7 @@ export class NotificationsService {
 			},
 		});
 		
-		this.notificationsGateway.sendToUser(recipientId, notification,);
+		this.notificationsGateway.sendToUser(recipientId, notification);
 	}
 
 	async notifyPostCommented(recipientId: number, commenterUsername: string): Promise<void> {
@@ -45,6 +45,19 @@ export class NotificationsService {
 				userId: recipientId,
 				isRead: false,
 				message: `${commenterUsername} commented on your post`,
+			},
+		});
+		
+		this.notificationsGateway.sendToUser(recipientId, notification);
+	}
+
+	async notifyCommentReplied(recipientId: number, commenterUsername: string): Promise<void> {
+		const notification = await this.prisma.notification.create({
+			data: {
+				type: NotificationType.COMMENT_REPLY,
+				userId: recipientId,
+				isRead: false,
+				message: `${commenterUsername} replied to your comment`,
 			},
 		});
 		
