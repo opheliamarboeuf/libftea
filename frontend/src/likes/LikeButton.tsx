@@ -12,12 +12,10 @@ export function LikeButton({ postId }: Props) {
 	const { liked, count, loading, toggleLike } = useLike(postId);
     const [btnLoading, setBtnLoading] = useState(false);
 
-	console.log("COUNT =", count);
-
-	const handleClick = async () => {
+	const handleClick = () => {
 		setBtnLoading(true);
 		try {
-			await toggleLike();
+			toggleLike();
 		} catch (err) {
 			console.error(err);
 		} finally {

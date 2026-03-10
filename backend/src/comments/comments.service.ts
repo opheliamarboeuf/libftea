@@ -95,16 +95,69 @@ export class CommentsService {
         });
     }
 
-    async getComments(postId: number) {
+    async getComments(postId: number, currentUserId: number) {
         const comments = await this.prisma.comment.findMany({
-            where: { postId, parentId: null },
+            where: {
+                postId,
+                parentId: null,
+                NOT: {
+                    OR: [
+                        {
+                            User: {
+                                friendRequestSent: {
+                                    some: {
+                                        addresseId: currentUserId,
+                                        status: 'BLOCKED',
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            User: {
+                                friendRequestReceived: {
+                                    some: {
+                                        requesterId: currentUserId,
+                                        status: 'BLOCKED',
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                },
+            },
             include: {
                 User: true,
                 replies: {
+                    where: {
+                        NOT: {
+                            OR: [
+                                {
+                                    User: {
+                                        friendRequestSent: {
+                                            some: {
+                                                addresseId: currentUserId,
+                                                status: 'BLOCKED',
+                                            },
+                                        },
+                                    },
+                                },
+                                {
+                                    User: {
+                                        friendRequestReceived: {
+                                            some: {
+                                                requesterId: currentUserId,
+                                                status: 'BLOCKED',
+                                            },
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
                     include: { User: true },
                 },
             },
-            orderBy: { createdAt: 'asc' },
+            orderBy: { createdAt: "asc" },
         });
 
         return comments;

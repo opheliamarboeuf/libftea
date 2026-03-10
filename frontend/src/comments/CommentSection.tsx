@@ -20,7 +20,7 @@ export function CommentSection({ postId }: Props) {
 
     const handleCommentSubmit = async () => {
         if (!newComment.trim()) return;
-        await createComment(newComment.trim());
+        createComment(newComment.trim());
         setNewcomment("");
     };
 

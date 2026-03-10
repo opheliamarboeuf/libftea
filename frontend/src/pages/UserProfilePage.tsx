@@ -3,13 +3,13 @@ import "./MyProfilePage.css";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
-import { friendsApi } from "../friends/api";
 import { useModal } from "../context/ModalContext";
 import { Post } from "../context/UserContext";
 import { postsApi } from "../posts/api";
 import { UserPostsList } from "../posts/components/UserPostsList";
 import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
 import { BlockFriendButton } from "../friends/BlockFriendButton";
+import { useFriendsSocket } from "../friends/useFriendsSocket";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -40,6 +40,7 @@ const UserProfilePage = () => {
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 	const [blockedByUser, setBlockedByUser] = useState(false);
 	const [blockedPosts, setBlockedPosts] = useState(false);
+	const [isOnline, setIsOnline] = useState(false);
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
@@ -56,6 +57,8 @@ const UserProfilePage = () => {
 				setBlockedByUser(true);
 				return ;
 			}
+
+			setBlockedByUser(false);
 
 			if (!res.ok) {
 				throw new Error("Error fetching profile");
@@ -95,85 +98,96 @@ const UserProfilePage = () => {
 		}
 	}, [user, userData, navigate]);
 
+
+	const { emit } = useFriendsSocket(user?.id, {
+		onRequestSent: () => {
+			setLoading(false);
+			refreshUser();
+			fetchProfile();
+		},
+		onRequestUnsent: () => {
+			setLoading(false);
+			refreshUser();
+			fetchProfile();
+		},
+		onRequestReceived: () => {
+			refreshUser();
+			fetchProfile();
+		},
+		onRequestAccepted: () => {
+			setLoading(false);
+			refreshUser();
+			fetchProfile();
+		},
+		onRequestRejected: () => {
+			setLoading(false);
+			refreshUser();
+			fetchProfile();
+		},
+		onFriendRemoved: () => {
+			setLoading(false);
+			refreshUser();
+			fetchProfile();
+			showModal("Friend removed");
+		},
+		onUserRemoved: () => {
+			refreshUser();
+			fetchProfile();
+		},
+		onYouWereBlocked: () => {
+			refreshUser();
+			fetchProfile();
+		},
+		onYouWereUnblocked: () => {
+			refreshUser();
+			fetchProfile();
+		},
+		onUserOnline: (data) => {
+			if (data.userId === Number(id)) setIsOnline(true);
+		},
+		onUserOffline: (data) => {
+			if (data.userId === Number(id)) setIsOnline(false);
+		},
+		onOnlineStatus: (data) => {
+			if (data.userId === Number(id)) setIsOnline(data.isOnline);
+		},
+	});
+
+	useEffect(() => {
+		if (id) {
+			emit('get_online_status', { userId: Number(id) });
+		}
+	}, [id]);
+
 	const handleAddFriend = async () => {
 		if (!userData) return;
 		setLoading(true);
-		try {
-			await friendsApi.sendFriendRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal("Friend request sent");
-		} catch (error) {
-			console.error('Error:', error);
-			showModal("Error sending the request");
-		} finally {
-			setLoading(false);
-		}
+		emit("send_friend_request", { requesterId: user?.id, addresseId: Number(id) });
 	};
 
 	const handleCancelRequest = async () => {
 		if (!userData) return;
 		setLoading(true);
-		try {
-			await friendsApi.cancelRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal("Friend request canceled");
-		} catch (error) {
-			console.error('Error:', error);
-			showModal("Error canceling the request"); 
-		} finally {
-			setLoading(false);
-		}
+		emit("unsend_friend_request", { requesterId: user?.id, addresseId: Number(id) });
 	};
 
 	const handleAccept = async () => {
 		if (!userData) return;
 		setLoading(true);
-		try {
-			await friendsApi.acceptFriendRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal("Friend request accepted");
-		} catch (error) {
-			console.error('Error:', error);
-			showModal("Error accepting the requuest");
-		} finally {
-			setLoading(false);
-		}
+		emit("accept_friend_request", { requesterId: Number(id), addresseId: user?.id });
 	};
 
 	const handleReject = async () => {
 		if (!userData) return;
 		setLoading(true);
-		try {
-			await friendsApi.rejectFriendRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal("Friend request rejected");
-		} catch (error) {
-			console.error('Error:', error);
-			showModal("Error rejeting the request");
-		} finally {
-			setLoading(false);
-		}
+		emit("reject_friend_request", { requesterId: Number(id), addresseId: user?.id });
 	};
 
 	const handleRemoveFriend = async () => {
 		if (!userData) return;
 		setLoading(true);
-		try {
-			await friendsApi.removeFriend(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal("Friend removed");
-		} catch (error) {
-			console.error('Error:', error);
-			showModal("Error removing friend")
-		} finally {
-			setLoading(false);
-			setShowDeleteConfirm(false);
-		}
+		emit("remove_friend", { userId: user?.id, friendId: userData.id });
+		setShowDeleteConfirm(false);
 	};
 
 	const renderFriendshipButton = () => {
@@ -241,6 +255,10 @@ const UserProfilePage = () => {
 			<div className="main-content">
 				{/* PROFILE INFO COLUMN */}
 				<div className="profile-info">
+					<div className="online-status">
+						{isOnline ? <span>☀️</span> : <span className="moon">🌙</span>}
+						<span>{isOnline ? 'Online' : 'Offline'}</span>
+					</div>
 					<p className="display-name">
 						{userData.profile?.displayName ? userData.profile.displayName : '\u00A0'} {/*space to keep the height*/}
 					</p>
