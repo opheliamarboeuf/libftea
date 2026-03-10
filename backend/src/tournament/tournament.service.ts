@@ -43,7 +43,8 @@ export class TournamentService {
 	}
 	async getCurrentTournament() {
 		// donne moi le premier battle qui correspond a mes conditions
-		const battle = await this.prisma.battle.findFirst({
+		const	now = new Date();
+		const	battle = await this.prisma.battle.findFirst({
 			// on cherche un tournoi dont la date de fin est dans le futur
 			// nous permet de ne pas recuperer un ancien tournoi
 			// gte: greater then or equal, lte: later or equal
@@ -58,16 +59,16 @@ export class TournamentService {
 		});
 		if (!battle)
 				return null;
-		if (battle.status === "UPCOMING" && new Date() >= (await battle).startsAt)
+		if (battle.status === "UPCOMING" && now >= battle.startsAt)
 		{
 			await this.prisma.battle.update({
 				where: { id: battle.id },
 				data: {status: "ACTIVE"},
 			});
 		}
-		if (new Date() > battle.endsAt && !(await battle).winnerId)
+		if (now > battle.endsAt && !battle.winnerId)
 		{
-			await this.computeTournamentWinner((await battle).id);
+			await this.computeTournamentWinner(battle.id);
 		}
 		return battle;
 	}
@@ -167,11 +168,14 @@ export class TournamentService {
 			where: {
 				battleParticipants: { some: { battleId } },
 			},
-			orderBy: {
-				Like: {
-					_count: "desc"
+			orderBy: [
+				{
+					Like: { _count: "desc" },
 				},
-			},
+				{
+					createdAt: "asc"
+				}
+			],
 			include: {
 				author: true,
 				_count: {
@@ -189,5 +193,45 @@ export class TournamentService {
 			}
 		});
 		return forTheWin;
+	}
+	async getLastTournamentWinner()
+	{
+		return this.prisma.battle.findFirst({
+			where: { status: "FINISHED" },
+			orderBy: { endsAt: "desc" },
+			include: {
+				winner: true,
+				battleParticipants: {
+					include: {
+						post: true,
+						user: true,
+					}
+				}
+			},
+		})
+	}
+	async getLastTournamentWinnerPost() {
+		const battle = await this.prisma.battle.findFirst({
+			where: { status: "FINISHED "},
+			orderBy: { endsAt: "desc"},
+		});
+		if (!battle)
+			return null;
+		const lastWinnerPost = await this.prisma.post.findFirst({
+			where:
+			{
+				authorId: battle.winnerId,
+				battleParticipants: 
+				{
+					some: { battleId: battle.id },
+				},
+			},
+			include: 
+			{
+				author: true,
+				Like: true,
+			},
+		});
+		return lastWinnerPost;
 	}
 }

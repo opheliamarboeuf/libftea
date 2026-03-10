@@ -73,4 +73,9 @@ export class TournamentController {
 		await this.tournamentService.computeTournamentWinner(Number(battleId));
 		return this.tournamentService.getBattlePosts(Number(battleId));
 	}
+	@Get('last-winner')
+	getLastTournamentWinner()
+	{
+		return this.tournamentService.getLastTournamentWinnerPost();
+	}
 }

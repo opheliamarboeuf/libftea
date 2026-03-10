@@ -20,7 +20,7 @@ model Battle {
 	status                        BattleStatus        @default(UPCOMING)
 	winnerId                      Int?
 	User_Battle_createdByIdToUser User?               @relation("Battle_createdByIdToUser", fields: [createdById], references: [id])
-	User_Battle_winnerIdToUser    User?               @relation("Battle_winnerIdToUser", fields: [winnerId], references: [id])
+	winner						    User?               @relation("Battle_winnerIdToUser", fields: [winnerId], references: [id])
 	BattleParticipant             BattleParticipant[]
 	ModerationLog                 ModerationLog[]
 }
