@@ -67,7 +67,7 @@ export const Header = () => {
 					</span>
 					{notifOpen && (
 						<div className="notif-dropdown">
-							<button onClick={markAllAsRead}>Mark all as read</button>
+							<button onClick={markAllAsRead}>Clear notifications</button>
 							{notifications.length === 0 && <p>No notifications</p>}
 							{notifications.map((n) => (
 								<div
