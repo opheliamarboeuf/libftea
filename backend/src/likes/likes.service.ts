@@ -52,7 +52,10 @@ export class LikesService {
 			const liker = await this.prisma.user.findUnique({
 				where: { id: userId },
 			});
-			await this.notificationsService.notifyPostLiked(post.authorId, liker.username);
+			
+			if (userId !== post.authorId) {
+				await this.notificationsService.notifyPostLiked(post.authorId, liker.username);
+			}
 
 			const count = await this.prisma.like.count({ where: { postId }});
 			return { liked: true, count };

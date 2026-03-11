@@ -93,6 +93,12 @@ export class FriendsService {
 				status: 'ACCEPTED',
 			},
 		});
+
+		//notification
+		const friend = await this.prisma.user.findUnique({
+			where: { id: addresseId },
+		});
+		await this.notificationsService.notifyFriendRequestAccepted(requesterId, friend.username);
 		
 		return updatedFriendship;
 	}

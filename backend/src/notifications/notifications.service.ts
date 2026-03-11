@@ -77,6 +77,19 @@ export class NotificationsService {
 		this.notificationsGateway.sendToUser(recipientId, notification);
 	}
 
+	async notifyFriendRequestAccepted(recipientId: number, newFriendUsername: string): Promise<void> {
+		const notification = await this.prisma.notification.create({
+			data: {
+				type: NotificationType.FRIEND_REQUEST_ACCEPTED,
+				userId: recipientId,
+				isRead: false,
+				message: `${newFriendUsername} accepted your friend request`,
+			}
+		});
+
+		this.notificationsGateway.sendToUser(recipientId, notification);
+	}
+
 	async getMyNotifications(userId: number): Promise<Notification[]> {
 		const notifications = await this.prisma.notification.findMany({
 			where: { userId, isRead: false },

@@ -8,6 +8,7 @@ import "../../App.css"
 import { friendsSocket } from "../../socket/socket";
 import { notifSocket } from "../../socket/socket";
 import { useNotifications } from "../../notifications/useNotifications";
+import { FaBell } from "react-icons/fa";
 
 export const Header = () => {
 	const navigate = useNavigate();
@@ -62,7 +63,7 @@ export const Header = () => {
 			<div className="header-right">
 				<div className="notif-bell">
 					<span onClick={() => setNotifOpen(!notifOpen)}>
-						🔔
+						<FaBell />
 						{unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
 					</span>
 					{notifOpen && (

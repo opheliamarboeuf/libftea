@@ -39,7 +39,9 @@ export class CommentsService {
 		const commenter = await this.prisma.user.findUnique({
 			where: { id: userId },
 		});
-		await this.notificationsService.notifyPostCommented(post.authorId, commenter.username);
+        if (userId !== post.authorId) {
+            await this.notificationsService.notifyPostCommented(post.authorId, commenter.username);
+        }
 
 		return comment;
     }
@@ -111,7 +113,15 @@ export class CommentsService {
 		const recipient = await this.prisma.user.findUnique({
 			where: { id: parentComment.userId },
 		});
-		await this.notificationsService.notifyCommentReplied(recipient.id, commenter.username);
+        const post = await this.prisma.post.findUnique({
+            where: { id: parentComment.postId },
+        });
+        if (userId !== parentComment.userId) {
+            await this.notificationsService.notifyCommentReplied(recipient.id, commenter.username);
+        }
+        if (userId !== post.authorId) {
+            await this.notificationsService.notifyPostCommented(post.authorId, commenter.username);
+        }
 
 		return reply;
     }
