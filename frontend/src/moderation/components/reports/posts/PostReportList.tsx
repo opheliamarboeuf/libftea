@@ -5,6 +5,7 @@ import "./PostReportList.css";
 import { moderationApi } from "../../../api";
 import { useUser } from "../../../../context/UserContext";
 import { ConfirmDialog } from "../../../../common/components/ConfirmDialog";
+import { HandleReportModal } from "../handleReportModal";
 
 interface PostReportListProps {
 	reports: PostReportType[];
@@ -26,6 +27,7 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
     const { user } = useUser();
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [reportToUnassign, setReportToUnassign] = useState<number | null>(null);
+	const [reportToHandle, setReportToHandle] = useState<number | null>(null);
 
 	const navigate = useNavigate();
 	const goToProfile = (userId: number) => {
@@ -79,8 +81,8 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 					)}
 					{report.status === "ASSIGNED" && report.handledBy?.id === user.id && (
 						<button
-						onClick={() => { navigate(`/dashboard/moderation/reports/posts/${report.id}/handle`);
-					}} >
+						onClick={() => setReportToHandle(report.id)}
+						>
 						Handle Report
 						</button>)}
 				</div>
@@ -140,6 +142,16 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 				confirmLabel="Yes"
 				cancelLabel="No"
 			/>
+		)}
+		{reportToHandle !== null && (
+			<HandleReportModal
+			reportId={reportToHandle}
+			onPostReported={() => {
+				setReportToHandle(null);
+				if (onUpdate) onUpdate();
+			}}
+			onClose={() => setReportToHandle(null)}
+		/>
 		)}
 		</div>
 	);
