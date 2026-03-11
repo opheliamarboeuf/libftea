@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PostReportType } from "../../../types";
 import "./PostReportList.css";
 import { moderationApi } from "../../../api";
 import { useUser } from "../../../../context/UserContext";
+import { ConfirmDialog } from "../../../../common/components/ConfirmDialog";
+
 interface PostReportListProps {
 	reports: PostReportType[];
 	onUpdate?: () => void;
@@ -21,7 +24,8 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 
 	const API_URL = "http://localhost:3000";
     const { user } = useUser();
-
+	const [showConfirm, setShowConfirm] = useState(false);
+	const [reportToUnassign, setReportToUnassign] = useState<number | null>(null);
 
 	const navigate = useNavigate();
 	const goToProfile = (userId: number) => {
@@ -66,9 +70,9 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 							)}
 						{report.status === "ASSIGNED" && 
 							(report.handledBy?.id === user.id || user.role === "ADMIN") && (
-						<button onClick={async () => {
-							await moderationApi.unassignPendingReport(report.id);
-							if (onUpdate) onUpdate();
+						<button onClick={() => {
+							setReportToUnassign(report.id);
+							setShowConfirm(true);
 						}}>
 							Unassign Report
 						</button>
@@ -120,6 +124,23 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 				)}
 			</div>
 		))}
+		{showConfirm && reportToUnassign !== null && (
+			<ConfirmDialog
+				message="Are you sure you want to unassign this report?"
+				onConfirm={async () => {
+					await moderationApi.unassignPendingReport(reportToUnassign);
+					setShowConfirm(false);
+					setReportToUnassign(null);
+					if (onUpdate) onUpdate();
+				}}
+				onCancel={() => {
+					setShowConfirm(false);
+					setReportToUnassign(null);
+				}}
+				confirmLabel="Yes"
+				cancelLabel="No"
+			/>
+		)}
 		</div>
 	);
 }
