@@ -109,5 +109,5 @@ export const tournamentApi = {
 			throw new Error(message);
 		}
 		return data;
-	}
+	},
 };

@@ -148,7 +148,10 @@ export class PostsService {
 		}
 
 		const userPosts = await this.prisma.post.findMany({
-			where: { authorId: id },
+			where: {
+				authorId: id,
+				battleParticipants: { none : {} },
+			},
 			select: {
 				id: true,
 				authorId: true,

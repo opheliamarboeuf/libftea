@@ -234,4 +234,19 @@ export class TournamentService {
 		});
 		return lastWinnerPost;
 	}
+	async getUserTournamentPosts(userId: number)
+	{
+		return this.prisma.post.findMany({
+			where: {
+				authorId: userId,
+				battleParticipants: { some: {} },
+			},
+			include: 
+			{
+				author: true,
+				Like: true,
+			},
+			orderBy: { createdAt: "desc" },
+		});
+	}
 }

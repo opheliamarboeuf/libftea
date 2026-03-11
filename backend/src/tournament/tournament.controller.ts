@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Req, UseInterceptors, UploadedFile, BadRequestException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Req, UseInterceptors, UploadedFile, BadRequestException, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -67,15 +67,20 @@ export class TournamentController {
 	{
 		return this.tournamentService.getParticipants(Number(battleId));
 	}
+	@Get('last-winner-post')
+	getLastTournamentWinner()
+	{
+		return this.tournamentService.getLastTournamentWinnerPost();
+	}
+	@Get('user/:userId/posts')
+	getUserTournamentPosts(@Param('userId', ParseIntPipe) userId: number)
+	{
+		return this.tournamentService.getUserTournamentPosts(userId);
+	}
 	@Get(':battleId/posts')
 	async getBattlePosts(@Param('battleId') battleId: string)
 	{
 		await this.tournamentService.computeTournamentWinner(Number(battleId));
 		return this.tournamentService.getBattlePosts(Number(battleId));
-	}
-	@Get('last-winner-post')
-	getLastTournamentWinner()
-	{
-		return this.tournamentService.getLastTournamentWinnerPost();
 	}
 }
