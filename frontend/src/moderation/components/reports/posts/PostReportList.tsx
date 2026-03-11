@@ -13,7 +13,7 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 		return (
 			<div className="report-list">
 				<div className="report-card">
-				<p className="no-reports">No assigned reports</p>
+				<p className="no-reports">No reports available</p>
 				</div>
 			</div>
 		);
@@ -46,6 +46,14 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 				</span>
 				</div>
 				<div className="report-btn">
+					{report.status === "ASSIGNED" && report.handledBy && (
+						<span className="assigned-to">
+							Assigned to{" "}
+							<span onClick={() => goToProfile(report.handledBy.id)}>
+								{report.handledBy.username}
+							</span>
+						</span>
+					)}
 					{report.status === "PENDING" && (
 						<button
 						onClick={async () => {
@@ -57,7 +65,7 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 								</button>
 							)}
 						{report.status === "ASSIGNED" && 
-						   (report.handledBy?.id === user.id || user.role === "ADMIN") && (
+							(report.handledBy?.id === user.id || user.role === "ADMIN") && (
 						<button onClick={async () => {
 							await moderationApi.unassignPendingReport(report.id);
 							if (onUpdate) onUpdate();
@@ -65,6 +73,12 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 							Unassign Report
 						</button>
 					)}
+					{report.status === "ASSIGNED" && report.handledBy?.id === user.id && (
+						<button
+						onClick={() => { navigate(`/dashboard/moderation/reports/posts/${report.id}/handle`);
+					}} >
+						Handle Report
+						</button>)}
 				</div>
 				</div>
 				<div className="report-content">
@@ -72,7 +86,7 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 						<img src={`${API_URL}${report.reportedPost.imageUrl}`}
  							alt="Post" />
 					</div>
-					<div className="report-info">
+						<div className="report-info">
 							<div>
 								<strong>Reporter:</strong><br />{" "}
 								<span

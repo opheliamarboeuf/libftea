@@ -70,6 +70,35 @@
   position: absolute;
   top: 0;
   right: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-btn .assigned-to {
+  font-size: 0.85rem;
+  color: #555;
+  cursor: default;
+}
+
+.report-btn .assigned-to span {
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+}
+
+.report-btn .assigned-to span:hover {
+  color: #888;
+}
+
+.reporter-name {
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+}
+
+.reporter-name:hover {
+  color: #888;
 }
 
 .report-btn button {
