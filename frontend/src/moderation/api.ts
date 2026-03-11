@@ -23,7 +23,7 @@ export const moderationApi = {
 		return data;
 	},
 
-	fetchPendingPostReport: async(): Promise<PostReportType[]> => {
+	fetchPendingPostReports: async(): Promise<PostReportType[]> => {
 		const res = await fetch(`${API_URL}/moderation/reports/posts/pending`, {
 			headers: {
 				"Content-Type": "application/json",
@@ -36,6 +36,24 @@ export const moderationApi = {
 			const message = Array.isArray(data.message)
 				? data.message[0]
 				: data.message || "Fetch pending post reports failed";
+			throw new Error(message);
+		}
+		return data;
+	},
+
+		fetchMyPostReports: async(): Promise<PostReportType[]> => {
+		const res = await fetch(`${API_URL}/moderation/reports/posts/mine`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
+		
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || "Fetch assigned to user post reports failed";
 			throw new Error(message);
 		}
 		return data;

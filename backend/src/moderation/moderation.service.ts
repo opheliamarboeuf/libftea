@@ -50,10 +50,52 @@ export class ModerationService {
 		}
 	}
 
+
+	async getMyPostReports(userId: number, userRole: Role){
+		try {
+			if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
+				throw new ForbiddenException("You do not have the right to review posts reports");
+			}
+			const reportedPosts = await this.prisma.report.findMany({
+				where: {
+					reportedPostId: {not: null},
+					status: ReportStatus.ASSIGNED,
+					handledById: userId,
+				},
+				select: {
+					id: true,
+					reporter: {select: {id: true, username: true}},
+					reportedPost: {
+						select: {
+							id: true,
+							title: true,
+							imageUrl: true,
+							caption: true,
+							createdAt: true,
+							author: {select: {id: true, username: true}}
+							}
+						},
+					reportCategory: true,
+					reportDescription: true,
+					createdAt: true,
+					status: true,
+					handledBy: {select: {id: true, username: true}},
+				}
+			})
+			return reportedPosts;
+		}
+		catch (error){
+			if (error instanceof HttpException)
+				throw error;
+			console.error("Error fetching user's assigned post reports:", error);
+			throw new InternalServerErrorException("Could not fetch user's assigned post reports");
+		}
+	}
+
 	async getAllPendingUserReports(userRole: Role){
 		try {
 				if (!hasPermission(userRole, "REVIEW_USER_REPORT")) {
-					throw new BadRequestException("You do not have the right to review users reports");
+					throw new ForbiddenException("You do not have the right to review users reports");
 				}
 				const reportedUsers = await this.prisma.report.findMany({
 					where: {

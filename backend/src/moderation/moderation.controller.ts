@@ -34,6 +34,14 @@ export class ModerationController {
 	}
 
 	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/mine')
+	async getMyPostReports(
+		@Req() req: Request & { user: { id: number, role: Role } }
+	) {
+		return this.moderationService.getMyPostReports(req.user.id, req.user.role)
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
 	@Put('reports/:id/assign')
 	async assignReport(
 		@Param('id', ParseIntPipe) id: number,
