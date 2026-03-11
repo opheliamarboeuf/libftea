@@ -7,14 +7,14 @@ export function PendingReports() {
 
 	const [reports, setReports] = useState<PostReportType[]>([]);
 
-	useEffect(() => {
-		const load = async () => {
-			const data = await moderationApi.fetchPendingPostReports();
-			setReports(data);
-		};
+	const load = async () => {
+		const data = await moderationApi.fetchPendingPostReports();
+		setReports(data);
+	};
 
+	useEffect(() => {
 		load();
 	}, []);
 
-	return <PostReportList reports={reports} />;
+	return <PostReportList reports={reports} onUpdate={load} />;
 }

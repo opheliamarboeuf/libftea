@@ -170,3 +170,15 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
+
+/* No reports message */
+.no-reports {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  color: #666;
+  font-size: 1rem;
+}

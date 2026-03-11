@@ -5,10 +5,19 @@ import { moderationApi } from "../../../api";
 import { useUser } from "../../../../context/UserContext";
 interface PostReportListProps {
 	reports: PostReportType[];
+	onUpdate?: () => void;
 }
 
-export function PostReportList( {reports}: PostReportListProps ) {
-	if (!Array.isArray(reports)) return null;
+export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
+	if (!Array.isArray(reports) || reports.length === 0) {
+		return (
+			<div className="report-list">
+				<div className="report-card">
+				<p className="no-reports">No assigned reports</p>
+				</div>
+			</div>
+		);
+	}
 
 	const API_URL = "http://localhost:3000";
     const { user } = useUser();
@@ -38,13 +47,21 @@ export function PostReportList( {reports}: PostReportListProps ) {
 				</div>
 				<div className="report-btn">
 					{report.status === "PENDING" && (
-						<button onClick={() => moderationApi.assignPendingReport(report.id)}>
-							Assign Report
-						</button>
-					)}
+						<button
+						onClick={async () => {
+							await moderationApi.assignPendingReport(report.id);
+							if (onUpdate) onUpdate(); // refresh after assigning
+							}}
+							>
+								Assign Report
+								</button>
+							)}
 						{report.status === "ASSIGNED" && 
 						   (report.handledBy?.id === user.id || user.role === "ADMIN") && (
-						<button onClick={() => moderationApi.assignPendingReport(report.id)}>
+						<button onClick={async () => {
+							await moderationApi.unassignPendingReport(report.id);
+							if (onUpdate) onUpdate();
+						}}>
 							Unassign Report
 						</button>
 					)}
