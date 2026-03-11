@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { PostReportType } from "../types";
+import { PostReportType } from "../../../types";
 import "./PostReportList.css";
-import { moderationApi } from "../api";
-import { useUser } from "../../context/UserContext";
+import { moderationApi } from "../../../api";
+import { useUser } from "../../../../context/UserContext";
 interface PostReportListProps {
 	reports: PostReportType[];
 }
