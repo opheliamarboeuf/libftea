@@ -1,5 +1,5 @@
 .tournament-page {
-	position: fixed;
+	position: relative;
 	top: 50px;
 	left: 60px;
 	display: flex;
@@ -93,4 +93,20 @@
 	font-size: 1.8rem;
 	font-weight: 500;
 	color: #555;
+}
+
+.last-winner {
+	width: 100%;
+	max-width: 900px;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 16px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.winner-image {
+    max-width: 300px;
+    border-radius: 10px;
+    margin-top: 10px;
 }

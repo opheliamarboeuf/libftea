@@ -16,7 +16,7 @@ interface UserPostsListProps {
 
 export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 	if (!Array.isArray(posts)) return null;
-    
+	
 	const navigate = useNavigate();
 	const { user } = useUser();
 	
@@ -43,7 +43,9 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 	<div className="posts-list">
 	{posts.map((post) => (
 		<div key={post.id} className="post-card">
-		
+		{(post as any).isWinner && (
+			<h3 className="winner-badge">Last week's winner 💅🏼</h3>
+		)}
 		<div className="post-header">
 			<h3 className="post-title">{post.title}</h3>
 			<div className="post-meta">

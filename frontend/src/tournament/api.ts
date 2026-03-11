@@ -94,4 +94,20 @@ export const tournamentApi = {
 		}
 		return data;
 	},
+
+	getLastWinnerPost:async (): Promise<any> => {
+		const res = await fetch(`${API_URL}/tournament/last-winner-post`, {
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || "Fetch last winner post failed";
+			throw new Error(message);
+		}
+		return data;
+	}
 };

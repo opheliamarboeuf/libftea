@@ -201,7 +201,7 @@ export class TournamentService {
 			orderBy: { endsAt: "desc" },
 			include: {
 				winner: true,
-				battleParticipants: {
+				BattleParticipant: {
 					include: {
 						post: true,
 						user: true,
@@ -212,7 +212,7 @@ export class TournamentService {
 	}
 	async getLastTournamentWinnerPost() {
 		const battle = await this.prisma.battle.findFirst({
-			where: { status: "FINISHED "},
+			where: { status: "FINISHED"},
 			orderBy: { endsAt: "desc"},
 		});
 		if (!battle)

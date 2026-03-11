@@ -17,6 +17,7 @@ const TournamentFeedPage = () => {
 	const [showPostModal, setShowPostModal] = useState<boolean>(false);
 	const [showCreateTournamentModal, setShowCreateTournamentModal] = useState(false);
 	const [battleError, setBattleError] = useState<string | null>(null);
+	const [winnerPost, setWinnerPost] = useState<any | null>(null);
 
 	const refresh = () => {
 		if (!battle) return;
@@ -58,6 +59,19 @@ const TournamentFeedPage = () => {
 	if (!battle) return;
 	refresh();
   }, [battle]);
+
+  useEffect(() => {
+	tournamentApi.getLastWinnerPost()
+		.then((setWinnerPost))
+		.catch((err) =>
+		{
+			console.error("failed to fetchlast winner", err);
+		});
+  }, []);
+
+  	const feedPosts = winnerPost
+    ? [{ ...winnerPost, isWinner: true }, ...posts.filter(p => p.id !== winnerPost.id)]
+    : posts;
 
 	if (!user) return <Navigate to="/" replace />;
 
@@ -104,8 +118,8 @@ const TournamentFeedPage = () => {
 				</div>
 			{battle && (
 				<>
+					<UserPostsList posts={feedPosts} onPostDeleted={refresh} />
 					{battleError && <p style={{ color: "red" }}>{battleError}</p>}
-					<UserPostsList posts={posts} onPostDeleted={refresh} />
 					{
 						showPostModal && (
 						<JoinTournamentModal
