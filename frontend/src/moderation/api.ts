@@ -59,6 +59,24 @@ export const moderationApi = {
 		return data;
 	},
 
+		fetchAllAssignedPostReports: async(): Promise<PostReportType[]> => {
+		const res = await fetch(`${API_URL}/moderation/reports/posts/all/assigned`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
+		
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || "Fetch all assigned post reports failed";
+			throw new Error(message);
+		}
+		return data;
+	},
+
 	fetchPendingUserReport: async() => {
 		const res = await fetch(`${API_URL}/moderation/reports/users/pending`, {
 			headers: {

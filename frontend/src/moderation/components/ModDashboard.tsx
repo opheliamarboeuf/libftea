@@ -19,7 +19,7 @@ export function ModDashboard() {
 						<ul>
 							<li><NavLink to="/dashboard/moderation/reports/posts/pending">Pending reports</NavLink></li>
 							<li><NavLink to="/dashboard/moderation/reports/posts/mine">Assigned to me</NavLink></li>
-							<li>Assigned to others</li>
+							<li><NavLink to="/dashboard/moderation/reports/posts/all/assigned">All assigned reports</NavLink></li>
 							<li>Resolved</li>
 						</ul>
 					</div>
