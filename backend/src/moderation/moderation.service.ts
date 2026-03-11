@@ -11,6 +11,52 @@ export class ModerationService {
 		private prisma: PrismaService,
 	) {}
 
+	async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role){
+		try {
+			const report = await this.prisma.report.findUnique({where: {id: reportId}})
+			if (!report)
+				throw new BadRequestException("Failed to find the report");
+
+			if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
+				throw new ForbiddenException("You do not have the right to review reports");
+			}
+
+			if (report.handledById !== userId){
+				throw new ForbiddenException("You do not have the right to accept this report");
+			}
+			if (report.status !== ReportStatus.ASSIGNED) {
+				throw new BadRequestException("Report must be assigned before being handled");
+			}
+			
+			await this.prisma.$transaction(async (prisma) => {
+			// Update report status
+				await prisma.report.update({
+					where: { id: reportId },
+					data: {
+						handledById: userId,
+						moderatorMessage: dto.moderatorMessage,
+						status: ReportStatus.ACCEPTED,
+						handledAt: new Date(),
+					},
+				});
+			// Soft delete the post if it exists
+			if (report.reportedPostId) {
+				await prisma.post.update({
+					where: { id: report.reportedPostId },
+					data: { deletedAt: new Date() },
+				});
+			}
+		});
+		return (true);
+		}
+		catch (error){
+			if (error instanceof HttpException)
+				throw error;
+			console.error("Error accepting report:", error);
+			throw new InternalServerErrorException("Could not accept report");
+		}
+	}
+
 	async rejectReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role){
 		try {
 			const report = await this.prisma.report.findUnique({where: {id: reportId}})

@@ -84,7 +84,7 @@ export class PostsService {
 	}
 
 	async deletePost(userId: number, userRole: Role, postId: number) {
-		const post = await this.prisma.post.findUnique({ where: { id: postId } });
+		const post = await this.prisma.post.findUnique({ where: { id: postId, deletedAt: null } });
 		if (!post)
 			throw new NotFoundException("Post not found");
 
@@ -108,13 +108,12 @@ export class PostsService {
 					});
 				}
 
-				// Delete the post after logging
-				await prisma.post.delete({ where: { id: postId } });
+				// Soft delete the post
+				await prisma.post.update({
+					where: { id: postId },
+					data: { deletedAt: new Date() },
+				});
 			});
-				// Delete the image
-			if (post.imageUrl) {
-				await this.deletePostImage(post.imageUrl);
-			}
 			return true;
 		} catch (error) {
 			console.log("Error deleting post:", error);
@@ -141,7 +140,7 @@ export class PostsService {
 
 	async getPostById(id: number){
 		const post = await this.prisma.post.findUnique({
-			where: { id },
+			where: { id, deletedAt: null },
 		})
 		return post;
 	}
@@ -179,6 +178,7 @@ export class PostsService {
 		const userPosts = await this.prisma.post.findMany({
 			where: { 
 				authorId: id,
+				deletedAt: null,
 				...(currentUserId !== undefined && {
 					hiddenForUsers: {
 						none: { userId: currentUserId }
@@ -237,7 +237,8 @@ export class PostsService {
 		return this.prisma.post.findMany({
 			where: { 
 				authorId: { in: friendIds },
-			hiddenForUsers: {
+				deletedAt: null,
+				hiddenForUsers: {
 					none: { userId: userId }
 				}
 			},
@@ -248,7 +249,7 @@ export class PostsService {
 	async reportPost(postId: number, dto: ReportPostDto, currentUserId: number) {
 		try {
 			const reportedPost = await this.prisma.post.findUnique({
-				where: { id: postId },
+				where: { id: postId, deletedAt: null },
 				select: { authorId: true },
 			});
 			if (!reportedPost)

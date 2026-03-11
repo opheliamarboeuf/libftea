@@ -69,15 +69,15 @@ export class ModerationController {
 			return this.moderationService.unassignReport(id, req.user.id, req.user.role)
 		}
 
-	// @Roles(Role.ADMIN, Role.MOD)
-	// @Put('reports/:id/accept')
-	// async acceptPostReport(
-	// 	@Param('id', ParseIntPipe) id: number,
-	// 	@Body() dto: HandleReportDto,
-	// 	@Req() req: Request & { user: { id: number, role: Role } },
-	// 	) {
-	// 		return this.moderationService.acceptReport(id, req.user.id, req.user.role)
-	// 	}
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('reports/:id/accept')
+	async acceptPostReport(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() dto: HandleReportDto,
+		@Req() req: Request & { user: { id: number, role: Role } },
+		) {
+			return this.moderationService.acceptReport(id, dto, req.user.id, req.user.role)
+		}
 
 	@Roles(Role.ADMIN, Role.MOD)
 	@Put('reports/:id/reject')

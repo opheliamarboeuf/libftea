@@ -13,7 +13,7 @@ export class LikesService {
 		userId: number,
 	) {
 		const post = await this.prisma.post.findUnique({
-			where: { id: postId },
+			where: { id: postId, deletedAt: null },
 		});
 
 		if (!post) {
