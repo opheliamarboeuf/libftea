@@ -104,7 +104,7 @@ export function HandleReportModal ({ reportId, onPostReported, onClose }: Handle
 								onClick={handleReject}
 								disabled={isLoading}
 							>
-								Reject Report
+								Reject
 							</button>
 
 							<button
@@ -113,7 +113,7 @@ export function HandleReportModal ({ reportId, onPostReported, onClose }: Handle
 								onClick={handleAccept}
 								disabled={isLoading}
 								>
-								Accept Report
+								Accept
 							</button>
 						</div>
 				</div>

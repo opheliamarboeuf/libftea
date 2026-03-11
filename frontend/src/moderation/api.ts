@@ -43,6 +43,26 @@ export const moderationApi = {
 		return data;
 	},
 
+		acceptReport: async(reportId: number, payload: ReportHandlePayload): Promise<PostReportType> => {
+		const res = await fetch(`${API_URL}/moderation/reports/${reportId}/accept`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+			body: JSON.stringify(payload),
+		});
+		
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || "Accept report failed";
+			throw new Error(message);
+		}
+		return data;
+	},
+
 	fetchPendingPostReports: async(): Promise<PostReportType[]> => {
 		const res = await fetch(`${API_URL}/moderation/reports/posts/pending`, {
 			headers: {

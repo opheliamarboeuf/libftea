@@ -44,7 +44,36 @@ export function useHandleReport(reportId: number) {
 	}
 
 	const acceptReport = async () => {
-		return (null);
+		setIsLoading(true);
+
+		if (mod_message.length > MAX_MOD_MESSAGE_LENGTH) {
+			setErrorMessage(`Moderator message cannot exceed ${MAX_MOD_MESSAGE_LENGTH} characters`);
+			setIsLoading(false);
+			return false;
+		}
+
+		try {
+			const payload: ReportHandlePayload = {
+				moderatorMessage: mod_message,
+			};
+			
+			const handledReport = await moderationApi.acceptReport(reportId, payload)
+			setMod_message("");
+			setErrorMessage(null);
+			
+			return handledReport;
+		}
+		catch (error) {
+			if (error instanceof Error) {
+				setErrorMessage(error.message);
+			}
+			else {
+				setErrorMessage("Server unreachable");
+			}
+		}
+		finally { 
+			setIsLoading(false);
+		}
 	}
 
 	const resetFields = () => {
