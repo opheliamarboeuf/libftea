@@ -67,31 +67,6 @@ export interface PostReportType {
 	handledAt?: string;
 }
 
-// export type ReportType = {
-// 	id: number;
-
-// 	reporter: {
-// 		id: number;
-// 		username: string;
-// 	};
-
-// 	reportedUser?: {
-// 		id: number;
-// 		username: string;
-// 	};
-// 	reportedPost?: {
-// 		id: number;
-// 		title: string;
-// 		caption?: string;
-// 		imageUrl: string;
-// 		createdAt: string;
-// 		author: {
-// 			id: number;
-// 			username: string;
-// 		};
-// 	};
-// 	reportCategory: string;
-// 	reportDescription?: string;
-// 	moderatorMessage?: string;
-// 	status: ReportStatus;
-// };
+export interface ReportHandlePayload {
+	moderatorMessage?: string;
+}

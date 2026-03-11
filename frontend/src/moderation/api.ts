@@ -1,5 +1,5 @@
-
 import { PostReportType } from "./types";
+import { ReportHandlePayload } from "./types";
 
 const API_URL = "http://localhost:3000";
 
@@ -18,6 +18,26 @@ export const moderationApi = {
 			const message = Array.isArray(data.message)
 				? data.message[0]
 				: data.message || "Fetch amdin logs failed";
+			throw new Error(message);
+		}
+		return data;
+	},
+
+	rejectReport: async(reportId: number, payload: ReportHandlePayload): Promise<PostReportType> => {
+		const res = await fetch(`${API_URL}/moderation/reports/${reportId}/reject`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+			body: JSON.stringify(payload),
+		});
+		
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || "Reject report failed";
 			throw new Error(message);
 		}
 		return data;

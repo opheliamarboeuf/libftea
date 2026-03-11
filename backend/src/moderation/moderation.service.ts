@@ -3,12 +3,50 @@ import { Injectable, BadRequestException, ForbiddenException } from "@nestjs/com
 import { hasPermission } from "src/auth/permissions";
 import { ReportStatus, Role } from "@prisma/client";
 import { InternalServerErrorException, HttpException } from "@nestjs/common";
+import { HandleReportDto } from './dto/handleReport.dto';
 
 @Injectable()
 export class ModerationService {
 	constructor(
 		private prisma: PrismaService,
 	) {}
+
+	async rejectReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role){
+		try {
+			const report = await this.prisma.report.findUnique({where: {id: reportId}})
+			if (!report)
+				throw new BadRequestException("Failed to find the report");
+
+			if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
+				throw new ForbiddenException("You do not have the right to review reports");
+			}
+
+			if (report.handledById !== userId){
+				throw new ForbiddenException("You do not have the right to reject this report");
+			}
+			if (report.status !== ReportStatus.ASSIGNED) {
+				throw new BadRequestException("Report must be assigned before being handled");
+			}
+
+			const rejectReport = await this.prisma.report.update({
+				where: {id: reportId},
+				data: {
+					handledById: userId,
+					moderatorMessage : dto.moderatorMessage,
+					status: ReportStatus.REJECTED,
+					handledAt: new Date(),
+				}
+			});
+			return rejectReport
+
+		}
+		catch (error){
+			if (error instanceof HttpException)
+				throw error;
+			console.error("Error rejecting report:", error);
+			throw new InternalServerErrorException("Could not rejecting report");
+		}
+	}
 
 	async getAllPendingPostReports(userRole: Role){
 		try {
@@ -243,7 +281,7 @@ export class ModerationService {
 
 		// Check if the user is the post author or has the permission to delete the post
 		if (!hasPermission(userRole, "VIEW_ADMIN_LOGS")) {
-			throw new BadRequestException("You do not have the right to see the administrator logs");
+			throw new ForbiddenException("You do not have the right to see the administrator logs");
 		}
 		
 		const logs = await this.prisma.moderationLog.findMany({
