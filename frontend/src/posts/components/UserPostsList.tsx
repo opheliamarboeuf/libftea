@@ -47,6 +47,11 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 			<h3 className="winner-badge">Last week's winner 💅🏼</h3>
 		)}
 		<div className="post-header">
+			{(post as any).battleParticipants?.[0]?.Battle?.theme && (
+				<p className="post-tournament-theme">
+					🏆 {(post as any).battleParticipants[0].Battle.theme}
+				</p>
+			)}
 			<h3 className="post-title">{post.title}</h3>
 			<div className="post-meta">
 			<span

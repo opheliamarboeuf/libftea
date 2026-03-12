@@ -209,3 +209,11 @@
   color: #555;
   margin-right: 15px;
 }
+
+.post-tournament-theme {
+    font-size: 1,6rem;
+    color: #555;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    font-style: italic;
+}

@@ -147,6 +147,9 @@ export class TournamentService {
 			include: {
 				author: true,
 				Like: true,
+				battleParticipants: {
+					include: { Battle: true },
+				},
 			},
 			orderBy: {
 				createdAt: "desc",
@@ -245,6 +248,9 @@ export class TournamentService {
 			{
 				author: true,
 				Like: true,
+				battleParticipants: {
+					include: { Battle: true },
+				}
 			},
 			orderBy: { createdAt: "desc" },
 		});
