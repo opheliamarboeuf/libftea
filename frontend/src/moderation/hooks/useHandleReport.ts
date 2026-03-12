@@ -2,7 +2,7 @@ import { useState } from "react";
 import { moderationApi } from "../api";
 import { ReportHandlePayload } from "../types";
 
-const MAX_MOD_MESSAGE_LENGTH = 200;
+const MAX_MOD_MESSAGE_LENGTH = 150;
 
 export function useHandleReport(reportId: number) {
 

@@ -12,6 +12,6 @@ export class ReportDto {
 
 	@IsString()
 	@IsOptional()
-	@MaxLength(250, {message: "The description must be 250 characters or less"})
+	@MaxLength(150, {message: "The description must be 150 characters or less"})
 	description?: string
 }

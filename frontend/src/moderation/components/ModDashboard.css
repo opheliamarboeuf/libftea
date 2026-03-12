@@ -2,6 +2,7 @@
   display: flex;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 .mod-sidebar {
@@ -10,18 +11,15 @@
   flex-shrink: 0;
   background: rgb(242, 242, 242);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
-  color: white;
   padding: 20px;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  position: sticky;
-  margin-top: 40px;
-  align-self: flex-start;
-  height: fit-content;
-  max-height: 100%;
   overflow-y: auto;
   color: black;
+  align-self: flex-start;
+  height: fit-content;
+  margin-top: 40px;
 }
 
 .mod-title {

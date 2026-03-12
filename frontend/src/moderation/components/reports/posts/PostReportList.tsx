@@ -13,16 +13,6 @@ interface PostReportListProps {
 }
 
 export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
-	if (!Array.isArray(reports) || reports.length === 0) {
-		return (
-			<div className="report-list">
-				<div className="report-card">
-				<p className="no-reports">No reports available</p>
-				</div>
-			</div>
-		);
-	}
-
 	const API_URL = "http://localhost:3000";
     const { user } = useUser();
 	const [showConfirm, setShowConfirm] = useState(false);
@@ -34,11 +24,22 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 		navigate(`/users/${userId}`);
 	};
 
+	if (!Array.isArray(reports) || reports.length === 0) {
+		return (
+			<div className="report-list">
+				<div className="report-card">
+				<p className="no-reports">No reports available</p>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 	<div className="report-list">
 		{reports.map((report) => (
 			<div key={report.reportedPost.id} className="report-card">
 			<div className="report-header">
+				<div className="report-header-content">
 				<h3 className="report-title">{report.reportedPost.title}</h3>
 				<div className="report-meta">
 				<span
@@ -50,6 +51,7 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 				<span className="report-date">
 					{` created ${new Date(report.reportedPost.createdAt).toLocaleString()}`}
 				</span>
+				</div>
 				</div>
 				<div className="report-btn">
 					{report.status === "ASSIGNED" && report.handledBy && (
@@ -119,20 +121,33 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 								</div>
 							</div>
 						{(report.status === "ACCEPTED" || report.status === "REJECTED") && (
-						<div className="report-post-handled">
+						<div className="report-post-handle">
 						<div className="report-status">
 							<strong>Report Status:</strong><br />
 									<span className={report.status.toLowerCase()}>
 										{report.status}
 									</span>
 							</div>
+							<div className="reporter-info">
+								<strong>Handled by:</strong><br />{" "}
+								<span
+									className="mod-name"
+									onClick={() => goToProfile(report.handledBy.id)}
+									>
+									{report.handledBy.username}
+								</span>
+							</div>
 							<div className="report-mod_message">
 							<strong>Moderation Message:</strong><br />
 								{report.moderatorMessage}
 							</div>
+							<div className="report-date">
+							<strong>Report handle date:</strong><br />
+								{new Date(report.handledAt).toLocaleString()}
+							</div>
 						</div>
 					)}
-						</div>
+					</div>
 				</div>
 				{report.reportedPost.caption && (
 				<div className="report-caption">
