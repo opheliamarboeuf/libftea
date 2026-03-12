@@ -12,21 +12,14 @@ export class ModerationService {
 		private prisma: PrismaService,
 	) {}
 
-	private buildReportCountByPostId<T extends { reportedPost: { id: number } }>(reportedPosts: T[]): Record<number, number> {
-		return reportedPosts.reduce((acc, report) => {
-			const postId = report.reportedPost.id;
-			acc[postId] = (acc[postId] ?? 0) + 1;
+	private buildCountByKey<T, K extends number | string>(items: T[], getKey: (item: T) => K): Record<K, number> {
+		return items.reduce((acc, item) => {
+			// Extract the key for this item
+			const key = getKey(item);
+			// Increment the count for this key, or initialize to 1 if it doesn't exist yet
+			acc[key] = (acc[key] ?? 0) + 1;
 			return acc;
-		}, {} as Record<number, number>);
-	}
-
-	private withReportCountByPost<T extends { reportedPost: { id: number } }>(reportedPosts: T[]): Array<T & { reportCount: number }> {
-		const reportCountByPostId = this.buildReportCountByPostId(reportedPosts);
-
-		return reportedPosts.map((report) => ({
-			...report,
-			reportCount: reportCountByPostId[report.reportedPost.id] ?? 0,
-		}));
+		}, {} as Record<K, number>); // Start with an empty object to store the counts
 	}
 
 	async reportPost(postId: number, dto: ReportDto, currentUserId: number) {
@@ -232,16 +225,33 @@ export class ModerationService {
 							caption: true,
 							createdAt: true,
 							author: {select: {id: true, username: true}}
-							}
-						},
+						}
+					},
 					reportCategory: true,
 					reportDescription: true,
 					createdAt: true,
 					status: true,
 					handledBy: {select: {id: true, username: true}},
 				}
-			})
-			return this.withReportCountByPost(reportedPosts);
+			});
+
+			// Filter to keep only the first report for each unique post
+			const seenPostIds = new Set<number>(); // Create a Set to track post IDs we've already seen. A Set only stores unique values
+			// Initialize an array to store only one report per post
+			const uniqueReports = [];
+			// Loop through each report in the list of reported posts.
+			for (const report of reportedPosts) {
+				const postId = report.reportedPost.id;
+				if (!seenPostIds.has(postId)) { // Check if we have NOT already encountered this post ID
+					uniqueReports.push(report); //  If it's the first time, add this report to the uniqueReports array.
+					seenPostIds.add(postId); // Add the post ID to the Set so we don't include another report for this post later.
+				}
+			}
+			const reportCountByPostId = this.buildCountByKey(reportedPosts, (report) => report.reportedPost.id);
+			return uniqueReports.map(report => ({
+				...report,
+				reportCount: reportCountByPostId[report.reportedPost.id] ?? 0,
+			}));
 		}
 		catch (error){
 			if (error instanceof HttpException)
@@ -282,7 +292,12 @@ export class ModerationService {
 					handledBy: {select: {id: true, username: true}},
 				}
 			})
-			return this.withReportCountByPost(reportedPosts);
+			const reportCountByPostId = this.buildCountByKey(reportedPosts, (report) => report.reportedPost.id);
+
+			return reportedPosts.map(report => ({
+				...report,
+				reportCount: reportCountByPostId[report.reportedPost.id] ?? 0,
+			}));
 		}
 		catch (error){
 			if (error instanceof HttpException)
@@ -322,7 +337,12 @@ export class ModerationService {
 					handledBy: {select: {id: true, username: true}},
 				}
 			})
-			return this.withReportCountByPost(reportedPosts);
+			const reportCountByPostId = this.buildCountByKey(reportedPosts, (report) => report.reportedPost.id);
+
+			return reportedPosts.map(report => ({
+				...report,
+				reportCount: reportCountByPostId[report.reportedPost.id] ?? 0,
+			}));
 		}
 		catch (error){
 			if (error instanceof HttpException)
@@ -365,7 +385,12 @@ export class ModerationService {
 				},
 				orderBy: { handledAt: "desc" }
 			})
-			return this.withReportCountByPost(reportedPosts);
+			const reportCountByPostId = this.buildCountByKey(reportedPosts, (report) => report.reportedPost.id);
+
+			return reportedPosts.map(report => ({
+				...report,
+				reportCount: reportCountByPostId[report.reportedPost.id] ?? 0,
+			}));
 		}
 		catch (error){
 			if (error instanceof HttpException)
