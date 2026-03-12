@@ -43,16 +43,22 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 	<div className="posts-list">
 	{posts.map((post) => (
 		<div key={post.id} className="post-card">
-		{(post as any).isWinner && (
-			<h3 className="winner-badge">Last week's winner 💅🏼</h3>
-		)}
 		<div className="post-header">
-			{(post as any).battleParticipants?.[0]?.Battle?.theme && (
-				<p className="post-tournament-theme">
+			<div className="post-title-row">
+				<h3 className="post-title">{post.title}</h3>
+				<div className="post-header-right">
+				{(post as any).battleParticipants?.[0]?.Battle?.theme && (
+					<p className="post-tournament-theme">
 					🏆 {(post as any).battleParticipants[0].Battle.theme}
-				</p>
-			)}
-			<h3 className="post-title">{post.title}</h3>
+					</p>
+				)}
+				{(post as any).isWinner && (
+					<div className="winner-container">
+					<h3 className="winner-badge">Last week's winner 💅🏼</h3>
+					</div>
+				)}
+				</div>
+			</div>
 			<div className="post-meta">
 			<span
 				className="post-author"
