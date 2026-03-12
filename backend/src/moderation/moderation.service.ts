@@ -112,9 +112,10 @@ export class ModerationService {
 			}
 			
 			await this.prisma.$transaction(async (prisma) => {
-			// Update report status
-				await prisma.report.update({
-					where: { id: reportId },
+			// Update all reports for the same post
+			if (report.reportedPostId) {
+				await prisma.report.updateMany({
+					where: { reportedPostId: report.reportedPostId },
 					data: {
 						handledById: userId,
 						moderatorMessage: dto.moderatorMessage,
@@ -123,10 +124,20 @@ export class ModerationService {
 					},
 				});
 			// Soft delete the post if it exists
-			if (report.reportedPostId) {
 				await prisma.post.update({
 					where: { id: report.reportedPostId },
 					data: { deletedAt: new Date() },
+				});
+			} else {
+			// Fallback: if report is associated with a user, update the all the reports for the same user
+				await prisma.report.update({
+					where: { id: reportId },
+					data: {
+						handledById: userId,
+						moderatorMessage: dto.moderatorMessage,
+						status: ReportStatus.ACCEPTED,
+						handledAt: new Date(),
+					},
 				});
 			}
 		});
@@ -157,16 +168,37 @@ export class ModerationService {
 				throw new BadRequestException("Report must be assigned before being handled");
 			}
 
-			const rejectReport = await this.prisma.report.update({
-				where: {id: reportId},
-				data: {
-					handledById: userId,
-					moderatorMessage : dto.moderatorMessage,
-					status: ReportStatus.REJECTED,
-					handledAt: new Date(),
-				}
-			});
-			return rejectReport
+			await this.prisma.$transaction(async (prisma) => {
+			// Update all reports for the same post
+			if (report.reportedPostId) {
+				await prisma.report.updateMany({
+					where: { reportedPostId: report.reportedPostId },
+					data: {
+						handledById: userId,
+						moderatorMessage: dto.moderatorMessage,
+						status: ReportStatus.REJECTED,
+						handledAt: new Date(),
+					},
+				});
+			// Soft delete the post if it exists
+				await prisma.post.update({
+					where: { id: report.reportedPostId },
+					data: { deletedAt: new Date() },
+				});
+			} else {
+			// Fallback: if report is associated with a user, update the all the reports for the same user
+				await prisma.report.update({
+					where: { id: reportId },
+					data: {
+						handledById: userId,
+						moderatorMessage: dto.moderatorMessage,
+						status: ReportStatus.REJECTED,
+						handledAt: new Date(),
+					},
+				});
+			}
+		});
+		return (true);
 
 		}
 		catch (error){

@@ -21,13 +21,29 @@ export class ModerationController {
 			return this.moderationService.reportPost(id, dto, req.user.id);
 		}
 	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/all/assigned')
+	async getAllAssignedPostReports(
+		@Req() req: Request & { user: { role: Role } }
+	) {
+		return this.moderationService.getAllAssignedPostReports(req.user.role)
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/all/handled')
+	async getAllHandledPostReports(
+		@Req() req: Request & { user: { role: Role } }
+	) {
+		return this.moderationService.getAllHandledPostReports(req.user.role)
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
 	@Get('reports/posts/all/:id')
 	async getAllReportsForThisPost(
 		@Param('id', ParseIntPipe) id: number,
 		@Req() req: Request & { user: { role: Role } }
-		) {
-			return this.moderationService.getAllReportsForThisPost(id, req.user.role);
-		}
+	) {
+		return this.moderationService.getAllReportsForThisPost(id, req.user.role);
+	}
 
 	@Roles(Role.ADMIN)
 	@Get('admin/logs')
@@ -49,9 +65,9 @@ export class ModerationController {
 	@Get('reports/posts/pending')
 	async getAllPendingPostReports(
 		@Req() req: Request & { user: { role: Role } }
-		) {
-			return this.moderationService.getAllPendingPostReports(req.user.role)
-		}
+	) {
+		return this.moderationService.getAllPendingPostReports(req.user.role)
+	}
 
 	@Roles(Role.ADMIN, Role.MOD)
 	@Get('reports/posts/mine')
@@ -59,22 +75,6 @@ export class ModerationController {
 		@Req() req: Request & { user: { id: number, role: Role } }
 		) {
 			return this.moderationService.getMyPostReports(req.user.id, req.user.role)
-		}
-
-	@Roles(Role.ADMIN, Role.MOD)
-	@Get('reports/posts/all/assigned')
-	async getAllAssignedPostReports(
-		@Req() req: Request & { user: { role: Role } }
-		) {
-			return this.moderationService.getAllAssignedPostReports(req.user.role)
-		}
-
-	@Roles(Role.ADMIN, Role.MOD)
-	@Get('reports/posts/all/handled')
-	async getAllHandledPostReports(
-		@Req() req: Request & { user: { role: Role } }
-		) {
-			return this.moderationService.getAllHandledPostReports(req.user.role)
 		}
 
 	@Roles(Role.ADMIN, Role.MOD)
