@@ -51,7 +51,6 @@ export interface CreateReportType {
 	description?: string;
 }
 
-
 export interface PostReportType {
 	id: number;
 	reporter:{
@@ -79,6 +78,15 @@ export interface PostReportType {
 	createdAt: string;
 	moderatorMessage?: string;
 	handledAt?: string;
+	reportCount?: number;
+}
+
+export interface SimpleReportType {
+  id: number;
+  reporter: { id: number; username: string };
+  reportCategory: ReportCategory;
+  reportDescription: string;
+  createdAt: string;
 }
 
 export interface ReportHandlePayload {

@@ -37,7 +37,7 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 	return (
 	<div className="report-list">
 		{reports.map((report) => (
-			<div key={report.reportedPost.id} className="report-card">
+			<div key={report.id} className="report-card">
 			<div className="report-header">
 				<div className="report-header-content">
 				<h3 className="report-title">{report.reportedPost.title}</h3>
@@ -119,6 +119,14 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 									<strong>Report Creation:</strong><br />
 								{new Date(report.createdAt).toLocaleString()}
 								</div>
+								{report.reportCount && report.reportCount > 1 && (
+									<div className="report-more" >
+									{/* <button onClick={setShowAllReports(report.reportedPost.id)}>
+										View all the reports ({report.reportCount})
+									</button> */}
+									<p>TEST</p>
+									</div>
+								)}
 							</div>
 						{(report.status === "ACCEPTED" || report.status === "REJECTED") && (
 						<div className="report-post-handle">

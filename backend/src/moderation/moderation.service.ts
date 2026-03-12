@@ -12,6 +12,23 @@ export class ModerationService {
 		private prisma: PrismaService,
 	) {}
 
+	private buildReportCountByPostId<T extends { reportedPost: { id: number } }>(reportedPosts: T[]): Record<number, number> {
+		return reportedPosts.reduce((acc, report) => {
+			const postId = report.reportedPost.id;
+			acc[postId] = (acc[postId] ?? 0) + 1;
+			return acc;
+		}, {} as Record<number, number>);
+	}
+
+	private withReportCountByPost<T extends { reportedPost: { id: number } }>(reportedPosts: T[]): Array<T & { reportCount: number }> {
+		const reportCountByPostId = this.buildReportCountByPostId(reportedPosts);
+
+		return reportedPosts.map((report) => ({
+			...report,
+			reportCount: reportCountByPostId[report.reportedPost.id] ?? 0,
+		}));
+	}
+
 	async reportPost(postId: number, dto: ReportDto, currentUserId: number) {
 		try {
 			const reportedPost = await this.prisma.post.findUnique({
@@ -167,6 +184,33 @@ export class ModerationService {
 		}
 	}
 
+	async getAllReportsForThisPost(postId: number, userRole: Role, ){
+		try {
+			if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
+				throw new BadRequestException("You do not have the right to review posts reports");
+			}
+			const reports = await this.prisma.report.findMany({
+				where: {
+					reportedPostId: postId,
+				},
+				select: {
+					id: true,
+					reporter: {select: {id: true, username: true}},
+					reportCategory: true,
+					reportDescription: true,
+					createdAt: true,
+				}
+			})
+			return reports;
+		}
+		catch (error){
+			if (error instanceof HttpException)
+				throw error;
+			console.error("Error fetching all the reports for this post:", error);
+			throw new InternalServerErrorException("Could not fetch all the reports for this post");
+		}
+	}
+
 	async getAllPendingPostReports(userRole: Role){
 		try {
 			if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
@@ -197,7 +241,7 @@ export class ModerationService {
 					handledBy: {select: {id: true, username: true}},
 				}
 			})
-			return reportedPosts;
+			return this.withReportCountByPost(reportedPosts);
 		}
 		catch (error){
 			if (error instanceof HttpException)
@@ -238,7 +282,7 @@ export class ModerationService {
 					handledBy: {select: {id: true, username: true}},
 				}
 			})
-			return reportedPosts;
+			return this.withReportCountByPost(reportedPosts);
 		}
 		catch (error){
 			if (error instanceof HttpException)
@@ -278,7 +322,7 @@ export class ModerationService {
 					handledBy: {select: {id: true, username: true}},
 				}
 			})
-			return reportedPosts;
+			return this.withReportCountByPost(reportedPosts);
 		}
 		catch (error){
 			if (error instanceof HttpException)
@@ -321,7 +365,7 @@ export class ModerationService {
 				},
 				orderBy: { handledAt: "desc" }
 			})
-			return reportedPosts;
+			return this.withReportCountByPost(reportedPosts);
 		}
 		catch (error){
 			if (error instanceof HttpException)

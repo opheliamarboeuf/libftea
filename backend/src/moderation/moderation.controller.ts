@@ -20,6 +20,14 @@ export class ModerationController {
 		) {
 			return this.moderationService.reportPost(id, dto, req.user.id);
 		}
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/all/:id')
+	async getAllReportsForThisPost(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { role: Role } }
+		) {
+			return this.moderationService.getAllReportsForThisPost(id, req.user.role);
+		}
 
 	@Roles(Role.ADMIN)
 	@Get('admin/logs')

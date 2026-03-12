@@ -1,5 +1,5 @@
 import { PostReportType } from "./types";
-import { CreateReportType, ReportHandlePayload} from "./types";
+import { CreateReportType, ReportHandlePayload, SimpleReportType} from "./types";
 
 const API_URL = "http://localhost:3000";
 
@@ -64,7 +64,7 @@ export const moderationApi = {
 		return data;
 	},
 
-		acceptReport: async(reportId: number, payload: ReportHandlePayload): Promise<PostReportType> => {
+	acceptReport: async(reportId: number, payload: ReportHandlePayload): Promise<PostReportType> => {
 		const res = await fetch(`${API_URL}/moderation/reports/${reportId}/accept`, {
 			method: "PUT",
 			headers: {
@@ -79,6 +79,24 @@ export const moderationApi = {
 			const message = Array.isArray(data.message)
 				? data.message[0]
 				: data.message || "Accept report failed";
+			throw new Error(message);
+		}
+		return data;
+	},
+
+	fetchAllReportsForThisPost: async(reportId: number): Promise<SimpleReportType[]> => {
+		const res = await fetch(`${API_URL}/moderation/reports/posts/all/${reportId}`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
+		
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || "Fetch all reports for this post failed";
 			throw new Error(message);
 		}
 		return data;
