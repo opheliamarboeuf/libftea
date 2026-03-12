@@ -1,5 +1,5 @@
 import { PostReportType } from "./types";
-import { ReportHandlePayload } from "./types";
+import { CreateReportType, ReportHandlePayload} from "./types";
 
 const API_URL = "http://localhost:3000";
 
@@ -21,6 +21,27 @@ export const moderationApi = {
 			throw new Error(message);
 		}
 		return data;
+	},
+
+	reportPost: async (
+		payload: CreateReportType,
+		postId: number,
+	): Promise<void> => {
+		const res = await fetch(`${API_URL}/moderation/reports/posts/${postId}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+			body: JSON.stringify(payload),
+		});
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || "Post report failed";
+			throw new Error(message);
+		}
 	},
 
 	rejectReport: async(reportId: number, payload: ReportHandlePayload): Promise<PostReportType> => {
@@ -101,6 +122,24 @@ export const moderationApi = {
 
 		fetchAllAssignedPostReports: async(): Promise<PostReportType[]> => {
 		const res = await fetch(`${API_URL}/moderation/reports/posts/all/assigned`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
+		
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || "Fetch all assigned post reports failed";
+			throw new Error(message);
+		}
+		return data;
+	},
+
+		fetchAllHandledPostReports: async(): Promise<PostReportType[]> => {
+		const res = await fetch(`${API_URL}/moderation/reports/posts/all/handled`, {
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${localStorage.getItem("token")}`,

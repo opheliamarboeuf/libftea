@@ -1,6 +1,5 @@
 import { Post } from '../context/UserContext';
 import { PostEditPayload } from './types';
-import { ReportPostType } from './types';
 
 const API_URL = "http://localhost:3000";
 
@@ -126,26 +125,5 @@ export const postsApi = {
 			throw new Error(message);
 		}
 		return data ?? [];
-	},
-
-	reportPost: async (
-		payload: ReportPostType,
-		postId: number,
-	): Promise<void> => {
-		const res = await fetch(`${API_URL}/posts/report/${postId}`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${localStorage.getItem("token")}`,
-			},
-			body: JSON.stringify(payload),
-		});
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || "Post report failed";
-			throw new Error(message);
-		}
 	},
 }

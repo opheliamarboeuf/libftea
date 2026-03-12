@@ -93,31 +93,46 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
  							alt="Post" />
 					</div>
 						<div className="report-info">
-							<div>
-								<strong>Reporter:</strong><br />{" "}
-								<span
-									className="reporter-name"
-									onClick={() => goToProfile(report.reporter.id)}
-									>
-									{report.reporter.username}
-								</span>
-							</div>
-							<div 
-								className="report-category" >
-								<strong>Report Category:</strong><br />
-								{report.reportCategory.replace(/_/g, " ")}
-							</div>
-							<div 
-								className="report-description" >
-								<strong>Report Description:</strong><br />
-								{report.reportDescription}
-							</div>
-							<div 
-								className="report-date" >
-								<strong>Report Creation:</strong><br />
+							<div className="report-pre-handle">
+								<div className="reporter-info">
+									<strong>Reporter:</strong><br />{" "}
+									<span
+										className="reporter-name"
+										onClick={() => goToProfile(report.reporter.id)}
+										>
+										{report.reporter.username}
+									</span>
+								</div>
+								<div 
+									className="report-category" >
+									<strong>Report Category:</strong><br />
+									{report.reportCategory.replace(/_/g, " ")}
+								</div>
+								<div 
+									className="report-description" >
+									<strong>Report Description:</strong><br />
+									{report.reportDescription}
+								</div>
+								<div className="report-date" >
+									<strong>Report Creation:</strong><br />
 								{new Date(report.createdAt).toLocaleString()}
+								</div>
+							</div>
+						{(report.status === "ACCEPTED" || report.status === "REJECTED") && (
+						<div className="report-post-handled">
+						<div className="report-status">
+							<strong>Report Status:</strong><br />
+									<span className={report.status.toLowerCase()}>
+										{report.status}
+									</span>
+							</div>
+							<div className="report-mod_message">
+							<strong>Moderation Message:</strong><br />
+								{report.moderatorMessage}
+							</div>
 						</div>
-					</div>
+					)}
+						</div>
 				</div>
 				{report.reportedPost.caption && (
 				<div className="report-caption">

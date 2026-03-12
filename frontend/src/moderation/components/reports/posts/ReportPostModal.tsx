@@ -1,13 +1,12 @@
-import "../../App.css"
 import { createPortal } from "react-dom";
-import { useModalAnimation } from "../../common/hooks/useModalAnimation";
-import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
-import { ConfirmDialog } from "../../common/components/ConfirmDialog";
-import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
-import { Post } from "../../context/UserContext";
-import { usePostReport } from "../hooks/usePostReport";
-import { ReportPostCategoryType } from "../types";
-import { useModal } from "../../context/ModalContext";
+import { useModalAnimation } from "../../../../common/hooks/useModalAnimation";
+import { useBeforeUnload } from "../../../../common/hooks/useBeforeUnload";
+import { ConfirmDialog } from "../../../../common/components/ConfirmDialog";
+import { useUnsavedChangesGuard } from "../../../../common/hooks/useUnsavedChangesGuard";
+import { Post } from "../../../../context/UserContext";
+import { usePostReport } from "../../../hooks/usePostReport";
+import { ReportCategory } from "../../../types";
+import { useModal } from "../../../../context/ModalContext";
 
 interface ReportPostModalProps {
 	post: Post,
@@ -71,11 +70,11 @@ export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostMo
 						<label>Category</label>
 						<select
 							value={category || ""}
-							 onChange={(e) => setCategory(e.target.value as ReportPostCategoryType)}
+							 onChange={(e) => setCategory(e.target.value as ReportCategory)}
 							className="report-post-input"
 						>
 						<option value="" disabled>Select a report category</option>
-						  {Object.values(ReportPostCategoryType).map((r) => (
+						  {Object.values(ReportCategory).map((r) => (
 							<option key={r} value={r}>{r.replaceAll("_", " ")}</option>
 							))}
 						</select>

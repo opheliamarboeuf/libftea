@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Post } from "../../context/UserContext";
-import { postsApi } from "../api";
-import { ReportPostType, ReportPostCategoryType } from "../types";
+import { moderationApi } from "../api";
+import { CreateReportType, ReportCategory} from "../types";
 
 const MAX_DESCRIPTION_LENGTH = 250;
 
@@ -9,7 +9,7 @@ export function usePostReport(post: Post) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [description, setDescription] = useState("");
-	const [category, setCategory] = useState<ReportPostCategoryType | null>(null);
+	const [category, setCategory] = useState<ReportCategory | null>(null);
 
 	const handlePostReport = async () => {
 		setIsLoading(true);
@@ -27,12 +27,12 @@ export function usePostReport(post: Post) {
 		}
 
 		try {
-			const payload: ReportPostType = {
+			const payload: CreateReportType = {
 				category: category,
 				description,
 			};
 			
-			await postsApi.reportPost(payload, post.id, );
+			await moderationApi.reportPost(payload, post.id, );
 			setDescription("");
 			setCategory(null);
 			setErrorMessage(null);

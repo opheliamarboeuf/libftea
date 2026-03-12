@@ -9,7 +9,7 @@ import { EditPostModal } from "./EditPostModal";
 import { LikeButton } from "../../likes/LikeButton";
 import { CommentSection } from "../../comments/CommentSection";
 import { useState } from "react";
-import { ReportPostModal } from "./ReportPostModal";
+import { ReportPostModal } from "../../moderation/components/reports/posts/ReportPostModal";
 
 interface UserPostsListProps {
 	posts: Post[];

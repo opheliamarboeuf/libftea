@@ -8,7 +8,6 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { UpdatePostDto } from './dto/update.dto';
 import { Role } from '@prisma/client';
-import { ReportPostDto } from './dto/report.dto';
 
 @Controller('posts')
 @UseGuards(JwtAuthGuard)
@@ -82,14 +81,5 @@ export class PostsController {
 				throw new ForbiddenException('You cannot edit this post');
 			}
 			return this.postService.editPost(id, dto);
-		}
-
-		@Post('report/:id')
-		async reportPost(
-			@Param('id', ParseIntPipe) id: number,
-			@Body() dto: ReportPostDto,
-			@Req() req: Request & { user: { id: number } }
-		) {
-			return this.postService.reportPost(id, dto, req.user.id);
 		}
 	}

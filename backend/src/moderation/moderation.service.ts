@@ -2,14 +2,87 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { Injectable, BadRequestException, ForbiddenException } from "@nestjs/common";
 import { hasPermission } from "src/auth/permissions";
 import { ReportStatus, Role } from "@prisma/client";
-import { InternalServerErrorException, HttpException } from "@nestjs/common";
+import { InternalServerErrorException, HttpException, NotFoundException } from "@nestjs/common";
 import { HandleReportDto } from './dto/handleReport.dto';
+import { ReportDto } from "./dto/report.dto";
 
 @Injectable()
 export class ModerationService {
 	constructor(
 		private prisma: PrismaService,
 	) {}
+
+	async reportPost(postId: number, dto: ReportDto, currentUserId: number) {
+		try {
+			const reportedPost = await this.prisma.post.findUnique({
+				where: { id: postId, deletedAt: null },
+				select: { authorId: true },
+			});
+			if (!reportedPost)
+				throw new NotFoundException("Post not found");
+			if (reportedPost.authorId === currentUserId)
+				throw new BadRequestException("You cannot report your own post");
+			const existingReport = await this.prisma.report.findUnique({
+				where: {
+					reporterId_reportedPostId: {
+					reporterId: currentUserId,
+					reportedPostId: postId,
+				},
+			},
+		});
+		if (existingReport)
+			throw new BadRequestException("You have already reported this post");
+
+		const report = await this.prisma.$transaction(async (tx) => {
+			const createdReport = await tx.report.create({
+				data: {
+					reporterId: currentUserId,
+					reportedPostId: postId,
+					reportCategory: dto.category,
+					reportDescription: dto.description,
+				},
+			});
+
+			await tx.postHiddenForUser.upsert({
+				where: {
+					postId_userId: {
+						postId,
+						userId: currentUserId,
+					},
+				},
+				update: {},
+				create: {
+					postId,
+					userId: currentUserId,
+				},
+			});
+
+			// Remove any existing friendship with the post author (in both directions)
+			const existingFriendship = await tx.friendship.findFirst({
+				where: {
+					OR: [
+						{ requesterId: currentUserId, addresseId: reportedPost.authorId },
+						{ requesterId: reportedPost.authorId, addresseId: currentUserId },
+					],
+				},
+			});
+
+			if (existingFriendship) {
+				await tx.friendship.delete({
+					where: { id: existingFriendship.id },
+				});
+			}
+
+			return createdReport;
+		});
+		return report;
+	} catch (error) {
+		if (error instanceof HttpException)
+			throw error;
+		console.log("Error reporting post:", error);
+		throw new InternalServerErrorException("Could not report post");
+	}
+}
 
 	async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role){
 		try {
@@ -204,6 +277,49 @@ export class ModerationService {
 					status: true,
 					handledBy: {select: {id: true, username: true}},
 				}
+			})
+			return reportedPosts;
+		}
+		catch (error){
+			if (error instanceof HttpException)
+				throw error;
+			console.error("Error fetching all assigned post reports:", error);
+			throw new InternalServerErrorException("Could not fetch all assigned post reports");
+		}
+	}
+
+		async getAllHandledPostReports(userRole: Role){
+		try {
+			if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
+				throw new ForbiddenException("You do not have the right to review posts reports");
+			}
+			const reportedPosts = await this.prisma.report.findMany({
+				where: {
+					reportedPostId: {not: null},
+					status: {in: [ReportStatus.ACCEPTED, ReportStatus.REJECTED],}
+				},
+				select: {
+					id: true,
+					reporter: {select: {id: true, username: true}},
+					reportedPost: {
+						select: {
+							id: true,
+							title: true,
+							imageUrl: true,
+							caption: true,
+							createdAt: true,
+							author: {select: {id: true, username: true}}
+							}
+						},
+					reportCategory: true,
+					reportDescription: true,
+					createdAt: true,
+					status: true,
+					handledBy: {select: {id: true, username: true}},
+					moderatorMessage: true,
+					handledAt: true,
+				},
+				orderBy: { handledAt: "desc" }
 			})
 			return reportedPosts;
 		}

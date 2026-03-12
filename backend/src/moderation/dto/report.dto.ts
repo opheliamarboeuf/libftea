@@ -6,7 +6,7 @@ export enum ReportType {
 	INAPPROPRIATE_CONTENT = "INAPPROPRIATE_CONTENT",
 	OTHER = "OTHER",
 }
-export class ReportPostDto {
+export class ReportDto {
 	@IsEnum(ReportType, { message: "Category must be a valid report type" })
 	category: ReportType;
 

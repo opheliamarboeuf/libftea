@@ -1,9 +1,16 @@
-export enum ReportCategory {
+export enum ModerationLogCategory {
 	DELETE_ANY_POST = "DELETE_ANY_POST",
 	CHANGE_ROLE = "CHANGE_ROLE",
 	BAN_USER = "BAN_USER",
 	CREATE_TOURNAMENT = "CREATE_TOURNAMENT",
 	REVIEW_REPORT = "REVIEW_REPORT",
+}
+
+export enum ReportCategory {
+	SPAM = "SPAM",
+	HARASSMENT = "HARASSMENT",
+	INAPPROPRIATE_CONTENT = "INAPPROPRIATE_CONTENT",
+	OTHER = "OTHER",
 }
 export enum ReportStatus {
 	PENDING = "PENDING",
@@ -14,7 +21,7 @@ export enum ReportStatus {
 
 export interface ModerationLogType {
 	id: number;
-	action: ReportCategory; 
+	action: ModerationLogCategory; 
 	createdAt: Date;
 	actor: {
 		id: number;
@@ -38,6 +45,12 @@ export interface ModerationLogType {
 		username: string;
 	}; 
 }
+
+export interface CreateReportType {
+	category: ReportCategory; 
+	description?: string;
+}
+
 
 export interface PostReportType {
 	id: number;
@@ -64,6 +77,7 @@ export interface PostReportType {
 	};
 	status: ReportStatus;
 	createdAt: string;
+	moderatorMessage?: string;
 	handledAt?: string;
 }
 

@@ -21,7 +21,8 @@
   flex-direction: column;
   gap: 10px;
   padding: 15px;
-  width: 750px;
+  width: 100%;
+  max-width: 850px;
 }
 
 /* Post header: title + author + date */
@@ -124,7 +125,7 @@
   gap: 15px;
 }
 
-/* Report image: 2/3 of the width */
+/* Report image: 1/2 of the width */
 .report-image {
   flex: 2;
   display: flex;
@@ -139,8 +140,16 @@
   object-fit: cover;
 }
 
-/* Action : 1/3 of the width */
+/* Action : 1/2 of the width */
 .report-info {
+  flex: 2;
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.report-pre-handle,
+.report-post-handled {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -153,14 +162,16 @@
   padding: 15px;
 }
 
-.report-info > div {
+.report-pre-handle > div,
+.report-post-handled > div {
   font-size: 0.9rem;
   color: #333;
   padding: 8px 0;
   border-bottom: 1px solid #eee;
 }
 
-.report-info > div:last-child {
+.report-pre-handle > div:last-child,
+.report-post-handled > div:last-child {
   border-bottom: none;
 }
 
@@ -210,4 +221,14 @@
   text-align: center;
   color: #666;
   font-size: 1rem;
+}
+
+.accepted {
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.rejected {
+  font-weight: 600;
+  color: #c62828;
 }

@@ -6,7 +6,6 @@ import { join } from "path";
 import { unlink } from "fs/promises";
 import { hasPermission } from "src/auth/permissions";
 import { Role } from "@prisma/client";
-import { ReportPostDto } from "./dto/report.dto";
 
 @Injectable()
 export class PostsService {
@@ -246,75 +245,4 @@ export class PostsService {
 			include: { author: true },
  	 });
 	}
-	async reportPost(postId: number, dto: ReportPostDto, currentUserId: number) {
-		try {
-			const reportedPost = await this.prisma.post.findUnique({
-				where: { id: postId, deletedAt: null },
-				select: { authorId: true },
-			});
-			if (!reportedPost)
-				throw new NotFoundException("Post not found");
-			if (reportedPost.authorId === currentUserId)
-				throw new BadRequestException("You cannot report your own post");
-			const existingReport = await this.prisma.report.findUnique({
-				where: {
-					reporterId_reportedPostId: {
-					reporterId: currentUserId,
-					reportedPostId: postId,
-				},
-			},
-		});
-		if (existingReport)
-			throw new BadRequestException("You have already reported this post");
-
-		const report = await this.prisma.$transaction(async (tx) => {
-			const createdReport = await tx.report.create({
-				data: {
-					reporterId: currentUserId,
-					reportedPostId: postId,
-					reportCategory: dto.category,
-					reportDescription: dto.description,
-				},
-			});
-
-			await tx.postHiddenForUser.upsert({
-				where: {
-					postId_userId: {
-						postId,
-						userId: currentUserId,
-					},
-				},
-				update: {},
-				create: {
-					postId,
-					userId: currentUserId,
-				},
-			});
-
-			// Remove any existing friendship with the post author (in both directions)
-			const existingFriendship = await tx.friendship.findFirst({
-				where: {
-					OR: [
-						{ requesterId: currentUserId, addresseId: reportedPost.authorId },
-						{ requesterId: reportedPost.authorId, addresseId: currentUserId },
-					],
-				},
-			});
-
-			if (existingFriendship) {
-				await tx.friendship.delete({
-					where: { id: existingFriendship.id },
-				});
-			}
-
-			return createdReport;
-		});
-		return report;
-	} catch (error) {
-		if (error instanceof HttpException)
-			throw error;
-		console.log("Error reporting post:", error);
-		throw new InternalServerErrorException("Could not report post");
-	}
-}
 }

@@ -1,16 +1,26 @@
 import { ModerationService } from "./moderation.service";
-import { Controller, UseGuards, Get, Body, Put, Req, Param, ParseIntPipe} from "@nestjs/common";
+import { Controller, UseGuards, Get, Body, Post, Put, Req, Param, ParseIntPipe} from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "src/auth/roles.guard";
 import { Role } from "@prisma/client";
 import { Roles } from "src/auth/roles.decorator";
 import { HandleReportDto } from './dto/handleReport.dto';
+import { ReportDto } from "./dto/report.dto";
 
 @Controller('moderation')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ModerationController {
 		constructor(private readonly moderationService: ModerationService) {}
 	
+	@Post('reports/posts/:id')
+	async reportPost(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() dto: ReportDto,
+		@Req() req: Request & { user: { id: number } }
+		) {
+			return this.moderationService.reportPost(id, dto, req.user.id);
+		}
+
 	@Roles(Role.ADMIN)
 	@Get('admin/logs')
 	async getAdminLogs(
@@ -49,6 +59,14 @@ export class ModerationController {
 		@Req() req: Request & { user: { role: Role } }
 		) {
 			return this.moderationService.getAllAssignedPostReports(req.user.role)
+		}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/all/handled')
+	async getAllHandledPostReports(
+		@Req() req: Request & { user: { role: Role } }
+		) {
+			return this.moderationService.getAllHandledPostReports(req.user.role)
 		}
 
 	@Roles(Role.ADMIN, Role.MOD)
