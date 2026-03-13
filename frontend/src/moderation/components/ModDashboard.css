@@ -30,7 +30,7 @@
 .mod-menu {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 10px;
 }
 
 .mod-section-title {

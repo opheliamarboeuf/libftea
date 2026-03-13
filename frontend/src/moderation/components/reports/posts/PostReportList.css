@@ -250,3 +250,17 @@
   font-weight: 600;
   color: #c62828;
 }
+
+/* Custom style for 'View all the reports' button */
+.report-more button {
+  border: none;
+  background: #fff;
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.report-more button:hover {
+  background: #e0e0e0;
+}
