@@ -325,7 +325,7 @@ export class ModerationService {
 				throw new ForbiddenException("You do not have the right to review posts reports");
 			}
 	
-			const reportedPosts = await this.prisma.report.findMany({
+			const myAssignedReports = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: {not: null},
 					status: ReportStatus.ASSIGNED,
@@ -352,19 +352,30 @@ export class ModerationService {
 				},
 				orderBy: { createdAt: "asc" }
 			});
-
-			const postIds = reportedPosts.map(r => r.reportedPost.id);
+			// Keep only the first report for each unique post
+			const seenPostIds = new Set<number>();
+			const uniqueReports = [];
+			for (const report of myAssignedReports) {
+				const postId = report.reportedPost.id;
+				if (!seenPostIds.has(postId)) {
+					uniqueReports.push(report);
+					seenPostIds.add(postId);
+				}
+			}
+			// Count all assigned reports per post for this moderator
+			const postIds = uniqueReports.map(r => r.reportedPost.id);
 			const allReports = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: {in: postIds},
+					status: ReportStatus.ASSIGNED,
+					handledById: userId,
 				},
 				select: {
 					reportedPost: {select: {id: true}},
 				}
 			});
 			const reportCountByPostId = this.buildCountByKey(allReports, (report) => report.reportedPost.id);
-
-			return reportedPosts.map(report => ({
+			return uniqueReports.map(report => ({
 				...report,
 				reportCount: reportCountByPostId[report.reportedPost.id] ?? 0,
 			}));
@@ -377,12 +388,12 @@ export class ModerationService {
 		}
 	}
 
-		async getAllAssignedPostReports(userRole: Role){
+	async getAllAssignedPostReports(userRole: Role){
 		try {
 			if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
 				throw new ForbiddenException("You do not have the right to review posts reports");
 			}
-			const reportedPosts = await this.prisma.report.findMany({
+			const assignedReports = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: {not: null},
 					status: ReportStatus.ASSIGNED,
@@ -398,8 +409,8 @@ export class ModerationService {
 							caption: true,
 							createdAt: true,
 							author: {select: {id: true, username: true}}
-							}
-						},
+						}
+					},
 					reportCategory: true,
 					reportDescription: true,
 					createdAt: true,
@@ -408,19 +419,29 @@ export class ModerationService {
 				},
 				orderBy: { createdAt: "asc" }
 			});
-
-			const postIds = reportedPosts.map(r => r.reportedPost.id);
+			// Keep only the first report for each unique post
+			const seenPostIds = new Set<number>();
+			const uniqueReports = [];
+			for (const report of assignedReports) {
+				const postId = report.reportedPost.id;
+				if (!seenPostIds.has(postId)) {
+					uniqueReports.push(report);
+					seenPostIds.add(postId);
+				}
+			}
+			// Count all assigned reports per post
+			const postIds = uniqueReports.map(r => r.reportedPost.id);
 			const allReports = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: {in: postIds},
+					status: ReportStatus.ASSIGNED,
 				},
 				select: {
 					reportedPost: {select: {id: true}},
 				}
 			});
 			const reportCountByPostId = this.buildCountByKey(allReports, (report) => report.reportedPost.id);
-
-			return reportedPosts.map(report => ({
+			return uniqueReports.map(report => ({
 				...report,
 				reportCount: reportCountByPostId[report.reportedPost.id] ?? 0,
 			}));
@@ -433,15 +454,15 @@ export class ModerationService {
 		}
 	}
 
-		async getAllHandledPostReports(userRole: Role){
+	async getAllHandledPostReports(userRole: Role){
 		try {
 			if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
 				throw new ForbiddenException("You do not have the right to review posts reports");
 			}
-			const reportedPosts = await this.prisma.report.findMany({
+			const handledReports = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: {not: null},
-					status: {in: [ReportStatus.ACCEPTED, ReportStatus.REJECTED],}
+					status: {in: [ReportStatus.ACCEPTED, ReportStatus.REJECTED]},
 				},
 				select: {
 					id: true,
@@ -454,8 +475,8 @@ export class ModerationService {
 							caption: true,
 							createdAt: true,
 							author: {select: {id: true, username: true}}
-							}
-						},
+						}
+					},
 					reportCategory: true,
 					reportDescription: true,
 					createdAt: true,
@@ -465,10 +486,30 @@ export class ModerationService {
 					handledAt: true,
 				},
 				orderBy: { handledAt: "desc" }
-			})
-			const reportCountByPostId = this.buildCountByKey(reportedPosts, (report) => report.reportedPost.id);
-
-			return reportedPosts.map(report => ({
+			});
+			// Keep only the first report for each unique post
+			const seenPostIds = new Set<number>();
+			const uniqueReports = [];
+			for (const report of handledReports) {
+				const postId = report.reportedPost.id;
+				if (!seenPostIds.has(postId)) {
+					uniqueReports.push(report);
+					seenPostIds.add(postId);
+				}
+			}
+			// Count all handled reports per post
+			const postIds = uniqueReports.map(r => r.reportedPost.id);
+			const allReports = await this.prisma.report.findMany({
+				where: {
+					reportedPostId: {in: postIds},
+					status: {in: [ReportStatus.ACCEPTED, ReportStatus.REJECTED]},
+				},
+				select: {
+					reportedPost: {select: {id: true}},
+				}
+			});
+			const reportCountByPostId = this.buildCountByKey(allReports, (report) => report.reportedPost.id);
+			return uniqueReports.map(report => ({
 				...report,
 				reportCount: reportCountByPostId[report.reportedPost.id] ?? 0,
 			}));
@@ -534,6 +575,35 @@ export class ModerationService {
 				throw new BadRequestException("Report already assigned");
 			}
 
+			// If it's a post report, assign all reports for this post
+			if (report.reportedPostId) {
+				await this.prisma.report.updateMany({
+					where: { reportedPostId: report.reportedPostId, handledById: null, status: ReportStatus.PENDING },
+					data: {
+						handledById: userId,
+						status: ReportStatus.ASSIGNED,
+					},
+				});
+				// Return all assigned reports for this post
+				return await this.prisma.report.findMany({
+					where: { reportedPostId: report.reportedPostId, handledById: userId, status: ReportStatus.ASSIGNED },
+				});
+			}
+			// If it's a user report, assign all reports for this user
+			if (report.reportedUserId) {
+				await this.prisma.report.updateMany({
+					where: { reportedUserId: report.reportedUserId, handledById: null, status: ReportStatus.PENDING },
+					data: {
+						handledById: userId,
+						status: ReportStatus.ASSIGNED,
+					},
+				});
+				// Return all assigned reports for this user
+				return await this.prisma.report.findMany({
+					where: { reportedUserId: report.reportedUserId, handledById: userId, status: ReportStatus.ASSIGNED },
+				});
+			}
+			// Fallback: assign only the report
 			const assignedReport = await this.prisma.report.update({
 				where: {id: reportId},
 				data: {
@@ -569,10 +639,59 @@ export class ModerationService {
 			if (!report.handledById){
 				throw new BadRequestException("Report is not assigned");
 			}
-			if (report.handledById !== userId && userRole !== Role.ADMIN){
+			// Allow admin to unassign any report, otherwise only allow the moderator who is assigned
+			let targetHandledById = userId;
+			if (userRole === Role.ADMIN) {
+				targetHandledById = report.handledById;
+			} else if (report.handledById !== userId) {
 				throw new ForbiddenException("You cannot unassign this report");
 			}
 
+			// If it's a post report, unassign all reports for this post
+			if (report.reportedPostId) {
+				await this.prisma.report.updateMany({
+					where: {
+						reportedPostId: report.reportedPostId,
+						handledById: targetHandledById,
+						status: ReportStatus.ASSIGNED,
+					},
+					data: {
+						handledById: null,
+						status: ReportStatus.PENDING,
+					},
+				});
+				// Return all unassigned reports for this post
+				return await this.prisma.report.findMany({
+					where: {
+						reportedPostId: report.reportedPostId,
+						handledById: null,
+						status: ReportStatus.PENDING,
+					},
+				});
+			}
+			// If it's a user report, unassign all reports for this user
+			if (report.reportedUserId) {
+				await this.prisma.report.updateMany({
+					where: {
+						reportedUserId: report.reportedUserId,
+						handledById: targetHandledById,
+						status: ReportStatus.ASSIGNED,
+					},
+					data: {
+						handledById: null,
+						status: ReportStatus.PENDING,
+					},
+				});
+				// Return all unassigned reports for this user
+				return await this.prisma.report.findMany({
+					where: {
+						reportedUserId: report.reportedUserId,
+						handledById: null,
+						status: ReportStatus.PENDING,
+					},
+				});
+			}
+			// Fallback: unassign only the report
 			const assignedReport = await this.prisma.report.update({
 				where: {id: reportId},
 				data: {
