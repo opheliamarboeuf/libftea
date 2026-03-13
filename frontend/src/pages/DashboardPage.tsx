@@ -1,79 +1,54 @@
 import { useState, useEffect } from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import "./DashboardPage.css"
-import { AdminDashboard } from "../moderation/components/AdminDashboard";
-import { ModDashboard } from "../moderation/components/ModDashboard";
 
 const DashboardPage = () => {
-	
 	const { user } = useUser();
 	const location = useLocation();
-	// Determine if the current route is a moderation sub-route 
+	const navigate = useNavigate();
+
 	const isModRoute = location.pathname.startsWith("/dashboard/moderation");
-	
-	// Initialize the active tab based on the current route
-	const [activeTab, setActiveTab] = useState<"ADMIN" | "MOD">(() => {
-		if (isModRoute)
-			return "MOD";
-		// Default tab is ADMIN
-		return "ADMIN";
-	});
-
-	// Keep activeTab in sync with route changes
-	useEffect(() => {
-		if (isModRoute) {
-			setActiveTab("MOD");
-		}
-	}, [isModRoute]);
-
-	useEffect(() => {
-		// Keep the active tab selection in localStorage
-		localStorage.setItem("dashboardTab", activeTab);
-	}, [activeTab]);
+	const activeTab = isModRoute ? "MOD" : "ADMIN";
 
 	if (!user)
 		return <Navigate to="/" replace />;
 
-	// If user is a MOD, always show moderation dashboard
+	// Si MOD, pas de tabs, juste le contenu
 	if (user.role === "MOD") {
-    return (
-		<div className="dashboard-page">
-			<div className="dash-board-content">
-				{isModRoute ? <Outlet /> : <ModDashboard />}
+		return (
+			<div className="dashboard-page">
+				<div className="dash-board-content">
+					<Outlet />
+				</div>
 			</div>
-		</div>
-	);
-  }
-	
+		);
+	}
+
 	return (
 		<div className="dashboard-page">
 			<div className="dashboard-header">
 				<div className="dashboard-tabs">
-					{/* Tab indicator that moves based on activeTab */}
-					<div
-						className={`dashboard-tab-indicator ${activeTab}`}
-					/>
+					<div className={`dashboard-tab-indicator ${activeTab}`} />
 					<button
-						className={activeTab === "ADMIN" ? "active" : "" }
-						onClick={() => setActiveTab("ADMIN")}
+						className={activeTab === "ADMIN" ? "active" : ""}
+						onClick={() => navigate("/dashboard/admin/reports/users/pending")}
 					>
 						Administrator Dashboard
 					</button>
 					<button
-						className={activeTab === "MOD" ? "active" : "" }
-						onClick={() => setActiveTab("MOD")}
+						className={activeTab === "MOD" ? "active" : ""}
+						onClick={() => navigate("/dashboard/moderation/reports/posts/pending")}
 					>
 						Moderator Dashboard
 					</button>
 				</div>
 			</div>
 			<div className="dash-board-content">
-				{activeTab === "ADMIN" && <AdminDashboard />}
-				{activeTab === "MOD" && (isModRoute ? <Outlet /> : <ModDashboard />)}
+				<Outlet />
 			</div>
 		</div>
 	)
 }
 
-export default DashboardPage
+export default DashboardPage;
