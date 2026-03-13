@@ -5,6 +5,7 @@ import { useState } from "react"
 import { useEffect } from "react";
 import { ConfirmBlockDelete } from "./ConfirmBlockDelete";
 import { useFriendsSocket } from "./useFriendsSocket";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     userId: number;
@@ -17,6 +18,7 @@ export function BlockFriendButton({ userId, onAction }: Props) {
     const [loading, setLoading] = useState(false);
 	const [blockSent, setBlockSent] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+	const { t } = useTranslation();
     
 	useEffect(() => {
 		const isBlocked = user?.blockedUsers?.some(
@@ -29,14 +31,14 @@ export function BlockFriendButton({ userId, onAction }: Props) {
 		onUserBlocked: async () => {
 			setLoading(false);
 			setShowConfirm(false);
-			showModal("User blocked");
+			showModal(t('friends.blocked'));
 			await refreshUser();
 			if (onAction) await onAction();
 		},
 		onUserUnblocked: async () => {
 			setLoading(false);
 			setShowConfirm(false);
-			showModal("User unblocked");
+			showModal(t('friends.unblocked'));
 			await refreshUser();
 			if (onAction) await onAction();
 		},
@@ -62,12 +64,12 @@ export function BlockFriendButton({ userId, onAction }: Props) {
                 disabled={loading}
 				className="friend-action-btn"
                 >
-                    {loading ? "Processing..." : blockSent ? "Unblock User" : "Block User"}
+                    {loading ? t('friends.processing') : blockSent ? t('friends.unblock') : t('friends.block')}
             </button>
 
             {showConfirm && (
                 <ConfirmBlockDelete
-                    message={ blockSent ? "Are you sure you want to unblock this user?" : "Are you sure you want to block this user?" }
+                    message={ blockSent ? 'friends.confirmunblock' : 'friends.confirmblock' }
                     onYes={handleClick}
                     onNo={() => setShowConfirm(false)}
                 />

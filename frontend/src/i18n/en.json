@@ -1,0 +1,138 @@
+{
+	"header": {
+		"profile": "My profile",
+		"settings": "Settings",
+		"logout": "Logout"
+	},
+
+	"leftmenu": {
+		"feed": "Feed",
+		"profile": "Profile",
+		"friends": "Friends"
+	},
+
+	"searchbar": {
+		"search": "Search..."
+	},
+
+	"friends": {
+		"addfriend": "Add friend",
+		"myfriends": "My friends",
+		"requests": "Pending requests",
+		"accept": "Accept",
+		"reject": "Reject",
+		"sent": "Friend request sent",
+		"sentfail": "Failed to send friend request",
+		"accepted": "Friend request accepted",
+		"rejected": "Friend request rejected",
+		"requestfail": "Failed to process request",
+		"nopending": "No pending requests",
+		"cancelrequest": "Cancel friend request",
+		"canceled": "Friend request canceled",
+		"errorcancel": "Error canceling the request",
+		"remove": "Remove friend",
+		"removed": "User removed from friend list",
+		"acceptrequest": "Accept friend request",
+		"rejectrequest": "Reject friend request",
+		"block": "Block user",
+		"blocked": "User blocked",
+		"unblock": "Unblock user",
+		"unblocked": "User unblocked",
+		"failblock": "Failed to block friend",
+		"processing": "Processing...",
+		"confirmblock": "Are you sure you want to block this user?",
+		"confirmunblock": "Are you sure you want to unblock this user?",
+		"noblocked": "No blocked users",
+		"nofriends": "No friends yet",
+		"delete": "Delete",
+		"deleting": "Deleting...",
+		"confirmremove": "Are you sure you want to remove this user from your friend list?",
+		"blockedusers": "Blocked users",
+		"prequests": "Requests"
+
+	},
+
+	"userprofile": {
+		"sendmessage": "Send message",
+		"loading": "Loading...",
+		"friends": "Friends: ",
+		"posts": "Posts: ",
+		"writebio": "Write your bio here...",
+		"feed": "Your feed",
+		"noaccess": "You cannot access this profile",
+		"userblocked": "You have blocked this user",
+		"online": "Online",
+		"offline": "Offline"
+	},
+
+	"loginpage": {
+		"login": "Login",
+		"username": "Username",
+		"password": "Password",
+		"noaccount": "No account yet ?",
+		"create": "Create new account"
+	},
+
+	"registerpage": {
+		"register": "Register",
+		"loginto": "Log in to account",
+		"alreadyhave": "Already have an account ?",
+		"registerfail": "Registration failed",
+		"serverfail": "Server unreachable",
+		"email": "Email"
+	},
+
+	"editprofile": {
+		"edit": "Edit Profile",
+		"name": "Name",
+		"bio": "Bio",
+		"picture": "Profile Picture",
+		"cover": "Cover Picture",
+		"format": "Accepted formats: JPEG, PNG, WebP (Max 5MB)",
+		"save": "Save",
+		"cancel": "Cancel",
+		"changes": "Looks like you've made some changes. Are you sure you want to exit without saving?"
+	},
+
+	"confirmdialog": {
+		"discard": "Discard",
+		"stay": "Stay"
+	},
+
+	"comment-section": {
+		"deletecomment": "Delete",
+		"leavecomment": "Leave a comment",
+		"submitcomment": "Comment",
+		"loadingcomments": "Loading comments...",
+		"replycomment": "Reply",
+		"leavereply": "Reply to this comment...",
+		"confirmdelete": "Are you sure you want to delete this comment ?"
+	},
+
+	"common": {
+		"yes": "Yes",
+		"no": "No"
+	},
+
+	"feedpage": {
+		"myfeed": "My feed",
+		"postoutfit": "Post an outfit",
+		"noposts": "No posts to display",
+		"discover": "Discover",
+		"friends": "Friends"
+	},
+
+	"post": {
+		"editpost": "Edit your post",
+		"title": "Title",
+		"caption": "Caption",
+		"changes": "Looks like you've made some changes. Are you sure you want to exit without saving?",
+		"saving": "Saving...",
+		"picture": "Outfit picture",
+		"posting": "Posting...",
+		"submit": "Submit",
+		"edit": "Edit",
+		"report": "Report",
+		"confirmdelete": "Are you sure you want to delete your post?"
+	}
+}

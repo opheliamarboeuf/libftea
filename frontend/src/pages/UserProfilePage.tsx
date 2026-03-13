@@ -10,6 +10,7 @@ import { UserPostsList } from "../posts/components/UserPostsList";
 import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
 import { BlockFriendButton } from "../friends/BlockFriendButton";
 import { useFriendsSocket } from "../friends/useFriendsSocket";
+import { useTranslation } from "react-i18next";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -41,6 +42,7 @@ const UserProfilePage = () => {
 	const [blockedByUser, setBlockedByUser] = useState(false);
 	const [blockedPosts, setBlockedPosts] = useState(false);
 	const [isOnline, setIsOnline] = useState(false);
+	const { t } = useTranslation();
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
@@ -197,23 +199,23 @@ const UserProfilePage = () => {
 			case 'NONE':
 				return (
 					<button className="profile-action-btn" onClick={handleAddFriend} disabled={loading}>
-						Add Friend
+						{t('friends.addfriend')}
 					</button>
 				);
 			case 'PENDING_SENT':
 				return (
 					<button className="profile-action-btn" onClick={handleCancelRequest} disabled={loading}>
-						Cancel Request
+						{t('friends.cancelrequest')}
 					</button>
 				);
 			case 'PENDING_RECEIVED':
 				return (
 					<div className="btn-group">
 						<button className="profile-action-btn" onClick={handleAccept} disabled={loading}>
-							Accept Friend Request
+							{t('friends.acceptrequest')}
 						</button>
 						<button className="profile-action-btn" onClick={handleReject} disabled={loading}>
-							Reject Friend Request
+							{t('friends.rejectrequest')}
 						</button>
 					</div>
 				);
@@ -221,14 +223,14 @@ const UserProfilePage = () => {
 				return (
 					<div className="btn-group">
 					<button className="profile-action-btn" onClick={() => navigate("/chat")} disabled={loading}>
-						Send Message
+						{t('userprofile.sendmessage')}
 					</button>
 					<button className="profile-action-btn" onClick={() => setShowDeleteConfirm(true)} disabled={loading}>
-						Delete friend
+						{t('friends.remove')}
 					</button>
 					{showDeleteConfirm && (
 									<ConfirmBlockDelete
-										message="Are you sure you want to delete this friend from your friendlist?"
+										message={t('friends.confirmremove')}
 										onYes={handleRemoveFriend}
 										onNo={() => setShowDeleteConfirm(false)}
 									/>
@@ -243,10 +245,10 @@ const UserProfilePage = () => {
 	};
 	
 	if (blockedByUser) {
-		return <div className="profile-page is-blocked">You cannot access this profile</div>;
+		return <div className="profile-page is-blocked">{t('userprofile.noaccess')}</div>;
 	}
 	if (!userData) {
-		return <div className="profile-page">Loading...</div>;
+		return <div className="profile-page">{t('userprofile.loading')}</div>;
 	}
 
 	return (
@@ -274,15 +276,15 @@ const UserProfilePage = () => {
 					</div>
 					<p className="display-username">{userData.username}</p>
 					<div className="stats">
-						<span>Friends: {userData.friendsCount}</span>
-						<span>Posts: {posts.length}</span>
+						<span>{t('userprofile.friends')}{userData.friendsCount}</span>
+						<span>{t('userprofile.posts')}{posts.length}</span>
 					</div>
 					<div className="block-user">
 						<BlockFriendButton userId={userData.id} onAction={fetchProfile} />
 					</div>
 
 					<div className="bio">
-						<p>{userData.profile?.bio || "Write your bio here..."}</p>
+						<p>{userData.profile?.bio || t('userprofile.writebio')}</p>
 					</div>
 					</div>
 
@@ -302,7 +304,7 @@ const UserProfilePage = () => {
 							</div>
 					</div>
 					<div className="posts">
-						{blockedPosts ? <div className="blocked-line">You have blocked this user</div> : <UserPostsList posts={posts} />}
+						{blockedPosts ? <div className="blocked-line">{t('userprofile.userblocked')}</div> : <UserPostsList posts={posts} />}
 					</div>
 				</div>
 			</div>

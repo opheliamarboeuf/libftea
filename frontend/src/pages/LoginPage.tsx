@@ -3,6 +3,8 @@ import "./LoginPage.css";
 import { useState, ChangeEvent } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import LanguageMenu from "../common/components/LanguageMenu";
 
 const LoginPage = () => {
 	const [username, setUsername] = useState("");
@@ -10,6 +12,7 @@ const LoginPage = () => {
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const { setUser } = useUser();
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 
 	const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) =>{
 		setUsername(e.target.value);
@@ -70,25 +73,26 @@ const LoginPage = () => {
 				<p className="app-subtitle">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis p</p>
 			</div>
 			<div className="login-right">
-				<h1>Login</h1>
+				<LanguageMenu />
+				<h1>{t('loginpage.login')}</h1>
 				<form onSubmit={handleSubmit}>
 					<div className="field">
-						<label htmlFor="username" className="sr-only">Username</label>
+						<label htmlFor="username" className="sr-only">{t('loginpage.username')}</label>
 							<input 
 								type="text" 
 								name="username"
-								placeholder="Username"
+								placeholder={t('loginpage.username')}
 								value = {username}
 								onChange={handleUsernameChange}
 								required
 							/>
 					</div>
 					<div className="field">
-						<label htmlFor="password" className="sr-only">Password</label>
+						<label htmlFor="password" className="sr-only">{t('loginpage.password')}</label>
 							<input 
 								type="password"
 								name="password"
-								placeholder="Password"
+								placeholder={t('loginpage.password')}
 								value={password}
 								onChange={handlePasswordChange}
 								required
@@ -99,12 +103,12 @@ const LoginPage = () => {
 					)}
 					<div className="form-button">
 						<button type="submit">
-							Login
+							{t('loginpage.login')}
 						</button>
-						<p className="no-account">No account yet ?</p>
+						<p className="no-account">{t('loginpage.noaccount')}</p>
 						<button onClick={() =>
 							navigate("/register")}>
-							Create new account
+							{t('loginpage.create')}
 						</button>
 					</div>
 				</form>

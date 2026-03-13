@@ -1,0 +1,137 @@
+{
+	"header": {
+		"profile": "Mon profil",
+		"settings": "Paramètres",
+		"logout": "Déconnexion"
+	},
+
+	"leftmenu": {
+		"feed": "Mur",
+		"profile": "Profil",
+		"friends": "Amis"
+	},
+
+	"searchbar": {
+		"search": "Rechercher..."
+	},
+
+	"friends": {
+		"addfriend": "Ajouter en ami",
+		"myfriends": "Mes amis",
+		"requests": "Mes demandes en ami",
+		"accept": "Accepter",
+		"reject": "Refuser",
+		"sent": "Demande en ami envoyée",
+		"sentfail": "Echec d'envoi de la demande en ami",
+		"accepted": "Demande en ami acceptée",
+		"rejected": "Demande en ami rejetée",
+		"requestfail": "Echec de la demande",
+		"nopending": "Pas de demande en ami",
+		"cancelrequest": "Annuler la demande en ami",
+		"canceled": "Demande annulée",
+		"errorcancel": "Echec d'annulation",
+		"remove": "Retirer ami",
+		"removed": "Utilisateur retiré de la liste d'amis",
+		"acceptrequest": "Accepter la demande en ami",
+		"rejectrequest": "Refuser la demande en ami",
+		"block": "Bloquer l'utilisateur",
+		"blocked": "Utilisateur bloqué",
+		"unblock": "Débloquer l'utilisateur",
+		"unblocked": "Utilisateur débloqué",
+		"failblock": "Echec du bloc de l'utilisateur",
+		"processing": "Traitement...",
+		"confirmblock": "Etes-vous sûr de vouloir bloquer cet utilisateur ?",
+		"confirmunblock": "Etes-vous sûr de vouloir débloquer cet utilisateur ?",
+		"noblocked": "Pas d'utilisateur bloqué",
+		"nofriends": "Pas encore d'amis",
+		"delete": "Supprimer",
+		"deleting": "Suppression...",
+		"confirmremove": "Etes-vous sûr de vouloir supprimer cet utilisateur de votre liste d'amis ?",
+		"blockedusers": "Utilisateurs bloqués",
+		"prequests": "Demandes"
+	},
+
+	"userprofile": {
+		"sendmessage": "Envoyer un message",
+		"loading": "Chargement...",
+		"friends": "Amis: ",
+		"posts": "Posts: ",
+		"writebio": "Ecrivez votre bio ici...",
+		"feed": "Votre mur",
+		"noaccess": "Vous n'avez pas accès à ce profil",
+		"userblocked": "Vous avez bloqué cet utilisateur",
+		"online": "En ligne",
+		"offline": "Hors lgne"
+	},
+
+	"loginpage": {
+		"login": "Connexion",
+		"username": "Nom d'utilisateur",
+		"password": "Mot de passe",
+		"noaccount": "Pas de compte ?",
+		"create": "Créer un compte"
+	},
+
+	"registerpage" : {
+		"register": "S'inscrire",
+		"loginto": "Se connecter",
+		"alreadyhave": "Vous avez déjà un compte ?",
+		"registerfail": "Echec de l'inscription",
+		"serverfail": "Echec serveur",
+		"email": "Email"
+	},
+
+	"editprofile": {
+		"edit": "Modifier le profil",
+		"name": "Nom",
+		"bio": "Bio",
+		"picture": "Photo de profil",
+		"cover": "Photo de couverture",
+		"format": "Formats acceptés: JPEG, PNG, WebP (Max 5MB)",
+		"save": "Sauvegarder",
+		"cancel": "Annuler",
+		"changes": "Vous avez modifié votre profil. Etes-vous sûr de vouloir quitter sans sauvegarder ?"
+	},
+
+	"confirmdialog": {
+		"discard": "Ignorer",
+		"stay": "Rester"
+	},
+
+	"comment-section": {
+		"deletecomment": "Supprimer",
+		"leavecomment": "Laissez un commentaire...",
+		"submitcomment": "Commenter",
+		"loadingcomments": "Chargement des commentaires...",
+		"replycomment": "Répondre",
+		"leavereply": "Répondez à ce commentaire...",
+		"confirmdelete": "Etes-vous sûr de vouloir supprimer votre commentaire ?"
+	},
+
+	"common": {
+		"yes": "Oui",
+		"no": "Non"
+	},
+
+	"feedpage": {
+		"myfeed": "Mon mur",
+		"postoutfit": "Poster une tenue",
+		"noposts": "Pas de post à afficher",
+		"discover": "Découvrir",
+		"friends": "Amis"
+	},
+
+	"post": {
+		"editpost": "Modifiez votre post",
+		"title": "Titre",
+		"caption": "Description",
+		"changes": "Vous avez modifié votre post. Etes-vous sûr de vouloir quitter sans sauvegarder ?",
+		"saving": "Sauvegarde...",
+		"picture": "Photo de la tenue",
+		"posting": "Publication en cours...",
+		"submit": "Poster",
+		"edit": "Modifier",
+		"report": "Signaler",
+		"confirmdelete": "Etes-vous sûr de vouloir supprimer votre post ?"
+	}
+}

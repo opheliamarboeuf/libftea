@@ -1,0 +1,137 @@
+{
+	"header": {
+		"profile": "私のプロフィール",
+		"settings": "設定",
+		"logout": "ログアウト"
+	},
+
+	"leftmenu": {
+		"feed": "フィード",
+		"profile": "プロフィール",
+		"friends": "友達"
+	},
+
+	"searchbar": {
+		"search": "検索..."
+	},
+
+	"friends": {
+		"addfriend": "友達を追加する",
+		"myfriends": "私の友達",
+		"requests": "保留中のリクエスト",
+		"accept": "承認",
+		"reject": "拒否",
+		"sent": "友達リクエストを送信しました",
+		"sentfail": "友達リクエスト送信失敗",
+		"accepted": "友達リクエストが承認されました",
+		"rejected": "友達リクエストが拒否されました",
+		"requestfail": "リクエストの処理失敗",
+		"nopending": "保留中のリクエストはありません",
+		"cancelrequest": "友達リクエストをキャンセル",
+		"canceled": "友達リクエストがキャンセルされました",
+		"errorcancel": "リクエストキャンセル失敗",
+		"remove": "友達を削除",
+		"removed": "友達リストから削除しました",
+		"acceptrequest": "友達リクエストを承認",
+		"rejectrequest": "友達リクエストを拒否",
+		"block": "ブロック",
+		"blocked": "ユーザーをブロックしました",
+		"unblock": "ブロック削除",
+		"unblocked": "ブロックを削除しました",
+		"failblock": "ブロック失敗",
+		"processing": "処理中...",
+		"confirmblock": "本当にこのユーザーをブロックしますか?",
+		"confirmunblock": "本当にブロックを削除しますか?",
+		"noblocked": "ブロックされたユーザーはいません",
+		"nofriends": "まだ友達がいません",
+		"delete": "削除",
+		"deleting": "削除中...",
+		"confirmremove": "本当にユーザーを友達リストから削除しますか?",
+		"blockedusers": "ブロックされたユーザー",
+		"prequests": "リクエスト"
+	},
+
+	"userprofile": {
+		"sendmessage": "メッセージを送る",
+		"loading": "読み込み中...",
+		"friends": "友達: ",
+		"posts": "投稿: ",
+		"writebio": "自己紹介を書く...",
+		"feed": "あなたのフィード",
+		"noaccess": "このプロフィールにはアクセスできません",
+		"userblocked": "このユーザーはブロックされています",
+		"online": "オンライン",
+		"offline": "オフライン"
+	},
+
+	"loginpage": {
+		"login": "ログイン",
+		"username": "ユーザーネーム",
+		"password": "パスワード",
+		"noaccount": "まだアカウントをお持ちでないですか ?",
+		"create": "新しいアカウントを作成"
+	},
+
+	"registerpage": {
+		"register": "登録",
+		"loginto": "アカウントにログインする",
+		"alreadyhave": "すでにアカウントをお持ちですか ?",
+		"registerfail": "登録が失敗しました",
+		"serverfail": "サーバに接続できません",
+		"email": "メールアドレス"
+	},
+
+	"editprofile": {
+		"edit": "プロフィールを",
+		"name": "名前",
+		"bio": "自己紹介",
+		"picture": "プロフィール写真",
+		"cover": "カバー写真",
+		"format": "対応形式: JPEG, PNG, WebP (最大5MB)",
+		"save": "保存",
+		"cancel": "キャンセル",
+		"changes": "変更が保存されていません。 保存せずに終了しますか?"
+	},
+
+	"confirmdialog": {
+		"discard": "やめる",
+		"stay": "続ける"
+	},
+
+	"comment-section": {
+		"deletecomment": "削除",
+		"leavecomment": "コメントを追加",
+		"submitcomment": "追加",
+		"loadingcomments": "コメント読み込み中...",
+		"replycomment": "返信",
+		"leavereply": "このコメントに返信...",
+		"confirmdelete": "本当にコメントを削除しますか ?"
+	},
+
+	"common": {
+		"yes": "はい",
+		"no": "いいえ"
+	},
+
+	"feedpage": {
+		"myfeed": "私のフィード",
+		"postoutfit": "コーデを投稿する",
+		"noposts": "表示する投稿がありません",
+		"discover": "おすすめ",
+		"friends": "友達"
+	},
+
+	"post": {
+		"editpost": "投稿を編集",
+		"title": "タイトル",
+		"caption": "キャプション",
+		"changes": "変更が保存されていません。 保存せずに終了しますか?",
+		"saving": "保存中...",
+		"picture": "コーデ写真",
+		"posting": "投稿中...",
+		"submit": "投稿する",
+		"edit": "編集",
+		"report": "通報",
+		"confirmdelete": "本当に投稿を削除しますか?"
+	}
+}

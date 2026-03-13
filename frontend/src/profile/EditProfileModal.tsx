@@ -4,6 +4,7 @@ import { useModalAnimation } from "../common/hooks/useModalAnimation";
 import { ConfirmDialog } from "../common/components/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../common/hooks/useUnsavedChangesGuard";
 import { useBeforeUnload } from "../common/hooks/useBeforeUnload";
+import { useTranslation } from "react-i18next";
 
 interface EditProfileModalProps {
 	onClose: () => void;
@@ -28,6 +29,9 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 
 	// Function that runs the closing animation and then calls onClose() after the specified duration
 	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });
+
+	//Function to translate
+	const { t } = useTranslation();
 
 	// Save profile changes via API
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,9 +65,9 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 						className={`modal-content-profile ${fadeOut ? "fade-out" : "fade-in"}`}
 						onClick={(e) => e.stopPropagation()}
 					>
-						<h2>Edit Profile</h2>
+						<h2>{t('editprofile.edit')}</h2>
 						<form onSubmit={handleSubmit}>
-						<label>Name</label>
+						<label>{t('editprofile.name')}</label>
 						<textarea
 							value={displayName}
 							onChange={(e) => setDisplayName(e.target.value)}
@@ -88,23 +92,23 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 						>
 							{bio.length} / {MAX_BIO_LENGTH}
 						</div>
-						<label>Profile Picture</label>
+						<label>{t('editprofile.picture')}</label>
 						<input
 							type="file"
 							accept="image/jpeg,image/jpg,image/png,image/webp"
 							onChange={handleAvatarChange}
 						/>
 						<small className="helper-text">
-							Accepted formats: JPEG, PNG, WebP (Max 5MB)
+							{t('editprofile.format')}
 						</small>
-						<label>Cover Picture</label>
+						<label>{t('editprofile.cover')}</label>
 						<input
 							type="file"
 							accept="image/jpeg,image/jpg,image/png,image/webp"
 							onChange={handleCoverChange}
 						/>
 						<small className="helper-text">
-							Accepted formats: JPEG, PNG, WebP (Max 5MB)
+							{t('editprofile.format')}
 						</small>
 						{errorMessage && (
 							<div className="error-message shake-horizontal">
@@ -113,10 +117,10 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 						)}
 						<div className="modal-actions">
 							<button type="submit" className="modal-btn">
-								Save
+								{t('editprofile.save')}
 							</button>
 							<button type="button" className="modal-btn" onClick={requestClose}>
-								Cancel
+								{t('editprofile.cancel')}
 							</button>
 						</div>
 						</form>
@@ -126,7 +130,7 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 			)}
 			{showConfirm && (
 				<ConfirmDialog
-					message="Looks like you've made some changes. Are you sure you want to exit without saving?"
+					message={t('editprofile.changes')}
 					onConfirm={confirmDiscard}
 					onCancel={cancelDiscard}
 				/>

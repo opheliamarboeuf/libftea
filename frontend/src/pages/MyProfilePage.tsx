@@ -8,12 +8,14 @@ import { CreatePostModal } from "../posts/components/CreatePostModal";
 import { Post } from "../context/UserContext";
 import { fetchUserPosts } from "../posts/components/fetchUserPosts";
 import { UserPostsList } from "../posts/components/UserPostsList";
+import { useTranslation } from "react-i18next";
 
 const ProfilePage = () => {
 	const { user } = useUser();
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showPostModal, setShowPostModal] = useState(false);
 	const [posts, setPosts] = useState<Post[]>([]);
+	const { t } = useTranslation();
 
 	if (!user) return <Navigate to="/" replace />;
 
@@ -47,11 +49,11 @@ const ProfilePage = () => {
 					</div>
 					<p className="display-username">{user.username}</p>
 					<div className="stats">
-						<span>Friends: {user.friends?.length ?? 0}</span>
-						<span>Posts: {posts.length}</span>
+						<span>{t('userprofile.friends')}{user.friends?.length ?? 0}</span>
+						<span>{t('userprofile.posts')}{posts.length}</span>
 					</div>
 					<div className="bio">
-						<p>{user.profile.bio || "Write your bio here..."}</p>
+						<p>{user.profile.bio || t('userprofile.writebio')}</p>
 					</div>
 				</div>
 
@@ -67,13 +69,13 @@ const ProfilePage = () => {
 							alt="Cover"
 						/>
 						<button className="edit-profile-btn" onClick={() => setShowEditModal(true)}>
-							Edit Profile
+							{t('editprofile.edit')}
 						</button>
 					</div>
 					<div className="posts">
 						<button className="expand-btn expand-btn-right" onClick={() => setShowPostModal(true)}>
 							<span className="icon">＋</span>
-  							<span className="expand-btn-text">Post an outfit</span>
+  							<span className="expand-btn-text">{t('feedpage.postoutfit')}</span>
 						</button>
 					<UserPostsList posts = {posts} onPostDeleted={loadPosts} />
 					</div>

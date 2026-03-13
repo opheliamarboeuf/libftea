@@ -2,15 +2,16 @@ import { useBlocked } from "./hooks";
 import { BlockFriendButton } from "./BlockFriendButton";
 import { Link } from "react-router-dom"
 import "./friends.css"
+import { useTranslation } from "react-i18next";
 
 export function BlockedList() {
 	const { blocked } = useBlocked();
 	const API_URL = "http://localhost:3000";
-
+	const { t } = useTranslation();
 
 	return (
 		<div>
-			{blocked.length === 0 && <p>No blocked users</p>}
+			{blocked.length === 0 && <p>{t("friends.noblocked")}</p>}
 				{blocked.map(blocked => (
 					<div
 					key={blocked.id}

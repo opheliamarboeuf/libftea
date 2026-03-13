@@ -8,6 +8,7 @@ import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { EditPostModal } from "./EditPostModal";
 import { LikeButton } from "../../likes/LikeButton";
 import { CommentSection } from "../../comments/CommentSection";
+import { useTranslation } from "react-i18next";
 
 interface UserPostsListProps {
 	posts: Post[];
@@ -19,6 +20,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
     
 	const navigate = useNavigate();
 	const { user } = useUser();
+	const { t } = useTranslation();
 	
 	const {
 		openMenuId,
@@ -68,16 +70,16 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 					<div className="menu-dropdown">
 						{post.author.id === user.id ? (
 							<>
-								<button onClick={() => handleEdit(post)}>Edit</button>
+								<button onClick={() => handleEdit(post)}>{t('post.edit')}</button>
 								<button 
 									onClick={() => setPostToDelete(post.id)}
 									disabled={isDeleting}
 								>
-									{isDeleting? "Deleting..." : "Delete"}
+									{isDeleting? t('friends.deleting') : t('friends.delete')}
 								</button>
 							</>
 						) : (
-							<button onClick={() => handleReport(post.id)}>Report</button>
+							<button onClick={() => handleReport(post.id)}>{t('post.report')}</button>
 						)}
 					</div>
 				)}
@@ -117,7 +119,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message="Are you sure you want to delete your post?"
+				message={t('post.confirmdelete')}
 				onConfirm={confirmDelete}
 				onCancel={cancelDelete}
 			/>

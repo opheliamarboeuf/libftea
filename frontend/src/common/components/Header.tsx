@@ -6,12 +6,15 @@ import { useFriendsSocket } from "../../friends/useFriendsSocket";
 import "./Header.css"
 import "../../App.css"
 import { friendsSocket } from "../../socket/socket";
+import { useTranslation } from "react-i18next";
+import LanguageMenu from "./LanguageMenu";
 
 export const Header = () => {
 	const navigate = useNavigate();
 	const { user, setUser, refreshUser } = useUser();
 	const API_URL = "http://localhost:3000";
 	const [menuHidden, setMenuHidden] = useState(false);
+	const { t } = useTranslation();
 
 	useFriendsSocket(user?.id, {
 		onRequestSent: () => { refreshUser(); },
@@ -55,6 +58,7 @@ export const Header = () => {
 			</div>
 			<div className="search-bar-container"><SearchBar /></div>
 			<div className="header-right">
+				<LanguageMenu />
 				<div 
 					className={`avatar-menu ${menuHidden ? 'menu-hidden' : ''}`}
 					onMouseLeave={() => setMenuHidden(false)}
@@ -70,13 +74,13 @@ export const Header = () => {
 					</div>
 					<div className="dropdown-menu">
 						<button onClick={() => handleNavigate('/myprofile')}>
-							<span className="label">My Profile</span>
+							<span className="label">{t('header.profile')}</span>
 						</button>
 						<button onClick={() => handleNavigate('/settings')}>
-							<span className="label">Settings</span>
+							<span className="label">{t('header.settings')}</span>
 						</button>
 						<button onClick={handleLogout}>
-							<span className="label">Log Out</span>
+							<span className="label">{t('header.logout')}</span>
 						</button>
 					</div>
 				</div>

@@ -6,6 +6,7 @@ import { useModal } from "../context/ModalContext";
 import { Link } from "react-router-dom";
 import { useFriendsSocket } from "./useFriendsSocket";
 import "./friends.css"
+import { useTranslation } from "react-i18next";
 
 export function PendingRequests() {
 	const { pending, refetch } = usePendingRequests();
@@ -13,6 +14,7 @@ export function PendingRequests() {
 	const { showModal } = useModal();
 	const { refreshUser, user } = useUser();
 	const API_URL = "http://localhost:3000";
+	const { t } = useTranslation();
 
 	const { emit } = useFriendsSocket(user?.id, {
 		onRequestAccepted: () => {
@@ -39,7 +41,7 @@ export function PendingRequests() {
 
 	return (
 		<div>
-			{pending.length === 0 && <p>No pending requests</p>}
+			{pending.length === 0 && <p>{t('friends.nopending')}</p>}
 			<div style={{ maxWidth: "300px" }}>
 				{pending.map(user => (
 					<div 
@@ -72,14 +74,14 @@ export function PendingRequests() {
 									onClick={() => handleAccept(user.id)}
 									disabled={loading}
 								>
-									Accept
+									{t('friends.accept')}
 								</button>
 								<button
 									className="friend-action-btn"
 									onClick={() => handleReject(user.id)}
 									disabled={loading}
 								>
-									Reject
+									{t('friends.reject')}
 								</button>
 							</div>
 						</div>

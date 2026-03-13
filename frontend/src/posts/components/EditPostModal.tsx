@@ -8,6 +8,7 @@ import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuar
 import { Post
 
  } from "../../context/UserContext";
+import { useTranslation } from "react-i18next";
 interface EditPostModalProps {
 	post: Post,
 	onPostEdited: () => void;
@@ -18,6 +19,9 @@ export function EditPostModal ({ post, onPostEdited, onClose }: EditPostModalPro
 
 	// Function that runs the closing animation and then calls onClose() after the specified duration
 	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });
+
+	// Function to translate text
+	const { t } = useTranslation();
 
 	// Custom hook that manages a post creation
 	const {
@@ -64,9 +68,9 @@ export function EditPostModal ({ post, onPostEdited, onClose }: EditPostModalPro
 					className={`modal-content-post ${fadeOut ? "fade-out" : "fade-in"}`}
 					onClick={(e) => e.stopPropagation()}
 				>
-					<h2>Edit your post</h2>
+					<h2>{t('post.editpost')}</h2>
 					<form onSubmit={handleSubmit}>
-						<label>Title</label>
+						<label>{t('post.title')}</label>
 						<textarea
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
@@ -79,7 +83,7 @@ export function EditPostModal ({ post, onPostEdited, onClose }: EditPostModalPro
 						>
 							{title.length} / {MAX_TITLE_LENGTH}
 						</div>
-						<label>Caption</label>
+						<label>{t('post.caption')}</label>
 						<textarea
 							value={caption}
 							onChange={(e) => setCaption(e.target.value)}
@@ -100,8 +104,8 @@ export function EditPostModal ({ post, onPostEdited, onClose }: EditPostModalPro
 						)}
 						<div className="modal-actions">
 							<button type="submit"  className="modal-btn" disabled={isLoading}> 
-								{isLoading ? "Saving..." : "Submit"} </button>
-							<button type="button" className="modal-btn" onClick={requestClose}> Cancel </button>
+								{isLoading ? t('post.saving') : t('editprofile.save')} </button>
+							<button type="button" className="modal-btn" onClick={requestClose}> {t('editprofile.cancel')} </button>
 						</div>
 					</form>
 				</div>
@@ -110,7 +114,7 @@ export function EditPostModal ({ post, onPostEdited, onClose }: EditPostModalPro
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message="Looks like you've made some changes. Are you sure you want to exit without saving?"
+				message={t('post.changes')}
 				onConfirm={confirmDiscard}
 				onCancel={cancelDiscard}
 			/>

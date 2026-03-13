@@ -3,14 +3,16 @@ import { BlockFriendButton } from "./BlockFriendButton";
 import { RemoveFriendButton } from "./RemoveFriendButton";
 import { Link } from "react-router-dom"
 import "./friends.css"
+import { useTranslation } from "react-i18next";
 
 export function FriendsList() {
 	const { friends } = useFriends();
 	const API_URL = "http://localhost:3000";
+	const { t } = useTranslation();
 
 	return (
 		<div>
-			{friends.length === 0 && <p>No friends yet</p>}
+			{friends.length === 0 && <p>{t('friends.nofriends')}</p>}
 			<div style={{ maxWidth: "300px" }}>
 				{friends.map(friend => (
 					<div
