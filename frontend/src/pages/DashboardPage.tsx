@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import "./DashboardPage.css"
@@ -8,13 +7,16 @@ const DashboardPage = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	const isModRoute = location.pathname.startsWith("/dashboard/moderation");
+	const isModRoute = location.pathname.startsWith("/dashboard/mod");
 	const activeTab = isModRoute ? "MOD" : "ADMIN";
 
 	if (!user)
 		return <Navigate to="/" replace />;
+    if (location.pathname === "/dashboard") {
+        return <Navigate to="/dashboard/mod/reports/posts/pending" replace />;
+    }
 
-	// Si MOD, pas de tabs, juste le contenu
+	// if MOD, no tabs
 	if (user.role === "MOD") {
 		return (
 			<div className="dashboard-page">
@@ -38,7 +40,7 @@ const DashboardPage = () => {
 					</button>
 					<button
 						className={activeTab === "MOD" ? "active" : ""}
-						onClick={() => navigate("/dashboard/moderation/reports/posts/pending")}
+						onClick={() => navigate("/dashboard/mod/reports/posts/pending")}
 					>
 						Moderator Dashboard
 					</button>

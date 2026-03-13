@@ -10,17 +10,17 @@ export function ModDashboard() {
 					<div>
 						<strong>Users Management</strong>
 						<ul>
-							<li><NavLink to="/dashboard/moderation/users">All Users</NavLink></li>
-							<li><NavLink to="/dashboard/moderation/moderators">Moderators</NavLink></li>
+							<li><NavLink to="/dashboard/mod/users">All Users</NavLink></li>
+							<li><NavLink to="/dashboard/mod/moderators">Moderators</NavLink></li>
 						</ul>
 					</div>
 					<div>
 						<strong>Post Reports</strong>
 						<ul>
-							<li><NavLink to="/dashboard/moderation/reports/posts/pending">Pending reports</NavLink></li>
-							<li><NavLink to="/dashboard/moderation/reports/posts/mine">Assigned to me</NavLink></li>
-							<li><NavLink to="/dashboard/moderation/reports/posts/all/assigned">All assigned reports</NavLink></li>
-							<li><NavLink to="/dashboard/moderation/reports/posts/all/handled">Resolved</NavLink></li>
+							<li><NavLink to="/dashboard/mod/reports/posts/pending">Pending reports</NavLink></li>
+							<li><NavLink to="/dashboard/mod/reports/posts/mine">Assigned to me</NavLink></li>
+							<li><NavLink to="/dashboard/mod/reports/posts/all/assigned">All assigned reports</NavLink></li>
+							<li><NavLink to="/dashboard/mod/reports/posts/all/handled">Resolved</NavLink></li>
 						</ul>
 					</div>
 					<div>

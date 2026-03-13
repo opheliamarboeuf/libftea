@@ -17,13 +17,13 @@ export const ModerationRoutes = (
 				<Route path="reports/users/all/assigned" element={<AllAssignedPostReports />}/>
 				<Route path="reports/users/all/handled" element={<AllHandledPostReports />}/>
 			</Route>
-			<Route path="moderation" element={<ModDashboard />}> 
+			<Route path="mod" element={<ModDashboard />}> 
 				<Route path="reports/posts/pending" element={<PendingReports />}/>
 				<Route path="reports/posts/mine" element={<MyPostReports />}/>
 				<Route path="reports/posts/all/assigned" element={<AllAssignedPostReports />}/>
 				<Route path="reports/posts/all/handled" element={<AllHandledPostReports />}/>
 			</Route>
 		</Route>
-		<Route path="/moderation/reports/posts/:postId" element={<PostReportPage />}/>
+		<Route path="/mod/reports/posts/:postId" element={<PostReportPage />}/>
 	</>
 )
