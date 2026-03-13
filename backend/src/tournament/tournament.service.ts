@@ -12,6 +12,17 @@ export class TournamentService {
 	async createTournament(data: CreateTournamentDto, userId: number, userRole: Role){
 		if ( !hasPermission(userRole, "CREATE_TOURNAMENT"))
 			throw new BadRequestException("You do not have the right to create a tournament");
+	const overlappingBattle = await this.prisma.battle.findFirst({
+		where: {
+			status: { in: ["ACTIVE", "UPCOMING"] },
+			startsAt: { lte: new Date(data.endDate) },
+			endsAt: { gte: new Date(data.startDate) },
+		},
+	});
+	if (overlappingBattle)
+		throw new BadRequestException(
+			`A tournament is already planned from ${overlappingBattle.startsAt.toLocaleDateString()} to ${overlappingBattle.endsAt.toLocaleDateString()}`
+    );
 		try
 		{
 			const battle = await this.prisma.$transaction(async (prisma) =>
