@@ -38,10 +38,10 @@ export function CommentSection({ postId }: Props) {
                     <p>
                         <strong>
 							<Link
-								to={`/users/${reply.user.id}`}
+								to={`/users/${reply.User.id}`}
 								style={{ textDecoration: "none", color: "inherit" }}
 							>
-							{reply.user.username}
+							{reply.User.username}
 							</Link>
 						</strong> • {new Date(reply.createdAt).toLocaleString()}
                     </p>
