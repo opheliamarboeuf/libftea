@@ -1,18 +1,18 @@
 import "../ReportList.css"
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PostReportType } from '../../../types';
+import { UserReportType } from '../../../types';
 import { moderationApi } from '../../../api';
 import { useUser } from '../../../../context/UserContext';
 import { ConfirmDialog } from '../../../../common/components/ConfirmDialog';
 import { HandleReportModal } from '../handleReportModal';
 
-interface PostReportListProps {
-	reports: PostReportType[];
+interface UserReportListProps {
+	reports: UserReportType[];
 	onUpdate?: () => void;
 }
 
-export function PostReportList({ reports, onUpdate }: PostReportListProps) {
+export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 	const API_URL = 'http://localhost:3000';
 	const { user } = useUser();
 	const [showConfirm, setShowConfirm] = useState(false);
@@ -39,20 +39,7 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 			{reports.map((report) => (
 				<div key={report.id} className="report-card">
 					<div className="report-header">
-						<div className="report-header-content">
-							<h3 className="report-title">{report.reportedPost.title}</h3>
-							<div className="report-meta">
-								<span
-									className="report-author"
-									onClick={() => goToProfile(report.reportedPost.author.id)}
-								>
-									{report.reportedPost.author.username},
-								</span>
-								<span className="report-date">
-									{` created ${new Date(report.reportedPost.createdAt).toLocaleString()}`}
-								</span>
-							</div>
-						</div>
+						<div className="report-header-content"></div>
 						<div className="report-btn">
 							{report.status === 'ASSIGNED' && report.handledBy && (
 								<span className="assigned-to">
@@ -91,8 +78,36 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 						</div>
 					</div>
 					<div className="report-content">
-						<div className="report-image">
-							<img src={`${API_URL}${report.reportedPost.imageUrl}`} alt="Post" />
+						<div className="report-user">
+							Username:
+							<span
+								className="report-target-username"
+								onClick={() => goToProfile(report.reportedUser.id)}
+							>
+								{report.reportedUser.username},
+							</span>
+							{report.reportedUser.profile.displayName && (
+								<span className="report-target-displayname">
+									Display name: {report.reportedUser.profile.displayName},
+								</span>
+							)}
+							{report.reportedUser.profile.bio && (
+								<span className="report-target-dispbiolayname">
+									Bio: {report.reportedUser.profile.bio},
+								</span>
+							)}
+							<div className="report-avatar">
+								<img
+									src={`${API_URL}${report.reportedUser.profile.avatarUrl}`}
+									alt="Avatar"
+								/>
+							</div>
+							<div className="report-cover">
+								<img
+									src={`${API_URL}${report.reportedUser.profile.coverUrl}`}
+									alt="Cover"
+								/>
+							</div>
 						</div>
 						<div className="report-info">
 							<div className="report-pre-handle">
@@ -124,11 +139,11 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 								{report.reportCount && report.reportCount > 1 && (
 									<div className="report-more">
 										<button
-											onClick={() =>
-												navigate(
-													`/moderation/reports/posts/${report.reportedPost.id}`,
-												)
-											}
+										// onClick={() =>
+										// 	navigate(
+										// 		`/moderation/reports/posts/${report.reportedPost.id}`,
+										// 	)
+										// }
 										>
 											View all the reports ({report.reportCount})
 										</button>
@@ -168,11 +183,11 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 							)}
 						</div>
 					</div>
-					{report.reportedPost.caption && (
+					{/* {report.reportedPost.caption && (
 						<div className="report-caption">
 							<p>{report.reportedPost.caption}</p>
 						</div>
-					)}
+					)} */}
 				</div>
 			))}
 			{showConfirm && reportToUnassign !== null && (

@@ -11,7 +11,19 @@ import { ReportDto } from "./dto/report.dto";
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ModerationController {
 		constructor(private readonly moderationService: ModerationService) {}
-	
+
+	// ---------------------------------- USER REPORTS ----------------------------------
+
+	@Roles(Role.ADMIN)
+	@Get('reports/users/pending')
+	async getAllPendingUserReports(
+		@Req() req: Request & { user: { role: Role } }
+		) {
+			return this.moderationService.getAllPendingUserReports(req.user.role)
+		}
+
+	// ---------------------------------- POST REPORTS ----------------------------------
+
 	@Post('reports/posts/:id')
 	async reportPost(
 		@Param('id', ParseIntPipe) id: number,
@@ -20,6 +32,15 @@ export class ModerationController {
 		) {
 			return this.moderationService.reportPost(id, dto, req.user.id);
 		}
+	
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/pending')
+	async getAllPendingPostReports(
+		@Req() req: Request & { user: { role: Role } }
+	) {
+		return this.moderationService.getAllPendingPostReports(req.user.role)
+	}
+
 	@Roles(Role.ADMIN, Role.MOD)
 	@Get('reports/posts/all/assigned')
 	async getAllAssignedPostReports(
@@ -53,21 +74,6 @@ export class ModerationController {
 			return this.moderationService.getAdminLogs(req.user.id, req.user.role);
 		}
 
-	@Roles(Role.ADMIN, Role.MOD)
-	@Get('reports/users/pending')
-	async getAllPendingUserReports(
-		@Req() req: Request & { user: { role: Role } }
-		) {
-			return this.moderationService.getAllPendingUserReports(req.user.role)
-		}
-
-	@Roles(Role.ADMIN, Role.MOD)
-	@Get('reports/posts/pending')
-	async getAllPendingPostReports(
-		@Req() req: Request & { user: { role: Role } }
-	) {
-		return this.moderationService.getAllPendingPostReports(req.user.role)
-	}
 
 	@Roles(Role.ADMIN, Role.MOD)
 	@Get('reports/posts/mine')

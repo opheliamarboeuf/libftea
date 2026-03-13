@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { profileApi } from "../api";
-import { ReportUserType, ReportUserCategoryType } from "../types";
+import { ReportCategory, CreateReportType } from "../../moderation/types";
 
-const MAX_DESCRIPTION_LENGTH = 250;
+const MAX_DESCRIPTION_LENGTH = 150;
 
 export function useUserReport(targetId) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [description, setDescription] = useState("");
-	const [category, setCategory] = useState<ReportUserCategoryType | null>(null);
+	const [category, setCategory] = useState<ReportCategory | null>(null);
 
 	const handlePostReport = async () => {
 		setIsLoading(true);
@@ -26,7 +26,7 @@ export function useUserReport(targetId) {
 		}
 
 		try {
-			const payload: ReportUserType = {
+			const payload: CreateReportType = {
 				category: category,
 				description,
 			};

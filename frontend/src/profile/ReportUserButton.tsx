@@ -6,7 +6,7 @@ import { useBeforeUnload } from "../common/hooks/useBeforeUnload";
 import { ConfirmDialog } from "../common/components/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../common/hooks/useUnsavedChangesGuard";
 import { useUserReport } from "./hooks/useUserReport";
-import { ReportUserCategoryType } from "./types";
+import { ReportCategory } from "../moderation/types";
 import { useModal } from "../context/ModalContext";
 
 interface ReportUserButtonProps {
@@ -104,11 +104,11 @@ function ReportUserModal ({ targetId, onPostReported, onClose }: ReportUserModal
 						<label>Category</label>
 						<select
 							value={category || ""}
-							 onChange={(e) => setCategory(e.target.value as ReportUserCategoryType)}
+							 onChange={(e) => setCategory(e.target.value as ReportCategory)}
 							className="report-post-input"
 						>
 						<option value="" disabled>Select a report category</option>
-						  {Object.values(ReportUserCategoryType).map((r) => (
+						  {Object.values(ReportCategory).map((r) => (
 							<option key={r} value={r}>{r.replaceAll("_", " ")}</option>
 							))}
 						</select>
