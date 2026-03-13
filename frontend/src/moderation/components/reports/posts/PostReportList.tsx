@@ -5,7 +5,7 @@ import "./PostReportList.css";
 import { moderationApi } from "../../../api";
 import { useUser } from "../../../../context/UserContext";
 import { ConfirmDialog } from "../../../../common/components/ConfirmDialog";
-import { HandleReportModal } from "../handleReportModal";
+import { HandleReportModal } from "../HandleReportModal";
 
 interface PostReportListProps {
 	reports: PostReportType[];
@@ -121,10 +121,9 @@ export function PostReportList( {reports, onUpdate}: PostReportListProps ) {
 								</div>
 								{report.reportCount && report.reportCount > 1 && (
 									<div className="report-more" >
-									{/* <button onClick={setShowAllReports(report.reportedPost.id)}>
+									<button onClick={() => navigate(`/moderation/reports/posts/${report.reportedPost.id}`)}>
 										View all the reports ({report.reportCount})
-									</button> */}
-									<p>TEST</p>
+									</button>
 									</div>
 								)}
 							</div>

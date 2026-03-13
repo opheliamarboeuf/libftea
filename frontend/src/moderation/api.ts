@@ -84,7 +84,7 @@ export const moderationApi = {
 		return data;
 	},
 
-	fetchAllReportsForThisPost: async(reportId: number): Promise<SimpleReportType[]> => {
+	fetchAllReportsForThisPost: async(reportId: number): Promise<PostReportType[]> => {
 		const res = await fetch(`${API_URL}/moderation/reports/posts/all/${reportId}`, {
 			headers: {
 				"Content-Type": "application/json",
@@ -120,7 +120,7 @@ export const moderationApi = {
 		return data;
 	},
 
-		fetchMyPostReports: async(): Promise<PostReportType[]> => {
+	fetchMyPostReports: async(): Promise<PostReportType[]> => {
 		const res = await fetch(`${API_URL}/moderation/reports/posts/mine`, {
 			headers: {
 				"Content-Type": "application/json",

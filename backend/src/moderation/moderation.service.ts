@@ -220,12 +220,24 @@ export class ModerationService {
 				},
 				select: {
 					id: true,
-					reporter: {select: {id: true, username: true}},
+					reporter: { select: { id: true, username: true } },
+					reportedPost: {
+						select: {
+							id: true,
+							title: true,
+							caption: true,
+							imageUrl: true,
+							createdAt: true,
+							author: { select: { id: true, username: true } },
+						},					
+					},
 					reportCategory: true,
 					reportDescription: true,
 					createdAt: true,
-				}
-			})
+					status: true,
+					handledBy: { select: { id: true, username: true } },
+				},
+			});
 			return reports;
 		}
 		catch (error){
