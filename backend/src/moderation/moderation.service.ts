@@ -255,7 +255,7 @@ export class ModerationService {
 				throw new BadRequestException("You do not have the right to review posts reports");
 			}
 
-			const reportedPosts = await this.prisma.report.findMany({
+			const pendingReports = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: {not: null},
 					status: ReportStatus.PENDING,
@@ -281,20 +281,36 @@ export class ModerationService {
 				}
 			});
 
-			// Filter to keep only the first report for each unique post
-			const seenPostIds = new Set<number>(); // Create a Set to track post IDs we've already seen. A Set only stores unique values
-			// Initialize an array to store only one report per post
+			// Get all ASSIGNED reports for this post
+			const assignedReports = await this.prisma.report.findMany({
+				where: {
+					reportedPostId: {not: null},
+					status: ReportStatus.ASSIGNED,
+				},
+				select: {
+					reportedPost: {select: {id: true}},
+				}
+			});
+			// Create a set if postIds already assigned
+			const assignedPostIds = new Set(assignedReports.map(r => r.reportedPost.id));
+
+			// Filtre les reports PENDING pour exclure ceux dont le post est déjà assigné 
+			const filteredPendingReports = pendingReports.filter(report => !assignedPostIds.has(report.reportedPost.id));
+
+			// Garde un seul report par post
+			const seenPostIds = new Set<number>();
 			const uniqueReports = [];
-			// Loop through each report in the list of reported posts.
-			for (const report of reportedPosts) {
+			// Loop through each report in the list of filtered pending reports.
+			for (const report of filteredPendingReports) {
 				const postId = report.reportedPost.id;
-				if (!seenPostIds.has(postId)) { // Check if we have NOT already encountered this post ID
-					uniqueReports.push(report); //  If it's the first time, add this report to the uniqueReports array.
+				// Check if we have NOT already encountered this post ID
+				if (!seenPostIds.has(postId)) {
+					uniqueReports.push(report); // If it's the first time, add this report to the uniqueReports array.
 					seenPostIds.add(postId); // Add the post ID to the Set so we don't include another report for this post later.
 				}
 			}
 
-			
+			// Compte le nombre de reports par post
 			const postIds = uniqueReports.map(r => r.reportedPost.id);
 			const allReports = await this.prisma.report.findMany({
 				where: {
@@ -352,7 +368,7 @@ export class ModerationService {
 				},
 				orderBy: { createdAt: "asc" }
 			});
-			// Keep only the first report for each unique post
+			// Keep only the first report for eeach unique post
 			const seenPostIds = new Set<number>();
 			const uniqueReports = [];
 			for (const report of myAssignedReports) {
@@ -362,13 +378,11 @@ export class ModerationService {
 					seenPostIds.add(postId);
 				}
 			}
-			// Count all assigned reports per post for this moderator
+			// Count all reports per post
 			const postIds = uniqueReports.map(r => r.reportedPost.id);
 			const allReports = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: {in: postIds},
-					status: ReportStatus.ASSIGNED,
-					handledById: userId,
 				},
 				select: {
 					reportedPost: {select: {id: true}},
@@ -429,12 +443,11 @@ export class ModerationService {
 					seenPostIds.add(postId);
 				}
 			}
-			// Count all assigned reports per post
+			// Count all reports per post
 			const postIds = uniqueReports.map(r => r.reportedPost.id);
 			const allReports = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: {in: postIds},
-					status: ReportStatus.ASSIGNED,
 				},
 				select: {
 					reportedPost: {select: {id: true}},

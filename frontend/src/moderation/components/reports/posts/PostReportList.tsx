@@ -5,7 +5,7 @@ import "./PostReportList.css";
 import { moderationApi } from "../../../api";
 import { useUser } from "../../../../context/UserContext";
 import { ConfirmDialog } from "../../../../common/components/ConfirmDialog";
-import { HandleReportModal } from "../HandleReportModal";
+import { HandleReportModal } from "../handleReportModal";
 
 interface PostReportListProps {
 	reports: PostReportType[];
