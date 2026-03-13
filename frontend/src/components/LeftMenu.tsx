@@ -64,7 +64,7 @@ export const LeftMenu = () => {
 				if (user.friends && user.friends.length > 0) {
 					navigate(`/chat/${user.friends[0].id}`);
 				} else {
-					showModal("Boo, no one to talk to, huh?");
+					showModal("Add a friend to start a conversation.");
 				}
 			}}>
 				<div style={{position: 'relative' }}>

@@ -164,4 +164,26 @@ export class ChatService {
 			},
 		});
 	}
+
+	async createBattleInvite(
+		conversationId: number,
+		senderId: number,
+		battleId: number,
+		battleTheme: string,
+	): Promise<any> {
+		return this.prisma.message.create({
+			data: {
+				content: `Tournament invitation : ${battleTheme}`,
+				senderId,
+				conversationId,
+				type: 'BATTLE_INVITE',
+				battleId,
+			},
+			include: {
+				sender: {
+					select: { id: true, username: true, profile: true },
+				},
+			},
+		});
+	}
 }

@@ -30,4 +30,23 @@ export class ChatController {
 	) {
 		return this.chatService.markAsRead(Number(messageId));
 	}
+
+	@Post('invite-to-battle')
+	async inviteToBattle(
+		@Req() req: any,
+		@Body() data: { friendId: number; battleId: number; battleTheme: string },
+	) {
+		const userId = req.user.id;
+
+		const conversation = await this.chatService.getOrCreateConversation(userId, data.friendId);
+
+		const message = await this.chatService.createBattleInvite(
+			conversation.id,
+			userId,
+			data.battleId,
+			data.battleTheme,
+		);
+
+		return message;
+	}
 }

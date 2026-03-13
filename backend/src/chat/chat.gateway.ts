@@ -9,6 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server , Socket } from 'socket.io';
 import { ChatService } from './chat.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @WebSocketGateway({
 	cors: {
@@ -19,7 +20,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	server: Server;
 
-	constructor(private chatService: ChatService) {}
+	constructor(
+		private chatService: ChatService,
+		private prisma: PrismaService,
+	) {}
 
 	handleConnection(client: Socket) {
 		console.log(`Client connected: ${client.id}`);
@@ -42,6 +46,35 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		@ConnectedSocket() client: Socket,
 		@MessageBody() data: { conversationId: number; senderId: number; content: string },
 	) {
+
+		const conversation = await this.prisma.conversation.findUnique({
+			where: { id: data.conversationId },
+			include: { users: true },
+		});
+
+		if (!conversation) {
+			return { error: 'Conversation not found' };
+		}
+
+		const otherUser = conversation.users.find(u => u.id !== data.senderId);
+		if (!otherUser) {
+			return { error: 'User not found' };
+		}
+
+		// check friendship status
+		const friendship = await this.prisma.friendship.findFirst({
+			where: {
+				OR: [
+						{ requesterId: data.senderId, addresseId: otherUser.id },
+						{ requesterId: otherUser.id, addresseId: data.senderId },
+				],
+			},
+		});
+
+		if (friendship?.status === 'BLOCKED') {
+			return { error: 'User is blocked' };
+		}
+
 		const message = await this.chatService.createMessage(
 			data.conversationId,
 			data.senderId,

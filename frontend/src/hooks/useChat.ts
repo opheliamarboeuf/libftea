@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { io, Socket } from 'socket.io-client';
+import { showModal } from '../App.css'
 
 interface Message {
 	id: number;
@@ -18,7 +19,12 @@ interface Message {
 export const useChat = (conversationId: number | null, token: string) => {
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [isTyping, setIsTyping] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 	const socketRef = useRef<Socket | null>(null);
+
+	const clearError = () => {
+		setError(null);
+	};
 
 	useEffect(() => {
 		if (!conversationId || !token) return;
@@ -55,6 +61,10 @@ export const useChat = (conversationId: number | null, token: string) => {
 			);
 		});
 
+		socketRef.current.on('battleNotification', (notification: Message) => {
+			setMessages((prev) => [...prev, notification]);
+		});
+
 		//clean disconnect
 		return () => {
 			socket.disconnect();
@@ -65,10 +75,16 @@ export const useChat = (conversationId: number | null, token: string) => {
 	const sendMessage = (content: string, senderId: number) => {
 		if (!socketRef.current || !conversationId) return;
 
+		setError(null);
+
 		socketRef.current.emit('sendMessage', {
 			conversationId,
 			senderId,
 			content,
+		}, (response: any) => {
+			if (response?.error) {
+				setError(response.error);
+			}
 		});
 	};
 
@@ -99,5 +115,7 @@ export const useChat = (conversationId: number | null, token: string) => {
 		sendMessage,
 		startTyping,
 		stopTyping,
+		error,
+		clearError,
 	};
 };

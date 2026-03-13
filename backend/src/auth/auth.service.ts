@@ -157,10 +157,40 @@ export class AuthService {
 			avatarUrl: f.requester.profile?.avatarUrl,
 		}));
 
+		const conversations = await this.prisma.conversation.findMany({
+			where: {
+				users: { some: { id: userId } },
+			},
+			include: {
+				users: {
+					select: { id: true, username: true, profile: true },
+				},
+				messages: {
+					orderBy: {createdAt: 'desc' },
+					take: 1,
+				},
+			},
+			orderBy: { createdAt: 'desc' },
+		});
+
+		const conversationsWithUnread = await Promise.all(
+			conversations.map(async (conv) => {
+				const unreadCount = await this.prisma.message.count({
+					where: {
+						conversationId: conv.id,
+						senderId: { not: userId },
+						Read: false,
+					},
+				});
+				return { ...conv, unreadCount };
+			})
+		);
+
 		return {
 			...user,
 			friends,
 			pendingRequests,
+			conversations: conversationsWithUnread,
 		};
 	}
 }

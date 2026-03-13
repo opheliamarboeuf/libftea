@@ -16,6 +16,12 @@ enum	NotificationType {
 	FRIEND_REQUEST
 }
 
+enum	MessageType {
+	TEXT
+	BATTLE_INVITE
+	BATTLE_NOTIFICATION
+}
+
 generator client {
 	provider = "prisma-client-js"
 }
@@ -122,6 +128,9 @@ model	Message {
 
 	senderId		Int
 	conversationId	Int
+
+	type			MessageType		@default(TEXT)
+	battleId		Int?
 
 	sender			User			@relation("MessageSender", fields: [senderId], references: [id])
 	conversation	Conversation	@relation(fields: [conversationId], references: [id])
