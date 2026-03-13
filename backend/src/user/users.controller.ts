@@ -1,22 +1,38 @@
-import { Controller, Get, Query, Param, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Query, Param, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request } from 'express';
+import { PostsService } from 'src/posts/posts.service';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
 	constructor(
-		private readonly usersService: UsersService
+		private readonly usersService: UsersService,
+		private readonly postService: PostsService
 	) {}
 
 	@Get('search')
-	async searchUsers(@Query('username') username: string) {
-		return this.usersService.searchUsername(username);
+	async searchUsers(@Query('username') username: string, @Req() req) {
+		return this.usersService.searchUsername(username, req.user.id);
+	}
+
+	@Get('posts')
+	async getAllUserPosts(@Req() req: Request){
+		const currentUserId = req.user?.id;
+    	if (!currentUserId) {
+        	throw new UnauthorizedException('User not authenticated');
+    }
+		return this.usersService.getAllUserPosts(currentUserId);
 	}
 
 	@Get(':id')
 	async getUserId(@Param('id') id: string, @Req() req: Request) {
 		return this.usersService.findId(Number(id), req.user.id);
+	}
+
+	@Get(':id/posts')
+	async getUserPosts(@Param('id') id: string, @Req() req: Request){
+		return this.postService.getUserPosts(Number(id), req.user?.id);
 	}
 }

@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../../context/UserContext";
 import { FaHome, FaUser, FaUsers } from "react-icons/fa";
 import { useTranslation } from 'react-i18next';
 import "./LeftMenu.css"
-import "../App.css"
+import "../../App.css"
 
 export const LeftMenu = () => {
 	

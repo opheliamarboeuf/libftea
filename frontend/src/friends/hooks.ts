@@ -17,3 +17,12 @@ export function usePendingRequests() {
 		refetch: refreshUser,
 	};
 }
+
+export function useBlocked() {
+	const { user, refreshUser } = useUser();
+
+	return {
+		blocked: user?.blockedUsers ?? [],
+		refetch: refreshUser,
+	}
+}
