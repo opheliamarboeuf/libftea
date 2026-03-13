@@ -229,7 +229,7 @@ export class ModerationService {
 							imageUrl: true,
 							createdAt: true,
 							author: { select: { id: true, username: true } },
-						},					
+						},                    
 					},
 					reportCategory: true,
 					reportDescription: true,
@@ -237,6 +237,7 @@ export class ModerationService {
 					status: true,
 					handledBy: { select: { id: true, username: true } },
 				},
+				orderBy: { createdAt: "asc" }
 			});
 			return reports;
 		}
@@ -253,6 +254,7 @@ export class ModerationService {
 			if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
 				throw new BadRequestException("You do not have the right to review posts reports");
 			}
+
 			const reportedPosts = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: {not: null},
@@ -291,7 +293,19 @@ export class ModerationService {
 					seenPostIds.add(postId); // Add the post ID to the Set so we don't include another report for this post later.
 				}
 			}
-			const reportCountByPostId = this.buildCountByKey(reportedPosts, (report) => report.reportedPost.id);
+
+			
+			const postIds = uniqueReports.map(r => r.reportedPost.id);
+			const allReports = await this.prisma.report.findMany({
+				where: {
+					reportedPostId: {in: postIds},
+				},
+				select: {
+					reportedPost: {select: {id: true}},
+				}
+			});
+			const reportCountByPostId = this.buildCountByKey(allReports, (report) => report.reportedPost.id);
+
 			return uniqueReports.map(report => ({
 				...report,
 				reportCount: reportCountByPostId[report.reportedPost.id] ?? 0,
@@ -310,6 +324,7 @@ export class ModerationService {
 			if (!hasPermission(userRole, "REVIEW_POST_REPORT")) {
 				throw new ForbiddenException("You do not have the right to review posts reports");
 			}
+	
 			const reportedPosts = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: {not: null},
@@ -327,16 +342,27 @@ export class ModerationService {
 							caption: true,
 							createdAt: true,
 							author: {select: {id: true, username: true}}
-							}
-						},
+						}
+					},
 					reportCategory: true,
 					reportDescription: true,
 					createdAt: true,
 					status: true,
 					handledBy: {select: {id: true, username: true}},
+				},
+				orderBy: { createdAt: "asc" }
+			});
+
+			const postIds = reportedPosts.map(r => r.reportedPost.id);
+			const allReports = await this.prisma.report.findMany({
+				where: {
+					reportedPostId: {in: postIds},
+				},
+				select: {
+					reportedPost: {select: {id: true}},
 				}
-			})
-			const reportCountByPostId = this.buildCountByKey(reportedPosts, (report) => report.reportedPost.id);
+			});
+			const reportCountByPostId = this.buildCountByKey(allReports, (report) => report.reportedPost.id);
 
 			return reportedPosts.map(report => ({
 				...report,
@@ -379,9 +405,20 @@ export class ModerationService {
 					createdAt: true,
 					status: true,
 					handledBy: {select: {id: true, username: true}},
+				},
+				orderBy: { createdAt: "asc" }
+			});
+
+			const postIds = reportedPosts.map(r => r.reportedPost.id);
+			const allReports = await this.prisma.report.findMany({
+				where: {
+					reportedPostId: {in: postIds},
+				},
+				select: {
+					reportedPost: {select: {id: true}},
 				}
-			})
-			const reportCountByPostId = this.buildCountByKey(reportedPosts, (report) => report.reportedPost.id);
+			});
+			const reportCountByPostId = this.buildCountByKey(allReports, (report) => report.reportedPost.id);
 
 			return reportedPosts.map(report => ({
 				...report,

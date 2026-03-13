@@ -256,11 +256,11 @@
   border: none;
   background: #fff;
   color: #333;
-  padding: 8px 16px;
+  padding: 0px 0px;
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
 .report-more button:hover {
-  background: #e0e0e0;
+  color: #888;
 }
