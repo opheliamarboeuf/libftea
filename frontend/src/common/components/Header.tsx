@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import "./Header.css"
 import "../../App.css"
 import { friendsSocket } from "../../socket/socket";
-import "../App.css"
 import "./LanguageMenu"
 import LanguageMenu from "./LanguageMenu";
 

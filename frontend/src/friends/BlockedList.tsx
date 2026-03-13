@@ -2,10 +2,12 @@ import { useBlocked } from "./hooks";
 import { BlockFriendButton } from "./BlockFriendButton";
 import { Link } from "react-router-dom"
 import "./friends.css"
+import { useTranslation } from 'react-i18next';
 
 export function BlockedList() {
 	const { blocked } = useBlocked();
 	const API_URL = "http://localhost:3000";
+	const { t } = useTranslation();
 
 
 	return (

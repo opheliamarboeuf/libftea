@@ -35,7 +35,14 @@
 		"acceptrequest": "Accepter la demande en ami",
 		"rejectrequest": "Refuser la demande en ami",
 		"block": "Bloquer l'utilisateur",
-		"blocked": "Utilisateur bloqué"
+		"blocked": "Utilisateur bloqué",
+		"unblock": "Débloquer l'utilisateur",
+		"unblocked": "Utilisateur débloqué",
+		"failblock": "Echec du bloc de l'utilisateur",
+		"processing": "Traitement...",
+		"confirmblock": "Etes-vous sûr de vouloir bloquer cet utilisateur ?",
+		"confirmunblock": "Etes-vous sûr de vouloir débloquer cet utilisateur ?",
+		"noblocked": "Pas d'utilisateur bloqué"
 	},
 
 	"userprofile": {
@@ -78,5 +85,15 @@
 	"confirmdialog": {
 		"discard": "Ignorer",
 		"stay": "Rester"
+	},
+
+	"comment-section": {
+		"deletecomment": "Supprimer",
+		"leavecomment": "Laissez un commentaire...",
+		"submitcomment": "Commenter",
+		"loadingcomments": "Chargement des commentaires...",
+		"replycomment": "Répondre",
+		"leavereply": "Répondez à ce commentaire...",
+		"confirmdelete": "Etes-vous sûr de vouloir supprimer ce commentaire ?"
 	}
 }

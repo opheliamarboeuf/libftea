@@ -6,23 +6,15 @@ import { useState } from 'react';
 import { UserPostsList } from "../posts/components/UserPostsList";
 import { useFeed } from "../posts/components/hooks/useFeed";
 import { CreatePostModal } from "../posts/components/CreatePostModal";
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import "./FeedPage.css"
-
-//dur dur de faire la trad la
 
 const FeedPage = () => {
 
+	const { user } = useUser();
 	const { posts, error, feedType, setFeedType, refresh } = useFeed("all");
 	const [showPostModal, setShowPostModal] = useState(false);
 
 	if (!user) return <Navigate to="/" replace />;
-	const { user, setUser } = useUser();
-	const navigate = useNavigate();
-	const { t } = useTranslation();
 
-	//demander si c'est pas mieux de mettre juste your feed
 	return (
 		<div className="feed-page">
 				<div className="feed-header">
@@ -49,13 +41,8 @@ const FeedPage = () => {
 				<UserPostsList posts={posts} onPostDeleted={refresh} />
 				)}
 			{showPostModal && <CreatePostModal onPostCreated={refresh} onClose={() => setShowPostModal(false)} />}
-		<div className='feed-page'>
-		<h1>
-		{t('userprofile.feed')}
-		</h1>
 		</div>
 	);
 };
 
 export default FeedPage;
-

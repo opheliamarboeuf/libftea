@@ -42,7 +42,6 @@ const UserProfilePage = () => {
 	const [blockedByUser, setBlockedByUser] = useState(false);
 	const [blockedPosts, setBlockedPosts] = useState(false);
 	const [isOnline, setIsOnline] = useState(false);
-	const { showModal } = useModal();
 	const { t } = useTranslation();
 
 	const fetchProfile = async () => {
@@ -166,68 +165,24 @@ const UserProfilePage = () => {
 		if (!userData) return;
 		setLoading(true);
 		emit("send_friend_request", { requesterId: user?.id, addresseId: Number(id) });
-		try {
-			await friendsApi.sendFriendRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal(t('friends.sent'));
-		} catch (error) {
-			console.error('Error:', error);
-			showModal(t('friends.sentfail'));
-		} finally {
-			setLoading(false);
-		}
 	};
 
 	const handleCancelRequest = async () => {
 		if (!userData) return;
 		setLoading(true);
 		emit("unsend_friend_request", { requesterId: user?.id, addresseId: Number(id) });
-		try {
-			await friendsApi.cancelRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal(t('friends.canceled'));
-		} catch (error) {
-			console.error('Error:', error);
-			showModal(t('friends.errorcancel')); 
-		} finally {
-			setLoading(false);
-		}
 	};
 
 	const handleAccept = async () => {
 		if (!userData) return;
 		setLoading(true);
 		emit("accept_friend_request", { requesterId: Number(id), addresseId: user?.id });
-		try {
-			await friendsApi.acceptFriendRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal(t('friends.accepted'));
-		} catch (error) {
-			console.error('Error:', error);
-			showModal(t('friends.requestfail'));
-		} finally {
-			setLoading(false);
-		}
 	};
 
 	const handleReject = async () => {
 		if (!userData) return;
 		setLoading(true);
 		emit("reject_friend_request", { requesterId: Number(id), addresseId: user?.id });
-		try {
-			await friendsApi.rejectFriendRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal(t('friends.rejected'));
-		} catch (error) {
-			console.error('Error:', error);
-			showModal(t('friends.requestfail'));
-		} finally {
-			setLoading(false);
-		}
 	};
 
 	const handleRemoveFriend = async () => {
@@ -235,17 +190,6 @@ const UserProfilePage = () => {
 		setLoading(true);
 		emit("remove_friend", { userId: user?.id, friendId: userData.id });
 		setShowDeleteConfirm(false);
-		try {
-			await friendsApi.removeFriend(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal(t('friends.removed'));
-		} catch (error) {
-			console.error('Error:', error);
-			showModal(t('friends.requestfail'))
-		} finally {
-			setLoading(false);
-		}
 	};
 
 	const renderFriendshipButton = () => {
@@ -283,6 +227,7 @@ const UserProfilePage = () => {
 					</button>
 					<button className="profile-action-btn" onClick={() => setShowDeleteConfirm(true)} disabled={loading}>
 						Delete friend
+					</button>
 					<button className="profile-action-btn" onClick={handleRemoveFriend} disabled={loading}>
 						{t('friends.remove')}
 					</button>

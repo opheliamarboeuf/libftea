@@ -4,7 +4,7 @@ import { useState, ChangeEvent } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import LanguageMenu from "../components/LanguageMenu";
+import LanguageMenu from "../common/components/LanguageMenu";
 
 const LoginPage = () => {
 	const [username, setUsername] = useState("");

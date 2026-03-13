@@ -35,7 +35,14 @@
 		"acceptrequest": "Accept friend request",
 		"rejectrequest": "Reject friend request",
 		"block": "Block user",
-		"blocked": "User blocked"
+		"blocked": "User blocked",
+		"unblock": "Unblock user",
+		"unblocked": "User unblocked",
+		"failblock": "Failed to block friend",
+		"processing": "Processing...",
+		"confirmblock": "Are you sure you want to block this user?",
+		"confirmunblock": "Are you sure you want to unblock this user?",
+		"noblocked": "No blocked users"
 	},
 
 	"userprofile": {
@@ -78,5 +85,15 @@
 	"confirmdialog": {
 		"discard": "Discard",
 		"stay": "Stay"
+	},
+
+	"comment-section": {
+		"deletecomment": "Delete",
+		"leavecomment": "Leave a comment",
+		"submitcomment": "Comment",
+		"loadingcomments": "Loading comments...",
+		"replycomment": "Reply",
+		"leavereply": "Reply to this comment...",
+		"confirmdelete": "Are you sure you want to delete this comment ?"
 	}
 }

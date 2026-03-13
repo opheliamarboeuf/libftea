@@ -73,6 +73,7 @@ const ProfilePage = () => {
 						/>
 						<button className="edit-profile-btn" onClick={() => setShowEditModal(true)}>
 							Edit Profile
+						</button>
 						<button className="edit-profile-btn" onClick={() => setShowModal(true)}>
 							{t('editprofile.edit')}
 						</button>
