@@ -8,7 +8,7 @@ import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { EditPostModal } from "./EditPostModal";
 import { LikeButton } from "../../likes/LikeButton";
 import { CommentSection } from "../../comments/CommentSection";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ReportPostModal } from "../../moderation/components/reports/posts/ReportPostModal";
 
 interface UserPostsListProps {
@@ -18,11 +18,17 @@ interface UserPostsListProps {
 
 export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 	if (!Array.isArray(posts)) return null;
-    
+
 	const navigate = useNavigate();
 	const { user } = useUser();
 	const [postToReport, setPostToReport] = useState<Post | null>(null);
-	
+	const [visiblePosts, setVisiblePosts] = useState<Post[]>(posts);
+
+	// Synchronise visiblePosts if posts change
+	useEffect(() => {
+		setVisiblePosts(posts);
+	}, [posts]);
+
 	const {
 		openMenuId,
 		isDeleting,
@@ -41,9 +47,15 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		navigate(`/users/${userId}`);
 	};
 
+	// Fonction to hide reported posts
+	const handlePostReported = (reportedPostId: number) => {
+		setVisiblePosts((prev) => prev.filter((p) => p.id !== reportedPostId));
+		setPostToReport(null);
+	};
+
 	return (
-	<div className="posts-list">
-	{posts.map((post) => (
+		<div className="posts-list">
+		{visiblePosts.map((post) => (
 		<div key={post.id} className="post-card">
 		
 		<div className="post-header">
@@ -115,12 +127,12 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		</div>
 		</div>
 	))}
-	{postToReport && (
-  		<ReportPostModal
-		post={postToReport}
-		onPostReported={() => setPostToReport(null)}
-		onClose={() => setPostToReport(null)}
-  			/>
+		{postToReport && (
+			<ReportPostModal
+				post={postToReport}
+				onPostReported={() => handlePostReported(postToReport.id)}
+				onClose={() => setPostToReport(null)}
+			/>
 		)}
 		{postToEdit && (
 			<EditPostModal 
