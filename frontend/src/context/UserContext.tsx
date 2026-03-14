@@ -7,6 +7,27 @@ export type Friend = {
 	avatarUrl: string | null;
 };
 
+// Type for post data
+export type Post = {
+	id: number;
+	title: string;
+	caption?: string;
+	imageUrl: string;
+	createdAt: string;
+	updatedAt: string;
+	author: {
+		id: number;
+		username: string;
+	};
+	likes: number;
+};
+
+export type Blocked = {
+	id: number;
+	username: string;
+	avatarUrl: string | null;
+}
+
 // Defines the shape of a user object
 export type User = {
 	id: number;
@@ -23,6 +44,21 @@ export type User = {
 	friends: Friend[];
 	pendingRequests: Friend[];
 	conversations?: Array<any>;
+    id: number;
+    email: string;
+    username: string;
+    role: string;
+    createdAt: string;
+    profile?: {
+        bio: string | null;
+        displayName: string | null;
+        avatarUrl: string | null;
+        coverUrl: string | null;
+    };
+    friends: Friend[];
+    pendingRequests: Friend[];
+	conversations?: Array<any>;
+    posts: Post[];
 };
 // Defines the shape of the context, meaning the fields the context must contain
 interface UserContextType {

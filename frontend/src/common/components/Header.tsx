@@ -1,21 +1,41 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../../context/UserContext";
 import { SearchBar } from "./SearchBar";
+import { useFriendsSocket } from "../../friends/useFriendsSocket";
 import "./Header.css"
-import "../App.css"
+import "../../App.css"
+import { friendsSocket } from "../../socket/socket";
 
 export const Header = () => {
 	const navigate = useNavigate();
-	const { user, setUser } = useUser();
+	const { user, setUser, refreshUser } = useUser();
 	const API_URL = "http://localhost:3000";
 	const [menuHidden, setMenuHidden] = useState(false);
 
+	useFriendsSocket(user?.id, {
+		onRequestSent: () => { refreshUser(); },
+		onRequestUnsent: () => { refreshUser(); },
+		onRequestReceived: () => { refreshUser(); },
+		onRequestAccepted: () => { refreshUser(); },
+		onRequestRejected: () => { refreshUser(); },
+		onFriendRemoved: () => { refreshUser(); },
+		onUserRemoved: () => { refreshUser(); },
+		onUserBlocked: () => { refreshUser(); },
+		onUserUnblocked: () => { refreshUser(); },
+		onYouWereBlocked: () => { refreshUser(); },
+		onYouWereUnblocked: () => { refreshUser(); },
+		onUserOnline: () => { refreshUser(); },
+		onUserOffline: () => { refreshUser(); },
+		onOnlineStatus: () => { refreshUser(); },
+	});
+	
 	if (!user) return null;
 
 	const handleLogout = () => {
 		setMenuHidden(true);
 		localStorage.removeItem("token");
+		friendsSocket.disconnect();
 		setUser(null);
 		navigate('/')
 	}
@@ -24,6 +44,7 @@ export const Header = () => {
 		setMenuHidden(true);
 		navigate(path);
 	}
+
 
 	return (
 		<header className="header">

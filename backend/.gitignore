@@ -62,10 +62,13 @@ uploads/*
 # Except these subfolders
 !uploads/avatar/
 !uploads/cover/
+!uploads/post/
 # Ignore all files inside these subfolders
 uploads/avatar/*
 uploads/cover/*
+uploads/post/*
 
 # Placeholder file so Git tracks the folders
 !uploads/avatar/.gitkeep
 !uploads/cover/.gitkeep
+!uploads/post/.gitkeep

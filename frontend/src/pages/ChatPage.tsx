@@ -378,7 +378,7 @@ const ChatPage = () => {
 								</div>
 							) : msg.type === 'BATTLE_NOTIFICATION' ? (
 								<div className="battle-notification-content">
-									<div className="notification-icon">🏆</div>
+									<div className="notification-icon"></div>
 									<div className="notification-text">{msg.content}</div>
 								</div>
 							) : (

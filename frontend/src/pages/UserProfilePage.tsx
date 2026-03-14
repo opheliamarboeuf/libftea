@@ -3,8 +3,13 @@ import "./MyProfilePage.css";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
-import { friendsApi } from "../friends/api";
 import { useModal } from "../context/ModalContext";
+import { Post } from "../context/UserContext";
+import { postsApi } from "../posts/api";
+import { UserPostsList } from "../posts/components/UserPostsList";
+import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
+import { BlockFriendButton } from "../friends/BlockFriendButton";
+import { useFriendsSocket } from "../friends/useFriendsSocket";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -25,29 +30,66 @@ interface UserProfile {
 }
 
 const UserProfilePage = () => {
+	const { user, refreshUser } = useUser();
+	const { showModal } = useModal();
 	const { id} = useParams<{ id: string }>();
 	const [userData, setUserData] = useState<UserProfile | null>(null);
 	const [loading, setLoading] = useState(false);
-	const { user, refreshUser } = useUser();
+	const [posts, setPosts] = useState<Post[]>([]);
 	const navigate = useNavigate();
-	const { showModal } = useModal();
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+	const [blockedByUser, setBlockedByUser] = useState(false);
+	const [blockedPosts, setBlockedPosts] = useState(false);
+	const [isOnline, setIsOnline] = useState(false);
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
-		const res = await fetch(`${API_URL}/${id}`, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
+		try {
+			const res = await fetch(`${API_URL}/${id}`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+	
+			// if blocked by the current user
+			if (res.status === 403)
+			{
+				setBlockedByUser(true);
+				return ;
+			}
 
-		if (res.ok) {
+			setBlockedByUser(false);
+
+			if (!res.ok) {
+				throw new Error("Error fetching profile");
+			}
+
 			const data = await res.json();
 			setUserData(data);
+			// if the current user has blocked the user's profile
+			if (data.friendshipStatus === 'BLOCKED') {
+				setBlockedPosts(true);
+			}
+			else {
+				setBlockedPosts(false)};
+				await loadPosts();
+			}    
+		catch (error) {
+			console.error(error);
+			showModal?.("Could not fetch profile");
 		}
-	};
+	}
+
+	const loadPosts = async () => {
+		if (!id)
+			return ;
+		const data = await postsApi.fetchUserPosts(Number(id));
+		setPosts(data);
+	}
 
 	useEffect(() => {
 		fetchProfile();
+		loadPosts();
 	}, [id]);
 
 	useEffect(() => {
@@ -56,84 +98,96 @@ const UserProfilePage = () => {
 		}
 	}, [user, userData, navigate]);
 
+
+	const { emit } = useFriendsSocket(user?.id, {
+		onRequestSent: () => {
+			setLoading(false);
+			refreshUser();
+			fetchProfile();
+		},
+		onRequestUnsent: () => {
+			setLoading(false);
+			refreshUser();
+			fetchProfile();
+		},
+		onRequestReceived: () => {
+			refreshUser();
+			fetchProfile();
+		},
+		onRequestAccepted: () => {
+			setLoading(false);
+			refreshUser();
+			fetchProfile();
+		},
+		onRequestRejected: () => {
+			setLoading(false);
+			refreshUser();
+			fetchProfile();
+		},
+		onFriendRemoved: () => {
+			setLoading(false);
+			refreshUser();
+			fetchProfile();
+			showModal("Friend removed");
+		},
+		onUserRemoved: () => {
+			refreshUser();
+			fetchProfile();
+		},
+		onYouWereBlocked: () => {
+			refreshUser();
+			fetchProfile();
+		},
+		onYouWereUnblocked: () => {
+			refreshUser();
+			fetchProfile();
+		},
+		onUserOnline: (data) => {
+			if (data.userId === Number(id)) setIsOnline(true);
+		},
+		onUserOffline: (data) => {
+			if (data.userId === Number(id)) setIsOnline(false);
+		},
+		onOnlineStatus: (data) => {
+			if (data.userId === Number(id)) setIsOnline(data.isOnline);
+		},
+	});
+
+	useEffect(() => {
+		if (id) {
+			emit('get_online_status', { userId: Number(id) });
+		}
+	}, [id]);
+
 	const handleAddFriend = async () => {
 		if (!userData) return;
 		setLoading(true);
-		try {
-			await friendsApi.sendFriendRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal("Friend request sent");
-		} catch (error) {
-			console.error('Error:', error);
-			showModal("Error sending the request");
-		} finally {
-			setLoading(false);
-		}
+		emit("send_friend_request", { requesterId: user?.id, addresseId: Number(id) });
 	};
 
 	const handleCancelRequest = async () => {
 		if (!userData) return;
 		setLoading(true);
-		try {
-			await friendsApi.cancelRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal("Friend request canceled");
-		} catch (error) {
-			console.error('Error:', error);
-			showModal("Error canceling the request"); 
-		} finally {
-			setLoading(false);
-		}
+		emit("unsend_friend_request", { requesterId: user?.id, addresseId: Number(id) });
 	};
 
 	const handleAccept = async () => {
 		if (!userData) return;
 		setLoading(true);
-		try {
-			await friendsApi.acceptFriendRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal("Friend request accepted");
-		} catch (error) {
-			console.error('Error:', error);
-			showModal("Error accepting the requuest");
-		} finally {
-			setLoading(false);
-		}
+		emit("accept_friend_request", { requesterId: Number(id), addresseId: user?.id });
 	};
 
 	const handleReject = async () => {
 		if (!userData) return;
 		setLoading(true);
-		try {
-			await friendsApi.rejectFriendRequest(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal("Friend request rejected");
-		} catch (error) {
-			console.error('Error:', error);
-			showModal("Error rejeting the request");
-		} finally {
-			setLoading(false);
-		}
+		emit("reject_friend_request", { requesterId: Number(id), addresseId: user?.id });
 	};
 
 	const handleRemoveFriend = async () => {
 		if (!userData) return;
 		setLoading(true);
-		try {
-			await friendsApi.removeFriend(userData.id);
-			await refreshUser();
-			await fetchProfile();
-			showModal("Friend removed");
-		} catch (error) {
-			console.error('Error:', error);
-			showModal("Error removing friend")
-		} finally {
-			setLoading(false);
-		}
+		emit("remove_friend", { userId: user?.id, friendId: userData.id });
+		setShowDeleteConfirm(false);
 	};
 
 	const renderFriendshipButton = () => {
@@ -169,20 +223,30 @@ const UserProfilePage = () => {
 					<button className="profile-action-btn" onClick={() => navigate(`/chat/${id}`)} disabled={loading}>
 						Send Message
 					</button>
-					<button className="profile-action-btn" onClick={handleRemoveFriend} disabled={loading}>
-						Remove Friend
+					<button className="profile-action-btn" onClick={() => setShowDeleteConfirm(true)} disabled={loading}>
+						Delete friend
 					</button>
+					{showDeleteConfirm && (
+									<ConfirmBlockDelete
+										message="Are you sure you want to delete this friend from your friendlist?"
+										onYes={handleRemoveFriend}
+										onNo={() => setShowDeleteConfirm(false)}
+									/>
+					)}
 					</div>
 				);
 			case 'BLOCKED':
-				return <span>User Blocked</span>;
+				return <span> </span>;
 			default:
 				return null;
 		}
 	};
 	
+	if (blockedByUser) {
+		return <div className="profile-page is-blocked">You cannot access this profile</div>;
+	}
 	if (!userData) {
-		return <div>Loading...</div>;
+		return <div className="profile-page">Loading...</div>;
 	}
 
 	return (
@@ -191,8 +255,12 @@ const UserProfilePage = () => {
 			<div className="main-content">
 				{/* PROFILE INFO COLUMN */}
 				<div className="profile-info">
+					<div className="online-status">
+						{isOnline ? <span>☀️</span> : <span className="moon">🌙</span>}
+						<span>{isOnline ? 'Online' : 'Offline'}</span>
+					</div>
 					<p className="display-name">
-						{userData.profile?.displayName ? user.profile.displayName : '\u00A0'} {/*space to keep the height*/}
+						{userData.profile?.displayName ? userData.profile.displayName : '\u00A0'} {/*space to keep the height*/}
 					</p>
 					<div className="profile-pic">
 						<img
@@ -207,15 +275,16 @@ const UserProfilePage = () => {
 					<p className="display-username">{userData.username}</p>
 					<div className="stats">
 						<span>Friends: {userData.friendsCount}</span>
-						<span>Posts: 5</span>
+						<span>Posts: {posts.length}</span>
 					</div>
 					<div className="block-user">
-						<button className="regular-btn" >Block User</button> 
+						<BlockFriendButton userId={userData.id} onAction={fetchProfile} />
 					</div>
+
 					<div className="bio">
 						<p>{userData.profile?.bio || "Write your bio here..."}</p>
 					</div>
-				</div>
+					</div>
 
 				{/* COVER, USER INTERACTIONS AND POSTS*/}
 				<div className="cover-and-posts">
@@ -233,43 +302,12 @@ const UserProfilePage = () => {
 							</div>
 					</div>
 					<div className="posts">
-						<p>Post 1</p>
-						<p>Post 2</p>
-						<p>Post 3</p>
+						{blockedPosts ? <div className="blocked-line">You have blocked this user</div> : <UserPostsList posts={posts} />}
 					</div>
 				</div>
 			</div>
 		</div>
 	);
 };
-	// return (
-	// 	<div style={{ padding:'20px' }}>
-	// 		<h1>{profile.username}'s Profile</h1>
-
-	// 		{profile.coverUrl && (
-	// 			<div className="cover">
-	// 				<img src={profile.coverUrl}  alt="Cover" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
-	// 			</div>
-	// 		)}
-
-	// 		{profile.avatarUrl && (
-	// 			<div className="avatar">
-	// 			<img src={profile.avatarUrl} alt="Avatar" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
-	// 			</div>
-	// 		)}
-
-	// 		{profile.bio && (
-	// 			<div className="bio">
-	// 				<p>{profile.bio}</p>
-	// 			</div>
-	// 		)}
-
-	// 		{renderFriendshipButton()}
-
-	// 		<button onClick={() => navigate(-1)} style={{marginTop: '20px' }}>
-	// 			Retour
-	// 		</button>
-	// 	</div>
-	// );
 
 export default UserProfilePage;

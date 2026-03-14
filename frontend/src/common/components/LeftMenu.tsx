@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../../context/UserContext";
 import { FaHome, FaUser, FaUsers, FaComments } from "react-icons/fa";
-import { useModal } from "../context/ModalContext";
+import { useModal } from "../../context/ModalContext";
 import { useState, useEffect } from "react";
 import "./LeftMenu.css"
-import "../App.css"
+import "../../App.css"
 
 export const LeftMenu = () => {
 	
