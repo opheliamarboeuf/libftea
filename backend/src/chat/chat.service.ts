@@ -118,7 +118,7 @@ export class ChatService {
 	async markAsRead(messageId: number): Promise<any> {
 		return this.prisma.message.update({
 			where: { id: messageId },
-			data: { Read: true },
+			data: { read: true },
 		});
 	}
 
@@ -160,7 +160,7 @@ export class ChatService {
 			where: {
 				conversationId: conversationId,
 				senderId: { not: userId },
-				Read: false,
+				read: false,
 			},
 		});
 	}

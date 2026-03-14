@@ -179,7 +179,7 @@ export class AuthService {
 					where: {
 						conversationId: conv.id,
 						senderId: { not: userId },
-						Read: false,
+						read: false,
 					},
 				});
 				return { ...conv, unreadCount };

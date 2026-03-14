@@ -11,7 +11,7 @@ interface Message {
 	id: number;
 	content: string;
 	createdAt: Date;
-	Read: boolean;
+	read: boolean;
 	senderId: number;
 	type?: string;
 	battleId?: number;
@@ -186,7 +186,7 @@ const ChatPage = () => {
 		if (!conversationId || !user) return ;
 
 		const promises = messages
-			.filter((msg) => msg.senderId !== user.id && !msg.Read)
+			.filter((msg) => msg.senderId !== user.id && !msg.read)
 			.map((msg) => {
 				return fetch(`http://localhost:3000/chat/messages/${msg.id}/read`, {
 					method: 'PATCH',
