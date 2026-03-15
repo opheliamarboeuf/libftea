@@ -69,7 +69,26 @@ export const moderationApi = {
 	},
 
 	// ---------------------------------- USER REPORTS ----------------------------------
-	
+	banUser: async (targetId: number) => {
+		const res = await fetch(`${API_URL}/moderation/ban/${targetId}`, {
+			method: 'PUT',
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || 'Bann user failed';
+			throw new Error(message);
+		}
+		return data;
+	},
+
+	// ---------------------------------- USER REPORTS ----------------------------------
+
 	reportUser: async (payload: CreateReportType, userId: number): Promise<void> => {
 		const res = await fetch(`${API_URL}/moderation/reports/users/${userId}`, {
 			method: 'POST',
@@ -108,7 +127,6 @@ export const moderationApi = {
 
 	// ---------------------------------- POST REPORTS ----------------------------------
 
-
 	reportPost: async (payload: CreateReportType, postId: number): Promise<void> => {
 		const res = await fetch(`${API_URL}/moderation/reports/posts/${postId}`, {
 			method: 'POST',
@@ -126,7 +144,7 @@ export const moderationApi = {
 			throw new Error(message);
 		}
 	},
-	
+
 	fetchPendingPostReports: async (): Promise<PostReportType[]> => {
 		const res = await fetch(`${API_URL}/moderation/reports/posts/pending`, {
 			headers: {
@@ -145,7 +163,6 @@ export const moderationApi = {
 		return data;
 	},
 
-	
 	fetchAllReportsForThisPost: async (reportId: number): Promise<PostReportType[]> => {
 		const res = await fetch(`${API_URL}/moderation/reports/posts/all/${reportId}`, {
 			headers: {

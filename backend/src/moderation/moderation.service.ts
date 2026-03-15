@@ -135,7 +135,7 @@ export class ModerationService {
 	}
 
 	// ---------------------------------- USER REPORTS ----------------------------------
-	
+
 	async banUser(targetId: number, userId: number, userRole: Role) {
 		try {
 			if (!hasPermission(userRole, 'BAN_USER')) {
@@ -151,8 +151,8 @@ export class ModerationService {
 				select: {
 					id: true,
 					role: true,
-					bannedAt: true
-				}
+					bannedAt: true,
+				},
 			});
 
 			if (!targetUser) {
@@ -161,19 +161,41 @@ export class ModerationService {
 			if (targetUser.role === Role.ADMIN) {
 				throw new ForbiddenException('You cannot ban an administrator');
 			}
-			
+
 			if (targetUser.bannedAt) {
 				throw new BadRequestException('User has already been banned');
 			}
 
-			const bannedUser = await this.prisma.user.update({
-				where: { id: targetId },
-				data: {
-					bannedAt: new Date(),
-				},
-			});
-			return bannedUser;
+			const bannedUser = await this.prisma.$transaction(async (tx) => {
+				// Set the user as banned
+				const updateUser = await tx.user.update({
+					where: { id: targetId },
+					data: {
+						bannedAt: new Date(),
+					},
+				});
+				// Soft delete the comments
+				await tx.comment.updateMany({
+					where: { userId: targetId, deletedAt: null },
+					data: { deletedAt: new Date() },
+				});
 
+				// // 3. Soft-delete les posts
+				// await tx.post.updateMany({
+				// 	where: { authorId: targetId, deletedAt: null },
+				// 	data: { deletedAt: new Date() },
+				// });
+
+				// // 4. Supprimer / bloquer les relations d’amitié si nécessaire
+				// await tx.friendship.deleteMany({
+				// 	where: {
+				// 		OR: [{ requesterId: targetId }, { addresseId: targetId }],
+				// 	},
+				// });
+				return updateUser;
+			});
+
+			return bannedUser;
 		} catch (error) {
 			if (error instanceof HttpException) throw error;
 			console.error('Error banning user:', error);
