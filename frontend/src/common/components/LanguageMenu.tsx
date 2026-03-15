@@ -7,9 +7,9 @@ interface Props {
 
 const LanguageMenu = ({ fixed = false }: Props) => {
 	const languages = [ 
-		{ code: 'fr', label: 'FR'},
-		{ code: 'en', label: 'EN'},
-		{ code: 'jp', label: 'JP'},
+		{ code: 'fr', label: '🇫🇷 FR'},
+		{ code: 'en', label: '🇺🇸 EN'},
+		{ code: 'jp', label: '🇯🇵 JP'},
 	];
 	const [ langMenuHidden, setLangMenuHidden ] = useState(true);
 
