@@ -25,6 +25,6 @@ export const ModerationRoutes = (
 				<Route path="reports/posts/all/handled" element={<AllHandledPostReports />}/>
 			</Route>
 		</Route>
-		<Route path="/mod/reports/posts/:postId" element={<PostReportPage />}/>
+		<Route path="/moderation/reports/posts/:postId" element={<PostReportPage />}/>
 	</>
 )

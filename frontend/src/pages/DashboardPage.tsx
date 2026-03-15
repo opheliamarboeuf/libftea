@@ -12,9 +12,14 @@ const DashboardPage = () => {
 
 	if (!user)
 		return <Navigate to="/" replace />;
-    if (location.pathname === "/dashboard") {
-        return <Navigate to="/dashboard/mod/reports/posts/pending" replace />;
-    }
+	// display Admin Dashboard by default if the user is an Admin
+	if (location.pathname === "/dashboard") {
+		if (user.role === "ADMIN") {
+			return <Navigate to="/dashboard/admin/reports/users/pending" replace />;
+		} else {
+			return <Navigate to="/dashboard/mod/reports/posts/pending" replace />;
+		}
+	}
 
 	// if MOD, no tabs
 	if (user.role === "MOD") {

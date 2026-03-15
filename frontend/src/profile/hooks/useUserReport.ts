@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { profileApi } from "../api";
 import { ReportCategory, CreateReportType } from "../../moderation/types";
+import { moderationApi } from "../../moderation/api";
 
 const MAX_DESCRIPTION_LENGTH = 150;
 
@@ -10,7 +10,7 @@ export function useUserReport(targetId) {
 	const [description, setDescription] = useState("");
 	const [category, setCategory] = useState<ReportCategory | null>(null);
 
-	const handlePostReport = async () => {
+	const handleUserReport = async () => {
 		setIsLoading(true);
 		
 		if (!category) {
@@ -31,7 +31,7 @@ export function useUserReport(targetId) {
 				description,
 			};
 			
-			await profileApi.reportUser(payload, targetId );
+			await moderationApi.reportUser(payload, targetId );
 			setDescription("");
 			setCategory(null);
 			setErrorMessage(null);
@@ -72,6 +72,6 @@ export function useUserReport(targetId) {
 		isLoading,
 		resetFields,
 		hasChanges,
-		handlePostReport,
+		handleUserReport,
 	}
 }

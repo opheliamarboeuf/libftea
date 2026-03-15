@@ -1,6 +1,5 @@
 import { Injectable, ForbiddenException, NotFoundException, BadRequestException, HttpException, InternalServerErrorException } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service';
-import { ReportUserDto } from './report.dto';
 
 @Injectable()
 export class UsersService {
@@ -186,77 +185,6 @@ export class UsersService {
 			friendsCount,
 			friendshipStatus,
 		};
-	}
-
-	async reportUser(targetId: number, currentUserId: number, dto: ReportUserDto) {
-		try {
-			if (targetId === currentUserId) {
-				throw new BadRequestException("You cannot report yourself");
-			}
-			const user = await this.prisma.user.findUnique({
-				where: { id: targetId },
-			});
-			if (!user)
-				throw new NotFoundException("User not found");
-
-			const existingReport = await this.prisma.report.findUnique({
-				where: {
-					reporterId_reportedUserId: {
-						reporterId: currentUserId,
-						reportedUserId: targetId,
-					},
-				},
-			});
-			if (existingReport)
-				throw new BadRequestException("You have already reported this user");
-
-			const report = await this.prisma.$transaction(async (tx) => {
-				const createdReport = await tx.report.create({
-					data: {
-						reporterId: currentUserId,
-						reportedUserId: targetId,
-						reportCategory: dto.category,
-						reportDescription: dto.description,
-					},
-				});
-				await tx.userHiddenForUser.upsert({
-					where: {
-						targetUserId_userId: {
-							targetUserId: targetId,
-							userId: currentUserId,
-						}
-					},
-					update: {},
-					create: {
-						targetUserId: targetId,
-						userId: currentUserId,
-					},
-				});
-
-				// Remove any existing friendship (in both directions)
-				const existingFriendship = await tx.friendship.findFirst({
-					where: {
-						OR: [
-							{ requesterId: currentUserId, addresseId: targetId },
-							{ requesterId: targetId, addresseId: currentUserId },
-						],
-					},
-				});
-
-				if (existingFriendship) {
-					await tx.friendship.delete({
-						where: { id: existingFriendship.id },
-					});
-				}
-
-				return createdReport;
-			});
-			return report;
-		} catch (error) {
-			if (error instanceof HttpException) throw error;
-			console.log("Error reporting user:", error);
-			throw new InternalServerErrorException("Could not report user");
-		}
 	}
 
 	async getAllUserPosts(currentUserId: number) {

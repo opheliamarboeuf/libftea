@@ -65,7 +65,7 @@ function ReportUserModal ({ targetId, onPostReported, onClose }: ReportUserModal
 		isLoading,
 		resetFields,
 		hasChanges,
-		handlePostReport,
+		handleUserReport,
 	} = useUserReport(targetId);
 
 	// Guard unsaved changes
@@ -82,7 +82,7 @@ function ReportUserModal ({ targetId, onPostReported, onClose }: ReportUserModal
 
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const res = await handlePostReport();
+		const res = await handleUserReport();
 		if (res) {
 			showModal("Report submitted successfully");
 			onPostReported(); 

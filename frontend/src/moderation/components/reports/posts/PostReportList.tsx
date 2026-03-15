@@ -1,4 +1,4 @@
-import "../ReportList.css"
+import "./PostReportList.css"
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PostReportType } from '../../../types';
@@ -26,8 +26,8 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 
 	if (!Array.isArray(reports) || reports.length === 0) {
 		return (
-			<div className="report-list">
-				<div className="report-card">
+			<div className="post-report-list">
+				<div className="post-report-card">
 					<p className="no-reports">No reports available</p>
 				</div>
 			</div>
@@ -35,25 +35,25 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 	}
 
 	return (
-		<div className="report-list">
+		<div className="post-report-list">
 			{reports.map((report) => (
-				<div key={report.id} className="report-card">
-					<div className="report-header">
-						<div className="report-header-content">
-							<h3 className="report-title">{report.reportedPost.title}</h3>
-							<div className="report-meta">
+				<div key={report.id} className="post-report-card">
+					<div className="post-report-header">
+						<div className="post-report-header-content">
+							<h3 className="post-report-title">{report.reportedPost.title}</h3>
+							<div className="post-report-meta">
 								<span
-									className="report-author"
+									className="post-report-author"
 									onClick={() => goToProfile(report.reportedPost.author.id)}
 								>
 									{report.reportedPost.author.username},
 								</span>
-								<span className="report-date">
+								<span className="post-report-date">
 									{` created ${new Date(report.reportedPost.createdAt).toLocaleString()}`}
 								</span>
 							</div>
 						</div>
-						<div className="report-btn">
+						<div className="post-report-btn">
 							{report.status === 'ASSIGNED' && report.handledBy && (
 								<span className="assigned-to">
 									Assigned to{' '}
@@ -90,12 +90,12 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 							)}
 						</div>
 					</div>
-					<div className="report-content">
-						<div className="report-image">
+					<div className="post-report-content">
+						<div className="post-report-image">
 							<img src={`${API_URL}${report.reportedPost.imageUrl}`} alt="Post" />
 						</div>
-						<div className="report-info">
-							<div className="report-pre-handle">
+						<div className="post-report-info">
+							<div className="post-report-pre-handle">
 								<div className="reporter-info">
 									<strong>Reporter:</strong>
 									<br />{' '}
@@ -106,23 +106,23 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 										{report.reporter.username}
 									</span>
 								</div>
-								<div className="report-category">
+								<div className="post-report-category">
 									<strong>Report Category:</strong>
 									<br />
 									{report.reportCategory.replace(/_/g, ' ')}
 								</div>
-								<div className="report-description">
+								<div className="post-report-description">
 									<strong>Report Description:</strong>
 									<br />
 									{report.reportDescription}
 								</div>
-								<div className="report-date">
+								<div className="post-report-date">
 									<strong>Report Creation:</strong>
 									<br />
 									{new Date(report.createdAt).toLocaleString()}
 								</div>
 								{report.reportCount && report.reportCount > 1 && (
-									<div className="report-more">
+									<div className="post-report-more">
 										<button
 											onClick={() =>
 												navigate(
@@ -136,8 +136,8 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 								)}
 							</div>
 							{(report.status === 'ACCEPTED' || report.status === 'REJECTED') && (
-								<div className="report-post-handle">
-									<div className="report-status">
+								<div className="post-report-post-handle">
+									<div className="post-report-status">
 										<strong>Report Status:</strong>
 										<br />
 										<span className={report.status.toLowerCase()}>
@@ -154,12 +154,12 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 											{report.handledBy.username}
 										</span>
 									</div>
-									<div className="report-mod_message">
+									<div className="post-report-mod_message">
 										<strong>Moderation Message:</strong>
 										<br />
 										{report.moderatorMessage}
 									</div>
-									<div className="report-date">
+									<div className="post-report-date">
 										<strong>Report handle date:</strong>
 										<br />
 										{new Date(report.handledAt).toLocaleString()}
@@ -169,7 +169,7 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 						</div>
 					</div>
 					{report.reportedPost.caption && (
-						<div className="report-caption">
+						<div className="post-report-caption">
 							<p>{report.reportedPost.caption}</p>
 						</div>
 					)}

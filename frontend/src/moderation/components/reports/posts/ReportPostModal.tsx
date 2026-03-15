@@ -65,7 +65,7 @@ export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostMo
 					className={`modal-content-post ${fadeOut ? "fade-out" : "fade-in"}`}
 					onClick={(e) => e.stopPropagation()}
 				>
-					<h2>Report a post</h2>
+					<h2>Report Post</h2>
 					<form onSubmit={handleSubmit}>
 						<label>Category</label>
 						<select

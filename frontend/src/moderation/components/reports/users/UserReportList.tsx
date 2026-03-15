@@ -1,4 +1,4 @@
-import "../ReportList.css"
+import './UserReportList.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserReportType } from '../../../types';
@@ -26,8 +26,8 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 
 	if (!Array.isArray(reports) || reports.length === 0) {
 		return (
-			<div className="report-list">
-				<div className="report-card">
+			<div className="user-report-list">
+				<div className="user-report-card">
 					<p className="no-reports">No reports available</p>
 				</div>
 			</div>
@@ -35,12 +35,23 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 	}
 
 	return (
-		<div className="report-list">
+		<div className="user-report-list">
 			{reports.map((report) => (
-				<div key={report.id} className="report-card">
-					<div className="report-header">
-						<div className="report-header-content"></div>
-						<div className="report-btn">
+				<div key={report.id} className="user-report-card">
+					<div className="user-report-header">
+						<div className="user-report-header-content">
+							<div>
+								<span
+									className="user-report-target-username"
+									onClick={() => goToProfile(report.reportedUser.id)}
+								>
+									{report.reportedUser.profile.displayName
+										? `${report.reportedUser.username} (${report.reportedUser.profile.displayName})`
+										: report.reportedUser.username}
+								</span>
+							</div>
+						</div>
+						<div className="user-report-btn">
 							{report.status === 'ASSIGNED' && report.handledBy && (
 								<span className="assigned-to">
 									Assigned to{' '}
@@ -53,7 +64,7 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 								<button
 									onClick={async () => {
 										await moderationApi.assignPendingReport(report.id);
-										if (onUpdate) onUpdate(); // refresh after assigning
+										if (onUpdate) onUpdate();
 									}}
 								>
 									Assign Report
@@ -77,117 +88,98 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 							)}
 						</div>
 					</div>
-					<div className="report-content">
-						<div className="report-user">
-							Username:
-							<span
-								className="report-target-username"
-								onClick={() => goToProfile(report.reportedUser.id)}
-							>
-								{report.reportedUser.username},
-							</span>
-							{report.reportedUser.profile.displayName && (
-								<span className="report-target-displayname">
-									Display name: {report.reportedUser.profile.displayName},
-								</span>
-							)}
-							{report.reportedUser.profile.bio && (
-								<span className="report-target-dispbiolayname">
-									Bio: {report.reportedUser.profile.bio},
-								</span>
-							)}
-							<div className="report-avatar">
-								<img
-									src={`${API_URL}${report.reportedUser.profile.avatarUrl}`}
-									alt="Avatar"
-								/>
-							</div>
-							<div className="report-cover">
+					<div className="user-report-content">
+						<div className="user-report-profile">
+							<div className="user-report-cover">
+								<div className="user-report-label">Cover</div>
 								<img
 									src={`${API_URL}${report.reportedUser.profile.coverUrl}`}
 									alt="Cover"
 								/>
 							</div>
-						</div>
-						<div className="report-info">
-							<div className="report-pre-handle">
-								<div className="reporter-info">
-									<strong>Reporter:</strong>
-									<br />{' '}
-									<span
-										className="reporter-name"
-										onClick={() => goToProfile(report.reporter.id)}
-									>
-										{report.reporter.username}
-									</span>
+							<div className="user-report-avatar-bio-row">
+								<div className="user-report-avatar">
+									<div className="user-report-label">Avatar</div>
+									<img
+										src={`${API_URL}${report.reportedUser.profile.avatarUrl}`}
+										alt="Avatar"
+									/>
 								</div>
-								<div className="report-category">
-									<strong>Report Category:</strong>
-									<br />
-									{report.reportCategory.replace(/_/g, ' ')}
+								<div className="user-report-bio">
+									<div className="user-report-label">Bio</div>
+									{report.reportedUser.profile.bio &&
+									report.reportedUser.profile.bio.trim() !== ''
+										? report.reportedUser.profile.bio
+										: 'No bio available'}
 								</div>
-								<div className="report-description">
-									<strong>Report Description:</strong>
-									<br />
-									{report.reportDescription}
-								</div>
-								<div className="report-date">
-									<strong>Report Creation:</strong>
-									<br />
-									{new Date(report.createdAt).toLocaleString()}
-								</div>
-								{report.reportCount && report.reportCount > 1 && (
-									<div className="report-more">
-										<button
-										// onClick={() =>
-										// 	navigate(
-										// 		`/moderation/reports/posts/${report.reportedPost.id}`,
-										// 	)
-										// }
-										>
-											View all the reports ({report.reportCount})
-										</button>
-									</div>
-								)}
 							</div>
-							{(report.status === 'ACCEPTED' || report.status === 'REJECTED') && (
-								<div className="report-post-handle">
-									<div className="report-status">
-										<strong>Report Status:</strong>
-										<br />
-										<span className={report.status.toLowerCase()}>
-											{report.status}
-										</span>
-									</div>
-									<div className="reporter-info">
-										<strong>Handled by:</strong>
-										<br />{' '}
-										<span
-											className="mod-name"
-											onClick={() => goToProfile(report.handledBy.id)}
-										>
-											{report.handledBy.username}
-										</span>
-									</div>
-									<div className="report-mod_message">
-										<strong>Moderation Message:</strong>
-										<br />
-										{report.moderatorMessage}
-									</div>
-									<div className="report-date">
-										<strong>Report handle date:</strong>
-										<br />
-										{new Date(report.handledAt).toLocaleString()}
-									</div>
+						</div>
+					</div>
+					<div className="user-report-info">
+						<div className="user-report-pre-handle">
+							<div className="reporter-info">
+								<strong>Reporter:</strong>
+								<br />{' '}
+								<span
+									className="reporter-name"
+									onClick={() => goToProfile(report.reporter.id)}
+								>
+									{report.reporter.username}
+								</span>
+							</div>
+							<div className="user-report-category">
+								<strong>Report Category:</strong>
+								<br />
+								{report.reportCategory.replace(/_/g, ' ')}
+							</div>
+							<div className="user-report-description">
+								<strong>Report Description:</strong>
+								<br />
+								{report.reportDescription}
+							</div>
+							<div className="user-report-date">
+								<strong>Report Creation:</strong>
+								<br />
+								{new Date(report.createdAt).toLocaleString()}
+							</div>
+							{report.reportCount && report.reportCount > 1 && (
+								<div className="user-report-more">
+									<button>View all the reports ({report.reportCount})</button>
 								</div>
 							)}
 						</div>
+						{(report.status === 'ACCEPTED' || report.status === 'REJECTED') && (
+							<div className="user-report-post-handle">
+								<div className="user-report-status">
+									<strong>Report Status:</strong>
+									<br />
+									<span className={report.status.toLowerCase()}>
+										{report.status}
+									</span>
+								</div>
+								<div className="reporter-info">
+									<strong>Handled by:</strong>
+									<br />{' '}
+									<span
+										className="mod-name"
+										onClick={() => goToProfile(report.handledBy.id)}
+									>
+										{report.handledBy.username}
+									</span>
+								</div>
+								<div className="user-report-mod_message">
+									<strong>Moderation Message:</strong>
+									<br />
+									{report.moderatorMessage}
+								</div>
+								<div className="user-report-date">
+									<strong>Report handle date:</strong>
+									<br />
+									{new Date(report.handledAt).toLocaleString()}
+								</div>
+							</div>
+						)}
 					</div>
-					{/* {report.reportedPost.caption && (
-						<div className="report-caption">
-							<p>{report.reportedPost.caption}</p>
-						</div>
-					)} */}
 				</div>
 			))}
 			{showConfirm && reportToUnassign !== null && (

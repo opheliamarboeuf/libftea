@@ -45,13 +45,13 @@ const PostReportPage = () => {
 		<div className="post-report-page layout-flex">
 			<div className="left-fixed">
 				{fullReport && (
-					<div className="report-card">
-						<div className="report-header">
-							<div className="report-header-content">
-								<h3 className="report-title">{fullReport.reportedPost.title}</h3>
-								<div className="report-meta">
+					<div className="post-report-card">
+						<div className="post-report-header">
+							<div className="post-report-header-content">
+								<h3 className="post-report-title">{fullReport.reportedPost.title}</h3>
+								<div className="post-report-meta">
 									<span
-										className="report-author"
+										className="post-report-author"
 										onClick={() => {
 											if (fullReport.reportedPost.author) {
 												window.location.href = `/users/${fullReport.reportedPost.author.id}`;
@@ -60,14 +60,14 @@ const PostReportPage = () => {
 									>
 										{fullReport.reportedPost.author?.username},
 									</span>
-									<span className="report-date">
+									<span className="post-report-date">
 										{` created ${new Date(fullReport.reportedPost.createdAt).toLocaleString()}`}
 									</span>
 								</div>
 							</div>
 						</div>
-						<div className="report-content">
-							<div className="report-image">
+						<div className="post-report-content">
+							<div className="post-report-image">
 								<img src={`${API_URL}${fullReport.reportedPost.imageUrl}`}/>
 							</div>
 						</div>
@@ -76,7 +76,7 @@ const PostReportPage = () => {
 			</div>
 			<div className="right-scroll">
 				<div className="simple-post-reports">
-					<div className="report-title">All Reports for this Post</div>
+					<div className="post-report-title">All Reports for this Post</div>
 					{simpleReports.length === 0 ? (
 						<p>No reports found for this post.</p>
 					) : (
