@@ -77,7 +77,8 @@ export class UsersService {
 				},
 				NOT: {
 					id: {in: excludedIds},
-				}
+				},
+				bannedAt: null,
 			},
 			select: {
 				id: true,

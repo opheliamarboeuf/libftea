@@ -1,14 +1,20 @@
-import { Injectable, BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+	Injectable,
+	BadRequestException,
+	ForbiddenException,
+	NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Friendship, User } from '@prisma/client';
 
 @Injectable()
 export class FriendsService {
-	constructor(
-		private readonly prisma: PrismaService,
-	) {}
+	constructor(private readonly prisma: PrismaService) {}
 
-	private async hasReportRelationBetweenUsers(userId: number, targetId: number): Promise<boolean> {
+	private async hasReportRelationBetweenUsers(
+		userId: number,
+		targetId: number,
+	): Promise<boolean> {
 		const reportRelation = await this.prisma.report.findFirst({
 			where: {
 				OR: [
@@ -22,14 +28,11 @@ export class FriendsService {
 		return Boolean(reportRelation);
 	}
 
-	async sendFriendRequest(
-		requesterId: number,
-		addresseId: number,
-	) {
+	async sendFriendRequest(requesterId: number, addresseId: number) {
 		if (requesterId === addresseId) {
 			throw new BadRequestException('You cannot add yourself as a friend');
 		}
-		
+
 		const friend = await this.prisma.user.findUnique({
 			where: { id: addresseId },
 		});
@@ -49,7 +52,7 @@ export class FriendsService {
 					{ requesterId, addresseId },
 					{ requesterId: addresseId, addresseId: requesterId },
 				],
-				NOT: { status: 'BLOCKED'},
+				NOT: { status: 'BLOCKED' },
 			},
 		});
 
@@ -67,11 +70,7 @@ export class FriendsService {
 		return created;
 	}
 
-	async acceptFriendRequest(
-		requesterId: number, 
-		addresseId: number,
-	) {
-
+	async acceptFriendRequest(requesterId: number, addresseId: number) {
 		const friendship = await this.prisma.friendship.findUnique({
 			where: {
 				requesterId_addresseId: {
@@ -91,7 +90,9 @@ export class FriendsService {
 
 		const hasReportRelation = await this.hasReportRelationBetweenUsers(requesterId, addresseId);
 		if (hasReportRelation) {
-			throw new BadRequestException('Friend request cannot be accepted due to report relation');
+			throw new BadRequestException(
+				'Friend request cannot be accepted due to report relation',
+			);
 		}
 
 		const updatedFriendship = await this.prisma.friendship.update({
@@ -105,15 +106,11 @@ export class FriendsService {
 				status: 'ACCEPTED',
 			},
 		});
-		
+
 		return updatedFriendship;
 	}
 
-	async rejectFriendRequest(
-		requesterId: number, 
-		addresseId: number,
-	): Promise<void> {
-
+	async rejectFriendRequest(requesterId: number, addresseId: number): Promise<void> {
 		const friendship = await this.prisma.friendship.findFirst({
 			where: {
 				requesterId,
@@ -137,25 +134,48 @@ export class FriendsService {
 	}
 
 	async getFriends(userId: number) {
-
 		const friendships = await this.prisma.friendship.findMany({
 			where: {
 				status: 'ACCEPTED',
-				OR: [
-					{ requesterId: userId},
-					{ addresseId: userId},
-				],
-				},
+				OR: [{ requesterId: userId }, { addresseId: userId }],
+			},
 			include: {
-				requester: true,
-				addresse: true,
+				requester: {
+					select: {
+						id: true,
+						username: true,
+						bannedAt: true,
+						profile: {
+							select: {
+								avatarUrl: true,
+							},
+						},
+					},
+				},
+				addresse: {
+					select: {
+						id: true,
+						username: true,
+						bannedAt: true,
+						profile: {
+							select: {
+								avatarUrl: true,
+							},
+						},
+					},
+				},
 			},
 		});
 
 		const friends = friendships.map((friendship) => {
-			return friendship.requesterId === userId
-			 ? friendship.addresse
-			 : friendship.requester;
+			const friend =
+				friendship.requesterId === userId ? friendship.addresse : friendship.requester;
+			return {
+				id: friend.id,
+				username: friend.username,
+				bannedAt: friend.bannedAt,
+				avatarUrl: friend.profile?.avatarUrl || null,
+			};
 		});
 
 		// Filter out friends with report relations
@@ -175,13 +195,13 @@ export class FriendsService {
 			where: {
 				status: 'PENDING',
 				addresseId: userId,
-				},
+			},
 			include: {
 				requester: true,
 			},
 		});
 
-		const requesters = friendships.map(f => f.requester);
+		const requesters = friendships.map((f) => f.requester);
 
 		// Filter out requesters with report relations
 		const filteredRequesters = [];
@@ -234,7 +254,7 @@ export class FriendsService {
 	}
 
 	async blockFriend(userId: number, targetId: number): Promise<void> {
-		if (userId === targetId) throw new BadRequestException("Cannot block yourself");
+		if (userId === targetId) throw new BadRequestException('Cannot block yourself');
 
 		const existing = await this.prisma.friendship.findFirst({
 			where: {
@@ -248,7 +268,7 @@ export class FriendsService {
 		if (existing) {
 			await this.prisma.friendship.update({
 				where: { id: existing.id },
-				data: { 
+				data: {
 					status: 'BLOCKED',
 					requesterId: userId,
 					addresseId: targetId,
@@ -256,7 +276,7 @@ export class FriendsService {
 			});
 		} else {
 			await this.prisma.friendship.create({
-				data: { 
+				data: {
 					requesterId: userId,
 					addresseId: targetId,
 					status: 'BLOCKED',
@@ -296,6 +316,6 @@ export class FriendsService {
 			},
 		});
 
-		return blocked.map(b => b.addresse);
+		return blocked.map((b) => b.addresse);
 	}
 }

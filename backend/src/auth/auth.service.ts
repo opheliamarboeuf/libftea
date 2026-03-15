@@ -127,6 +127,7 @@ export class AuthService {
 					select: {
 						id: true,
 						username: true,
+						bannedAt: true,
 						profile: { select: { avatarUrl: true } },
 					},
 				},
@@ -134,6 +135,7 @@ export class AuthService {
 					select: {
 						id: true,
 						username: true,
+						bannedAt: true,
 						profile: { select: { avatarUrl: true } },
 					},
 				},
@@ -145,6 +147,7 @@ export class AuthService {
 			return {
 				id: friend.id,
 				username: friend.username,
+				bannedAt: friend.bannedAt,
 				avatarUrl: friend.profile?.avatarUrl,
 			};
 		});
@@ -160,6 +163,7 @@ export class AuthService {
 					select: {
 						id: true,
 						username: true,
+						bannedAt: true,
 						profile: { select: { avatarUrl: true } },
 					},
 				},
@@ -169,6 +173,7 @@ export class AuthService {
 		const pendingRequests = pendingFriendships.map((f) => ({
 			id: f.requester.id,
 			username: f.requester.username,
+			bannedAt: f.requester.bannedAt,
 			avatarUrl: f.requester.profile?.avatarUrl,
 		}));
 
@@ -182,6 +187,7 @@ export class AuthService {
 					select: {
 						id: true,
 						username: true,
+						bannedAt: true,
 						profile: {
 							select: { avatarUrl: true }
 						}
@@ -193,6 +199,7 @@ export class AuthService {
 		const blockedUsers = blocked.map((f) => ({
 			id: f.addresse.id,
 			username: f.addresse.username,
+			bannedAt: f.addresse.bannedAt,
 			avatarUrl: f.addresse.profile?.avatarUrl,
 		}));
 

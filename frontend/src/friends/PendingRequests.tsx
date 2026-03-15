@@ -1,18 +1,15 @@
-import { useState } from "react";
-import { useUser } from "../context/UserContext";
-import { friendsApi } from "./api";
-import { usePendingRequests } from "./hooks";
-import { useModal } from "../context/ModalContext";
-import { Link } from "react-router-dom";
-import { useFriendsSocket } from "./useFriendsSocket";
-import "./friends.css"
+import { useState } from 'react';
+import { useUser } from '../context/UserContext';
+import { usePendingRequests } from './hooks';
+import { Link } from 'react-router-dom';
+import { useFriendsSocket } from './useFriendsSocket';
+import './friends.css';
 
 export function PendingRequests() {
 	const { pending, refetch } = usePendingRequests();
-	const [ loading, setLoading ] = useState(false);
-	const { showModal } = useModal();
+	const [loading, setLoading] = useState(false);
 	const { refreshUser, user } = useUser();
-	const API_URL = "http://localhost:3000";
+	const API_URL = 'http://localhost:3000';
 
 	const { emit } = useFriendsSocket(user?.id, {
 		onRequestAccepted: () => {
@@ -24,49 +21,58 @@ export function PendingRequests() {
 			setLoading(false);
 			refreshUser();
 			refetch();
-		}
+		},
 	});
 
 	const handleAccept = async (userId: number) => {
 		setLoading(true);
-		emit("accept_friend_request", { requesterId: userId, addresseId: user?.id });
+		emit('accept_friend_request', { requesterId: userId, addresseId: user?.id });
 	};
 
 	const handleReject = async (userId: number) => {
 		setLoading(true);
-		emit("reject_friend_request", { requesterId: userId, addresseId: user?.id });
+		emit('reject_friend_request', { requesterId: userId, addresseId: user?.id });
 	};
 
 	return (
 		<div>
 			{pending.length === 0 && <p>No pending requests</p>}
-			<div style={{ maxWidth: "300px" }}>
-				{pending.map(user => (
-					<div 
+			<div style={{ maxWidth: '300px' }}>
+				{pending.map((user) => (
+					<div
 						key={user.id}
 						style={{
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "space-between",
-						marginBottom: "8px",
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'space-between',
+							marginBottom: '8px',
 						}}
 					>
-						<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+						<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
 							<div className="small-avatar-container">
 								<div className="small-avatar">
 									<img
-										src={user.avatarUrl ? `${API_URL}${user.avatarUrl}` : "/default-avatar.png"}
+										src={
+											user.avatarUrl
+												? `${API_URL}${user.avatarUrl}`
+												: '/default-avatar.png'
+										}
 										alt="Small Avatar"
 									/>
 								</div>
 							</div>
 							<Link
-								to={`/users/${user.id}`}
-								style={{ textDecoration: "none", color: "inherit" }}
+								to={user.bannedAt ? '#' : `/users/${user.id}`}
+								style={{
+									textDecoration: 'none',
+									color: 'inherit',
+									cursor: user.bannedAt ? 'default' : 'pointer',
+									pointerEvents: user.bannedAt ? 'none' : 'auto',
+								}}
 							>
-								{user.username}
+								{user.bannedAt ? 'Unknown User' : user.username}
 							</Link>
-							<div style={{ display: "flex", gap: "8px" }}>
+							<div style={{ display: 'flex', gap: '8px' }}>
 								<button
 									className="friend-action-btn"
 									onClick={() => handleAccept(user.id)}

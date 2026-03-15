@@ -174,24 +174,24 @@ export class ModerationService {
 						bannedAt: new Date(),
 					},
 				});
-				// Soft delete the comments
+				// Soft-delete comments
 				await tx.comment.updateMany({
 					where: { userId: targetId, deletedAt: null },
 					data: { deletedAt: new Date() },
 				});
 
-				// // 3. Soft-delete les posts
-				// await tx.post.updateMany({
-				// 	where: { authorId: targetId, deletedAt: null },
-				// 	data: { deletedAt: new Date() },
-				// });
+				// 3. Soft-delete posts
+				await tx.post.updateMany({
+					where: { authorId: targetId, deletedAt: null },
+					data: { deletedAt: new Date() },
+				});
 
-				// // 4. Supprimer / bloquer les relations d’amitié si nécessaire
-				// await tx.friendship.deleteMany({
-				// 	where: {
-				// 		OR: [{ requesterId: targetId }, { addresseId: targetId }],
-				// 	},
-				// });
+			// 	// 4. Delete friendships
+			// 	await tx.friendship.deleteMany({
+			// 		where: {
+			// 			OR: [{ requesterId: targetId }, { addresseId: targetId }],
+			// 		},
+			// 	});
 				return updateUser;
 			});
 

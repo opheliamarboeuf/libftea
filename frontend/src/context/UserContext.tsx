@@ -5,6 +5,7 @@ export type Friend = {
 	id: number;
 	username: string;
 	avatarUrl: string | null;
+	bannedAt: string | null;
 };
 
 // Type for post data
@@ -25,6 +26,7 @@ export type Post = {
 export type Blocked = {
 	id: number;
 	username: string;
+	bannedAt: string | null;
 	avatarUrl: string | null;
 }
 
