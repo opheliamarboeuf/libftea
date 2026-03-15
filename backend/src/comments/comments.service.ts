@@ -1,4 +1,10 @@
-import { Injectable, BadRequestException, ForbiddenException, NotFoundException, Inject } from '@nestjs/common';
+import {
+	Injectable,
+	BadRequestException,
+	ForbiddenException,
+	NotFoundException,
+	Inject,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Friendship, User, Post, Comment } from '@prisma/client';
 
@@ -30,11 +36,11 @@ export class CommentsService {
 
 	async deleteComment(commentId: number, userId: number) {
 		const comment = await this.prisma.comment.findUnique({
-			where: { id: commentId },
+			where: { id: commentId, deletedAt: null },
 			include: { replies: true },
 		});
 
-		if (!comment) {
+		if (!comment || comment.deletedAt) {
 			throw new NotFoundException('Comment not found');
 		}
 
@@ -42,14 +48,18 @@ export class CommentsService {
 			throw new ForbiddenException('You cannot delete this comment');
 		}
 
+		// soft delete replies
 		if (comment.replies && comment.replies.length > 0) {
-			await this.prisma.comment.deleteMany({
+			await this.prisma.comment.updateMany({
 				where: { parentId: commentId },
+				data: { deletedAt: new Date() },
 			});
 		}
 
-		await this.prisma.comment.delete({
+		// soft delete comment
+		await this.prisma.comment.update({
 			where: { id: commentId },
+			data: { deletedAt: new Date() },
 		});
 
 		return { success: true, deletedId: commentId };
@@ -60,7 +70,7 @@ export class CommentsService {
 			where: { id: parentCommentId },
 		});
 
-		if (!parentComment) {
+		if (!parentComment || parentComment.deletedAt) {
 			throw new NotFoundException('Comment not found');
 		}
 
@@ -87,6 +97,7 @@ export class CommentsService {
 			where: {
 				postId,
 				parentId: null,
+				deletedAt: null,
 				NOT: {
 					OR: [
 						{
@@ -116,6 +127,7 @@ export class CommentsService {
 				user: true,
 				replies: {
 					where: {
+						deletedAt: null,
 						NOT: {
 							OR: [
 								{
@@ -146,7 +158,6 @@ export class CommentsService {
 			},
 			orderBy: { createdAt: 'asc' },
 		});
-
 		return comments;
 	}
 }
