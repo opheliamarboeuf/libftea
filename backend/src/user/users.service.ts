@@ -103,6 +103,7 @@ export class UsersService {
 			select: {
 				id: true,
 				username: true,
+				bannedAt: true,
 				profile: {
 					select: {
 						avatarUrl: true,
@@ -113,6 +114,9 @@ export class UsersService {
 				}
 			},
 		});
+
+		if (user.bannedAt)
+			throw new ForbiddenException("You cannot access this profile");
 
 		if (!user) return null;
 

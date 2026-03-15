@@ -134,7 +134,54 @@ export class ModerationService {
 		}
 	}
 
-// ---------------------------------- USER REPORTS ----------------------------------
+	// ---------------------------------- USER REPORTS ----------------------------------
+	
+	async banUser(targetId: number, userId: number, userRole: Role) {
+		try {
+			if (!hasPermission(userRole, 'BAN_USER')) {
+				throw new ForbiddenException('You do not have permission to ban a user');
+			}
+
+			if (targetId === userId) {
+				throw new BadRequestException('You cannot bann yourself');
+			}
+
+			const targetUser = await this.prisma.user.findUnique({
+				where: { id: targetId },
+				select: {
+					id: true,
+					role: true,
+					bannedAt: true
+				}
+			});
+
+			if (!targetUser) {
+				throw new NotFoundException('User not found');
+			}
+			if (targetUser.role === Role.ADMIN) {
+				throw new ForbiddenException('You cannot ban an administrator');
+			}
+			
+			if (targetUser.bannedAt) {
+				throw new BadRequestException('User has already been banned');
+			}
+
+			const bannedUser = await this.prisma.user.update({
+				where: { id: targetId },
+				data: {
+					bannedAt: new Date(),
+				},
+			});
+			return bannedUser;
+
+		} catch (error) {
+			if (error instanceof HttpException) throw error;
+			console.error('Error banning user:', error);
+			throw new InternalServerErrorException('Could not ban the user');
+		}
+	}
+
+	// ---------------------------------- USER REPORTS ----------------------------------
 
 	async reportUser(userId: number, dto: ReportDto, currentUserId: number) {
 		try {
@@ -143,7 +190,7 @@ export class ModerationService {
 				select: { id: true },
 			});
 			if (!reportedUser) throw new NotFoundException('User not found');
-			if (userId=== currentUserId)
+			if (userId === currentUserId)
 				throw new BadRequestException('You cannot report yourself');
 			const existingReport = await this.prisma.report.findUnique({
 				where: {
@@ -224,7 +271,7 @@ export class ModerationService {
 						select: {
 							id: true,
 							username: true,
-							profile:{
+							profile: {
 								select: {
 									displayName: true,
 									avatarUrl: true,
@@ -242,7 +289,7 @@ export class ModerationService {
 				},
 			});
 
-			// Get all ASSIGNED reports 
+			// Get all ASSIGNED reports
 			const assignedReports = await this.prisma.report.findMany({
 				where: {
 					reportedUserId: { not: null },
@@ -297,9 +344,9 @@ export class ModerationService {
 			console.error('Error fetching pending user reports:', error);
 			throw new InternalServerErrorException('Could not fetch pending user reports');
 		}
-	}	
+	}
 
-// ---------------------------------- POST REPORTS ----------------------------------
+	// ---------------------------------- POST REPORTS ----------------------------------
 
 	async reportPost(postId: number, dto: ReportDto, currentUserId: number) {
 		try {

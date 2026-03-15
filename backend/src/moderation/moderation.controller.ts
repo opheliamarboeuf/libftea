@@ -12,6 +12,16 @@ import { ReportDto } from './dto/report.dto';
 export class ModerationController {
 	constructor(private readonly moderationService: ModerationService) {}
 
+	// ---------------------------------- BAN USER ----------------------------------
+	@Roles(Role.ADMIN)
+	@Put('ban/:id')
+	async banUser(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number, role: Role} },
+	) {
+		return this.moderationService.banUser(id, req.user.id, req.user.role);
+	}
+
 	// ---------------------------------- USER REPORTS ----------------------------------
 
 	@Roles(Role.ADMIN)
