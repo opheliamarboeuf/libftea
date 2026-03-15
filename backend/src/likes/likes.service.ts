@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, ForbiddenException, NotFoundException, Inject } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException, NotFoundException, Inject, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Friendship, User, Post, Like } from '@prisma/client';
 import { NotificationsService } from 'src/notifications/notifications.service';
@@ -14,52 +14,58 @@ export class LikesService {
 		postId: number,
 		userId: number,
 	) {
-		const post = await this.prisma.post.findUnique({
-			where: { id: postId },
-			include: { author: true },
-		});
-
-		if (!post) {
-			throw new NotFoundException('Post not found');
-		}
-
-		const existing = await this.prisma.like.findUnique({
-			where: {
-				userId_postId: {
-					userId,
-					postId,
-				},
-			},
-		});
-
-		if (existing) {
-			await this.prisma.like.delete({
-				where: {
-					userId_postId: { userId, postId },
-				},
-			});
-			const count = await this.prisma.like.count({ where: { postId }});
-			return { liked: false, count };
-		} else {
-			await this.prisma.like.create({
-				data: {
-					userId,
-					postId,
-				},
+		try {
+			const post = await this.prisma.post.findUnique({
+				where: { id: postId },
+				include: { author: true },
 			});
 
-			//notification
-			const liker = await this.prisma.user.findUnique({
-				where: { id: userId },
-			});
-			
-			if (userId !== post.authorId) {
-				await this.notificationsService.notifyPostLiked(post.authorId, liker.username);
+			if (!post) {
+				throw new NotFoundException('Post not found');
 			}
 
-			const count = await this.prisma.like.count({ where: { postId }});
-			return { liked: true, count };
+			const existing = await this.prisma.like.findUnique({
+				where: {
+					userId_postId: {
+						userId,
+						postId,
+					},
+				},
+			});
+
+			if (existing) {
+				await this.prisma.like.delete({
+					where: {
+						userId_postId: { userId, postId },
+					},
+				});
+				const count = await this.prisma.like.count({ where: { postId }});
+				return { liked: false, count };
+			} else {
+				await this.prisma.like.create({
+					data: {
+						userId,
+						postId,
+					},
+				});
+
+				//notification
+				const liker = await this.prisma.user.findUnique({
+					where: { id: userId },
+				});
+				
+				if (userId !== post.authorId) {
+					await this.notificationsService.notifyPostLiked(post.authorId, liker.username);
+				}
+
+				const count = await this.prisma.like.count({ where: { postId }});
+				return { liked: true, count };
+			}
+		} catch (err) {
+			console.log("Error like/unliking post:", err);
+			throw new InternalServerErrorException("Could not like/unlike post");
 		}
+		
 	}
 
 	async countLikes(

@@ -13,81 +13,111 @@ export class NotificationsService {
 	) {}
 
 	async notifyPostLiked(recipientId: number, likerUsername: string): Promise<void> {
-		const notification = await this.prisma.notification.create({
-			data: {
-				type: NotificationType.LIKE,
-				userId: recipientId,
-				isRead: false,
-				message: `${likerUsername} liked your post`,
-			},
-		});
+		try {
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.LIKE,
+					userId: recipientId,
+					isRead: false,
+					message: `${likerUsername} liked your post`,
+				},
+			});
+			
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying like:", err);
+		}
 		
-		this.notificationsGateway.sendToUser(recipientId, notification);
 	}
 
 	async notifyFriendPost(recipientId: number, posterUsername: string): Promise<void> {
-		const notification = await this.prisma.notification.create({
-			data: {
-				type: NotificationType.POST,
-				userId: recipientId,
-				isRead: false,
-			message: `${posterUsername} posted an outfit`,
-			},
-		});
+		try {
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.POST,
+					userId: recipientId,
+					isRead: false,
+				message: `${posterUsername} posted an outfit`,
+				},
+			});
+			
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying friend post:", err);
+		}
 		
-		this.notificationsGateway.sendToUser(recipientId, notification);
 	}
 
 	async notifyPostCommented(recipientId: number, commenterUsername: string): Promise<void> {
-		const notification = await this.prisma.notification.create({
-			data: {
-				type: NotificationType.COMMENT,
-				userId: recipientId,
-				isRead: false,
-				message: `${commenterUsername} commented on your post`,
-			},
-		});
+		try {
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.COMMENT,
+					userId: recipientId,
+					isRead: false,
+					message: `${commenterUsername} commented on your post`,
+				},
+			});
+			
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying post comment:", err);
+		}
 		
-		this.notificationsGateway.sendToUser(recipientId, notification);
 	}
 
 	async notifyCommentReplied(recipientId: number, commenterUsername: string): Promise<void> {
-		const notification = await this.prisma.notification.create({
-			data: {
-				type: NotificationType.COMMENT_REPLY,
-				userId: recipientId,
-				isRead: false,
-				message: `${commenterUsername} replied to your comment`,
-			},
-		});
+		try {
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.COMMENT_REPLY,
+					userId: recipientId,
+					isRead: false,
+					message: `${commenterUsername} replied to your comment`,
+				},
+			});
+			
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying comment reply:", err);
+		}
 		
-		this.notificationsGateway.sendToUser(recipientId, notification);
 	}
 
 	async notifyFriendRequest(recipientId: number, requesterUsername: string): Promise<void> {
-		const notification = await this.prisma.notification.create({
-			data: {
-				type: NotificationType.FRIEND_REQUEST,
-				userId: recipientId,
-				isRead: false,
-				message: `${requesterUsername} sent you a friend request`,
-			},
-		});
+		try {
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.FRIEND_REQUEST,
+					userId: recipientId,
+					isRead: false,
+					message: `${requesterUsername} sent you a friend request`,
+				},
+			});
+			
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying friend request:", err);
+		}
 		
-		this.notificationsGateway.sendToUser(recipientId, notification);
 	}
 
 	async notifyFriendRequestAccepted(recipientId: number, newFriendUsername: string): Promise<void> {
-		const notification = await this.prisma.notification.create({
-			data: {
-				type: NotificationType.FRIEND_REQUEST_ACCEPTED,
-				userId: recipientId,
-				isRead: false,
-				message: `${newFriendUsername} accepted your friend request`,
-			}
-		});
+		try {
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.FRIEND_REQUEST_ACCEPTED,
+					userId: recipientId,
+					isRead: false,
+					message: `${newFriendUsername} accepted your friend request`,
+				}
+			});
 
-		this.notificationsGateway.sendToUser(recipientId, notification);
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying friend request accepted:", err);
+		}
+		
 	}
 
 	async getMyNotifications(userId: number): Promise<Notification[]> {
@@ -100,22 +130,37 @@ export class NotificationsService {
 	}
 
 	async markAsRead(notifId: number): Promise<void> {
-		await this.prisma.notification.update({
-			where: { id: notifId },
-			data: { isRead: true },
-		});
+		try {
+			await this.prisma.notification.update({
+				where: { id: notifId },
+				data: { isRead: true },
+			});
+		} catch (err) {
+			console.log("Error marking notification as read:", err);
+		}
+		
 	}
 
 	async markAllAsRead(userId: number): Promise<void> {
-		await this.prisma.notification.updateMany({
-			where: { userId, isRead: false },
-			data: { isRead: true },
-		});
+		try {
+			await this.prisma.notification.updateMany({
+				where: { userId, isRead: false },
+				data: { isRead: true },
+			});
+		} catch (err) {
+			console.log("Error marking all notifications as read:", err);
+		}
+		
 	}
 
 	async deleteNotification(notifId: number): Promise<void> {
-		await this.prisma.notification.delete({
-			where: { id: notifId },
-		});
+		try {
+			await this.prisma.notification.delete({
+				where: { id: notifId },
+			});
+		} catch (err) {
+			console.log("Error deleting notification:", err);
+		}
+		
 	}
 }
