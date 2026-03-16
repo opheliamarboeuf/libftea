@@ -28,7 +28,7 @@ html, body {
 	border-radius: 50px;
 	border: none;
 
-	background-color: #b1b1b1;
+	background-color: rgba(249, 216, 230, 0.8);
 	color: white;
 
 	display: flex;

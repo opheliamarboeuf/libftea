@@ -18,7 +18,6 @@ const FeedPage = () => {
 	return (
 		<div className="feed-page">
 				<div className="feed-header">
-					<div className="page-name">My feed</div>
 					<div className="feed-center">
 						<button className="expand-btn expand-btn-left" onClick={() => setShowPostModal(true)}>
 							<span className="icon">＋</span>
