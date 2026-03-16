@@ -25,7 +25,8 @@
 	margin: 0;
 	cursor: pointer;
 	color: #000;
-	font-family: "Palatino", serif;
+	font-family: 'Blosta Script', cursive;
+	font-size: 2rem;
 }
 
 .search-bar-container {
