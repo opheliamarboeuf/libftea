@@ -260,7 +260,7 @@
 	text-align: center;
 	padding: 0.5rem;
 	border-radius: 4px;
-	white-space: pre-line;
+	white-space: normal;
 	word-break: break-word;
 }
 
