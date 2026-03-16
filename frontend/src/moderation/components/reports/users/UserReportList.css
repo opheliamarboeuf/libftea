@@ -1,69 +1,3 @@
-.user-report-target-username {
-	font-weight: 500;
-	cursor: pointer;
-	display: inline-block;
-	transition: color 0.2s ease;
-}
-
-.user-report-target-username:hover {
-	color: #bebebe;
-}
-
-.user-report-avatar-bio-row {
-	display: flex;
-	align-items: flex-start;
-	justify-content: center;
-	gap: 50px;
-	margin-top: 10px;
-}
-
-.user-report-avatar {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 4px;
-}
-
-.user-report-bio {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 4px;
-	max-width: 400px;
-	word-break: break-word;
-	color: #333;
-	font-size: 0.95rem;
-}
-
-.user-report-label {
-	font-weight: bold;
-	font-size: 0.9rem;
-	margin-bottom: 4px;
-	padding: 0;
-	align-self: flex-start;
-}
-
-.user-report-cover {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	width: 100%;
-	height: 200px;
-	margin-bottom: 10px;
-	overflow: hidden;
-	border-radius: 10px;
-}
-
-.user-report-cover img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	border-radius: 10px;
-	display: block;
-}
-.user-report-avatar img {
-	border-radius: 10px;
-}
 /* Container for all posts */
 .user-report-list {
 	display: flex;
@@ -89,6 +23,17 @@
 	padding: 15px;
 	width: 100%;
 	max-width: 850px;
+}
+
+.user-report-target-username {
+	font-weight: 500;
+	cursor: pointer;
+	display: inline-block;
+	transition: color 0.2s ease;
+}
+
+.user-report-target-username:hover {
+	color: #bebebe;
 }
 
 /* Post header: title + author + date */
@@ -191,49 +136,95 @@
 	border-color: #bbb;
 }
 
-/* Report content area: image + caption */
-.user-report-content {
+.user-report-body {
 	display: flex;
+	flex-direction: row;
 	gap: 15px;
-	justify-content: center;
-	align-items: center;
+	align-items: flex-start;
 }
 
-/* Report image: 1/2 of the width */
-.user-report-image {
+/* Report content area */
+.user-report-content {
 	flex: 2;
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 15px;
 }
 
-.user-report-image img {
+.user-report-avatar-bio-row {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 50px;
+	margin-top: 10px;
+}
+
+.user-report-avatar {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+}
+
+.user-report-bio {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+	max-width: 400px;
+	word-break: break-word;
+	color: #333;
+	font-size: 0.95rem;
+}
+
+.user-report-label {
+	font-weight: bold;
+	font-size: 0.9rem;
+	margin-bottom: 4px;
+	padding: 0;
+	align-self: flex-start;
+}
+
+.user-report-cover {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 	width: 100%;
-	height: auto;
-	border-radius: 8px;
-	object-fit: cover;
+	height: 200px;
+	margin-bottom: 10px;
+	overflow: hidden;
+	border-radius: 10px;
 }
 
-/* Action : 1/2 of the width */
+.user-report-cover img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 10px;
+	display: block;
+}
+
+.user-report-avatar img {
+	border-radius: 10px;
+}
+
+/* Report info area */
 .user-report-info {
 	flex: 2;
 	display: flex;
 	flex-direction: row;
 	gap: 15px;
-	height: 100%;
 	min-height: 0;
+	margin-top: 25px;
 }
 
 .user-report-pre-handle,
-.user-report-profile-handle {
+.user-report-profile-handle,
+.user-report-post-handle {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
-	max-height: 100%;
-	min-height: 0;
-	overflow-y: auto;
-	overflow: hidden;
 	background-color: #ffffff;
 	border-radius: 10px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
@@ -241,7 +232,8 @@
 }
 
 .user-report-pre-handle > div,
-.user-report-profile-handle > div {
+.user-report-profile-handle > div,
+.user-report-post-handle > div {
 	font-size: 0.9rem;
 	color: #333;
 	padding: 8px 0;
@@ -249,7 +241,8 @@
 }
 
 .user-report-pre-handle > div:last-child,
-.user-report-profile-handle > div:last-child {
+.user-report-profile-handle > div:last-child,
+.user-report-post-handle > div:last-child {
 	border-bottom: none;
 }
 
@@ -264,19 +257,12 @@
 }
 
 .user-report-category,
-.user-report-description {
-	word-wrap: break-word;
-	overflow-wrap: break-word;
-}
-
-.user-report-category,
 .user-report-description,
 .user-report-mod_message {
 	word-wrap: break-word;
 	overflow-wrap: anywhere;
 }
 
-/* Caption + comments: 1/3 of the width */
 .user-report-text {
 	flex: 1;
 	display: flex;
@@ -286,17 +272,14 @@
 	overflow: hidden;
 }
 
-/* Caption */
 .user-report-caption p {
 	margin: 0;
-	font-size: 1rem;
 	color: #333;
 	font-size: 0.9rem;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 }
 
-/* No reports message */
 .no-reports {
 	width: 100%;
 	max-width: 900px;
@@ -318,18 +301,16 @@
 	color: #c62828;
 }
 
-/* Custom style for 'View all the reports' button */
 .user-report-more button {
 	border: none;
 	background: #fff;
 	color: #333;
-	padding: 0px 0px;
+	padding: 0;
 	border-radius: 4px;
 	cursor: pointer;
-	transition:
-		background 0.2s,
-		color 0.2s;
+	transition: background 0.2s, color 0.2s;
 }
+
 .user-report-more button:hover {
 	color: #888;
 }
