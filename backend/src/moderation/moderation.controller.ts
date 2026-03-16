@@ -1,5 +1,15 @@
 import { ModerationService } from './moderation.service';
-import { Controller, UseGuards, Get, Body, Post, Put, Req, Param, ParseIntPipe} from "@nestjs/common";
+import {
+	Controller,
+	UseGuards,
+	Get,
+	Body,
+	Post,
+	Put,
+	Req,
+	Param,
+	ParseIntPipe,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Role } from '@prisma/client';
@@ -17,7 +27,7 @@ export class ModerationController {
 	@Put('ban/:id')
 	async banUser(
 		@Param('id', ParseIntPipe) id: number,
-		@Req() req: Request & { user: { id: number, role: Role} },
+		@Req() req: Request & { user: { id: number; role: Role } },
 	) {
 		return this.moderationService.banUser(id, req.user.id, req.user.role);
 	}
@@ -37,6 +47,21 @@ export class ModerationController {
 		@Body() dto: ReportDto,
 	) {
 		return this.moderationService.reportUser(id, dto, req.user.id);
+	}
+
+	@Roles(Role.ADMIN)
+	@Get('reports/users/all/:id')
+	async getAllReportsForThisUser(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { role: Role } },
+	) {
+		return this.moderationService.getAllReportsForThisUser(id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN)
+	@Get('reports/users/mine')
+	async getMyUserReports(@Req() req: Request & { user: { id: number; role: Role } }) {
+		return this.moderationService.getMyUserReports(req.user.id, req.user.role);
 	}
 
 	// ---------------------------------- POST REPORTS ----------------------------------
@@ -77,16 +102,10 @@ export class ModerationController {
 		return this.moderationService.getAllReportsForThisPost(id, req.user.role);
 	}
 
-	@Roles(Role.ADMIN)
-	@Get('admin/logs')
-	async getAdminLogs(@Req() req: Request & { user: { id: number; role: Role } }) {
-		return this.moderationService.getAdminLogs(req.user.id, req.user.role);
-	}
-
 	@Roles(Role.ADMIN, Role.MOD)
 	@Get('reports/posts/mine')
 	async getMyPostReports(@Req() req: Request & { user: { id: number; role: Role } }) {
-		return this.moderationService.getMyPostReports(req.user.id, req.user.role);
+		return this.moderationService.getMyUserReports(req.user.id, req.user.role);
 	}
 
 	@Roles(Role.ADMIN, Role.MOD)
@@ -125,5 +144,11 @@ export class ModerationController {
 		@Req() req: Request & { user: { id: number; role: Role } },
 	) {
 		return this.moderationService.rejectReport(id, dto, req.user.id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN)
+	@Get('admin/logs')
+	async getAdminLogs(@Req() req: Request & { user: { id: number; role: Role } }) {
+		return this.moderationService.getAdminLogs(req.user.id, req.user.role);
 	}
 }

@@ -186,12 +186,12 @@ export class ModerationService {
 					data: { deletedAt: new Date() },
 				});
 
-			// 	// 4. Delete friendships
-			// 	await tx.friendship.deleteMany({
-			// 		where: {
-			// 			OR: [{ requesterId: targetId }, { addresseId: targetId }],
-			// 		},
-			// 	});
+				// 	// 4. Delete friendships
+				// 	await tx.friendship.deleteMany({
+				// 		where: {
+				// 			OR: [{ requesterId: targetId }, { addresseId: targetId }],
+				// 		},
+				// 	});
 				return updateUser;
 			});
 
@@ -272,6 +272,57 @@ export class ModerationService {
 			if (error instanceof HttpException) throw error;
 			console.log('Error reporting user:', error);
 			throw new InternalServerErrorException('Could not report user');
+		}
+	}
+
+	async getAllReportsForThisUser(userId: number, userRole: Role) {
+		try {
+			if (!hasPermission(userRole, 'REVIEW_USER_REPORT')) {
+				throw new ForbiddenException('You do not have the right to review users reports');
+			}
+			const user = await this.prisma.user.findUnique({
+				where: { id: userId },
+				select: { id: true },
+			});
+
+			if (!user) {
+				throw new NotFoundException('User not found');
+			}
+
+			const reports = await this.prisma.report.findMany({
+				where: {
+					reportedUserId: userId,
+				},
+				select: {
+					id: true,
+					reporter: { select: { id: true, username: true } },
+					reportedUser: {
+						select: {
+							id: true,
+							username: true,
+							profile: {
+								select: {
+									displayName: true,
+									avatarUrl: true,
+									coverUrl: true,
+									bio: true,
+								},
+							},
+						},
+					},
+					reportCategory: true,
+					reportDescription: true,
+					createdAt: true,
+					status: true,
+					handledBy: { select: { id: true, username: true } },
+				},
+				orderBy: { createdAt: 'asc' },
+			});
+			return reports;
+		} catch (error) {
+			if (error instanceof HttpException) throw error;
+			console.error('Error fetching all the reports for this user:', error);
+			throw new InternalServerErrorException('Could not fetch all the reports for this user');
 		}
 	}
 
@@ -368,6 +419,84 @@ export class ModerationService {
 		}
 	}
 
+	async getMyUserReports(userId: number, userRole: Role) {
+		try {
+			if (!hasPermission(userRole, 'REVIEW_USER_REPORT')) {
+				throw new ForbiddenException('You do not have the right to review user reports');
+			}
+
+			const myAssignedReports = await this.prisma.report.findMany({
+				where: {
+					reportedUserId: { not: null },
+					status: ReportStatus.ASSIGNED,
+					handledById: userId,
+				},
+				select: {
+					id: true,
+					reporter: { select: { id: true, username: true } },
+					reportedUser: {
+						select: {
+							id: true,
+							username: true,
+							profile: {
+								select: {
+									displayName: true,
+									avatarUrl: true,
+									coverUrl: true,
+									bio: true,
+								},
+							},
+						},
+					},
+					reportCategory: true,
+					reportDescription: true,
+					createdAt: true,
+					status: true,
+					handledBy: { select: { id: true, username: true } },
+				},
+				orderBy: { createdAt: 'asc' },
+			});
+
+			// Keep only one report per reported user
+			const seenUserIds = new Set<number>();
+			const uniqueReports = [];
+
+			for (const report of myAssignedReports) {
+				const uid = report.reportedUser.id;
+				if (!seenUserIds.has(uid)) {
+					uniqueReports.push(report);
+					seenUserIds.add(uid);
+				}
+			}
+
+			// Count all reports per user
+			const userIds = uniqueReports.map((r) => r.reportedUser.id);
+
+			const allReports = await this.prisma.report.findMany({
+				where: {
+					reportedUserId: { in: userIds },
+				},
+				select: {
+					reportedUser: { select: { id: true } },
+				},
+			});
+
+			const reportCountByUserId = this.buildCountByKey(
+				allReports,
+				(report) => report.reportedUser.id,
+			);
+
+			return uniqueReports.map((report) => ({
+				...report,
+				reportCount: reportCountByUserId[report.reportedUser.id] ?? 0,
+			}));
+		} catch (error) {
+			if (error instanceof HttpException) throw error;
+			console.error("Error fetching user's assigned user reports:", error);
+			throw new InternalServerErrorException("Could not fetch user's assigned user reports");
+		}
+	}
+
 	// ---------------------------------- POST REPORTS ----------------------------------
 
 	async reportPost(postId: number, dto: ReportDto, currentUserId: number) {
@@ -443,8 +572,17 @@ export class ModerationService {
 	async getAllReportsForThisPost(postId: number, userRole: Role) {
 		try {
 			if (!hasPermission(userRole, 'REVIEW_POST_REPORT')) {
-				throw new BadRequestException('You do not have the right to review posts reports');
+				throw new ForbiddenException('You do not have the right to review posts reports');
 			}
+			const post = await this.prisma.post.findUnique({
+				where: { id: postId },
+				select: { id: true },
+			});
+
+			if (!post) {
+				throw new NotFoundException('Post not found');
+			}
+
 			const reports = await this.prisma.report.findMany({
 				where: {
 					reportedPostId: postId,

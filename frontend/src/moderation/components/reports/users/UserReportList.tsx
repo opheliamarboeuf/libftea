@@ -41,14 +41,20 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 					<div className="user-report-header">
 						<div className="user-report-header-content">
 							<div>
-								<span
-									className="user-report-target-username"
-									onClick={() => goToProfile(report.reportedUser.id)}
-								>
-									{report.reportedUser.profile.displayName
-										? `${report.reportedUser.username} (${report.reportedUser.profile.displayName})`
-										: report.reportedUser.username}
-								</span>
+								{report.reportedUser ? (
+									<span
+										className="user-report-target-username"
+										onClick={() => goToProfile(report.reportedUser.id)}
+									>
+										{report.reportedUser.profile?.displayName
+											? `${report.reportedUser.username} (${report.reportedUser.profile?.displayName})`
+											: report.reportedUser.username}
+									</span>
+								) : (
+									<span className="user-report-target-username">
+										Unknown user
+									</span>
+								)}
 							</div>
 						</div>
 						<div className="user-report-btn">
@@ -70,17 +76,16 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 									Assign Report
 								</button>
 							)}
-							{report.status === 'ASSIGNED' &&
-								(report.handledBy?.id === user.id || user.role === 'ADMIN') && (
-									<button
-										onClick={() => {
-											setReportToUnassign(report.id);
-											setShowConfirm(true);
-										}}
-									>
-										Unassign Report
-									</button>
-								)}
+							{report.status === 'ASSIGNED' && report.handledBy?.id === user.id && (
+								<button
+									onClick={() => {
+										setReportToUnassign(report.id);
+										setShowConfirm(true);
+									}}
+								>
+									Unassign Report
+								</button>
+							)}
 							{report.status === 'ASSIGNED' && report.handledBy?.id === user.id && (
 								<button onClick={() => setReportToHandle(report.id)}>
 									Handle Report
@@ -90,29 +95,45 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 					</div>
 					<div className="user-report-content">
 						<div className="user-report-profile">
-							<div className="user-report-cover">
-								<div className="user-report-label">Cover</div>
-								<img
-									src={`${API_URL}${report.reportedUser.profile.coverUrl}`}
-									alt="Cover"
-								/>
-							</div>
-							<div className="user-report-avatar-bio-row">
-								<div className="user-report-avatar">
-									<div className="user-report-label">Avatar</div>
-									<img
-										src={`${API_URL}${report.reportedUser.profile.avatarUrl}`}
-										alt="Avatar"
-									/>
+							{report.reportedUser && report.reportedUser.profile ? (
+								<>
+									<div className="user-report-cover">
+										<div className="user-report-label">Cover</div>
+										{report.reportedUser.profile.coverUrl ? (
+											<img
+												src={`${API_URL}${report.reportedUser.profile.coverUrl}`}
+												alt="Cover"
+											/>
+										) : (
+											<span>No cover available</span>
+										)}
+									</div>
+									<div className="user-report-avatar-bio-row">
+										<div className="user-report-avatar">
+											<div className="user-report-label">Avatar</div>
+											{report.reportedUser.profile.avatarUrl ? (
+												<img
+													src={`${API_URL}${report.reportedUser.profile.avatarUrl}`}
+													alt="Avatar"
+												/>
+											) : (
+												<span>No avatar available</span>
+											)}
+										</div>
+										<div className="user-report-bio">
+											<div className="user-report-label">Bio</div>
+											{report.reportedUser.profile.bio &&
+											report.reportedUser.profile.bio.trim() !== ''
+												? report.reportedUser.profile.bio
+												: 'No bio available'}
+										</div>
+									</div>
+								</>
+							) : (
+								<div className="user-report-profile-missing">
+									User profile unavailable
 								</div>
-								<div className="user-report-bio">
-									<div className="user-report-label">Bio</div>
-									{report.reportedUser.profile.bio &&
-									report.reportedUser.profile.bio.trim() !== ''
-										? report.reportedUser.profile.bio
-										: 'No bio available'}
-								</div>
-							</div>
+							)}
 						</div>
 					</div>
 					<div className="user-report-info">
@@ -144,7 +165,15 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 							</div>
 							{report.reportCount && report.reportCount > 1 && (
 								<div className="user-report-more">
-									<button>View all the reports ({report.reportCount})</button>
+									<button
+										onClick={() =>
+											navigate(
+												`/moderation/reports/users/${report.reportedUser.id}`,
+											)
+										}
+									>
+										View all the reports ({report.reportCount})
+									</button>
 								</div>
 							)}
 						</div>

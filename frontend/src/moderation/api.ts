@@ -1,4 +1,4 @@
-import { PostReportType } from './types';
+import { PostReportType, UserReportType } from './types';
 import { CreateReportType, ReportHandlePayload } from './types';
 
 const API_URL = 'http://localhost:3000';
@@ -125,6 +125,42 @@ export const moderationApi = {
 		return data;
 	},
 
+	fetchMyUserReports: async (): Promise<UserReportType[]> => {
+		const res = await fetch(`${API_URL}/moderation/reports/users/mine`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || 'Failed to fetch the users reports for this user';
+			throw new Error(message);
+		}
+		return data;
+	},
+
+	fetchAllReportsForThisUser: async (reportId: number): Promise<UserReportType[]> => {
+		const res = await fetch(`${API_URL}/moderation/reports/users/all/${reportId}`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || 'Fetch all reports for this user failed';
+			throw new Error(message);
+		}
+		return data;
+	},
+
 	// ---------------------------------- POST REPORTS ----------------------------------
 
 	reportPost: async (payload: CreateReportType, postId: number): Promise<void> => {
@@ -163,6 +199,24 @@ export const moderationApi = {
 		return data;
 	},
 
+	fetchMyPostReports: async (): Promise<PostReportType[]> => {
+		const res = await fetch(`${API_URL}/moderation/reports/posts/mine`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || 'Failed to fetch the post reports for this user';
+			throw new Error(message);
+		}
+		return data;
+	},
+
 	fetchAllReportsForThisPost: async (reportId: number): Promise<PostReportType[]> => {
 		const res = await fetch(`${API_URL}/moderation/reports/posts/all/${reportId}`, {
 			headers: {
@@ -176,24 +230,6 @@ export const moderationApi = {
 			const message = Array.isArray(data.message)
 				? data.message[0]
 				: data.message || 'Fetch all reports for this post failed';
-			throw new Error(message);
-		}
-		return data;
-	},
-
-	fetchMyPostReports: async (): Promise<PostReportType[]> => {
-		const res = await fetch(`${API_URL}/moderation/reports/posts/mine`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || 'Fetch assigned to user post reports failed';
 			throw new Error(message);
 		}
 		return data;
