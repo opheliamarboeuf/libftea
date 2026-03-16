@@ -6,10 +6,11 @@ import { FaHeart } from "react-icons/fa";
 
 interface Props {
     postId: number;
+	authorId: number;
 }
 
-export function LikeButton({ postId }: Props) {
-	const { liked, count, loading, toggleLike } = useLike(postId);
+export function LikeButton({ postId, authorId }: Props) {
+	const { liked, count, loading, toggleLike } = useLike(postId, authorId);
     const [btnLoading, setBtnLoading] = useState(false);
 
 	const handleClick = () => {

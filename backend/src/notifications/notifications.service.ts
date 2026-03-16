@@ -120,6 +120,54 @@ export class NotificationsService {
 		
 	}
 
+	async notifyNewBattle(recipientId: number, battleName: string): Promise<void> {
+		try {
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.NEW_BATTLE,
+					userId: recipientId,
+					isRead: false,
+					message: `A new tournament has started! The theme is: ${battleName}`,
+				}
+			});
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying bnew battle:", err);
+		}
+	}
+
+	async notifyBattleWinner(recipientId: number, battleName: string): Promise<void> {
+		try {
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.BATTLE_WIN,
+					userId: recipientId,
+					isRead: false,
+					message: `Congratulations! You have won the tournament for the following theme: ${battleName}!`,
+				}
+			});
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying battle winner to winner:", err);
+		}
+	}
+
+	async notifyTournamentParticipants(recipientId: number, battleName: string, winnerUsername: string): Promise<void> {
+		try {
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.BATTLE_END,
+					userId: recipientId,
+					isRead: false,
+					message: `Thank you for participating to the tournament for ${battleName}. The winner is ${winnerUsername}!`,
+				}
+			});
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying battle winner to participants:", err);
+		}
+	}
+
 	async getMyNotifications(userId: number): Promise<Notification[]> {
 		const notifications = await this.prisma.notification.findMany({
 			where: { userId, isRead: false },

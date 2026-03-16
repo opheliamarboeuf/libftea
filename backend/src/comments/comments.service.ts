@@ -31,7 +31,7 @@ export class CommentsService {
 						postId,
 					},
 					include: {
-						user: true,
+						User: true,
 						replies: true,
 					}
 			});
@@ -114,7 +114,7 @@ export class CommentsService {
 					parentId: parentCommentId,
 				},
 				include: {
-					user: true,
+					User: true,
 					replies: true,
 				},
 			});

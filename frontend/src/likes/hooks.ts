@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { likesApi } from "./api";
 import { socket } from "../socket/socket";
 import { useUser } from "../context/UserContext";
+import { useModal } from "../context/ModalContext";
 
-export const useLike = (postId: number) => {
+export const useLike = (postId: number, authorId: number) => {
 	const [liked, setLiked] = useState(false);
 	const [count, setCount] = useState(0);
 	const [loading, setLoading] = useState(true);
+	const { showModal } = useModal();
 	const { user } = useUser();
 
 	useEffect(() => {
@@ -46,6 +48,10 @@ export const useLike = (postId: number) => {
 	}, [postId]);
 
 	const toggleLike = () => {
+		if (user.id === authorId) {
+			showModal("You can't like your own post if it is in a tournament");
+			return ;
+		}
 		setLiked(prev => !prev);
 		setCount(prev => liked ? prev - 1 : prev + 1);
 		socket.emit("toggle_like", {
