@@ -142,6 +142,9 @@
 		"replycomment": "{{username}} replied to your comment",
 		"friendrequest": "{{username}} sent you a friend request",
 		"friendaccept": "{{username}} accepted your friend request",
-		"friendpost": "{{username}} posted an outfit"
+		"friendpost": "{{username}} posted an outfit",
+		"newbattle": "A new tournament has started! The theme is: {{theme}}",
+		"battlewinner": "Congratulations! You have won the tournament for the following theme: {{theme}}!",
+		"battleparticipants": "Thank you for participating to the tournament for {{theme}}. The winner is {{username}}!"
 	}
 }
