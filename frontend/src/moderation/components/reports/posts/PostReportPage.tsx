@@ -76,7 +76,7 @@ const PostReportPage = () => {
 			</div>
 			<div className="right-scroll">
 				<div className="simple-post-reports">
-					<div className="post-report-title">All Reports for this Post</div>
+					<div className="post-report-title">All reports for this post</div>
 					{simpleReports.length === 0 ? (
 						<p>No reports found for this post.</p>
 					) : (

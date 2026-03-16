@@ -119,7 +119,7 @@ const UserReportPage = () => {
 			</div>
 			<div className="right-scroll">
 				<div className="simple-user-reports">
-					<div className="user-report-title">All Reports for this Post</div>
+					<div className="user-report-title">All reports for this user</div>
 					{simpleReports.length === 0 ? (
 						<p>No reports found for this post.</p>
 					) : (
