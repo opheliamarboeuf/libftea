@@ -8,8 +8,7 @@
 	width: calc(100vw - 60px);
 	height: calc(100vh - 50px);
 	box-sizing: border-box;
-	background-color: white;
-	color: black;
+	color: #b05070;
 	overflow: hidden;
 	overflow-y: auto
 }
