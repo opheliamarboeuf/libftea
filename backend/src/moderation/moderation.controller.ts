@@ -34,12 +34,6 @@ export class ModerationController {
 
 	// ---------------------------------- USER REPORTS ----------------------------------
 
-	@Roles(Role.ADMIN)
-	@Get('reports/users/pending')
-	async getAllPendingUserReports(@Req() req: Request & { user: { role: Role } }) {
-		return this.moderationService.getAllPendingUserReports(req.user.role);
-	}
-
 	@Post('reports/users/:id')
 	async reportUser(
 		@Param('id', ParseIntPipe) id: number,
@@ -47,6 +41,24 @@ export class ModerationController {
 		@Body() dto: ReportDto,
 	) {
 		return this.moderationService.reportUser(id, dto, req.user.id);
+	}
+
+	@Roles(Role.ADMIN)
+	@Get('reports/users/pending')
+	async getAllPendingUserReports(@Req() req: Request & { user: { role: Role } }) {
+		return this.moderationService.getAllPendingUserReports(req.user.role);
+	}
+
+	@Roles(Role.ADMIN)
+	@Get('reports/users/all/assigned')
+	async getAllAssignedUserReports(@Req() req: Request & { user: { role: Role } }) {
+		return this.moderationService.getAllAssignedUserReports(req.user.role);
+	}
+
+	@Roles(Role.ADMIN)
+	@Get('reports/users/all/handled')
+	async getAllHandledUserReports(@Req() req: Request & { user: { role: Role } }) {
+		return this.moderationService.getAllHandledUserReports(req.user.role);
 	}
 
 	@Roles(Role.ADMIN)
@@ -105,7 +117,7 @@ export class ModerationController {
 	@Roles(Role.ADMIN, Role.MOD)
 	@Get('reports/posts/mine')
 	async getMyPostReports(@Req() req: Request & { user: { id: number; role: Role } }) {
-		return this.moderationService.getMyUserReports(req.user.id, req.user.role);
+		return this.moderationService.getMyPostReports(req.user.id, req.user.role);
 	}
 
 	@Roles(Role.ADMIN, Role.MOD)

@@ -68,6 +68,42 @@ export const moderationApi = {
 		return data;
 	},
 
+	assignPendingReport: async (reportId: number) => {
+		const res = await fetch(`${API_URL}/moderation/reports/${reportId}/assign`, {
+			method: 'PUT',
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || 'Assign report failed';
+			throw new Error(message);
+		}
+		return data;
+	},
+
+	unassignPendingReport: async (reportId: number) => {
+		const res = await fetch(`${API_URL}/moderation/reports/${reportId}/unassign`, {
+			method: 'PUT',
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || 'Unassign report failed';
+			throw new Error(message);
+		}
+		return data;
+	},
+
 	// ---------------------------------- USER REPORTS ----------------------------------
 	banUser: async (targetId: number) => {
 		const res = await fetch(`${API_URL}/moderation/ban/${targetId}`, {
@@ -156,6 +192,42 @@ export const moderationApi = {
 			const message = Array.isArray(data.message)
 				? data.message[0]
 				: data.message || 'Fetch all reports for this user failed';
+			throw new Error(message);
+		}
+		return data;
+	},
+
+	fetchAllAssignedUserReports: async (): Promise<UserReportType[]> => {
+		const res = await fetch(`${API_URL}/moderation/reports/users/all/assigned`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || 'Fetch all assigned user reports failed';
+			throw new Error(message);
+		}
+		return data;
+	},
+
+	fetchAllHandledUserReports: async (): Promise<UserReportType[]> => {
+		const res = await fetch(`${API_URL}/moderation/reports/users/all/handled`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || 'Fetch all assigned post reuserports failed';
 			throw new Error(message);
 		}
 		return data;
@@ -266,42 +338,6 @@ export const moderationApi = {
 			const message = Array.isArray(data.message)
 				? data.message[0]
 				: data.message || 'Fetch all assigned post reports failed';
-			throw new Error(message);
-		}
-		return data;
-	},
-
-	assignPendingReport: async (reportId: number) => {
-		const res = await fetch(`${API_URL}/moderation/reports/${reportId}/assign`, {
-			method: 'PUT',
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || 'Assign report failed';
-			throw new Error(message);
-		}
-		return data;
-	},
-
-	unassignPendingReport: async (reportId: number) => {
-		const res = await fetch(`${API_URL}/moderation/reports/${reportId}/unassign`, {
-			method: 'PUT',
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || 'Unassign report failed';
 			throw new Error(message);
 		}
 		return data;

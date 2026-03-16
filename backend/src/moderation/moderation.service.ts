@@ -497,6 +497,149 @@ export class ModerationService {
 		}
 	}
 
+	async getAllAssignedUserReports(userRole: Role) {
+		try {
+			if (!hasPermission(userRole, 'REVIEW_USER_REPORT')) {
+				throw new ForbiddenException('You do not have the right to review users reports');
+			}
+			const assignedReports = await this.prisma.report.findMany({
+				where: {
+					reportedUserId: { not: null },
+					status: ReportStatus.ASSIGNED,
+				},
+				select: {
+					id: true,
+					reporter: { select: { id: true, username: true } },
+					reportedUser: {
+						select: {
+							id: true,
+							username: true,
+							profile: {
+								select: {
+									displayName: true,
+									avatarUrl: true,
+									coverUrl: true,
+									bio: true,
+								},
+							},
+						},
+					},
+					reportCategory: true,
+					reportDescription: true,
+					createdAt: true,
+					status: true,
+					handledBy: { select: { id: true, username: true } },
+				},
+				orderBy: { createdAt: 'asc' },
+			});
+			// Keep only the first report for each unique user
+			const seenUserIds = new Set<number>();
+			const uniqueReports = [];
+			for (const report of assignedReports) {
+				const userId = report.reportedUser.id;
+				if (!seenUserIds.has(userId)) {
+					uniqueReports.push(report);
+					seenUserIds.add(userId);
+				}
+			}
+			// Count all reports per user
+			const userIds = uniqueReports.map((r) => r.reportedUser.id);
+			const allReports = await this.prisma.report.findMany({
+				where: {
+					reportedUserId: { in: userIds },
+				},
+				select: {
+					reportedUser: { select: { id: true } },
+				},
+			});
+			const reportCountByUserId = this.buildCountByKey(
+				allReports,
+				(report) => report.reportedUser.id,
+			);
+			return uniqueReports.map((report) => ({
+				...report,
+				reportCount: reportCountByUserId[report.reportedUser.id] ?? 0,
+			}));
+		} catch (error) {
+			if (error instanceof HttpException) throw error;
+			console.error('Error fetching all assigned user reports:', error);
+			throw new InternalServerErrorException('Could not fetch all assigned user reports');
+		}
+	}
+
+	async getAllHandledUserReports(userRole: Role) {
+		try {
+			if (!hasPermission(userRole, 'REVIEW_USER_REPORT')) {
+				throw new ForbiddenException('You do not have the right to review users reports');
+			}
+			const handledReports = await this.prisma.report.findMany({
+				where: {
+					reportedUserId: { not: null },
+					status: { in: [ReportStatus.ACCEPTED, ReportStatus.REJECTED] },
+				},
+				select: {
+					id: true,
+					reporter: { select: { id: true, username: true } },
+					reportedUser: {
+						select: {
+							id: true,
+							username: true,
+							profile: {
+								select: {
+									displayName: true,
+									avatarUrl: true,
+									coverUrl: true,
+									bio: true,
+								},
+							},
+						},
+					},
+					reportCategory: true,
+					reportDescription: true,
+					createdAt: true,
+					status: true,
+					handledBy: { select: { id: true, username: true } },
+					moderatorMessage: true,
+					handledAt: true,
+				},
+				orderBy: { handledAt: 'desc' },
+			});
+			// Keep only the first report for each unique user
+			const seenUserIds = new Set<number>();
+			const uniqueReports = [];
+			for (const report of handledReports) {
+				const userId = report.reportedUser.id;
+				if (!seenUserIds.has(userId)) {
+					uniqueReports.push(report);
+					seenUserIds.add(userId);
+				}
+			}
+			// Count all reports per user
+			const userIds = uniqueReports.map((r) => r.reportedUser.id);
+			const allReports = await this.prisma.report.findMany({
+				where: {
+					reportedUserId: { in: userIds },
+					status: { in: [ReportStatus.ACCEPTED, ReportStatus.REJECTED] },
+				},
+				select: {
+					reportedUser: { select: { id: true } },
+				},
+			});
+			const reportCountByUserId = this.buildCountByKey(
+				allReports,
+				(report) => report.reportedUser.id,
+			);
+			return uniqueReports.map((report) => ({
+				...report,
+				reportCount: reportCountByUserId[report.reportedUser.id] ?? 0,
+			}));
+		} catch (error) {
+			if (error instanceof HttpException) throw error;
+			console.error('Error fetching all handled user reports:', error);
+			throw new InternalServerErrorException('Could not fetch all handled user reports');
+		}
+	}
+
 	// ---------------------------------- POST REPORTS ----------------------------------
 
 	async reportPost(postId: number, dto: ReportDto, currentUserId: number) {

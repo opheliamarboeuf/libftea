@@ -9,6 +9,8 @@ import { AllHandledPostReports } from '../components/reports/posts/AllHandledPos
 import PostReportPage from '../components/reports/posts/PostReportPage';
 import { AdminDashboard } from '../components/AdminDashboard';
 import { MyUserReports } from '../components/reports/users/MyUserReports';
+import { AllAssignedUserReports } from '../components/reports/users/AllAssignedUserReports';
+import { AllHandledUserReports } from '../components/reports/users/AllHandledUserReports';
 import UserReportPage from '../components/reports/users/UserReportPage';
 
 export const ModerationRoutes = (
@@ -17,8 +19,8 @@ export const ModerationRoutes = (
 			<Route path="admin" element={<AdminDashboard />}>
 				<Route path="reports/users/pending" element={<PendingUserReports />} />
 				<Route path="reports/users/mine" element={<MyUserReports />} />
-				<Route path="reports/users/all/assigned" element={<AllAssignedPostReports />} />
-				<Route path="reports/users/all/handled" element={<AllHandledPostReports />} />
+				<Route path="reports/users/all/assigned" element={<AllAssignedUserReports />} />
+				<Route path="reports/users/all/handled" element={<AllHandledUserReports />} />
 			</Route>
 			<Route path="mod" element={<ModDashboard />}>
 				<Route path="reports/posts/pending" element={<PendingPostReports />} />
