@@ -37,8 +37,6 @@ export class FriendsService {
 				},
 			});
 
-			console.log('Existing friendship:', exists);
-
 			if (exists) {
 				throw new BadRequestException('You have already sent a friend request to this user');
 			}
@@ -166,8 +164,6 @@ export class FriendsService {
 	}
 
 	async getPendingRequests(userId: number) {
-
-		console.log('getPendingRequests called for userId:', userId);
 		const friendships = await this.prisma.friendship.findMany({
 			where: {
 				status: 'PENDING',
