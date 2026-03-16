@@ -61,14 +61,21 @@ export class ModerationService {
 					});
 				} else {
 					// Fallback: if report is associated with a user, update the all the reports for the same user
-					await prisma.report.update({
-						where: { id: reportId },
+					if (!report.reportedUserId)
+						throw new BadRequestException('No user associated with this report');
+					await prisma.report.updateMany({
+						where: { reportedUserId: report.reportedUserId },
 						data: {
 							handledById: userId,
 							moderatorMessage: dto.moderatorMessage,
 							status: ReportStatus.ACCEPTED,
 							handledAt: new Date(),
 						},
+					});
+					// Ban the user
+					await prisma.user.update({
+						where: { id: report.reportedUserId },
+						data: { bannedAt: new Date() },
 					});
 				}
 			});
