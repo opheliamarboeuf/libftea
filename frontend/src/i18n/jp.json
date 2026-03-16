@@ -133,5 +133,14 @@
 		"edit": "編集",
 		"report": "通報",
 		"confirmdelete": "本当に投稿を削除しますか?"
+	},
+
+	"notifications": {
+		"like": "{{username}}があなたの投稿をいいねしました",
+		"comment": "{{username}}があなたの投稿にコメントしました",
+		"replycomment": "{{username}}があなたのコメントに返信しました",
+		"friendrequest": "{{username}}があなたに友達リクエストを送りました",
+		"friendaccept": "{{username}}があなたの友達リクエストを承認しました",
+		"friendpost": "{{username}}がコーデを投稿しました"
 	}
 }

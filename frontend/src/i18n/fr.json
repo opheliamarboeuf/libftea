@@ -133,5 +133,14 @@
 		"edit": "Modifier",
 		"report": "Signaler",
 		"confirmdelete": "Etes-vous sûr de vouloir supprimer votre post ?"
+	},
+
+	"notifications": {
+		"like": "{{username}} a liké votre post",
+		"comment": "{{username}} a écrit un commentaire sur votre post",
+		"replycomment": "{{username}} a répondu à votre commentaire",
+		"friendrequest": "{{username}} vous a envoyé une demande en ami",
+		"friendaccept": "{{username}} a accepté votre demande en ami",
+		"friendpost": "{{username}} a posté une tenue"
 	}
 }

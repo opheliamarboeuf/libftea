@@ -134,5 +134,14 @@
 		"edit": "Edit",
 		"report": "Report",
 		"confirmdelete": "Are you sure you want to delete your post?"
+	},
+
+	"notifications": {
+		"like": "{{username}} liked your post",
+		"comment": "{{username}} commented on your post",
+		"replycomment": "{{username}} replied to your comment",
+		"friendrequest": "{{username}} sent you a friend request",
+		"friendaccept": "{{username}} accepted your friend request",
+		"friendpost": "{{username}} posted an outfit"
 	}
 }
