@@ -229,6 +229,10 @@ export class TournamentService {
 			where: { id: forTheWin.authorId },
 		});
 
+		if (!winner) {
+			throw new NotFoundException("Winner user not found");
+		}
+
 		await this.notificationsService.notifyBattleWinner(forTheWin.authorId, battle.theme);
 
 		const participants = await this.prisma.battleParticipant.findMany({
