@@ -3,14 +3,14 @@ import { useLike } from "./hooks";
 import { useUser } from "../context/UserContext";
 import { useState } from "react";
 import { FaHeart } from "react-icons/fa";
+import { Post } from "../context/UserContext";
 
 interface Props {
-    postId: number;
-	authorId: number;
+    post: Post,
 }
 
-export function LikeButton({ postId, authorId }: Props) {
-	const { liked, count, loading, toggleLike } = useLike(postId, authorId);
+export function LikeButton({ post }: Props) {
+	const { liked, count, loading, toggleLike } = useLike(post);
     const [btnLoading, setBtnLoading] = useState(false);
 
 	const handleClick = () => {

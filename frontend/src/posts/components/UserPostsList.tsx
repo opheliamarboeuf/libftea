@@ -115,7 +115,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		)}
 		<div className="post-footer">
 			<div className="interactions">
-				<LikeButton postId={post.id} authorId={post.authorId} />
+				<LikeButton post={post} />
 			</div>
 			{/* <div className="counters">
 			<span className="count">0 Likes </span>

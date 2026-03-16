@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 import { SearchBar } from "./SearchBar";
@@ -17,6 +17,7 @@ export const Header = () => {
 	const [menuHidden, setMenuHidden] = useState(false);
 	const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(user?.id);
 	const [notifOpen, setNotifOpen] = useState(false);
+	const notifRef = useRef<HTMLDivElement | null>(null);
 
 	useFriendsSocket(user?.id, {
 		onRequestSent: () => { refreshUser(); },
@@ -35,6 +36,20 @@ export const Header = () => {
 		onOnlineStatus: () => { refreshUser(); },
 	});
 	
+	useEffect(() => {
+		const outsideClick = (event: MouseEvent) => {
+			const target = event.target as Node;
+			if (notifRef.current && !notifRef.current.contains(target)) {
+				setNotifOpen(false);
+			}
+		};
+		document.addEventListener("mousedown", outsideClick);
+
+		return () => {
+			document.removeEventListener("mousedown", outsideClick);
+		};
+	}, []);
+
 	if (!user) return null;
 
 	const handleLogout = () => {
@@ -51,7 +66,6 @@ export const Header = () => {
 		navigate(path);
 	}
 
-
 	return (
 		<header className="header">
 			<div className="header-left">
@@ -61,7 +75,7 @@ export const Header = () => {
 			</div>
 			<div className="search-bar-container"><SearchBar /></div>
 			<div className="header-right">
-				<div className="notif-bell">
+				<div className="notif-bell" ref={notifRef}>
 					<span onClick={() => setNotifOpen(!notifOpen)}>
 						<FaBell />
 						{unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
