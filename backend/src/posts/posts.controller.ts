@@ -7,6 +7,7 @@ import { ImageResizeService } from 'src/common/service/image-resize.service';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { UpdatePostDto } from './dto/update.dto';
+import { Role } from '@prisma/client';
 
 @Controller('posts')
 @UseGuards(JwtAuthGuard)
@@ -62,19 +63,15 @@ export class PostsController {
 	@Delete('delete/:id')
 		async deletePost(
 			@Param('id', ParseIntPipe) id: number,
-			@Req() req: Request & { user: { id: number }},
-
+			@Req() req: Request & { user: { id: number; role: Role }},
 		) {
 			const post = await this.postService.getPostById(id);
 			if (!post)
 					throw new NotFoundException('Post not found');
-			if (post.authorId !== req.user.id) {
-				throw new ForbiddenException('You cannot delete this post');
-			}
 			if (post.imageUrl) {
 				await this.postService.deletePostImage(post.imageUrl);
 			}
-			return this.postService.deletePost(id);
+			return this.postService.deletePost(req.user.id, req.user.role, id);
 		}
 
 	@Put('edit/:id')

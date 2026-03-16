@@ -1,0 +1,112 @@
+.tournament-page {
+	position: relative;
+	top: 50px;
+	left: 60px;
+	display: flex;
+	flex-direction: column;
+	width: calc(100vw - 60px);
+	height: calc(100vh - 50px);
+	color: black;
+	align-items: center;
+	overflow-y: auto;
+}
+
+.tournament-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+    max-width: 900px;
+    background: white;
+	padding: 20px 30px;
+    border-radius: 16px;
+	margin-top: 25px;
+}
+
+.tournament-name {
+	position: absolute;
+	left: 5vw;
+	font-size: 30px;
+	font-weight: bold;
+}
+
+.tournament-center {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.tournament-tabs {
+	position: relative;
+	display: flex;
+	border-radius: 8px;
+	overflow: hidden;
+	background-color: white;
+}
+
+.tournament-tabs button {
+	flex: 1;
+	background-color: transparent;
+	border: none;
+	padding: 10px 20px;
+	font-size: 0.95rem;
+	cursor: pointer;
+	position: relative;
+	z-index: 2;
+	color: black;
+	transition: color 0.2s ease;
+	outline: none;
+	min-width: 140px;
+}
+
+.tournament-tabs button:hover {
+	background-color: transparent;
+}
+
+.tournament-tabs button.active {
+	color: black;
+	font-weight: 600;
+}
+
+.tab-indicator {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 50%;
+	height: 100%;
+	background-color: #f0f0f0;
+	border-radius: 8px;
+	transition: transform 0.25s ease;
+	z-index: 1;
+}
+
+.tab-indicator.right {
+	transform: translateX(100%);
+}
+
+.no-tournament {
+	width: 100%;
+	height: calc(100vh - 50px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 1.8rem;
+	font-weight: 500;
+	color: #555;
+}
+
+.last-winner {
+	width: 100%;
+	max-width: 900px;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 16px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.winner-image {
+    max-width: 300px;
+    border-radius: 10px;
+    margin-top: 10px;
+}

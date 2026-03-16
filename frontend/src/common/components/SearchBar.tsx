@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./SearchBar.css";
 
 const URL = 'http://localhost:3000/users';
+const API_URL = 'http://localhost:3000';
 
 interface SearchResult {
 	id: number;
@@ -80,7 +81,7 @@ export const SearchBar = () => {
 						>
 							{user.avatarUrl && (
 								<img
-									src={user.avatarUrl}
+									src={`${API_URL}${user.avatarUrl}`}
 									alt={user.username}
 									className="search-avatar"
 								/>

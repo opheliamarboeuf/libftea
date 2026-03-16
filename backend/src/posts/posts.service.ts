@@ -1,9 +1,11 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PostsDto } from "./dto/create.dto";
 import { UpdatePostDto } from "./dto/update.dto";
 import { join } from "path";
 import { unlink } from "fs/promises";
+import { hasPermission } from "src/auth/permissions";
+import { Role } from "@prisma/client";
 import { NotificationsService } from "src/notifications/notifications.service";
 
 @Injectable()
@@ -93,18 +95,42 @@ export class PostsService {
 		}
 	}
 
-	async deletePost(postId:number) {
-		try {
-			await this.prisma.post.delete({
-				where: { id: postId },
-			})
-			return true;
+	async deletePost(userId: number, userRole: Role, postId: number) {
+		const post = await this.prisma.post.findUnique({ where: { id: postId } });
+		if (!post)
+			return;
+
+		// Check if the user is the post author or has the permission to delete the post
+		if (userId !== post.authorId && !hasPermission(userRole, "DELETE_ANY_POST")) {
+			throw new BadRequestException("You do not have the right to delete this post");
 		}
-		catch (error) {
+
+		try {
+			// A transaction ensures that multiple database operations either all succeed together or all fail, keeping data consistent
+			await this.prisma.$transaction(async (prisma) => {
+				// Log the post deletion if the user is not the author (MUST be done before deletion)
+				if (userId !== post.authorId) {
+					await prisma.moderationLog.create({
+						data: {
+							action: "DELETE_ANY_POST",
+							actorId: userId,
+							targetUserId: post.authorId,
+							targetPostId: postId,
+						},
+					});
+				}
+
+				// Delete the post after logging
+				const deletedPost = await prisma.post.delete({ where: { id: postId } });
+			});
+
+			return true;
+		} catch (error) {
 			console.log("Error deleting post:", error);
 			throw new InternalServerErrorException("Could not delete post");
 		}
 	}
+
 
 	async deletePostImage(imageUrl: string): Promise<void> {
 		if (!imageUrl)
@@ -148,7 +174,10 @@ export class PostsService {
 		}
 
 		const userPosts = await this.prisma.post.findMany({
-			where: { authorId: id },
+			where: {
+				authorId: id,
+				battleParticipants: { none : {} },
+			},
 			select: {
 				id: true,
 				authorId: true,
@@ -198,7 +227,12 @@ export class PostsService {
 
 		// Fetch posts authored by these friends
 		return this.prisma.post.findMany({
-			where: { authorId: { in: friendIds } },
+			where: {
+				authorId: { in: friendIds },
+				battleParticipants: {
+					none: {},
+				}
+			},
 			orderBy: { createdAt: 'desc' },
 			include: { author: true },
  	 });

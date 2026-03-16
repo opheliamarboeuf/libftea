@@ -6,10 +6,12 @@ import LoginPage from './pages/LoginPage';
 import MyProfilePage from './pages/MyProfilePage';
 import FeedPage from "./pages/FeedPage";
 import FriendsPage from "./pages/FriendsPage";
+import Dashboard from './pages/Dashboard';
 import { Header } from './common/components/Header';
 import { LeftMenu } from './common/components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
 import { ModalProvider } from "./context/ModalContext";
+import TournamentFeedPage from './pages/TournamentFeedPage';
 
 const App = () => {
 
@@ -17,42 +19,42 @@ const [user, setUser] = useState<User | null>(null);
 const token = localStorage.getItem("token");
 const [loading, setLoading] = useState(true);
 
-  const fetchUser = useCallback(async () => {
-    const currentToken = localStorage.getItem("token");
-    if (!currentToken) {
-      setUser(null);
-      return;
-    }
-    try {
-      const res = await fetch("http://localhost:3000/auth/me", {
-        headers: {
-          Authorization: `Bearer ${currentToken}`,
-        },
-      });
-      if (!res.ok){
-        localStorage.removeItem("token");
-        throw new Error("Token invalid or user unauthorized");
-      }
-      const data = await res.json();
-      setUser(data);
-    }
-    catch(err){
-      console.log("Fetch error:", (err as Error).message);
-    }
-  }, []);
+	const fetchUser = useCallback(async () => {
+		const currentToken = localStorage.getItem("token");
+		if (!currentToken) {
+			setUser(null);
+			return;
+		}
+		try {
+			const res = await fetch("http://localhost:3000/auth/me", {
+				headers: {
+					Authorization: `Bearer ${currentToken}`,
+				},
+			});
+			if (!res.ok){
+				localStorage.removeItem("token");
+				throw new Error("Token invalid or user unauthorized");
+			}
+			const data = await res.json();
+			setUser(data);
+		}
+		catch(err){
+			console.log("Fetch error:", (err as Error).message);
+		}
+	}, []);
 
-  useEffect(() => {
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+	useEffect(() => {
+		if (!token) {
+			setLoading(false);
+			return;
+		}
 
-    const initUser = async () => {
-      await fetchUser();
-      setLoading(false);
-    };
-    initUser();
-  }, [token, fetchUser]);
+		const initUser = async () => {
+			await fetchUser();
+			setLoading(false);
+		};
+		initUser();
+	}, [token, fetchUser]);
 
   return (
     <UserContext.Provider value={{ user, setUser, refreshUser: fetchUser }}>
@@ -82,6 +84,12 @@ const [loading, setLoading] = useState(true);
             <Route
               path="/users/:id"
               element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
+			<Route
+				path="/tournament"
+				element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />
+            <Route
+              path="/dashboard"
+              element={loading ? null : user ? <Dashboard/> : <Navigate to = "/" replace />} />
           </Routes>
         </BrowserRouter>
         </ModalProvider>

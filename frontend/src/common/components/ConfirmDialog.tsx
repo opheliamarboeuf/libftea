@@ -16,11 +16,11 @@ export function ConfirmDialog({ message, onConfirm, onCancel, confirmLabel = "Co
 			<div className="confirm-box">
 				<p>{message}</p>
 				<div className="confirm-actions">
-					<button className="modal-btn" onClick={onConfirm}>
-						{confirmLabel}
-					</button>
 					<button className="modal-btn" onClick={onCancel}>
 						{cancelLabel}
+					</button>
+					<button className="modal-btn" onClick={onConfirm}>
+						{confirmLabel}
 					</button>
 				</div>
 			</div>

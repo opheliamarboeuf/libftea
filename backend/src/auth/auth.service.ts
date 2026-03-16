@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Prisma } from '@prisma/client';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,7 @@ export class AuthService {
 		const hashedPassword = await bcrypt.hash(dto.password, 10);
 
 		try {
+			console.log('Creating user with data:', { email: dto.email, username: dto.username });
 			const user = await this.prisma.user.create({
 				data: {
 					email: dto.email,
@@ -36,10 +38,12 @@ export class AuthService {
 					profile: true,
 				},
 			});
+			console.log('User created successfully:', user.id);
 
-			return this.generateToken(user.id);
+			return this.generateToken(user.id, user.role, user.username);
 
 		} catch (error) {
+			console.error('Error during registration:', error);
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
 				if (error.code === 'P2002') {
 					throw new BadRequestException('Email or username already exists');
@@ -64,14 +68,18 @@ export class AuthService {
 			throw new UnauthorizedException('Incorrect password');
 		}
 
-		return this.generateToken(user.id);
+		return this.generateToken(user.id, user.role, user.username);
 	}
 
 	// Generates a JWT access token for the given user ID.
 	// The token payload contains the user ID under the "sub" claim, and it is signed with the JWT secret.
 	// The returned token can be used by the client to authenticate future requests.
-	generateToken(userId: number) {
-		const payload = { sub: userId };
+	generateToken(userId: number, role: Role, username: string) {
+		const payload = { 
+			sub: userId,
+			role: role,
+			username: username,
+		};
 
 		return {
 			access_token: this.jwtService.sign(payload),

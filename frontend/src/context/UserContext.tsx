@@ -30,20 +30,21 @@ export type Blocked = {
 
 // Defines the shape of a user object
 export type User = {
-    id: number;
-    email: string;
-    username: string;
-    role: string;
-    createdAt: string;
-    profile?: {
-        bio: string | null;
-        displayName: string | null;
-        avatarUrl: string | null;
-        coverUrl: string | null;
-    };
-    friends: Friend[];
-    pendingRequests: Friend[];
-    posts: Post[];
+	id: number;
+	email: string;
+	username: string;
+	role: string;
+	createdAt: string;
+	profile?: {
+		bio: string | null;
+		displayName: string | null;
+		avatarUrl: string | null;
+		coverUrl: string | null;
+	};
+	friends: Friend[];
+	pendingRequests: Friend[];
+	posts: Post[];
+	blockedUsers: Blocked[];
 };
 // Defines the shape of the context, meaning the fields the context must contain
 interface UserContextType {
