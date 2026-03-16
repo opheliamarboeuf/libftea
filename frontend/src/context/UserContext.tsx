@@ -37,6 +37,7 @@ export type User = {
     username: string;
     role: string;
     createdAt: string;
+	bannedAt: string;
     profile?: {
         bio: string | null;
         displayName: string | null;

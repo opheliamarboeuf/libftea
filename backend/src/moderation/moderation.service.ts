@@ -26,6 +26,72 @@ export class ModerationService {
 		); // Start with an empty object to store the counts
 	}
 
+	// ---------------------------------- CHANGE ROLE ------------------------------------
+
+	async updateAdminRole(targetId: number, userRole: Role) {
+		if (!hasPermission(userRole, 'CHANGE_ADMIN_ROLE')) {
+			throw new ForbiddenException('You do not have the right to update an admin role');
+		}
+
+		const user = await this.prisma.user.findUnique({ where: { id: targetId } });
+		if (!user) throw new BadRequestException('User not found');
+
+		if (user.role !== Role.ADMIN && user.role !== Role.MOD)
+			throw new BadRequestException('User must be ADMIN or MOD');
+
+		const updatedUser = await this.prisma.$transaction(async (tx) => {
+			if (user.role === Role.ADMIN) {
+				return tx.user.update({
+					where: { id: targetId },
+					data: { role: Role.MOD },
+				});
+			}
+
+			if (user.role === Role.MOD) {
+				return tx.user.update({
+					where: { id: targetId },
+					data: { role: Role.ADMIN },
+				});
+			}
+			throw new BadRequestException('Invalid role transition');
+		});
+
+		return updatedUser;
+	}
+
+	async updateModRole(targetId: number, userRole: Role) {
+		if (!hasPermission(userRole, 'CHANGE_MOD_ROLE')) {
+			throw new ForbiddenException('You do not have the right to update a mod role');
+		}
+
+		const user = await this.prisma.user.findUnique({ where: { id: targetId } });
+		if (!user) throw new BadRequestException('User not found');
+
+		if (user.role !== Role.USER && user.role !== Role.MOD) {
+			throw new BadRequestException('User must be USER or MOD');
+		}
+		const updatedUser = await this.prisma.$transaction(async (tx) => {
+			if (user.role === Role.MOD) {
+				return tx.user.update({
+					where: { id: targetId },
+					data: { role: Role.USER },
+				});
+			}
+
+			if (user.role === Role.USER) {
+				return tx.user.update({
+					where: { id: targetId },
+					data: { role: Role.MOD },
+				});
+			}
+			throw new BadRequestException('Invalid role transition');
+		});
+
+		return updatedUser;
+	}
+
+	// ---------------------------------- HANDLE REPORTS ----------------------------------
+
 	async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role) {
 		try {
 			const report = await this.prisma.report.findUnique({ where: { id: reportId } });
@@ -138,6 +204,179 @@ export class ModerationService {
 			if (error instanceof HttpException) throw error;
 			console.error('Error rejecting report:', error);
 			throw new InternalServerErrorException('Could not rejecting report');
+		}
+	}
+
+	async assignReport(reportId: number, userId: number, userRole: Role) {
+		try {
+			const report = await this.prisma.report.findUnique({ where: { id: reportId } });
+			if (!report) throw new BadRequestException('Failed to find the report');
+			if (report.reportedUserId) {
+				if (!hasPermission(userRole, 'REVIEW_USER_REPORT')) {
+					throw new ForbiddenException(
+						'You do not have permission to assign a user report',
+					);
+				}
+			}
+			if (report.reportedPostId) {
+				if (!hasPermission(userRole, 'REVIEW_POST_REPORT')) {
+					throw new ForbiddenException(
+						'You do not have permission to assign a post report',
+					);
+				}
+			}
+
+			if (report.handledById) {
+				throw new BadRequestException('Report already assigned');
+			}
+
+			// If it's a post report, assign all reports for this post
+			if (report.reportedPostId) {
+				await this.prisma.report.updateMany({
+					where: {
+						reportedPostId: report.reportedPostId,
+						handledById: null,
+						status: ReportStatus.PENDING,
+					},
+					data: {
+						handledById: userId,
+						status: ReportStatus.ASSIGNED,
+					},
+				});
+				// Return all assigned reports for this post
+				return await this.prisma.report.findMany({
+					where: {
+						reportedPostId: report.reportedPostId,
+						handledById: userId,
+						status: ReportStatus.ASSIGNED,
+					},
+				});
+			}
+			// If it's a user report, assign all reports for this user
+			if (report.reportedUserId) {
+				await this.prisma.report.updateMany({
+					where: {
+						reportedUserId: report.reportedUserId,
+						handledById: null,
+						status: ReportStatus.PENDING,
+					},
+					data: {
+						handledById: userId,
+						status: ReportStatus.ASSIGNED,
+					},
+				});
+				// Return all assigned reports for this user
+				return await this.prisma.report.findMany({
+					where: {
+						reportedUserId: report.reportedUserId,
+						handledById: userId,
+						status: ReportStatus.ASSIGNED,
+					},
+				});
+			}
+			// Fallback: assign only the report
+			const assignedReport = await this.prisma.report.update({
+				where: { id: reportId },
+				data: {
+					handledById: userId,
+					status: ReportStatus.ASSIGNED,
+				},
+			});
+			return assignedReport;
+		} catch (error) {
+			if (error instanceof HttpException) throw error;
+			console.error('Error assigning the report:', error);
+			throw new InternalServerErrorException('Could not assgin the report');
+		}
+	}
+
+	async unassignReport(reportId: number, userId: number, userRole: Role) {
+		try {
+			const report = await this.prisma.report.findUnique({ where: { id: reportId } });
+			if (!report) throw new BadRequestException('Failed to find the report');
+			if (report.reportedUserId) {
+				if (!hasPermission(userRole, 'REVIEW_USER_REPORT')) {
+					throw new ForbiddenException(
+						'You do not have permission to unassign a user report',
+					);
+				}
+			}
+			if (report.reportedPostId) {
+				if (!hasPermission(userRole, 'REVIEW_POST_REPORT')) {
+					throw new ForbiddenException(
+						'You do not have permission to unassign a post report',
+					);
+				}
+			}
+
+			if (!report.handledById) {
+				throw new BadRequestException('Report is not assigned');
+			}
+			// Allow admin to unassign any report, otherwise only allow the moderator who is assigned
+			let targetHandledById = userId;
+			if (userRole === Role.ADMIN) {
+				targetHandledById = report.handledById;
+			} else if (report.handledById !== userId) {
+				throw new ForbiddenException('You cannot unassign this report');
+			}
+
+			// If it's a post report, unassign all reports for this post
+			if (report.reportedPostId) {
+				await this.prisma.report.updateMany({
+					where: {
+						reportedPostId: report.reportedPostId,
+						handledById: targetHandledById,
+						status: ReportStatus.ASSIGNED,
+					},
+					data: {
+						handledById: null,
+						status: ReportStatus.PENDING,
+					},
+				});
+				// Return all unassigned reports for this post
+				return await this.prisma.report.findMany({
+					where: {
+						reportedPostId: report.reportedPostId,
+						handledById: null,
+						status: ReportStatus.PENDING,
+					},
+				});
+			}
+			// If it's a user report, unassign all reports for this user
+			if (report.reportedUserId) {
+				await this.prisma.report.updateMany({
+					where: {
+						reportedUserId: report.reportedUserId,
+						handledById: targetHandledById,
+						status: ReportStatus.ASSIGNED,
+					},
+					data: {
+						handledById: null,
+						status: ReportStatus.PENDING,
+					},
+				});
+				// Return all unassigned reports for this user
+				return await this.prisma.report.findMany({
+					where: {
+						reportedUserId: report.reportedUserId,
+						handledById: null,
+						status: ReportStatus.PENDING,
+					},
+				});
+			}
+			// Fallback: unassign only the report
+			const assignedReport = await this.prisma.report.update({
+				where: { id: reportId },
+				data: {
+					handledById: null,
+					status: ReportStatus.PENDING,
+				},
+			});
+			return assignedReport;
+		} catch (error) {
+			if (error instanceof HttpException) throw error;
+			console.error('Error unassigning the report:', error);
+			throw new InternalServerErrorException('Could not unassgin the report');
 		}
 	}
 
@@ -1055,179 +1294,6 @@ export class ModerationService {
 			if (error instanceof HttpException) throw error;
 			console.error('Error fetching all assigned post reports:', error);
 			throw new InternalServerErrorException('Could not fetch all assigned post reports');
-		}
-	}
-
-	async assignReport(reportId: number, userId: number, userRole: Role) {
-		try {
-			const report = await this.prisma.report.findUnique({ where: { id: reportId } });
-			if (!report) throw new BadRequestException('Failed to find the report');
-			if (report.reportedUserId) {
-				if (!hasPermission(userRole, 'REVIEW_USER_REPORT')) {
-					throw new ForbiddenException(
-						'You do not have permission to assign a user report',
-					);
-				}
-			}
-			if (report.reportedPostId) {
-				if (!hasPermission(userRole, 'REVIEW_POST_REPORT')) {
-					throw new ForbiddenException(
-						'You do not have permission to assign a post report',
-					);
-				}
-			}
-
-			if (report.handledById) {
-				throw new BadRequestException('Report already assigned');
-			}
-
-			// If it's a post report, assign all reports for this post
-			if (report.reportedPostId) {
-				await this.prisma.report.updateMany({
-					where: {
-						reportedPostId: report.reportedPostId,
-						handledById: null,
-						status: ReportStatus.PENDING,
-					},
-					data: {
-						handledById: userId,
-						status: ReportStatus.ASSIGNED,
-					},
-				});
-				// Return all assigned reports for this post
-				return await this.prisma.report.findMany({
-					where: {
-						reportedPostId: report.reportedPostId,
-						handledById: userId,
-						status: ReportStatus.ASSIGNED,
-					},
-				});
-			}
-			// If it's a user report, assign all reports for this user
-			if (report.reportedUserId) {
-				await this.prisma.report.updateMany({
-					where: {
-						reportedUserId: report.reportedUserId,
-						handledById: null,
-						status: ReportStatus.PENDING,
-					},
-					data: {
-						handledById: userId,
-						status: ReportStatus.ASSIGNED,
-					},
-				});
-				// Return all assigned reports for this user
-				return await this.prisma.report.findMany({
-					where: {
-						reportedUserId: report.reportedUserId,
-						handledById: userId,
-						status: ReportStatus.ASSIGNED,
-					},
-				});
-			}
-			// Fallback: assign only the report
-			const assignedReport = await this.prisma.report.update({
-				where: { id: reportId },
-				data: {
-					handledById: userId,
-					status: ReportStatus.ASSIGNED,
-				},
-			});
-			return assignedReport;
-		} catch (error) {
-			if (error instanceof HttpException) throw error;
-			console.error('Error assigning the report:', error);
-			throw new InternalServerErrorException('Could not assgin the report');
-		}
-	}
-
-	async unassignReport(reportId: number, userId: number, userRole: Role) {
-		try {
-			const report = await this.prisma.report.findUnique({ where: { id: reportId } });
-			if (!report) throw new BadRequestException('Failed to find the report');
-			if (report.reportedUserId) {
-				if (!hasPermission(userRole, 'REVIEW_USER_REPORT')) {
-					throw new ForbiddenException(
-						'You do not have permission to unassign a user report',
-					);
-				}
-			}
-			if (report.reportedPostId) {
-				if (!hasPermission(userRole, 'REVIEW_POST_REPORT')) {
-					throw new ForbiddenException(
-						'You do not have permission to unassign a post report',
-					);
-				}
-			}
-
-			if (!report.handledById) {
-				throw new BadRequestException('Report is not assigned');
-			}
-			// Allow admin to unassign any report, otherwise only allow the moderator who is assigned
-			let targetHandledById = userId;
-			if (userRole === Role.ADMIN) {
-				targetHandledById = report.handledById;
-			} else if (report.handledById !== userId) {
-				throw new ForbiddenException('You cannot unassign this report');
-			}
-
-			// If it's a post report, unassign all reports for this post
-			if (report.reportedPostId) {
-				await this.prisma.report.updateMany({
-					where: {
-						reportedPostId: report.reportedPostId,
-						handledById: targetHandledById,
-						status: ReportStatus.ASSIGNED,
-					},
-					data: {
-						handledById: null,
-						status: ReportStatus.PENDING,
-					},
-				});
-				// Return all unassigned reports for this post
-				return await this.prisma.report.findMany({
-					where: {
-						reportedPostId: report.reportedPostId,
-						handledById: null,
-						status: ReportStatus.PENDING,
-					},
-				});
-			}
-			// If it's a user report, unassign all reports for this user
-			if (report.reportedUserId) {
-				await this.prisma.report.updateMany({
-					where: {
-						reportedUserId: report.reportedUserId,
-						handledById: targetHandledById,
-						status: ReportStatus.ASSIGNED,
-					},
-					data: {
-						handledById: null,
-						status: ReportStatus.PENDING,
-					},
-				});
-				// Return all unassigned reports for this user
-				return await this.prisma.report.findMany({
-					where: {
-						reportedUserId: report.reportedUserId,
-						handledById: null,
-						status: ReportStatus.PENDING,
-					},
-				});
-			}
-			// Fallback: unassign only the report
-			const assignedReport = await this.prisma.report.update({
-				where: { id: reportId },
-				data: {
-					handledById: null,
-					status: ReportStatus.PENDING,
-				},
-			});
-			return assignedReport;
-		} catch (error) {
-			if (error instanceof HttpException) throw error;
-			console.error('Error unassigning the report:', error);
-			throw new InternalServerErrorException('Could not unassgin the report');
 		}
 	}
 

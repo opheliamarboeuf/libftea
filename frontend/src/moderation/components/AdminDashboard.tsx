@@ -9,8 +9,8 @@ export function AdminDashboard (){
 					<div>
 						<strong>Users Management</strong>
 						<ul>
-							<li><NavLink to="/dashboard/admin/users">All Users</NavLink></li>
-							<li><NavLink to="/dashboard/admin/moderators">Administrators</NavLink></li>
+							<li><NavLink to="/dashboard/admin/users/all">All Users</NavLink></li>
+							<li><NavLink to="/dashboard/admin/users/all-admin">Administrators</NavLink></li>
 						</ul>
 					</div>
 					<div>

@@ -22,6 +22,48 @@ export const moderationApi = {
 		return data;
 	},
 
+	// ---------------------------------- CHANGE ROLES  -----------------------------------
+
+	changeAdminRole: async (userId: number) => {
+		const res = await fetch(`${API_URL}/role/admin/${userId}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || 'Change admin role failed';
+			throw new Error(message);
+		}
+
+		return data;
+	},
+
+	changeModRole: async (userId: number) => {
+		const res = await fetch(`${API_URL}/role/mod/${userId}`, {
+			method: 'PUT',
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+
+		if (!res.ok) {
+			throw new Error(data.message || 'Change mod role failed');
+		}
+
+		return data;
+	},
+
+	// ---------------------------------- HANDLE REPORTS ----------------------------------
+
 	rejectReport: async (
 		reportId: number,
 		payload: ReportHandlePayload,
@@ -105,6 +147,7 @@ export const moderationApi = {
 	},
 
 	// ---------------------------------- USER REPORTS ----------------------------------
+
 	banUser: async (targetId: number) => {
 		const res = await fetch(`${API_URL}/moderation/ban/${targetId}`, {
 			method: 'PUT',

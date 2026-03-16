@@ -22,7 +22,28 @@ import { ReportDto } from './dto/report.dto';
 export class ModerationController {
 	constructor(private readonly moderationService: ModerationService) {}
 
-	// ---------------------------------- BAN USER ----------------------------------
+	// ---------------------------------- CHANGE ROLE ------------------------------------
+
+	@Roles(Role.ADMIN)
+	@Put('role/admin/:id')
+	async updateAdminRole(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.updateAdminRole(id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN)
+	@Put('role/admin/:id')
+	async updateModRole(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.updateModRole(id, req.user.role);
+	}
+
+	// ---------------------------------- BAN USER ---------------------------------------
+
 	@Roles(Role.ADMIN)
 	@Put('ban/:id')
 	async banUser(
@@ -32,6 +53,45 @@ export class ModerationController {
 		return this.moderationService.banUser(id, req.user.id, req.user.role);
 	}
 
+	// ---------------------------------- HANDLE REPORTS ----------------------------------
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('reports/:id/assign')
+	async assignReport(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.assignReport(id, req.user.id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('reports/:id/unassign')
+	async unassignReport(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.unassignReport(id, req.user.id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('reports/:id/accept')
+	async acceptPostReport(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() dto: HandleReportDto,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.acceptReport(id, dto, req.user.id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('reports/:id/reject')
+	async rejectPostReport(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() dto: HandleReportDto,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.rejectReport(id, dto, req.user.id, req.user.role);
+	}
 	// ---------------------------------- USER REPORTS ----------------------------------
 
 	@Post('reports/users/:id')
@@ -118,44 +178,6 @@ export class ModerationController {
 	@Get('reports/posts/mine')
 	async getMyPostReports(@Req() req: Request & { user: { id: number; role: Role } }) {
 		return this.moderationService.getMyPostReports(req.user.id, req.user.role);
-	}
-
-	@Roles(Role.ADMIN, Role.MOD)
-	@Put('reports/:id/assign')
-	async assignReport(
-		@Param('id', ParseIntPipe) id: number,
-		@Req() req: Request & { user: { id: number; role: Role } },
-	) {
-		return this.moderationService.assignReport(id, req.user.id, req.user.role);
-	}
-
-	@Roles(Role.ADMIN, Role.MOD)
-	@Put('reports/:id/unassign')
-	async unassignReport(
-		@Param('id', ParseIntPipe) id: number,
-		@Req() req: Request & { user: { id: number; role: Role } },
-	) {
-		return this.moderationService.unassignReport(id, req.user.id, req.user.role);
-	}
-
-	@Roles(Role.ADMIN, Role.MOD)
-	@Put('reports/:id/accept')
-	async acceptPostReport(
-		@Param('id', ParseIntPipe) id: number,
-		@Body() dto: HandleReportDto,
-		@Req() req: Request & { user: { id: number; role: Role } },
-	) {
-		return this.moderationService.acceptReport(id, dto, req.user.id, req.user.role);
-	}
-
-	@Roles(Role.ADMIN, Role.MOD)
-	@Put('reports/:id/reject')
-	async rejectPostReport(
-		@Param('id', ParseIntPipe) id: number,
-		@Body() dto: HandleReportDto,
-		@Req() req: Request & { user: { id: number; role: Role } },
-	) {
-		return this.moderationService.rejectReport(id, dto, req.user.id, req.user.role);
 	}
 
 	@Roles(Role.ADMIN)

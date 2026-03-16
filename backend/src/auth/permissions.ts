@@ -2,7 +2,8 @@ import { Role } from "@prisma/client";
 
 export const PERMISSIONS: Record<string, Role[]> = {
 	DELETE_ANY_POST: [Role.ADMIN, Role.MOD],
-	CHANGE_ROLE: [Role.ADMIN],
+	CHANGE_ADMIN_ROLE: [Role.ADMIN],
+	CHANGE_MOD_ROLE: [Role.ADMIN, Role.MOD],
 	BAN_USER: [Role.ADMIN],
 	VIEW_ADMIN_LOGS: [Role.ADMIN],
 	VIEW_MOD_LOGS: [Role.ADMIN, Role.MOD],

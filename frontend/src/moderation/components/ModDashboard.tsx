@@ -10,8 +10,8 @@ export function ModDashboard() {
 					<div>
 						<strong>Users Management</strong>
 						<ul>
-							<li><NavLink to="/dashboard/mod/users">All Users</NavLink></li>
-							<li><NavLink to="/dashboard/mod/moderators">Moderators</NavLink></li>
+							<li><NavLink to="/dashboard/mod/users/all">All Users</NavLink></li>
+							<li><NavLink to="/dashboard/mod/users/all-mod">Moderators</NavLink></li>
 						</ul>
 					</div>
 					<div>
