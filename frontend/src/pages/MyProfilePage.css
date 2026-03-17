@@ -303,3 +303,63 @@
 		display: none;
 	}
 }
+.profile-tabs {
+	position: relative;
+	display: flex;
+	border-radius: 8px;
+	overflow: hidden;
+	background-color: white;
+	width: fit-content;
+}
+
+.profile-tabs button {
+	flex: 1;
+	background-color: transparent;
+	border: none;
+	padding: 10px 20px;
+	font-size: 0.95rem;
+	cursor: pointer;
+	position: relative;
+	z-index: 2;
+	color: black;
+	min-width: 120px;
+	outline: none;
+}
+
+.profile-tabs button.active {
+	font-weight: 600;
+}
+
+.profile-tab-indicator {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 50%; /* 2 onglets donc 50% */
+	height: 100%;
+	background-color: #f0f0f0;
+	border-radius: 8px;
+	transition: transform 0.25s ease;
+	z-index: 1;
+}
+
+.profile-tab-indicator.posts {
+	transform: translateX(0%);
+}
+
+.profile-tab-indicator.tournament {
+	transform: translateX(100%);
+}
+
+.posts-toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	margin-bottom: 1rem;
+	position: relative;
+}
+
+.expand-btn-post {
+	position: absolute;
+	right: 1rem;
+}

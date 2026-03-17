@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
-import { FaHome, FaUser, FaUsers, FaTachometerAlt } from "react-icons/fa";
+import { FaCrown, FaHome, FaUser, FaUsers, FaTachometerAlt } from "react-icons/fa";
 import "./LeftMenu.css"
 import "../../App.css"
 
@@ -27,6 +27,11 @@ export const LeftMenu = () => {
 			<div className="menu-item" onClick={() => navigate("/friends")}>
 				<FaUsers className="icon" />
 				<span className="label">Friends</span>
+			</div>
+
+			<div className="menu-item" onClick={() => navigate("/tournament")}>
+				<FaCrown className="icon" />
+				<span className="label">Tournament</span>
 			</div>
 			{/* Only show Dashboard if user is ADMIN or MOD */}
 			{user.role === "ADMIN" || user.role === "MOD" ? (

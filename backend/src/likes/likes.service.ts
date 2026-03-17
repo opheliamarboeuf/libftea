@@ -14,10 +14,28 @@ export class LikesService {
 	) {
 		const post = await this.prisma.post.findUnique({
 			where: { id: postId, deletedAt: null },
+			include: {
+				battleParticipants:
+				{
+					include: {
+						Battle: true,
+					},
+				},
+			},
 		});
 
 		if (!post) {
 			throw new NotFoundException('Post not found');
+		}
+		// si le post fait parti d'un tournoi 
+		if (post.battleParticipants.length > 0)
+		{
+			const battle = post.battleParticipants[0].Battle;
+			const now = new Date();
+			if (now < battle.startsAt || now > battle.endsAt)
+				throw new BadRequestException("Voting is closed for this tournament");
+			if (post.authorId === userId)
+				throw new ForbiddenException("You can't vote for your own post");
 		}
 
 		const existing = await this.prisma.like.findUnique({

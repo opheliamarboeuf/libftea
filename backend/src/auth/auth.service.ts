@@ -19,6 +19,7 @@ export class AuthService {
 		const hashedPassword = await bcrypt.hash(dto.password, 10);
 
 		try {
+			console.log('Creating user with data:', { email: dto.email, username: dto.username });
 			const user = await this.prisma.user.create({
 				data: {
 					email: dto.email,
@@ -37,10 +38,12 @@ export class AuthService {
 					profile: true,
 				},
 			});
+			console.log('User created successfully:', user.id);
 
 			return this.generateToken(user.id, user.role, user.username);
 
 		} catch (error) {
+			console.error('Error during registration:', error);
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
 				if (error.code === 'P2002') {
 					throw new BadRequestException('Email or username already exists');

@@ -37,9 +37,26 @@ export const profileApi = {
 				: data.message || "Profile edit failed";
 			throw new Error(message);
 		}
-
 		return data;
 	},
+	async getUserTournamentPosts(userId: number) : Promise<any[]> {
+		const res = await fetch(`${API_URL}/tournament/user/${userId}/posts`, {
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
+		if (res.status === 204)
+				return [];
+		const data = await res.json();
+		if (!res.ok)
+		{
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || "Tournament join failed";
+			throw new Error(message);
+		}
+		return data;
+	}
 };
 
 export { API_URL };

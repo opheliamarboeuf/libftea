@@ -289,6 +289,7 @@ export class UsersService {
 		const userPosts = await this.prisma.post.findMany({
 			where: {
 				authorId: { notIn: [...blockedIds, ...hiddenUserIds, ...reporterIds] },
+				battleParticipants: { none: {} },
 				deletedAt: null,
 				hiddenForUsers: {
 					none: { userId: currentUserId },

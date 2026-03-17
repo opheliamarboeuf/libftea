@@ -10,6 +10,7 @@ import { UserPostsList } from "../posts/components/UserPostsList";
 import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
 import { UserProfileMenu } from "../profile/components/UserProfileMenu";
 import { useFriendsSocket } from "../friends/useFriendsSocket";
+import { fetchUserTournamentPosts } from "../posts/components/fetchUserPosts";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -41,6 +42,8 @@ const UserProfilePage = () => {
 	const [blockedByUser, setBlockedByUser] = useState(false);
 	const [blockedPosts, setBlockedPosts] = useState(false);
 	const [isOnline, setIsOnline] = useState(false);
+	const [profileTab, setProfileTab] = useState("posts");
+	const [tournamentPosts, setTournamentPosts] = useState<Post[]>([]);
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
@@ -87,9 +90,18 @@ const UserProfilePage = () => {
 		setPosts(data);
 	}
 
+	const loadTournamentPosts = async () =>
+	{
+		if (!id)
+			return;
+		const data = await fetchUserTournamentPosts(Number(id));
+		setTournamentPosts(data);
+	};
+
 	useEffect(() => {
 		fetchProfile();
 		loadPosts();
+		loadTournamentPosts();
 	}, [id]);
 
 	useEffect(() => {
@@ -299,7 +311,31 @@ const UserProfilePage = () => {
 							</div>
 					</div>
 					<div className="posts">
-						{blockedPosts ? <div className="blocked-line">You have blocked this user</div> : <UserPostsList posts={posts} />}
+						{blockedPosts ? (
+							<div className="blocked-line">You have blocked this user</div>
+						) : (
+							<>
+								<div className="posts-toolbar">
+									<div className="profile-tabs">
+										<div className={`profile-tab-indicator ${profileTab}`} />
+										<button
+											className={profileTab === "posts" ? "active" : ""}
+											onClick={() => setProfileTab("posts")}
+										>
+											Posts
+										</button>
+										<button
+											className={profileTab === "tournament" ? "active" : ""}
+											onClick={() => setProfileTab("tournament")}
+										>
+											Tournament
+										</button>
+									</div>
+								</div>
+								{profileTab === "posts" && <UserPostsList posts={posts} />}
+								{profileTab === "tournament" && <UserPostsList posts={tournamentPosts} />}
+							</>
+						)}
 					</div>
 				</div>
 			</div>
