@@ -3,7 +3,7 @@ import { Post, useUser } from "../../context/UserContext";
 import { API_URL } from "../../profile";
 import { FaHeart, FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { usePostMenu } from "./hooks/usePostMenu";
+import { usePostMenu } from "../hooks/usePostMenu";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { EditPostModal } from "./EditPostModal";
 import { LikeButton } from "../../likes/LikeButton";
@@ -17,7 +17,7 @@ interface UserPostsListProps {
 
 export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 	if (!Array.isArray(posts)) return null;
-    
+	
 	const navigate = useNavigate();
 	const { user } = useUser();
 	const { t } = useTranslation();
@@ -45,9 +45,22 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 	<div className="posts-list">
 	{posts.map((post) => (
 		<div key={post.id} className="post-card">
-		
 		<div className="post-header">
-			<h3 className="post-title">{post.title}</h3>
+			<div className="post-title-row">
+				<h3 className="post-title">{post.title}</h3>
+				<div className="post-header-right">
+				{(post as any).battleParticipants?.[0]?.Battle?.theme && (
+					<p className="post-tournament-theme">
+					🏆 {(post as any).battleParticipants[0].Battle.theme}
+					</p>
+				)}
+				{(post as any).isWinner && (
+					<div className="winner-container">
+					<h3 className="winner-badge">Last week's winner 💅🏼</h3>
+					</div>
+				)}
+				</div>
+			</div>
 			<div className="post-meta">
 			<span
 				className="post-author"
@@ -68,9 +81,11 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				<FaEllipsisV onClick={() => toggleMenu(post.id)} />
 				{openMenuId === post.id && (
 					<div className="menu-dropdown">
-						{post.author.id === user.id ? (
+						{post.author.id === user.id || user.role === "ADMIN" || user.role === "MOD" ? (
 							<>
-								<button onClick={() => handleEdit(post)}>{t('post.edit')}</button>
+								{/* Edit only if owner */}
+								{post.author.id === user.id && <button onClick={() => handleEdit(post)}>Edit</button>}
+								{/* Delete if owner or admin/mod */}
 								<button 
 									onClick={() => setPostToDelete(post.id)}
 									disabled={isDeleting}
@@ -119,7 +134,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message={t('post.confirmdelete')}
+				message="Are you sure you want to delete this post?"
 				onConfirm={confirmDelete}
 				onCancel={cancelDelete}
 			/>

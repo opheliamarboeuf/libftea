@@ -28,7 +28,7 @@ export class CommentsService {
 					postId,
 				},
                 include: {
-                    user: true,
+                    User: true,
                     replies: true,
                 }
 			});
@@ -89,7 +89,7 @@ export class CommentsService {
                 parentId: parentCommentId,
             },
             include: {
-                user: true,
+                User: true,
                 replies: true,
             },
         });
@@ -103,7 +103,7 @@ export class CommentsService {
                 NOT: {
                     OR: [
                         {
-                            user: {
+                            User: {
                                 friendRequestSent: {
                                     some: {
                                         addresseId: currentUserId,
@@ -113,7 +113,7 @@ export class CommentsService {
                             },
                         },
                         {
-                            user: {
+                            User: {
                                 friendRequestReceived: {
                                     some: {
                                         requesterId: currentUserId,
@@ -126,13 +126,13 @@ export class CommentsService {
                 },
             },
             include: {
-                user: true,
+                User: true,
                 replies: {
                     where: {
                         NOT: {
                             OR: [
                                 {
-                                    user: {
+                                    User: {
                                         friendRequestSent: {
                                             some: {
                                                 addresseId: currentUserId,
@@ -142,7 +142,7 @@ export class CommentsService {
                                     },
                                 },
                                 {
-                                    user: {
+                                    User: {
                                         friendRequestReceived: {
                                             some: {
                                                 requesterId: currentUserId,
@@ -154,7 +154,7 @@ export class CommentsService {
                             ],
                         },
                     },
-                    include: { user: true },
+                    include: { User: true },
                 },
             },
             orderBy: { createdAt: "asc" },

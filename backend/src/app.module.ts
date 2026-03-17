@@ -11,7 +11,10 @@ import { FriendsModule } from './friends/friends.module';
 import { UsersModule } from './user/users.module';
 import { ProfileModule } from './profile/profile.module';
 import { PostsModule } from './posts/posts.module';
+import { TournamentModule } from './tournament/tournament.module';
+import { RolesGuard } from './auth/roles.guard';
 import { LikesModule } from './likes/likes.module';
+import { ModerationModule } from './moderation/moderation.module';
 import { CommentsModule } from './comments/comments.module';
 
 @Module({
@@ -26,9 +29,11 @@ import { CommentsModule } from './comments/comments.module';
 	UsersModule,
 	ProfileModule,
 	PostsModule,
+	TournamentModule,
 	LikesModule,
 	CommentsModule,
 
+	ModerationModule,
   ],
   controllers: [AppController], 
   providers: [
@@ -37,6 +42,10 @@ import { CommentsModule } from './comments/comments.module';
 		// All routes are now protected by JWT by default
 		provide: APP_GUARD,
 		useClass: JwtAuthGuard,
+	},
+	{
+    	provide: APP_GUARD,
+    	useClass: RolesGuard,
 	},
   ],
 })

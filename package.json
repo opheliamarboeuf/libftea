@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "class": "^0.1.4",
-    "transformer": "^1.2.8",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "socket.io-client": "^4.8.3",
+    "transformer": "^1.2.8"
   }
 }

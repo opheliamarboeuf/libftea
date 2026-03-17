@@ -4,7 +4,7 @@ import { useUser } from '../context/UserContext';
 import { Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { UserPostsList } from "../posts/components/UserPostsList";
-import { useFeed } from "../posts/components/hooks/useFeed";
+import { useFeed } from "../posts/hooks/useFeed";
 import { CreatePostModal } from "../posts/components/CreatePostModal";
 import { useTranslation } from "react-i18next";
 

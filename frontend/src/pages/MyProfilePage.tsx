@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { EditProfileModal, API_URL } from "../profile";
 import { CreatePostModal } from "../posts/components/CreatePostModal";
 import { Post } from "../context/UserContext";
-import { fetchUserPosts } from "../posts/components/fetchUserPosts";
+import { fetchUserPosts, fetchUserTournamentPosts } from "../posts/components/fetchUserPosts";
 import { UserPostsList } from "../posts/components/UserPostsList";
 import { useTranslation } from "react-i18next";
 
@@ -15,6 +15,8 @@ const ProfilePage = () => {
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showPostModal, setShowPostModal] = useState(false);
 	const [posts, setPosts] = useState<Post[]>([]);
+	const [profileTab, setProfileTab] = useState("posts");
+	const [tournamentPosts, setTournamentPosts] = useState<Post[]>([])
 	const { t } = useTranslation();
 
 	if (!user) return <Navigate to="/" replace />;
@@ -24,8 +26,14 @@ const ProfilePage = () => {
 		setPosts(data);
 	}
 
+	const loadTournamentPosts = async () => {
+		const data = await fetchUserTournamentPosts(user.id);
+		setTournamentPosts(data);
+	}
+
 	useEffect(() => {
 		loadPosts();
+		loadTournamentPosts();
 	}, [user]);
 	
 	return (
@@ -73,6 +81,35 @@ const ProfilePage = () => {
 						</button>
 					</div>
 					<div className="posts">
+						<div className="posts-toolbar">
+							<div className="profile-tabs">
+								<div className={`profile-tab-indicator ${profileTab}`} />
+								<button
+									className={profileTab === "posts" ? "active" : ""}
+									onClick={() => setProfileTab("posts")}
+								>
+									Posts
+								</button>
+								<button
+									className={profileTab === "tournament" ? "active" : ""}
+									onClick={() => setProfileTab("tournament")}
+								>
+									Tournament
+								</button>
+							</div>
+							{profileTab === "posts" && (
+								<button className="expand-btn expand-btn-post" onClick={() => setShowPostModal(true)}>
+									<span className="icon">＋</span>
+									<span className="expand-btn-text">Post an outfit</span>
+								</button>
+							)}
+							</div>
+							{profileTab === "posts" && (
+								<UserPostsList posts = {posts} onPostDeleted={loadPosts} />
+							)}
+						{profileTab === "tournament" && (
+							<UserPostsList posts={tournamentPosts} onPostDeleted={loadTournamentPosts} />
+						)}
 						<button className="expand-btn expand-btn-right" onClick={() => setShowPostModal(true)}>
 							<span className="icon">＋</span>
   							<span className="expand-btn-text">{t('feedpage.postoutfit')}</span>

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
-import { FaHome, FaUser, FaUsers } from "react-icons/fa";
+import { FaCrown, FaHome, FaUser, FaUsers, FaTachometerAlt } from "react-icons/fa";
 import "./LeftMenu.css"
 import "../../App.css"
 import { useTranslation } from "react-i18next";
@@ -12,6 +12,7 @@ export const LeftMenu = () => {
 	const { t } = useTranslation();
 	if (!user)
 		return ;
+	
 	
 	return (
 		<div className="left-menu">

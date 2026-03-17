@@ -1,7 +1,7 @@
 import "../../App.css"
 import { createPortal } from "react-dom";
 import { useModalAnimation } from "../../common/hooks/useModalAnimation";
-import { usePostEdition } from "./hooks/usePostEdition";
+import { usePostEdition } from "../hooks/usePostEdition";
 import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";

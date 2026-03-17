@@ -4,6 +4,7 @@ import "./SearchBar.css";
 import { useTranslation } from "react-i18next";
 
 const URL = 'http://localhost:3000/users';
+const API_URL = 'http://localhost:3000';
 
 interface SearchResult {
 	id: number;
@@ -82,7 +83,7 @@ export const SearchBar = () => {
 						>
 							{user.avatarUrl && (
 								<img
-									src={user.avatarUrl}
+									src={`${API_URL}${user.avatarUrl}`}
 									alt={user.username}
 									className="search-avatar"
 								/>
