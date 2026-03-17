@@ -13,6 +13,8 @@ import UserProfilePage from './pages/UserProfilePage';
 import { ModalProvider } from "./context/ModalContext";
 import TournamentFeedPage from './pages/TournamentFeedPage';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const App = () => {
 
 const [user, setUser] = useState<User | null>(null);
@@ -26,7 +28,7 @@ const [loading, setLoading] = useState(true);
 			return;
 		}
 		try {
-			const res = await fetch("http://localhost:3000/auth/me", {
+			const res = await fetch(`${API_URL}/auth/me`, {
 				headers: {
 					Authorization: `Bearer ${currentToken}`,
 				},

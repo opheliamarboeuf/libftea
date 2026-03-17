@@ -4,6 +4,8 @@ import { useState, ChangeEvent } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const LoginPage = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -28,7 +30,7 @@ const LoginPage = () => {
 			password : password
 		};
 		try {
-			const res = await fetch("http://localhost:3000/auth/login", {
+			const res = await fetch(`${API_URL}/auth/login`, {
 				method: 'POST',
 				headers: {'Content-Type': 'application/json',},
 				body: JSON.stringify(userData),
@@ -48,7 +50,7 @@ const LoginPage = () => {
 			localStorage.setItem("token", data.access_token);
 
 			// Fetch full user data
-			const userRes = await fetch("http://localhost:3000/auth/me", {
+			const userRes = await fetch(`${API_URL}/auth/me`, {
 				headers: {
 					Authorization: `Bearer ${data.access_token}`,
 				},

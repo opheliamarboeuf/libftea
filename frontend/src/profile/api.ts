@@ -1,7 +1,7 @@
 import { ProfileUpdateResponse } from "./types";
 
 // Base URL of the backend API
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 // API object that handles all profile-related requests
 export const profileApi = {

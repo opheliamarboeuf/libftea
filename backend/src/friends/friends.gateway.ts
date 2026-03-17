@@ -13,7 +13,7 @@ import { FriendsService } from './friends.service';
 @WebSocketGateway({
 	namespace: "/friends",
 	cors: {
-		origin: 'http://localhost:5173',
+		origin: process.env.FRONTEND_URL,
 		credentials: true,
 	},
 })

@@ -1,7 +1,7 @@
 // tournament/api.ts
 // helpers for interacting with the backend's tournament endpoints.
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;;
 
 export const tournamentApi = {
 	joinTournament: async (

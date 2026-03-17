@@ -12,7 +12,7 @@ export function PendingRequests() {
 	const [ loading, setLoading ] = useState(false);
 	const { showModal } = useModal();
 	const { refreshUser, user } = useUser();
-	const API_URL = "http://localhost:3000";
+	const API_URL = import.meta.env.VITE_API_URL;
 
 	const { emit } = useFriendsSocket(user?.id, {
 		onRequestAccepted: () => {

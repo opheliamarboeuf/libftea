@@ -1,0 +1,21 @@
+{
+	admin off
+}
+
+:443 {
+	tls /certs/localhost.crt /certs/localhost.key
+
+	reverse_proxy /auth/* backend:3000
+	reverse_proxy /friends/* backend:3000
+	reverse_proxy /profile/* backend:3000
+	reverse_proxy /users/* backend:3000
+	reverse_proxy /comments/* backend:3000
+	reverse_proxy /likes/* backend:3000
+	reverse_proxy /posts/* backend:3000
+	reverse_proxy /moderation/* backend:3000
+	reverse_proxy /tournament/* backend:3000
+	reverse_proxy /uploads/* backend:3000
+	reverse_proxy /assets/* backend:3000
+
+	reverse_proxy frontend:5173
+}
