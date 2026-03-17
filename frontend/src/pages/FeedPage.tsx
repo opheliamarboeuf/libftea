@@ -36,7 +36,11 @@ const FeedPage = () => {
 
 			{error && <p style={{ color: "red" }}>{error}</p>}
 			{posts.length === 0 ? (
-				<p className="no-posts-message">No posts to display</p>
+				<div className="no-posts-card-wrapper">
+					<div className="no-posts-card">
+						<p className="no-posts-message">No posts to display</p>
+					</div>
+				</div>
 				) : (
 				<UserPostsList posts={posts} onPostDeleted={refresh} />
 				)}

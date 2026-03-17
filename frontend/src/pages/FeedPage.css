@@ -57,6 +57,31 @@
 	min-width: 140px;
 }
 
+.no-posts-card-wrapper {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
+}
+
+.no-posts-card {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 15px;
+	width: 750px;
+	align-items: center;
+}
+
+.no-posts-message {
+	margin: 0;
+	color: #666;
+	font-size: 1rem;
+}
+
 .feed-tabs button:hover {
 	background-color: transparent;
 }
