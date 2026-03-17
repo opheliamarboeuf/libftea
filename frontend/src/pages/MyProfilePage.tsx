@@ -65,7 +65,7 @@ const ProfilePage = () => {
 						<p>{user.profile.bio || "Write your bio here..."}</p>
 					</div>
 				</div>
-				<div className="relative flex-1 min-w-0 flex flex-col mt-8">
+				<div className="relative flex-1 min-w-0 flex flex-col mt-5">
 					<div className="absolute top-0 left-0 w-full h-[250px] bg-gradient-to-b from-transparent to-gray-300/70 pointer-events-none z-[1]"></div>
 					
 					<div className="relative h-[250px] overflow-hidden rounded-2xl group">

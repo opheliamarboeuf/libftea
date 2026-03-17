@@ -2,7 +2,7 @@
 	position: fixed;
 	top: 10px;
 	left: 10px;
-	width: calc(100vw - 80px);
+	width: calc(100vw - 20px);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -34,7 +34,7 @@
 .search-bar-container {
 	max-width: 250px;
     flex-shrink: 0;
-	margin-right: 200px; 
+	margin-right: 80px; 
 }
 
 .header-right {
@@ -76,14 +76,12 @@
 	display: block;
 }
 
-/* Conteneur du menu */
 .avatar-menu {
 	position: relative;
-	padding-bottom: 10px; /* Add an invisible spacer to enable navigation of the dropdown menu */
+	padding-bottom: 10px;
 	padding-left: 30px;
 }
 
-/* Avatar cliquable */
 .small-avatar {
 	width: 40px;
 	height: 40px;

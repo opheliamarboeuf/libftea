@@ -4,14 +4,15 @@
 }
 
 .search-input {
-	padding: 8px 12px;
+	padding: 5px 10px;
 	border: 1px solid #ccc;
 	border-radius: 20px;
-	width: 300px;
+	width: 180px;
 	color: #212529;
 	background-color: white;
 	font-family: 'Playfair Display', serif;
-	outline: 2px solid #d4d4d4;
+	outline: none;
+	font-size: 0.85rem;
 }
 
 .search-results {
