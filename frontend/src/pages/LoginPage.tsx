@@ -73,7 +73,7 @@ const LoginPage = () => {
 				<p className="app-subtitle">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis p</p>
 			</div>
 			<div className="login-right">
-				<LanguageMenu />
+				<LanguageMenu fixed />
 				<h1>{t('loginpage.login')}</h1>
 				<form onSubmit={handleSubmit}>
 					<div className="field">

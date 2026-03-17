@@ -85,7 +85,7 @@ const RegisterPage = () => {
 	return (
 		<div className="register-page">
 			<div className="form">
-				<LanguageMenu />
+				<LanguageMenu fixed />
 				<form onSubmit={handleSubmit}>
 					<h1>{t('registerpage.register')}</h1>
 					<div className = "field">
