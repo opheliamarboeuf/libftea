@@ -79,7 +79,7 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 						>
 							{displayName.length} / {MAX_DISPLAYNAME_LENGTH}
 						</div>
-						<label>Bio</label>
+						<label>{t('editprofile.bio')}</label>
 						<textarea
 							value={bio}
 							onChange={(e) => setBio(e.target.value)}

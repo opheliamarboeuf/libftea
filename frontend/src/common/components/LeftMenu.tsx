@@ -30,6 +30,16 @@ export const LeftMenu = () => {
 				<FaUsers className="icon" />
 				<span className="label">{t('leftmenu.friends')}</span>
 			</div>
+			<div className="menu-item" onClick={() => navigate("/tournament")}>
+				<FaCrown className="icon" />
+				<span className="label">{t('tournament.tournament')}</span>
+			</div>
+			{/* Only show Dashboard if user is ADMIN or MOD */}
+			{user.role === "ADMIN" || user.role === "MOD" ? (
+			<div className="menu-item" onClick={() => navigate("/dashboard")}>
+				<FaTachometerAlt className="icon" />
+				<span className="label">{t('leftmenu.dashboard')}</span>
+			</div> ) : null}
 		</div>
 	);
 }

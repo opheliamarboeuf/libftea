@@ -57,8 +57,8 @@ const ProfilePage = () => {
 					</div>
 					<p className="display-username">{user.username}</p>
 					<div className="stats">
-						<span>{t('userprofile.friends')}{user.friends?.length ?? 0}</span>
-						<span>{t('userprofile.posts')}{posts.length}</span>
+						<span>{t('userprofile.friends')}: {user.friends?.length ?? 0}</span>
+						<span>{t('userprofile.posts')}: {posts.length}</span>
 					</div>
 					<div className="bio">
 						<p>{user.profile.bio || t('userprofile.writebio')}</p>
@@ -88,19 +88,19 @@ const ProfilePage = () => {
 									className={profileTab === "posts" ? "active" : ""}
 									onClick={() => setProfileTab("posts")}
 								>
-									Posts
+									{t('userprofile.posts')}
 								</button>
 								<button
 									className={profileTab === "tournament" ? "active" : ""}
 									onClick={() => setProfileTab("tournament")}
 								>
-									Tournament
+									{t('tournament.tournament')}
 								</button>
 							</div>
 							{profileTab === "posts" && (
 								<button className="expand-btn expand-btn-post" onClick={() => setShowPostModal(true)}>
 									<span className="icon">＋</span>
-									<span className="expand-btn-text">Post an outfit</span>
+									<span className="expand-btn-text">{t('feedpage.postoutfit')}</span>
 								</button>
 							)}
 							</div>
@@ -110,10 +110,6 @@ const ProfilePage = () => {
 						{profileTab === "tournament" && (
 							<UserPostsList posts={tournamentPosts} onPostDeleted={loadTournamentPosts} />
 						)}
-						<button className="expand-btn expand-btn-right" onClick={() => setShowPostModal(true)}>
-							<span className="icon">＋</span>
-  							<span className="expand-btn-text">{t('feedpage.postoutfit')}</span>
-						</button>
 					<UserPostsList posts = {posts} onPostDeleted={loadPosts} />
 					</div>
 				</div>

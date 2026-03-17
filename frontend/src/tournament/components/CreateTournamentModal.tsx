@@ -5,6 +5,7 @@ import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
 import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { useCreateTournament } from "./hooks/useCreateTournament";
+import { useTranslation } from "react-i18next";
 
 interface CreateTournamentModalProps {
 	onClose: () => void;
@@ -45,6 +46,8 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 		});
 	
 
+	const { t } = useTranslation();
+
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const success = await handleCreateTournament();
@@ -64,9 +67,9 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 					className={`modal-content-post ${fadeOut ? "fade-out" : "fade-in"}`}
 					onClick={(e) => e.stopPropagation()}
 				>
-					<h2>Enter the contest</h2>
+					<h2>{t('tournament.createtournament')}</h2>
 					<form onSubmit={handleSubmit}>
-						<label>theme</label>
+						<label>{t('tournament.theme')}</label>
 						<input
 							type = "text"
 							value={theme}
@@ -80,13 +83,13 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 						>
 							{theme.length} / {MAX_THEME_LENGTH}
 						</div>
-						<label>Start date</label>
+						<label>{t('tournament.start')}</label>
 						<input
 							type = "datetime-local"
 							value={startDate}
 							onChange={(e) => setStartDate(e.target.value)}
 						/>
-						<label>End date</label>
+						<label>{t('tournament.end')}</label>
 						<input
 							type = "datetime-local"
 							value={endDate}
@@ -99,8 +102,8 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 						)}
 						<div className="modal-actions">
 							<button type="submit"  className="modal-btn" disabled={isLoading}> 
-								{isLoading ? "Creating..." : "Create"} </button>
-							<button type="button" className="modal-btn" onClick={requestClose}> Cancel </button>
+								{isLoading ? t('tournament.creating') : t('tournament.create') } </button>
+							<button type="button" className="modal-btn" onClick={requestClose}> {t('post.cancel')} </button>
 						</div>
 					</form>
 				</div>
@@ -109,7 +112,7 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message="Looks like you've made some changes. Are you sure you want to exit without saving?"
+				message={t('tournament.changes')}
 				onConfirm={confirmDiscard}
 				onCancel={cancelDiscard}
 			/>

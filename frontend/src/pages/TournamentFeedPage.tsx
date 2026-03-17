@@ -7,6 +7,7 @@ import { UserPostsList } from "../posts/components/UserPostsList";
 import { JoinTournamentModal } from "../tournament/components/JoinTournamentModal";
 import { CreateTournamentModal } from "../tournament/components/CreateTournamentModal";
 import { tournamentApi } from "../tournament/api";
+import { useTranslation } from "react-i18next";
 
 const TournamentFeedPage = () => {
 
@@ -18,6 +19,8 @@ const TournamentFeedPage = () => {
 	const [showCreateTournamentModal, setShowCreateTournamentModal] = useState(false);
 	const [battleError, setBattleError] = useState<string | null>(null);
 	const [winnerPost, setWinnerPost] = useState<any | null>(null);
+
+	const { t, i18n } = useTranslation();
 
 	const refresh = () => {
 		if (!battle) return;
@@ -91,27 +94,30 @@ const TournamentFeedPage = () => {
 									if (diffDays < 0) return "The tournament has ended";
 									if (diffDays === 0) return "The tournament ends today!";
 									if (diffDays === 1) return "The tournament ends tomorrow!";
-									return `The tournament will be active for ${diffDays} more days, until ${endDate.toLocaleDateString('fr-FR')}`;
+									return t('tournament.days', {
+										count: diffDays,
+										date: endDate.toLocaleDateString(i18n.language),
+									});
 								})()}
 							</p>
 					</div>
 					)}
 					{!battle && ( 
 						<div className= "no-tournament">
-							<h2>No active tournament</h2>
+							<h2>{t('tournament.notournament')}</h2>
 						</div>
 					)}
 					<div className="tournament-center">
 						{battle && (
 							<button className="expand-btn expand-btn-left" onClick={() => setShowPostModal(true)}>
 								<span className="icon">＋</span>
-								<span className="expand-btn-text">Enter the contest</span>
+								<span className="expand-btn-text">{t('tournament.entercontest')}</span>
 							</button>
 						)}
 						{user?.role === "ADMIN" && (
 							<button className="expand-btn expand-btn-right" onClick={() => setShowCreateTournamentModal(true)}>
 								<span className="icon">👑</span>
-								<span className="expand-btn-text">Create tournament</span>
+								<span className="expand-btn-text">{t('tournament.createtournament')}</span>
 							</button>
 						)}
 					</div>

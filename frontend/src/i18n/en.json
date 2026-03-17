@@ -8,7 +8,8 @@
 	"leftmenu": {
 		"feed": "Feed",
 		"profile": "Profile",
-		"friends": "Friends"
+		"friends": "Friends",
+		"dashboard": "Dashboard"
 	},
 
 	"searchbar": {
@@ -55,8 +56,8 @@
 	"userprofile": {
 		"sendmessage": "Send message",
 		"loading": "Loading...",
-		"friends": "Friends: ",
-		"posts": "Posts: ",
+		"friends": "Friends",
+		"posts": "Posts",
 		"writebio": "Write your bio here...",
 		"feed": "Your feed",
 		"noaccess": "You cannot access this profile",
@@ -146,5 +147,29 @@
 		"newbattle": "A new tournament has started! The theme is: {{theme}}",
 		"battlewinner": "Congratulations! You have won the tournament for the following theme: {{theme}}!",
 		"battleparticipants": "Thank you for participating to the tournament for {{theme}}. The winner is {{username}}!"
+	},
+
+	"tournament": {
+		"tournament": "Tournament",
+		"notournament": "No active tournament",
+		"createtournament": "Create tournament",
+		"create": "Create",
+		"creating": "Creating...",
+		"theme": "Theme",
+		"start": "Start date",
+		"end": "End date",
+		"entercontest": "Enter the contest",
+		"ended": "The tournament has ended",
+		"today": "The tournament ends today!",
+		"tomorrow": "The tournament ends tomorrow!",
+		"days": "The tournament will be active for {{count}} more days, until {{date}}",
+		"changes": "Looks like you've made some changes. Are you sure you want to exit without saving?"
+	},
+
+	"moderationlogs": {
+		"loadinglogs": "Loading logs...",
+		"logs": "Moderation Logs",
+		"nologs": "No logs available",
+		"action": "<0>{{action}}</0> by {{username}} on {{date}}"
 	}
 }

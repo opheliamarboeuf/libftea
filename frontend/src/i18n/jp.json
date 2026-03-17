@@ -8,7 +8,8 @@
 	"leftmenu": {
 		"feed": "フィード",
 		"profile": "プロフィール",
-		"friends": "友達"
+		"friends": "友達",
+		"dashboard": "ダッシュボード"
 	},
 
 	"searchbar": {
@@ -54,8 +55,8 @@
 	"userprofile": {
 		"sendmessage": "メッセージを送る",
 		"loading": "読み込み中...",
-		"friends": "友達: ",
-		"posts": "投稿: ",
+		"friends": "友達",
+		"posts": "投稿",
 		"writebio": "自己紹介を書く...",
 		"feed": "あなたのフィード",
 		"noaccess": "このプロフィールにはアクセスできません",
@@ -82,7 +83,7 @@
 	},
 
 	"editprofile": {
-		"edit": "プロフィールを",
+		"edit": "プロフィールを編集",
 		"name": "名前",
 		"bio": "自己紹介",
 		"picture": "プロフィール写真",
@@ -142,5 +143,28 @@
 		"friendrequest": "{{username}}があなたに友達リクエストを送りました",
 		"friendaccept": "{{username}}があなたの友達リクエストを承認しました",
 		"friendpost": "{{username}}がコーデを投稿しました"
+	},
+
+	"tournament": {
+		"tournament": "トーナメント",
+		"notournament": "現在開催中のトーナメントはありません",
+		"createtournament": "トーナメントを作成",
+		"create": "作成",
+		"theme": "テーマ",
+		"start": "開始日",
+		"end": "終了日",
+		"entercontest": "コンテストに参加する",
+		"ended": "トーナメントは終了しました",
+		"today": "トーナメントは本日終了します！",
+		"tomorrow": "トーナメントは明日終了します！",
+		"days": "トーナメントはあと{{count}}日間開催され、{{date}}まで続きます",
+		"changes": "変更が保存されていません。 保存せずに終了しますか?"
+	},
+
+	"moderationlogs": {
+		"loadinglogs": "ログを読み込み中...",
+		"logs": "モデレーションログ",
+		"nologs": "ログはありません",
+		"action": "{{username}}が{{date}}に<0>{{action}}</0>を実行しました"
 	}
 }

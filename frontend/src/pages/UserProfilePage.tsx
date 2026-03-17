@@ -271,7 +271,7 @@ const UserProfilePage = () => {
 				<div className="profile-info">
 					<div className="online-status">
 						{isOnline ? <span>☀️</span> : <span className="moon">🌙</span>}
-						<span>{isOnline ? 'Online' : 'Offline'}</span>
+						<span>{isOnline ? t('userprofile.online') : t('userprofile.offline')}</span>
 					</div>
 					<p className="display-name">
 						{userData.profile?.displayName ? userData.profile.displayName : '\u00A0'} {/*space to keep the height*/}
@@ -288,8 +288,8 @@ const UserProfilePage = () => {
 					</div>
 					<p className="display-username">{userData.username}</p>
 					<div className="stats">
-						<span>{t('userprofile.friends')}{userData.friendsCount}</span>
-						<span>{t('userprofile.posts')}{posts.length}</span>
+						<span>{t('userprofile.friends')}: {userData.friendsCount}</span>
+						<span>{t('userprofile.posts')}: {posts.length}</span>
 					</div>
 					<div className="block-user">
 						<BlockFriendButton userId={userData.id} onAction={fetchProfile} />
@@ -317,7 +317,7 @@ const UserProfilePage = () => {
 					</div>
 					<div className="posts">
 						{blockedPosts ? (
-							<div className="blocked-line">You have blocked this user</div>
+							<div className="blocked-line">{t('userprofile.userblocked')}</div>
 						) : (
 							<>
 								<div className="posts-toolbar">
@@ -327,13 +327,13 @@ const UserProfilePage = () => {
 											className={profileTab === "posts" ? "active" : ""}
 											onClick={() => setProfileTab("posts")}
 										>
-											Posts
+											{t('userprofile.posts')}
 										</button>
 										<button
 											className={profileTab === "tournament" ? "active" : ""}
 											onClick={() => setProfileTab("tournament")}
 										>
-											Tournament
+											{t('tournament.tournament')}
 										</button>
 									</div>
 								</div>
@@ -341,7 +341,6 @@ const UserProfilePage = () => {
 								{profileTab === "tournament" && <UserPostsList posts={tournamentPosts} />}
 							</>
 						)}
-						{blockedPosts ? <div className="blocked-line">{t('userprofile.userblocked')}</div> : <UserPostsList posts={posts} />}
 					</div>
 				</div>
 			</div>

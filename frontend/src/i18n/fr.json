@@ -8,7 +8,8 @@
 	"leftmenu": {
 		"feed": "Mur",
 		"profile": "Profil",
-		"friends": "Amis"
+		"friends": "Amis",
+		"dashboard": "Dashboard"
 	},
 
 	"searchbar": {
@@ -54,14 +55,14 @@
 	"userprofile": {
 		"sendmessage": "Envoyer un message",
 		"loading": "Chargement...",
-		"friends": "Amis: ",
-		"posts": "Posts: ",
+		"friends": "Amis",
+		"posts": "Posts",
 		"writebio": "Ecrivez votre bio ici...",
 		"feed": "Votre mur",
 		"noaccess": "Vous n'avez pas accès à ce profil",
 		"userblocked": "Vous avez bloqué cet utilisateur",
 		"online": "En ligne",
-		"offline": "Hors lgne"
+		"offline": "Hors ligne"
 	},
 
 	"loginpage": {
@@ -142,5 +143,28 @@
 		"friendrequest": "{{username}} vous a envoyé une demande en ami",
 		"friendaccept": "{{username}} a accepté votre demande en ami",
 		"friendpost": "{{username}} a posté une tenue"
+	},
+
+	"tournament": {
+		"tournament": "Tournoi",
+		"notournament": "Pas de tournoi en cours",
+		"createtournament": "Créer un tournoi",
+		"create": "Créer",
+		"theme": "Thème",
+		"start": "Date de début",
+		"end": "Date de fin",
+		"entercontest": "Participer au concours",
+		"ended": "Le tournoi est fini",
+		"today": "Le tournoi finit aujourd'hui!",
+		"tomorrow": "Le tournoi finit demain!",
+		"days": "Le tournoi sera actif pendant encore {{count}} jours, jusq'au {{date}}",
+		"changes": "Vous avez modifié le tournoi. Etes-vous sûr de vouloir quitter sans sauvegarder ?"
+	},
+
+	"moderationlogs": {
+		"loadinglogs": "Chargement des logs...",
+		"logs": "Logs de modération",
+		"nologs": "Pas de log disponible",
+		"action": "<0>{{action}}</0> par {{username}} le {{date}}"
 	}
 }

@@ -5,6 +5,7 @@ import { useTournamentJoin } from "./hooks/useTournamentJoin";
 import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
+import { useTranslation } from "react-i18next";
 
 interface JoinTournamentModalProps {
 	battleId: number;
@@ -44,6 +45,8 @@ export function JoinTournamentModal ({ battleId, onClose, onJoined }: JoinTourna
 			onDiscard: resetFields,
 			onClose: closeWithAnimation,
 		});
+
+	const { t } = useTranslation();
 	
 
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
@@ -65,9 +68,9 @@ export function JoinTournamentModal ({ battleId, onClose, onJoined }: JoinTourna
 					className={`modal-content-post ${fadeOut ? "fade-out" : "fade-in"}`}
 					onClick={(e) => e.stopPropagation()}
 				>
-					<h2>Enter the contest</h2>
+					<h2>{t('tournament.entercontest')}</h2>
 					<form onSubmit={handleSubmit}>
-						<label>Title</label>
+						<label>{t('post.title')}</label>
 						<textarea
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
@@ -80,13 +83,13 @@ export function JoinTournamentModal ({ battleId, onClose, onJoined }: JoinTourna
 						>
 							{title.length} / {MAX_TITLE_LENGTH}
 						</div>
-						<label>Outfit Picture</label>
+						<label>{t('post.picture')}</label>
 						<input
 						type = "file"
 						accept="image/jpeg,image/jpg,image/png,image/webp"
 						onChange={handleImageChange}
 						/>
-						<label>Caption</label>
+						<label>{t('post.caption')}</label>
 						<textarea
 							value={caption}
 							onChange={(e) => setCaption(e.target.value)}
@@ -107,8 +110,8 @@ export function JoinTournamentModal ({ battleId, onClose, onJoined }: JoinTourna
 						)}
 						<div className="modal-actions">
 							<button type="submit"  className="modal-btn" disabled={isLoading}> 
-								{isLoading ? "Posting..." : "Submit"} </button>
-							<button type="button" className="modal-btn" onClick={requestClose}> Cancel </button>
+								{isLoading ? t('editprofile.posting') : t('post.submit') } </button>
+							<button type="button" className="modal-btn" onClick={requestClose}> {t('editprofile.cancel')} </button>
 						</div>
 					</form>
 				</div>
@@ -117,7 +120,7 @@ export function JoinTournamentModal ({ battleId, onClose, onJoined }: JoinTourna
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message="Looks like you've made some changes. Are you sure you want to exit without saving?"
+				message={t('post.changes')}
 				onConfirm={confirmDiscard}
 				onCancel={cancelDiscard}
 			/>
