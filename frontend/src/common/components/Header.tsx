@@ -9,6 +9,7 @@ import { friendsSocket } from "../../socket/socket";
 import { notifSocket } from "../../socket/socket";
 import { useNotifications } from "../../notifications/useNotifications";
 import { FaBell } from "react-icons/fa";
+import { tournamentApi } from "../../tournament/api";
 
 export const Header = () => {
 	const navigate = useNavigate();
@@ -18,6 +19,8 @@ export const Header = () => {
 	const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(user?.id);
 	const [notifOpen, setNotifOpen] = useState(false);
 	const notifRef = useRef<HTMLDivElement | null>(null);
+	const [battle, setBattle] = useState<any | null | undefined>(undefined);
+	const [battleError, setBattleError] = useState<string | null>(null);
 
 	useFriendsSocket(user?.id, {
 		onRequestSent: () => { refreshUser(); },
@@ -50,6 +53,14 @@ export const Header = () => {
 		};
 	}, []);
 
+	useEffect(() => {
+		if (!user) return;
+
+		const battleUpdate = () => {
+			refetchBattle();
+		};
+	}, []);
+
 	if (!user) return null;
 
 	const handleLogout = () => {
@@ -65,6 +76,18 @@ export const Header = () => {
 		setMenuHidden(true);
 		navigate(path);
 	}
+
+	const refetchBattle = () => {
+		tournamentApi.getCurrentTournament()
+			.then((data) => {
+				setBattle(data);
+				setBattleError(null);
+			})
+			.catch((err) => {
+				console.error("failed to fetch current tournament", err);
+				setBattle(null);
+			});
+	};
 
 	return (
 		<header className="header">

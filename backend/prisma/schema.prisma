@@ -23,6 +23,7 @@ model Battle {
 	winner						    User?               @relation("Battle_winnerIdToUser", fields: [winnerId], references: [id])
 	BattleParticipant             BattleParticipant[]
 	ModerationLog                 ModerationLog[]
+	NotifSent					  Boolean			   @default(false)
 }
 
 model BattleParticipant {
