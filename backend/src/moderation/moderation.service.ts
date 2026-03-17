@@ -75,6 +75,12 @@ export class ModerationService {
 		}
 		const updatedUser = await this.prisma.$transaction(async (tx) => {
 			if (user.role === Role.MOD) {
+				const modCount = await tx.user.count({
+					where: { role: Role.MOD },
+				});
+				if (modCount <= 1) {
+					throw new BadRequestException('At least one MOD must remain');
+				}
 				return tx.user.update({
 					where: { id: targetId },
 					data: { role: Role.USER },
