@@ -28,18 +28,19 @@ export class ModerationService {
 
 	// ---------------------------------- CHANGE ROLE ------------------------------------
 
-	async updateAdminRole(targetId: number, userRole: Role) {
-		if (!hasPermission(userRole, 'CHANGE_ADMIN_ROLE')) {
+	async updateAdminRole(targetId: number, currentUserRole: Role) {
+		if (!hasPermission(currentUserRole, 'CHANGE_ADMIN_ROLE')) {
 			throw new ForbiddenException('You do not have the right to update an admin role');
 		}
 
 		const user = await this.prisma.user.findUnique({ where: { id: targetId } });
 		if (!user) throw new BadRequestException('User not found');
 
-		if (user.role !== Role.ADMIN && user.role !== Role.MOD)
-			throw new BadRequestException('User must be ADMIN or MOD');
+		if (user.role !== Role.MOD)
+			throw new BadRequestException('Only a MOD can be promoted to ADMIN');
 
 		const updatedUser = await this.prisma.$transaction(async (tx) => {
+			// Si c’est un ADMIN, on le rétrograde en MOD
 			if (user.role === Role.ADMIN) {
 				return tx.user.update({
 					where: { id: targetId },
@@ -47,12 +48,14 @@ export class ModerationService {
 				});
 			}
 
+			// Si c’est un MOD, on le promeut en ADMIN
 			if (user.role === Role.MOD) {
 				return tx.user.update({
 					where: { id: targetId },
 					data: { role: Role.ADMIN },
 				});
 			}
+
 			throw new BadRequestException('Invalid role transition');
 		});
 

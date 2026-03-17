@@ -33,8 +33,8 @@ export class ModerationController {
 		return this.moderationService.updateAdminRole(id, req.user.role);
 	}
 
-	@Roles(Role.ADMIN)
-	@Put('role/admin/:id')
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('role/mod/:id')
 	async updateModRole(
 		@Param('id', ParseIntPipe) id: number,
 		@Req() req: Request & { user: { id: number; role: Role } },

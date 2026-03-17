@@ -1,6 +1,10 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ModerationUser } from './types';
+import { useUser } from '../../context/UserContext';
+import { ConfirmDialog } from '../../common/components/ConfirmDialog';
+import { useModal } from '../../context/ModalContext';
+import { moderationApi } from '../api';
 import './UserList.css';
 
 interface UserListProps {
@@ -10,12 +14,22 @@ interface UserListProps {
 
 type SortField = 'id' | 'username' | 'role' | 'status';
 
-export function UserList({ users: initialUsers }: UserListProps) {
+// Pending action before confirmation
+interface PendingAction {
+	userId: number;
+	type: 'admin' | 'mod';
+	message: string;
+}
+
+export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 	const navigate = useNavigate();
+	const { user: currentUser } = useUser();
+	const { showModal } = useModal();
 
 	const [sortField, setSortField] = useState<SortField>('id');
 	const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 	const [searchTerm, setSearchTerm] = useState('');
+	const [pendingAction, setPendingAction] = useState<PendingAction | null>(null);
 
 	const goToProfile = (userId: number) => {
 		navigate(`/users/${userId}`);
@@ -35,7 +49,7 @@ export function UserList({ users: initialUsers }: UserListProps) {
 	};
 
 	const filteredAndSortedUsers = useMemo(() => {
-		// 1. Filtre local sur initialUsers
+		// 1. Local filter on initialUsers
 		const filtered =
 			searchTerm.length < 2
 				? initialUsers
@@ -75,6 +89,103 @@ export function UserList({ users: initialUsers }: UserListProps) {
 		});
 	}, [initialUsers, searchTerm, sortField, sortDirection]);
 
+	// Build action buttons for a given target user
+	const getActionButtons = (target: ModerationUser) => {
+		// No actions on yourself
+		if (target.id === currentUser?.id) return null;
+
+		// Array used to collect all action buttons dynamically based on roles/permissions
+		const buttons: React.ReactNode[] = [];
+
+		if (currentUser?.role === 'ADMIN') {
+			// ADMIN can toggle MOD <-> ADMIN
+			if (target.role === 'MOD') {
+				buttons.push(
+					<button
+						key="admin"
+						className="action-btn promote"
+						onClick={(e) => {
+							e.stopPropagation();
+							setPendingAction({
+								userId: target.id,
+								type: 'admin',
+								message: `Promote ${target.username} to ADMIN?`,
+							});
+						}}
+					>
+						→ ADMIN
+					</button>,
+				);
+			}
+			// ADMIN can toggle USER <-> MOD
+			if (target.role === 'USER' || target.role === 'MOD') {
+				buttons.push(
+					<button
+						key="mod"
+						className={`action-btn ${target.role === 'USER' ? 'promote' : 'demote'}`}
+						onClick={(e) => {
+							e.stopPropagation();
+							// to open Confirmation Modal
+							setPendingAction({
+								userId: target.id,
+								type: 'mod',
+								message:
+									target.role === 'USER'
+										? `Promote ${target.username} to MOD?`
+										: `Demote ${target.username} to USER?`,
+							});
+						}}
+					>
+						{target.role === 'USER' ? '→ MOD' : '→ USER'}
+					</button>,
+				);
+			}
+		} else if (currentUser?.role === 'MOD') {
+			// MOD can toggle USER <-> MOD
+			if (target.role === 'USER' || target.role === 'MOD') {
+				buttons.push(
+					<button
+						key="mod"
+						className={`action-btn ${target.role === 'USER' ? 'promote' : 'demote'}`}
+						onClick={(e) => {
+							e.stopPropagation();
+							setPendingAction({
+								userId: target.id,
+								type: 'mod',
+								message:
+									target.role === 'USER'
+										? `Promote ${target.username} to MOD?`
+										: `Demote ${target.username} to USER?`,
+							});
+						}}
+					>
+						{target.role === 'USER' ? '→ MOD' : '→ USER'}
+					</button>,
+				);
+			}
+		}
+
+		// Render the action buttons container only if at least one button exists, otherwise render nothing
+		return buttons.length > 0 ? <div className="action-buttons">{buttons}</div> : null;
+	};
+
+	// Execute the confirmed action
+	const handleConfirmAction = async () => {
+		if (!pendingAction) return;
+		try {
+			if (pendingAction.type === 'admin') {
+				await moderationApi.changeAdminRole(pendingAction.userId);
+			} else {
+				await moderationApi.changeModRole(pendingAction.userId);
+			}
+			onUpdate?.();
+		} catch (error: any) {
+			showModal(error.message || 'An error occurred');
+		} finally {
+			setPendingAction(null);
+		}
+	};
+
 	if (!Array.isArray(initialUsers) || initialUsers.length === 0) {
 		return <div className="user-list">No users found</div>;
 	}
@@ -106,6 +217,7 @@ export function UserList({ users: initialUsers }: UserListProps) {
 					<span onClick={() => handleSort('status')}>
 						Status {sortField === 'status' && (sortDirection === 'asc' ? '▲' : '▼')}
 					</span>
+					<span>Actions</span>
 				</div>
 
 				{filteredAndSortedUsers.length === 0 ? (
@@ -114,23 +226,30 @@ export function UserList({ users: initialUsers }: UserListProps) {
 					filteredAndSortedUsers.map((user) => (
 						<div key={user.id} className="user-row">
 							<span>{user.id}</span>
-
-							{/* Username cliquable */}
 							<span
 								className="user-username-clickable"
 								onClick={() => goToProfile(user.id)}
 							>
 								{user.username}
 							</span>
-
 							<span>{user.role}</span>
 							<span className={user.bannedAt ? 'status-banned' : 'status-active'}>
 								{user.bannedAt ? 'BANNED' : 'ACTIVE'}
 							</span>
+							<span>{getActionButtons(user)}</span>
 						</div>
 					))
 				)}
 			</div>
+
+			{/* Confirmation dialog */}
+			{pendingAction && (
+				<ConfirmDialog
+					message={pendingAction.message}
+					onConfirm={handleConfirmAction}
+					onCancel={() => setPendingAction(null)}
+				/>
+			)}
 		</div>
 	);
 }

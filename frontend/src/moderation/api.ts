@@ -25,7 +25,7 @@ export const moderationApi = {
 	// ---------------------------------- CHANGE ROLES  -----------------------------------
 
 	changeAdminRole: async (userId: number) => {
-		const res = await fetch(`${API_URL}/role/admin/${userId}`, {
+		const res = await fetch(`${API_URL}/moderation/role/admin/${userId}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ export const moderationApi = {
 	},
 
 	changeModRole: async (userId: number) => {
-		const res = await fetch(`${API_URL}/role/mod/${userId}`, {
+		const res = await fetch(`${API_URL}/moderation/role/mod/${userId}`, {
 			method: 'PUT',
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem('token')}`,

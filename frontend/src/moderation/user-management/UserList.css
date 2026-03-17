@@ -34,15 +34,22 @@
   border-color: #aaa;
 }
 
+/* Card wrapper: groups header + rows like a post-card */
+.user-table-card {
+  width: 750px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
+  overflow: hidden;
+}
+
 /* Header row */
 .user-header {
   display: grid;
-  grid-template-columns: 80px 1fr 120px 120px;
+  grid-template-columns: 60px 1fr 100px 100px 160px;
   padding: 10px 15px;
-  width: 750px;
   box-sizing: border-box;
   background-color: #f5f5f5;
-  border-radius: 10px 10px 0 0;
   border-bottom: 1px solid #ddd;
 }
 
@@ -54,26 +61,32 @@
   user-select: none;
 }
 
+.user-header span:last-child {
+  cursor: default;
+}
+
 .user-header span:hover {
   color: #bebebe;
+}
+
+.user-header span:last-child:hover {
+  color: #333;
 }
 
 /* Individual user row */
 .user-row {
   display: grid;
-  grid-template-columns: 80px 1fr 120px 120px;
+  grid-template-columns: 60px 1fr 100px 100px 160px;
   padding: 12px 15px;
-  width: 750px;
   box-sizing: border-box;
   background-color: #fff;
   border-bottom: 1px solid #eee;
-  cursor: pointer;
   transition: background-color 0.2s ease;
+  align-items: center;
 }
 
 .user-row:last-child {
   border-bottom: none;
-  border-radius: 0 0 10px 10px;
 }
 
 .user-row:hover {
@@ -87,21 +100,14 @@
   align-items: center;
 }
 
-/* Card wrapper: groups header + rows like a post-card */
-.user-table-card {
-  width: 750px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
-  overflow: hidden;
+/* Clickable username */
+.user-username-clickable {
+  cursor: pointer;
+  transition: color 0.2s ease;
 }
 
-/* Empty state inside the card */
-.user-empty {
-  padding: 20px;
-  text-align: center;
-  color: #777;
-  font-size: 0.9rem;
+.user-username-clickable:hover {
+  color: #bebebe;
 }
 
 /* Status colors */
@@ -115,15 +121,41 @@
   font-weight: 600;
 }
 
-/* Username cliquable */
-.user-username-clickable {
-	cursor: pointer;
-	color: #333;
-	font-weight: 500;
-	transition: color 0.2s ease;
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
-.user-username-clickable:hover {
-	color: #888;
+.action-btn {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
 
+.action-btn:hover {
+  opacity: 0.75;
+}
+
+.action-btn.promote {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.action-btn.demote {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+/* Empty state inside the card */
+.user-empty {
+  padding: 20px;
+  text-align: center;
+  color: #777;
+  font-size: 0.9rem;
 }
