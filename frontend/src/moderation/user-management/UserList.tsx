@@ -97,6 +97,9 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 		// Array used to collect all action buttons dynamically based on roles/permissions
 		const buttons: React.ReactNode[] = [];
 
+		if (target.bannedAt)
+			return;
+
 		if (currentUser?.role === 'ADMIN') {
 			// ADMIN can toggle MOD <-> ADMIN
 			if (target.role === 'MOD') {

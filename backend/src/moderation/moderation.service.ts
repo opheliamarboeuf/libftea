@@ -73,6 +73,11 @@ export class ModerationService {
 		if (user.role !== Role.USER && user.role !== Role.MOD) {
 			throw new BadRequestException('User must be USER or MOD');
 		}
+
+		if (user.bannedAt)
+			throw new BadRequestException('You cannot udpate a banned user role');
+
+
 		const updatedUser = await this.prisma.$transaction(async (tx) => {
 			if (user.role === Role.MOD) {
 				const modCount = await tx.user.count({
