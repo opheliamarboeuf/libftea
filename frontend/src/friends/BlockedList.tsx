@@ -9,47 +9,41 @@ export function BlockedList() {
 
 	return (
 		<div>
-			{blocked.length === 0 && <p>No blocked users</p>}
-			{blocked.map((blocked) => (
-				<div
-					key={blocked.id}
-					style={{
-						display: 'flex',
-						alignItems: 'center',
-						marginBottom: '8px',
-						gap: '8px',
-					}}
-				>
-					<div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-						<div className="small-avatar-container">
-							<div className="small-avatar">
-								<img
-									src={
-										blocked.avatarUrl
-											? `${API_URL}${blocked.avatarUrl}`
-											: '/default-avatar.png'
-									}
-									alt="Small Avatar"
-								/>
+			{blocked.length === 0 && <p className="friends-empty">No blocked users</p>}
+			<div className="friends-list">
+				{blocked.map((blocked) => (
+					<div key={blocked.id} className="friend-card">
+						<div className="friend-card-info">
+							<div className="small-avatar-container">
+								<div className="small-avatar">
+									<img
+										src={
+											blocked.avatarUrl
+												? `${API_URL}${blocked.avatarUrl}`
+												: '/default-avatar.png'
+										}
+										alt="Small Avatar"
+									/>
+								</div>
 							</div>
+							<Link
+								to={blocked.bannedAt ? '#' : `/users/${blocked.id}`}
+								style={{
+									textDecoration: 'none',
+									color: 'inherit',
+									cursor: blocked.bannedAt ? 'default' : 'pointer',
+									pointerEvents: blocked.bannedAt ? 'none' : 'auto',
+								}}
+							>
+								{blocked.bannedAt ? 'Unknown User' : blocked.username}
+							</Link>
 						</div>
-						<Link
-							to={blocked.bannedAt ? '#' : `/users/${blocked.id}`}
-							style={{
-								textDecoration: 'none',
-								color: 'inherit',
-								cursor: blocked.bannedAt ? 'default' : 'pointer',
-								pointerEvents: blocked.bannedAt ? 'none' : 'auto',
-							}}
-						>
-							{blocked.bannedAt ? 'Unknown User' : blocked.username}
-						</Link>
+						<div className="friend-card-actions">
+							<BlockFriendButton userId={blocked.id} />
+						</div>
 					</div>
-					<div style={{ display: 'flex', gap: '8px' }}>
-						<BlockFriendButton userId={blocked.id} />
-					</div>
-				</div>
-			))}
+				))}
+			</div>
 		</div>
 	);
 }

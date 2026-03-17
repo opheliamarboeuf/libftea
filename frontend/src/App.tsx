@@ -12,6 +12,7 @@ import UserProfilePage from './pages/UserProfilePage';
 import { ModalProvider } from "./context/ModalContext";
 import { ModerationRoutes } from './moderation/routes/ModerationRoutes';
 import TournamentFeedPage from './pages/TournamentFeedPage';
+import DashboardPage from './pages/DashboardPage';
 
 const App = () => {
 
@@ -85,15 +86,12 @@ const [loading, setLoading] = useState(true);
             <Route
               path="/users/:id"
               element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
-<<<<<<< HEAD
-=======
 			<Route
 				path="/tournament"
 				element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />
             <Route
               path="/dashboard"
-              element={loading ? null : user ? <Dashboard/> : <Navigate to = "/" replace />} />
->>>>>>> main
+              element={loading ? null : user ? <DashboardPage/> : <Navigate to = "/" replace />} />
           </Routes>
         </BrowserRouter>
         </ModalProvider>

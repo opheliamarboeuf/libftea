@@ -121,7 +121,7 @@ model Battle {
 	User_Battle_createdByIdToUser User?               @relation("Battle_createdByIdToUser", fields: [createdById], references: [id])
 	winner						    User?               @relation("Battle_winnerIdToUser", fields: [winnerId], references: [id])
 	BattleParticipant             BattleParticipant[]
-	ModerationLog                 ModerationLog[]
+	moderationLogs ModerationLog[] @relation("TargetBattleRelation")
 }
 
 model BattleParticipant {

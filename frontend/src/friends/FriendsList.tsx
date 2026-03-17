@@ -10,19 +10,11 @@ export function FriendsList() {
 
 	return (
 		<div>
-			{friends.length === 0 && <p>No friends yet</p>}
-			<div style={{ maxWidth: '300px' }}>
+			{friends.length === 0 && <p className="friends-empty">No friends yet</p>}
+			<div className="friends-list">
 				{friends.map((friend) => (
-					<div
-						key={friend.id}
-						style={{
-							display: 'flex',
-							alignItems: 'center',
-							gap: '20px',
-							marginBottom: '8px',
-						}}
-					>
-						<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+					<div key={friend.id} className="friend-card">
+						<div className="friend-card-info">
 							<div className="small-avatar-container">
 								<div className="small-avatar">
 									<img
@@ -36,7 +28,7 @@ export function FriendsList() {
 								</div>
 							</div>
 							<Link
-								to={friend.bannedAt ? '#' : `/users/${friend.id}`} // no link if banned
+								to={friend.bannedAt ? '#' : `/users/${friend.id}`}
 								style={{
 									textDecoration: 'none',
 									color: 'inherit',
@@ -47,13 +39,10 @@ export function FriendsList() {
 								{friend.bannedAt ? 'Unknown User' : friend.username}
 							</Link>
 						</div>
-
-						{
-							<div style={{ display: 'flex', gap: '8px', marginLeft: 'auto' }}>
-								<BlockFriendButton userId={friend.id} />
-								<RemoveFriendButton userId={friend.id} />
-							</div>
-						}
+						<div className="friend-card-actions">
+							<BlockFriendButton userId={friend.id} />
+							<RemoveFriendButton userId={friend.id} />
+						</div>
 					</div>
 				))}
 			</div>

@@ -36,19 +36,11 @@ export function PendingRequests() {
 
 	return (
 		<div>
-			{pending.length === 0 && <p>No pending requests</p>}
-			<div style={{ maxWidth: '300px' }}>
+			{pending.length === 0 && <p className="friends-empty">No pending requests</p>}
+			<div className="friends-list">
 				{pending.map((user) => (
-					<div
-						key={user.id}
-						style={{
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'space-between',
-							marginBottom: '8px',
-						}}
-					>
-						<div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+					<div key={user.id} className="friend-card">
+						<div className="friend-card-info">
 							<div className="small-avatar-container">
 								<div className="small-avatar">
 									<img
@@ -72,22 +64,22 @@ export function PendingRequests() {
 							>
 								{user.bannedAt ? 'Unknown User' : user.username}
 							</Link>
-							<div style={{ display: 'flex', gap: '8px' }}>
-								<button
-									className="friend-action-btn"
-									onClick={() => handleAccept(user.id)}
-									disabled={loading}
-								>
-									Accept
-								</button>
-								<button
-									className="friend-action-btn"
-									onClick={() => handleReject(user.id)}
-									disabled={loading}
-								>
-									Reject
-								</button>
-							</div>
+						</div>
+						<div className="friend-card-actions">
+							<button
+								className="friend-action-btn"
+								onClick={() => handleAccept(user.id)}
+								disabled={loading}
+							>
+								Accept
+							</button>
+							<button
+								className="friend-action-btn"
+								onClick={() => handleReject(user.id)}
+								disabled={loading}
+							>
+								Reject
+							</button>
 						</div>
 					</div>
 				))}
