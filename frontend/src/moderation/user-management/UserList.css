@@ -1,25 +1,129 @@
+/* Container for all users */
 .user-list {
-	width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.user-header,
-.user-row {
-	display: grid;
-	grid-template-columns: 80px 1fr 120px 120px;
-	padding: 8px;
-	border-bottom: 1px solid #ddd;
+/* Search bar */
+.user-search {
+  width: 750px;
+  display: flex;
+  justify-content: flex-start;
 }
 
+.user-search input {
+  width: 300px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  outline: none;
+  background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.user-search input:focus {
+  border-color: #aaa;
+}
+
+/* Header row */
 .user-header {
-	font-weight: bold;
-	background: #f5f5f5;
-}
-
-.user-row:hover {
-	background: #f0f0f0;
+  display: grid;
+  grid-template-columns: 80px 1fr 120px 120px;
+  padding: 10px 15px;
+  width: 750px;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+  border-radius: 10px 10px 0 0;
+  border-bottom: 1px solid #ddd;
 }
 
 .user-header span {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #333;
+  user-select: none;
+}
+
+.user-header span:hover {
+  color: #bebebe;
+}
+
+/* Individual user row */
+.user-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px 120px;
+  padding: 12px 15px;
+  width: 750px;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.user-row:last-child {
+  border-bottom: none;
+  border-radius: 0 0 10px 10px;
+}
+
+.user-row:hover {
+  background-color: #f9f9f9;
+}
+
+.user-row span {
+  font-size: 0.9rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+/* Card wrapper: groups header + rows like a post-card */
+.user-table-card {
+  width: 750px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
+  overflow: hidden;
+}
+
+/* Empty state inside the card */
+.user-empty {
+  padding: 20px;
+  text-align: center;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+/* Status colors */
+.status-banned {
+  color: rgb(255, 60, 90);
+  font-weight: 600;
+}
+
+.status-active {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+/* Username cliquable */
+.user-username-clickable {
 	cursor: pointer;
-	font-weight: bold;
+	color: #333;
+	font-weight: 500;
+	transition: color 0.2s ease;
+}
+
+.user-username-clickable:hover {
+	color: #888;
+
 }
