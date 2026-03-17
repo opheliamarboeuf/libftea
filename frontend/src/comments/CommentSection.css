@@ -11,7 +11,7 @@
 .new-comment {
 	position: sticky;
 	top: 0;
-	background: white;
+	background: transparent;
 	padding-bottom: 6px;
     display: flex;
     flex-direction: column;
@@ -26,7 +26,7 @@
     border-radius: 20px;
     font-size: 14px;
     color: #333;
-    background-color: #f0f2f5;
+    background-color: #f0f0f0;
     outline: none;
     transition: border 0.2s, background-color 0.2s;
     font-family: 'Playfair Display', serif;
@@ -37,14 +37,14 @@
 }
 
 .new-comment input:focus {
-    border-color: rgba(249, 216, 230, 0.8);
-    background-color: #fff;
+    border-color: #999;
+    background-color: white;
 }
 
 .new-comment button {
     padding: 6px 12px;
-    background-color: rgba(249, 216, 230, 0.8);
-    color: white;
+    background-color: #f0f0f0;
+    color: black;
     border: none;
     border-radius: 16px;
     cursor: pointer;
@@ -64,7 +64,7 @@
 }
 
 .comment-item {
-    background-color: #f0f2f5;
+    background-color: #f0f0f0;
     padding: 6px 10px;
     border-radius: 12px;
     margin-bottom: 6px;
@@ -95,7 +95,7 @@
 .comment-actions button {
     border: none;
     background: none;
-    color: #b05070;
+    color: #555;
     font-size: 12px;
     cursor: pointer;
     padding: 2px 4px;
@@ -119,7 +119,7 @@
     border-radius: 16px;
     border: 1px solid #ddd;
     font-size: 13px;
-    background-color: #fff;
+    background-color: #f0f0f0;
 	color: #333;
     font-family: 'Playfair Display', serif;
 }
@@ -128,8 +128,8 @@
     padding: 4px 8px;
     border-radius: 16px;
     border: none;
-    background-color: rgba(249, 216, 230, 0.8);
-    color: #b05070;
+    background-color: #333;
+    color: white;
     font-size: 12px;
     cursor: pointer;
 }
@@ -141,7 +141,7 @@
 }
 
 .reply-item {
-    background-color: #e4e6eb;
+    background-color: #e8e8e8;
     padding: 4px 8px;
     border-radius: 12px;
     margin-bottom: 4px;

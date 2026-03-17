@@ -7,6 +7,10 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   font-family: 'Playfair Display', serif;
   line-height: 1.5;
@@ -36,28 +40,7 @@ body {
     min-width: 320px;
     min-height: 100vh;
     background-color: #3f3f3f;
-    background-image: 
-        radial-gradient(ellipse at 20% 50%, rgba(180, 180, 180, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(220, 220, 220, 0.2) 0%, transparent 40%),
-        radial-gradient(ellipse at 60% 80%, rgba(150, 150, 150, 0.3) 0%, transparent 45%),
-        radial-gradient(ellipse at 40% 30%, rgba(200, 200, 200, 0.15) 0%, transparent 35%);
-    animation: aura 8s ease-in-out infinite alternate;
-    filter: contrast(1.2) brightness(0.9);
-}
-
-@keyframes aura {
-    0% {
-        background-image: 
-            radial-gradient(ellipse at 20% 50%, rgba(180, 180, 180, 0.3) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 20%, rgba(220, 220, 220, 0.2) 0%, transparent 40%),
-            radial-gradient(ellipse at 60% 80%, rgba(150, 150, 150, 0.3) 0%, transparent 45%);
-    }
-    100% {
-        background-image: 
-            radial-gradient(ellipse at 60% 30%, rgba(180, 180, 180, 0.3) 0%, transparent 50%),
-            radial-gradient(ellipse at 30% 70%, rgba(220, 220, 220, 0.2) 0%, transparent 40%),
-            radial-gradient(ellipse at 80% 50%, rgba(150, 150, 150, 0.3) 0%, transparent 45%);
-    }
+   background-image: url('src/assets/images/global_background.jpg');
 }
 
 h1 {
@@ -77,11 +60,11 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: #9ca3af;
 }
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: none;
 }
 
 @media (prefers-color-scheme: light) {

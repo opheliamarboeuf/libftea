@@ -13,7 +13,8 @@
 
 .tournament-header {
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
+	flex-direction: column;
 	align-items: center;
 	width: 100%;
     max-width: 900px;
@@ -21,6 +22,8 @@
 	padding: 20px 30px;
     border-radius: 16px;
 	margin-top: 25px;
+	gap: 15px;
+	text-align: center;
 }
 
 .tournament-name {
@@ -33,6 +36,7 @@
 .tournament-center {
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: 20px;
 }
 

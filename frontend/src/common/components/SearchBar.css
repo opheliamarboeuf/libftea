@@ -10,6 +10,8 @@
 	width: 300px;
 	color: #212529;
 	background-color: white;
+	font-family: 'Playfair Display', serif;
+	outline: 2px solid #d4d4d4;
 }
 
 .search-results {
@@ -50,4 +52,5 @@
 
 .search-username {
 	color: #212529;
+	font-family: 'Playfair Display', serif;
 }

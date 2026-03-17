@@ -7,7 +7,7 @@ html, body {
 .regular-btn {
 	padding: 0.4rem 0.8rem;
 	font-size: 0.85rem;
-	background-color: rgba(0, 0, 0, 0.661);
+	background-color: #f0f0f0;
 	color: white;
 	border: none;
 	border-radius: 6px;
@@ -28,8 +28,8 @@ html, body {
 	border-radius: 50px;
 	border: none;
 
-	background-color: rgba(249, 216, 230, 0.8);
-	color: white;
+	background-color:#f0f0f0;
+	color: black;
 
 	display: flex;
 	align-items: center;
@@ -66,7 +66,7 @@ html, body {
 .expand-btn .icon {
 	font-size: 18px;
 	transition: opacity 0.3s ease;
-	color: white;
+	color: black;
 }
 
 /* Hide icon */

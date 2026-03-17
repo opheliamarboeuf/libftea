@@ -1,5 +1,3 @@
-import "../App.css";
-import "./LoginPage.css";
 import { useState, ChangeEvent } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
@@ -47,7 +45,6 @@ const LoginPage = () => {
 
 			localStorage.setItem("token", data.access_token);
 
-			// Fetch full user data
 			const userRes = await fetch("http://localhost:3000/auth/me", {
 				headers: {
 					Authorization: `Bearer ${data.access_token}`,
@@ -63,52 +60,63 @@ const LoginPage = () => {
 	}
 
 	return (
-		<div className="login-page">
-			<div className="login-left">
-				<div className="bg-image kenburns-bottom-right"></div>
-				<h1 className="app-title text-focus-in ">Libftea</h1>
-				<p className="app-subtitle">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis p</p>
-			</div>
-			<div className="login-right">
-				<h1>Login</h1>
-				<form onSubmit={handleSubmit}>
-					<div className="field">
+		<div className="fixed inset-0 flex items-center justify-center">
+			<div className="w-80 p-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
+				<h1 className="text-4xl text-center mb-8 text-black" style={{ fontFamily: "'Blosta Script', cursive" }}>
+					Login
+				</h1>
+				<form onSubmit={handleSubmit} className="flex flex-col gap-4">
+					<div>
 						<label htmlFor="username" className="sr-only">Username</label>
-							<input 
-								type="text" 
-								name="username"
-								placeholder="Username"
-								value = {username}
-								onChange={handleUsernameChange}
-								required
-							/>
+						<input 
+							type="text" 
+							name="username"
+							placeholder="Username"
+							value={username}
+							onChange={handleUsernameChange}
+							required
+							className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-gray-500"
+							style={{ fontFamily: "'Playfair Display', serif" }}
+						/>
 					</div>
-					<div className="field">
+					<div>
 						<label htmlFor="password" className="sr-only">Password</label>
-							<input 
-								type="password"
-								name="password"
-								placeholder="Password"
-								value={password}
-								onChange={handlePasswordChange}
-								required
-							/>
+						<input 
+							type="password"
+							name="password"
+							placeholder="Password"
+							value={password}
+							onChange={handlePasswordChange}
+							required
+							className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-gray-500"
+							style={{ fontFamily: "'Playfair Display', serif" }}
+						/>
 					</div>
 					{errorMessage && (
-						<div className="error-message shake-horizontal">{errorMessage}</div>
+						<div className="text-red-500 text-center text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
+							{errorMessage}
+						</div>
 					)}
-					<div className="form-button">
-						<button type="submit">
-							Login
-						</button>
-						<p className="no-account">No account yet ?</p>
-						<button onClick={() =>
-							navigate("/register")}>
-							Create new account
-						</button>
-					</div>
+					<button 
+						type="submit"
+						className="w-full py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-600 transition-all outline-none"
+						style={{ fontFamily: "'Playfair Display', serif" }}
+					>
+						Login
+					</button>
+					<p className="text-center text-gray-600 text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
+						No account yet?
+					</p>
+					<button 
+						type="button"
+						onClick={() => navigate("/register")}
+						className="w-full py-2 border border-gray-300 rounded-lg hover:bg-neutral-200 transition-all outline-none"
+						style={{ fontFamily: "'Playfair Display', serif" }}
+					>
+						Create new account
+					</button>
 				</form>
-		</div>
+			</div>
 		</div>
 	);
 };
