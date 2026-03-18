@@ -30,7 +30,7 @@
 	opacity: 0;
 	pointer-events: none;
 	transition: opacity 0.3s ease;
-	z-index: 150; /* entre le contenu normal et le menu */
+	z-index: 150;
 }
 
 .menu-overlay.active {
@@ -47,7 +47,7 @@
 }
 
 .menu-item:hover {
-	background-color: #e6e6e6;
+	background-color: #dddddd;
 }
 
 .menu-item .icon {
@@ -61,12 +61,10 @@
 	font-weight: 400;
 }
 
-/* Expansion */
 .left-menu:hover {
 	width: 200px;
 }
 
-/* Hidden text by default */
 .label {
 	flex: 1;
 	text-align: center;
@@ -76,7 +74,6 @@
 	transition: opacity 0.2s ease;
 }
 
-/* Visible text with open menu*/
 .left-menu:hover .label {
 	opacity: 1;
 }
