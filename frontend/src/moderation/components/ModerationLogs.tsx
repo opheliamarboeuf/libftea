@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { ModerationLogType } from '../types';
 import { useLocation } from 'react-router-dom';
 import './ModerationLogs.css';
+import { useNavigate } from 'react-router-dom';
 
 export function ModerationLogs() {
 	const [logs, setLogs] = useState<ModerationLogType[]>([]);
@@ -10,6 +11,10 @@ export function ModerationLogs() {
 	const location = useLocation();
 
 	const isAdminTab = location.pathname.startsWith('/dashboard/admin');
+	const navigate = useNavigate();
+	const goToProfile = (userId: number) => {
+		navigate(`/users/${userId}`);
+	};
 
 	useEffect(() => {
 		const fetchLogs = async () => {
@@ -30,6 +35,13 @@ export function ModerationLogs() {
 		fetchLogs();
 	}, [isAdminTab]);
 
+	// Resolve the user ID of the target
+	const getTargetUserId = (log: ModerationLogType): number | null => {
+		if (log.targetUser) return log.targetUser.id;
+		if (log.targetPost) return log.targetPost.author?.id ?? null;
+		return null;
+	};
+
 	// Resolve the username of the target
 	const getTarget = (log: ModerationLogType) => {
 		if (log.targetUser) return log.targetUser.username;
@@ -44,6 +56,19 @@ export function ModerationLogs() {
 		if (log.targetPost) return `Post #${log.targetPost.id}`;
 		if (log.targetBattle) return `Battle #${log.targetBattle.id}`;
 		return '—';
+	};
+
+	// Render a clickable username that links to profile
+	const renderClickableUsername = (username: string, userId: number | null) => {
+		if (userId === null) return <span>{username}</span>;
+		return (
+			<button
+				className="username-link"
+				onClick={() => goToProfile(userId)}
+			>
+				{username}
+			</button>
+		);
 	};
 
 	// Resolve the title of a log entry (post title or battle theme)
@@ -74,9 +99,11 @@ export function ModerationLogs() {
 				) : (
 					logs.map((log) => (
 						<div key={log.id} className="log-row">
-							<span>{log.actor.username}</span>
+							<span>{renderClickableUsername(log.actor.username, log.actor.id)}</span>
 							<span className="log-action">{log.action}</span>
-							<span>{getTarget(log)}</span>
+							<span>
+								{renderClickableUsername(getTarget(log), getTargetUserId(log))}
+							</span>
 							<span>{getId(log)}</span>
 							<span>{getTitle(log)}</span>
 							<span className="log-date">

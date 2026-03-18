@@ -18,13 +18,12 @@
 	justify-content: center;
 	width: 100%;
 	padding: 10px 20px;
-	margin-top: 10px;
+	margin-top: 20px;
 }
 
 .dash-board-content {
 	max-width: 1200px;
 	width: 100%;
-	padding-top: 20px;
 	flex: 1;
 	min-height: 0;
 	overflow: hidden;

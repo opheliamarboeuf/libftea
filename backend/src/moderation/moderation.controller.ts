@@ -44,7 +44,7 @@ export class ModerationController {
 		@Param('id', ParseIntPipe) id: number,
 		@Req() req: Request & { user: { id: number; role: Role } },
 	) {
-		return this.moderationService.updateAdminRole(id, req.user.role);
+		return this.moderationService.updateAdminRole(id, req.user.id, req.user.role);
 	}
 
 	@Roles(Role.ADMIN, Role.MOD)
@@ -53,7 +53,7 @@ export class ModerationController {
 		@Param('id', ParseIntPipe) id: number,
 		@Req() req: Request & { user: { id: number; role: Role } },
 	) {
-		return this.moderationService.updateModRole(id, req.user.role);
+		return this.moderationService.updateModRole(id, req.user.id, req.user.role);
 	}
 
 	// ---------------------------------- BAN USER ---------------------------------------
@@ -193,4 +193,5 @@ export class ModerationController {
 	async getMyPostReports(@Req() req: Request & { user: { id: number; role: Role } }) {
 		return this.moderationService.getMyPostReports(req.user.id, req.user.role);
 	}
+
 }

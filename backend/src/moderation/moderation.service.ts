@@ -29,83 +29,105 @@ export class ModerationService {
 
 	// ---------------------------------- CHANGE ROLE ------------------------------------
 
-	async updateAdminRole(targetId: number, currentUserRole: Role) {
-		if (!hasPermission(currentUserRole, 'CHANGE_ADMIN_ROLE')) {
-			throw new ForbiddenException('You do not have the right to update an admin role');
-		}
-
-		const user = await this.prisma.user.findUnique({ where: { id: targetId } });
-		if (!user) throw new BadRequestException('User not found');
-
-		if (user.role !== Role.MOD)
-			throw new BadRequestException('Only a MOD can be promoted to ADMIN');
-
-		const updatedUser = await this.prisma.$transaction(async (tx) => {
-			// Si c’est un ADMIN, on le rétrograde en MOD
-			if (user.role === Role.ADMIN) {
-				return tx.user.update({
-					where: { id: targetId },
-					data: { role: Role.MOD },
-				});
-			}
-
-			// Si c’est un MOD, on le promeut en ADMIN
-			if (user.role === Role.MOD) {
-				return tx.user.update({
-					where: { id: targetId },
-					data: { role: Role.ADMIN },
-				});
-			}
-
-			throw new BadRequestException('Invalid role transition');
-		});
-
-		return updatedUser;
+async updateAdminRole(
+	targetId: number,
+	actorId: number,
+	currentUserRole: Role,
+) {
+	if (!hasPermission(currentUserRole, 'CHANGE_ADMIN_ROLE')) {
+		throw new ForbiddenException('You do not have the right to update an admin role');
 	}
 
-	async updateModRole(targetId: number, userRole: Role) {
-		if (!hasPermission(userRole, 'CHANGE_MOD_ROLE')) {
-			throw new ForbiddenException('You do not have the right to update a mod role');
-		}
+	const user = await this.prisma.user.findUnique({ where: { id: targetId } });
+	if (!user) throw new BadRequestException('User not found');
 
-		const user = await this.prisma.user.findUnique({ where: { id: targetId } });
-		if (!user) throw new BadRequestException('User not found');
-
-		if (user.role !== Role.USER && user.role !== Role.MOD) {
-			throw new BadRequestException('User must be USER or MOD');
-		}
-
-		if (user.bannedAt) throw new BadRequestException('You cannot udpate a banned user role');
-
-		const updatedUser = await this.prisma.$transaction(async (tx) => {
-			if (user.role === Role.MOD) {
-				const modCount = await tx.user.count({
-					where: { role: Role.MOD },
-				});
-				if (modCount <= 1) {
-					throw new BadRequestException('At least one MOD must remain');
-				}
-				return tx.user.update({
-					where: { id: targetId },
-					data: { role: Role.USER },
-				});
-			}
-
-			if (user.role === Role.USER) {
-				return tx.user.update({
-					where: { id: targetId },
-					data: { role: Role.MOD },
-				});
-			}
-			throw new BadRequestException('Invalid role transition');
-		});
-
-		return updatedUser;
+	if (user.role !== Role.MOD) {
+		throw new BadRequestException('Only a MOD can be promoted to ADMIN');
 	}
+
+	const updatedUser = await this.prisma.$transaction(async (tx) => {
+		// If MOD, promote to ADMIN
+		if (user.role === Role.MOD) {
+			const updated = await tx.user.update({
+				where: { id: targetId },
+				data: { role: Role.ADMIN },
+			});
+			await tx.moderationLog.create({
+				data: {
+					action: ModerationLogType.CHANGE_ADMIN_ROLE,
+					actorId,
+					targetUserId: targetId,
+				},
+			});
+			return updated;
+		}
+		throw new BadRequestException('Invalid role transition');
+	});
+
+	return updatedUser;
+}
+
+async updateModRole(
+	targetId: number,
+	actorId: number,
+	userRole: Role,
+) {
+	if (!hasPermission(userRole, 'CHANGE_MOD_ROLE')) {
+		throw new ForbiddenException('You do not have the right to update a mod role');
+	}
+
+	const user = await this.prisma.user.findUnique({ where: { id: targetId } });
+	if (!user) throw new BadRequestException('User not found');
+
+	if (user.role !== Role.USER && user.role !== Role.MOD) {
+		throw new BadRequestException('User must be USER or MOD');
+	}
+
+	if (user.bannedAt) throw new BadRequestException('You cannot update a banned user role');
+
+	const updatedUser = await this.prisma.$transaction(async (tx) => {
+		if (user.role === Role.MOD) {
+			const modCount = await tx.user.count({ where: { role: Role.MOD } });
+			if (modCount <= 1) {
+				throw new BadRequestException('At least one MOD must remain');
+			}
+			const updated = await tx.user.update({
+				where: { id: targetId },
+				data: { role: Role.USER },
+			});
+			await tx.moderationLog.create({
+				data: {
+					action: ModerationLogType.CHANGE_MOD_ROLE,
+					actorId,
+					targetUserId: targetId,
+				},
+			});
+			return updated;
+		}
+
+		if (user.role === Role.USER) {
+			const updated = await tx.user.update({
+				where: { id: targetId },
+				data: { role: Role.MOD },
+			});
+			await tx.moderationLog.create({
+				data: {
+					action: ModerationLogType.CHANGE_MOD_ROLE,
+					actorId,
+					targetUserId: targetId,
+				},
+			});
+			return updated;
+		}
+
+		throw new BadRequestException('Invalid role transition');
+	});
+
+	return updatedUser;
+}
 
 	// ---------------------------------- HANDLE REPORTS ----------------------------------
-
-	async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role) {
+async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role) {
 		try {
 			const actor = await this.prisma.user.findUnique({ where: { id: userId } });
 			if (!actor) {
@@ -141,13 +163,21 @@ export class ModerationService {
 							handledAt: new Date(),
 						},
 					});
-					// Soft delete the post if it exists
+					// Soft delete the post
 					await prisma.post.update({
 						where: { id: report.reportedPostId },
 						data: { deletedAt: new Date() },
 					});
+					// Log post report review
+					await prisma.moderationLog.create({
+						data: {
+							action: ModerationLogType.REVIEW_POST_REPORT,
+							actorId: userId,
+							targetPostId: report.reportedPostId,
+						},
+					});
 				} else {
-					// Fallback: if report is associated with a user, update the all the reports for the same user
+					// Fallback: if report is associated with a user
 					if (!report.reportedUserId)
 						throw new BadRequestException('No user associated with this report');
 					await prisma.report.updateMany({
@@ -163,6 +193,21 @@ export class ModerationService {
 					await prisma.user.update({
 						where: { id: report.reportedUserId },
 						data: { bannedAt: new Date() },
+					});
+					// Log user report review
+					await prisma.moderationLog.createMany({
+						data: [
+							{
+								action: ModerationLogType.REVIEW_USER_REPORT,
+								actorId: userId,
+								targetUserId: report.reportedUserId,
+							},
+							{
+								action: ModerationLogType.BAN_USER,
+								actorId: userId,
+								targetUserId: report.reportedUserId,
+							},
+						],
 					});
 				}
 			});
@@ -210,13 +255,21 @@ export class ModerationService {
 							handledAt: new Date(),
 						},
 					});
-					// Soft delete the post if it exists
+					// Soft delete the post
 					await prisma.post.update({
 						where: { id: report.reportedPostId },
 						data: { deletedAt: new Date() },
 					});
+					// Log post report review
+					await prisma.moderationLog.create({
+						data: {
+							action: ModerationLogType.REVIEW_POST_REPORT,
+							actorId: userId,
+							targetPostId: report.reportedPostId,
+						},
+					});
 				} else {
-					// Fallback: if report is associated with a user, update the all the reports for the same user
+					// Fallback: if report is associated with a user
 					await prisma.report.update({
 						where: { id: reportId },
 						data: {
@@ -224,6 +277,14 @@ export class ModerationService {
 							moderatorMessage: dto.moderatorMessage,
 							status: ReportStatus.REJECTED,
 							handledAt: new Date(),
+						},
+					});
+					//Log user report review
+					await prisma.moderationLog.create({
+						data: {
+							action: ModerationLogType.REVIEW_USER_REPORT,
+							actorId: userId,
+							targetUserId: report.reportedUserId,
 						},
 					});
 				}
@@ -1094,7 +1155,6 @@ export class ModerationService {
 						where: { id: existingFriendship.id },
 					});
 				}
-
 				return createdReport;
 			});
 			return report;
