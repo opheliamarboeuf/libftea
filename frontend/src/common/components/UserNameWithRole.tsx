@@ -1,5 +1,5 @@
 import './UserNameWithRole.css';
-import { FaStar, FaCrown } from 'react-icons/fa';
+import { FaStar, FaRegStar } from 'react-icons/fa';
 
 export type UserRole = 'ADMIN' | 'MOD' | 'USER' | string;
 
@@ -15,7 +15,7 @@ export function UserNameWithRole({ username, role, className = '' }: UserNameWit
 	const isAdmin = normalizedRole === 'ADMIN';
 	const isMod = normalizedRole === 'MOD';
 
-	const icon = isAdmin ? <FaCrown /> : isMod ? <FaStar /> : null;
+	const icon = isAdmin ? <FaStar /> : isMod ? <FaRegStar /> : null;
 	const title = isAdmin ? 'Admin' : isMod ? 'Moderator' : '';
 
 	return (

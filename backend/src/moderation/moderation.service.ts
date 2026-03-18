@@ -1322,8 +1322,14 @@ export class ModerationService {
 				createdAt: true,
 				actor: { select: { id: true, username: true } },
 				targetUser: { select: { id: true, username: true } },
-				targetPost: { select: { id: true, title: true } },
 				targetBattle: { select: { id: true, theme: true } },
+				targetPost: {
+					select: {
+						id: true,
+						title: true,
+						author: { select: { id: true, username: true } },
+					},
+				},
 			},
 			orderBy: { createdAt: 'desc' },
 		});
@@ -1350,7 +1356,14 @@ export class ModerationService {
 				action: true,
 				createdAt: true,
 				actor: { select: { id: true, username: true } },
-				targetPost: { select: { id: true, title: true } },
+				targetUser: { select: { id: true, username: true } },
+				targetPost: {
+					select: {
+						id: true,
+						title: true,
+						author: { select: { id: true, username: true } },
+					},
+				},
 			},
 			orderBy: { createdAt: 'desc' },
 		});
