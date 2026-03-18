@@ -5,6 +5,7 @@ import { ReportStatus, Role } from '@prisma/client';
 import { InternalServerErrorException, HttpException, NotFoundException } from '@nestjs/common';
 import { HandleReportDto } from './dto/handleReport.dto';
 import { ReportDto } from './dto/report.dto';
+import { ModerationLogType } from '@prisma/client';
 
 @Injectable()
 export class ModerationService {
@@ -74,9 +75,7 @@ export class ModerationService {
 			throw new BadRequestException('User must be USER or MOD');
 		}
 
-		if (user.bannedAt)
-			throw new BadRequestException('You cannot udpate a banned user role');
-
+		if (user.bannedAt) throw new BadRequestException('You cannot udpate a banned user role');
 
 		const updatedUser = await this.prisma.$transaction(async (tx) => {
 			if (user.role === Role.MOD) {
@@ -1312,7 +1311,6 @@ export class ModerationService {
 	}
 
 	async getAdminLogs(userId: number, userRole: Role) {
-		// Check if the user is the post author or has the permission to delete the post
 		if (!hasPermission(userRole, 'VIEW_ADMIN_LOGS')) {
 			throw new ForbiddenException('You do not have the right to see the administrator logs');
 		}
@@ -1322,10 +1320,37 @@ export class ModerationService {
 				id: true,
 				action: true,
 				createdAt: true,
-				actor: {select: {id: true, username: true}},
-				// User_ModerationLog_targetUserIdToUser: { select: { id: true, username: true } },
-				// Post: { select: { id: true, title: true }},
-				// Battle: { select: { id: true, theme: true }},
+				actor: { select: { id: true, username: true } },
+				targetUser: { select: { id: true, username: true } },
+				targetPost: { select: { id: true, title: true } },
+				targetBattle: { select: { id: true, theme: true } },
+			},
+			orderBy: { createdAt: 'desc' },
+		});
+		return logs;
+	}
+
+	async getModLogs(userId: number, userRole: Role) {
+		if (!hasPermission(userRole, 'VIEW_MOD_LOGS')) {
+			throw new ForbiddenException('You do not have the right to see the moderator logs');
+		}
+
+		const logs = await this.prisma.moderationLog.findMany({
+			where: {
+				action: {
+					in: [
+						ModerationLogType.DELETE_ANY_POST,
+						ModerationLogType.CHANGE_MOD_ROLE,
+						ModerationLogType.REVIEW_POST_REPORT,
+					],
+				},
+			},
+			select: {
+				id: true,
+				action: true,
+				createdAt: true,
+				actor: { select: { id: true, username: true } },
+				targetPost: { select: { id: true, title: true } },
 			},
 			orderBy: { createdAt: 'desc' },
 		});

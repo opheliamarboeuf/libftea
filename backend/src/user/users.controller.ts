@@ -68,12 +68,11 @@ export class UsersController {
 	async getAllMod(@Req() req: Request & { user: { role: Role } }) {
 		return this.usersService.getAllMod(req.user.id);
 	}
-	
+
 	@Get(':id')
 	async getUserId(@Param('id') id: string, @Req() req: Request) {
 		return this.usersService.findId(Number(id), req.user.id);
 	}
-
 
 	@Get(':id/posts')
 	async getUserPosts(@Param('id') id: string, @Req() req: Request) {

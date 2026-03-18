@@ -15,6 +15,7 @@ import UserReportPage from '../components/reports/users/UserReportPage';
 import { AllUsers } from '../user-management/AllUsers';
 import { AllAdmin } from '../user-management/AllAdmin';
 import { AllMod } from '../user-management/AllMod';
+import { ModerationLogs } from '../components/ModerationLogs';
 
 export const ModerationRoutes = (
 	<>
@@ -26,6 +27,7 @@ export const ModerationRoutes = (
 				<Route path="reports/users/mine" element={<MyUserReports />} />
 				<Route path="reports/users/all/assigned" element={<AllAssignedUserReports />} />
 				<Route path="reports/users/all/handled" element={<AllHandledUserReports />} />
+				<Route path="logs" element={<ModerationLogs />} />
 			</Route>
 			<Route path="mod" element={<ModDashboard />}>
 				<Route path="users/all" element={<AllUsers />} />
@@ -34,6 +36,7 @@ export const ModerationRoutes = (
 				<Route path="reports/posts/mine" element={<MyPostReports />} />
 				<Route path="reports/posts/all/assigned" element={<AllAssignedPostReports />} />
 				<Route path="reports/posts/all/handled" element={<AllHandledPostReports />} />
+				<Route path="logs" element={<ModerationLogs />} />
 			</Route>
 		</Route>
 		<Route path="/moderation/reports/users/:postId" element={<UserReportPage />} />

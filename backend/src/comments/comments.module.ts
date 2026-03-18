@@ -6,9 +6,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-    imports: [AuthModule],
-    controllers: [CommentsController],
-    providers: [CommentsService, CommentsGateway, PrismaService],
-    exports: [CommentsService],
+	imports: [AuthModule],
+	controllers: [CommentsController],
+	providers: [CommentsService, CommentsGateway, PrismaService],
+	exports: [CommentsService],
 })
 export class CommentsModule {}

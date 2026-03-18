@@ -7,7 +7,7 @@ import {
 	OnGatewayDisconnect,
 	WebSocketServer,
 } from '@nestjs/websockets';
-import { Server , Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { LikesService } from './likes.service';
 
 @WebSocketGateway({
@@ -16,7 +16,6 @@ import { LikesService } from './likes.service';
 		credentials: true,
 	},
 })
-
 export class LikesGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	server: Server;
@@ -36,10 +35,7 @@ export class LikesGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		@MessageBody() data: { postId: number; userId: number },
 		@ConnectedSocket() client: Socket,
 	) {
-		const result = await this.likesService.toggleLike(
-			data.postId,
-			data.userId,
-		);
+		const result = await this.likesService.toggleLike(data.postId, data.userId);
 
 		this.server.emit('like_updated', {
 			postId: data.postId,

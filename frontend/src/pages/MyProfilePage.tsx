@@ -42,7 +42,7 @@ const ProfilePage = () => {
 				{/* PROFILE INFO COLUMN */}
 				<div className="profile-info">
 					<p className="display-name">
-						{user.profile.displayName ? user.profile.displayName : '\u00A0'}{' '}
+						{user.profile?.displayName ? user.profile.displayName : '\u00A0'}{' '}
 						{/*space to keep the height*/}
 					</p>
 					<div className="profile-pic">
@@ -63,7 +63,7 @@ const ProfilePage = () => {
 						<span>Posts: {posts.length}</span>
 					</div>
 					<div className="bio">
-						<p>{user.profile.bio || 'Write your bio here...'}</p>
+						<p>{user.profile?.bio || 'Write your bio here...'}</p>
 					</div>
 				</div>
 
@@ -72,7 +72,7 @@ const ProfilePage = () => {
 					<div className="cover">
 						<img
 							src={
-								user.profile.coverUrl
+								user.profile?.coverUrl
 									? `${API_URL}${user.profile.coverUrl}`
 									: '/assets/images/default-cover.jpeg'
 							}

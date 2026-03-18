@@ -20,12 +20,14 @@ enum FriendshipStatus {
 	BLOCKED
 }
 
-enum ModerationType {
+enum ModerationLogType {
 	DELETE_ANY_POST
-	CHANGE_ROLE
+	CHANGE_ADMIN_ROLE
+	CHANGE_MOD_ROLE
 	BAN_USER
+	REVIEW_USER_REPORT
+	REVIEW_POST_REPORT
 	CREATE_TOURNAMENT
-	REVIEW_REPORT
 }
 
 enum NotificationType {
@@ -196,7 +198,7 @@ model Message {
 
 model ModerationLog {
 	id             Int             @id @default(autoincrement())
-	action         ModerationType
+	action         ModerationLogType
 	actorId        Int
 	actor          User            @relation("ActorRelation", fields: [actorId], references: [id])
 	targetUserId   Int?

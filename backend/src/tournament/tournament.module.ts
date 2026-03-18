@@ -3,7 +3,7 @@ import { TournamentController } from './tournament.controller';
 import { TournamentService } from './tournament.service';
 
 @Module({
-  controllers: [TournamentController],
-  providers: [TournamentService]
+	controllers: [TournamentController],
+	providers: [TournamentService],
 })
 export class TournamentModule {}

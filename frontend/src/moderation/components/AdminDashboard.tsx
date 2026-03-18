@@ -25,7 +25,7 @@ export function AdminDashboard (){
 					<div>
 						<strong>Logs</strong>
 						<ul>
-							<li>View Logs</li>
+							<li><NavLink to="/dashboard/admin/logs">Admin logs</NavLink></li>
 						</ul>
 					</div>
 				</nav>

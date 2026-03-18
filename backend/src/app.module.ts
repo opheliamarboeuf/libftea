@@ -18,35 +18,35 @@ import { ModerationModule } from './moderation/moderation.module';
 import { CommentsModule } from './comments/comments.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
-    }),
-	PrismaModule,
-    AuthModule,
-	FriendsModule,
-	UsersModule,
-	ProfileModule,
-	PostsModule,
-	TournamentModule,
-	LikesModule,
-	CommentsModule,
+	imports: [
+		ConfigModule.forRoot({
+			isGlobal: true,
+			envFilePath: '.env',
+		}),
+		PrismaModule,
+		AuthModule,
+		FriendsModule,
+		UsersModule,
+		ProfileModule,
+		PostsModule,
+		TournamentModule,
+		LikesModule,
+		CommentsModule,
 
-	ModerationModule,
-  ],
-  controllers: [AppController], 
-  providers: [
-	AppService,
-  	{
-		// All routes are now protected by JWT by default
-		provide: APP_GUARD,
-		useClass: JwtAuthGuard,
-	},
-	{
-    	provide: APP_GUARD,
-    	useClass: RolesGuard,
-	},
-  ],
+		ModerationModule,
+	],
+	controllers: [AppController],
+	providers: [
+		AppService,
+		{
+			// All routes are now protected by JWT by default
+			provide: APP_GUARD,
+			useClass: JwtAuthGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RolesGuard,
+		},
+	],
 })
 export class AppModule {}

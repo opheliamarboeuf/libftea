@@ -26,7 +26,7 @@ export function ModDashboard() {
 					<div>
 						<strong>Logs</strong>
 						<ul>
-							<li>View Logs</li>
+							<li><NavLink to="/dashboard/mod/logs">Mod logs</NavLink></li>
 						</ul>
 					</div>
 				</nav>

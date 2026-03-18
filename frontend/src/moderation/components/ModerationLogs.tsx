@@ -29,7 +29,6 @@ export function ModerationLogs () {
 
 	return (
 		<div>
-			<h2>Moderation Logs</h2>
 			{logs.length === 0 ? (<p>No logs available</p>) : 
 			(
 				<ul>

@@ -1,22 +1,22 @@
-import { Injectable, BadRequestException, ForbiddenException, NotFoundException, Inject } from '@nestjs/common';
+import {
+	Injectable,
+	BadRequestException,
+	ForbiddenException,
+	NotFoundException,
+	Inject,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Friendship, User, Post, Like } from '@prisma/client';
 
 @Injectable()
 export class LikesService {
-	constructor(
-		private readonly prisma: PrismaService,
-	) {}
+	constructor(private readonly prisma: PrismaService) {}
 
-	async toggleLike(
-		postId: number,
-		userId: number,
-	) {
+	async toggleLike(postId: number, userId: number) {
 		const post = await this.prisma.post.findUnique({
 			where: { id: postId, deletedAt: null },
 			include: {
-				battleParticipants:
-				{
+				battleParticipants: {
 					include: {
 						Battle: true,
 					},
@@ -27,13 +27,12 @@ export class LikesService {
 		if (!post) {
 			throw new NotFoundException('Post not found');
 		}
-		// si le post fait parti d'un tournoi 
-		if (post.battleParticipants.length > 0)
-		{
+		// si le post fait parti d'un tournoi
+		if (post.battleParticipants.length > 0) {
 			const battle = post.battleParticipants[0].Battle;
 			const now = new Date();
 			if (now < battle.startsAt || now > battle.endsAt)
-				throw new BadRequestException("Voting is closed for this tournament");
+				throw new BadRequestException('Voting is closed for this tournament');
 			if (post.authorId === userId)
 				throw new ForbiddenException("You can't vote for your own post");
 		}
@@ -53,7 +52,7 @@ export class LikesService {
 					userId_postId: { userId, postId },
 				},
 			});
-			const count = await this.prisma.like.count({ where: { postId }});
+			const count = await this.prisma.like.count({ where: { postId } });
 			return { liked: false, count };
 		} else {
 			await this.prisma.like.create({
@@ -62,24 +61,19 @@ export class LikesService {
 					postId,
 				},
 			});
-			const count = await this.prisma.like.count({ where: { postId }});
+			const count = await this.prisma.like.count({ where: { postId } });
 			return { liked: true, count };
 		}
 	}
 
-	async countLikes(
-		postId: number,
-	) {
+	async countLikes(postId: number) {
 		const count = await this.prisma.like.count({
 			where: { postId },
 		});
-		return (count);
+		return count;
 	}
 
-	async isLiked(
-		postId: number,
-		userId: number,
-	) {
+	async isLiked(postId: number, userId: number) {
 		const like = await this.prisma.like.findFirst({
 			where: {
 				postId,

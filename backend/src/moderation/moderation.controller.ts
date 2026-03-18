@@ -22,6 +22,20 @@ import { ReportDto } from './dto/report.dto';
 export class ModerationController {
 	constructor(private readonly moderationService: ModerationService) {}
 
+	// ---------------------------------- LOGS ------------------------------------
+
+	@Roles(Role.ADMIN)
+	@Get('admin/logs')
+	async getAdminLogs(@Req() req: Request & { user: { id: number; role: Role } }) {
+		return this.moderationService.getAdminLogs(req.user.id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('mod/logs')
+	async getModLogs(@Req() req: Request & { user: { id: number; role: Role } }) {
+		return this.moderationService.getModLogs(req.user.id, req.user.role);
+	}
+
 	// ---------------------------------- CHANGE ROLE ------------------------------------
 
 	@Roles(Role.ADMIN)
@@ -178,11 +192,5 @@ export class ModerationController {
 	@Get('reports/posts/mine')
 	async getMyPostReports(@Req() req: Request & { user: { id: number; role: Role } }) {
 		return this.moderationService.getMyPostReports(req.user.id, req.user.role);
-	}
-
-	@Roles(Role.ADMIN)
-	@Get('admin/logs')
-	async getAdminLogs(@Req() req: Request & { user: { id: number; role: Role } }) {
-		return this.moderationService.getAdminLogs(req.user.id, req.user.role);
 	}
 }

@@ -7,7 +7,7 @@ import {
 	OnGatewayDisconnect,
 	WebSocketServer,
 } from '@nestjs/websockets';
-import { Server , Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { CommentsService } from './comments.service';
 
 @WebSocketGateway({
@@ -16,7 +16,6 @@ import { CommentsService } from './comments.service';
 		credentials: true,
 	},
 })
-
 export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	server: Server;
@@ -33,7 +32,7 @@ export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect
 
 	@SubscribeMessage('create_comment')
 	async handleCreateComment(
-		@MessageBody() data: { postId: number; userId: number, content: string },
+		@MessageBody() data: { postId: number; userId: number; content: string },
 		@ConnectedSocket() client: Socket,
 	) {
 		const result = await this.commentsService.createComment(
@@ -51,10 +50,7 @@ export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect
 		@MessageBody() data: { commentId: number; userId: number },
 		@ConnectedSocket() client: Socket,
 	) {
-		const result = await this.commentsService.deleteComment(
-			data.commentId,
-			data.userId,
-		);
+		const result = await this.commentsService.deleteComment(data.commentId, data.userId);
 
 		this.server.emit('comment_deleted', result.deletedId);
 		return result;
@@ -62,7 +58,7 @@ export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect
 
 	@SubscribeMessage('reply_comment')
 	async handleReplyComment(
-		@MessageBody() data: { parentCommentId: number; userId: number, content: string },
+		@MessageBody() data: { parentCommentId: number; userId: number; content: string },
 		@ConnectedSocket() client: Socket,
 	) {
 		const result = await this.commentsService.replyComment(
@@ -71,10 +67,9 @@ export class CommentsGateway implements OnGatewayConnection, OnGatewayDisconnect
 			data.content,
 		);
 
-		this.server.emit('comment_replied', 
-			{
-				...result,
-				parentCommentId: data.parentCommentId,
+		this.server.emit('comment_replied', {
+			...result,
+			parentCommentId: data.parentCommentId,
 		});
 		return result;
 	}

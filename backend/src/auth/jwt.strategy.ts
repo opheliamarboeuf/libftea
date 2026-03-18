@@ -6,25 +6,25 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private prisma: PrismaService) {
-	super({
-		jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-		ignoreExpiration: false,
-		secretOrKey: process.env.JWT_SECRET,
-	});
-  }
+	constructor(private prisma: PrismaService) {
+		super({
+			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			ignoreExpiration: false,
+			secretOrKey: process.env.JWT_SECRET,
+		});
+	}
 
-  async validate(payload: any) {
-	// Récupère le role frais depuis la base de données
-	const user = await this.prisma.user.findUnique({
-		where: { id: payload.sub },
-		select: { role: true },
-	});
+	async validate(payload: any) {
+		// Récupère le role frais depuis la base de données
+		const user = await this.prisma.user.findUnique({
+			where: { id: payload.sub },
+			select: { role: true },
+		});
 
-	return { 
-		id: payload.sub, 
-		username: payload.username, 
-		role: user?.role || Role.USER 
-	};
+		return {
+			id: payload.sub,
+			username: payload.username,
+			role: user?.role || Role.USER,
+		};
 	}
 }
