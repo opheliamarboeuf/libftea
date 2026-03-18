@@ -22,6 +22,24 @@ export const moderationApi = {
 		return data;
 	},
 
+	fetchModLogs: async () => {
+		const res = await fetch(`${API_URL}/moderation/mod/logs`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || 'Fetch mod logs failed';
+			throw new Error(message);
+		}
+		return data;
+	},
+
 	// ---------------------------------- CHANGE ROLES  -----------------------------------
 
 	changeAdminRole: async (userId: number) => {
