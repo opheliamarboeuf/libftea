@@ -12,7 +12,7 @@ import { LeftMenu } from './common/components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
 import { ModalProvider } from "./context/ModalContext";
 import TournamentFeedPage from './pages/TournamentFeedPage';
-
+import { ChatPage } from './pages/ChatPage';
 const App = () => {
 
 const [user, setUser] = useState<User | null>(null);
@@ -84,6 +84,9 @@ const [loading, setLoading] = useState(true);
             <Route
               path="/users/:id"
               element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
+						<Route 
+							path="/chat"
+							element={loading ? null : user ? <ChatPage /> : <Navigate to="/" replace />} />
 			<Route
 				path="/tournament"
 				element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />

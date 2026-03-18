@@ -16,6 +16,7 @@ import { RolesGuard } from './auth/roles.guard';
 import { LikesModule } from './likes/likes.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { CommentsModule } from './comments/comments.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -34,6 +35,8 @@ import { CommentsModule } from './comments/comments.module';
 	CommentsModule,
 
 	ModerationModule,
+
+	ChatModule,
   ],
   controllers: [AppController], 
   providers: [
