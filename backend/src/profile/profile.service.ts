@@ -19,6 +19,14 @@ export class ProfileService {
 	) {}
 	async edit(userId: number, dto: EditDto) {
 		try {
+			const user = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!user) {
+				throw new NotFoundException('User not found');
+			}
+			if (user.bannedAt) {
+				throw new ForbiddenException('Banned users cannot edit profile');
+			}
+
 			// Check if the profile exists
 			const profile = await this.prisma.profile.findUnique({
 				where: { userId },
@@ -62,6 +70,14 @@ export class ProfileService {
 
 	async getProfile(userId: number) {
 		try {
+			const user = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!user) {
+				throw new NotFoundException('User not found');
+			}
+			if (user.bannedAt) {
+				throw new ForbiddenException('Banned users cannot access profile');
+			}
+
 			const blockedIds = await this.usersService.getBlockedIds(userId);
 
 			if (blockedIds.includes(userId)) {

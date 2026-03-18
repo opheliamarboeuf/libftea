@@ -11,7 +11,7 @@ import { UpdatePostDto } from './dto/update.dto';
 import { join } from 'path';
 import { unlink } from 'fs/promises';
 import { hasPermission } from 'src/auth/permissions';
-import { Role } from '@prisma/client';
+import { ModerationLogType, Role } from '@prisma/client';
 
 @Injectable()
 export class PostsService {
@@ -44,7 +44,10 @@ export class PostsService {
 	async create(userId: number, dto: PostsDto) {
 		try {
 			const user = await this.prisma.user.findUnique({ where: { id: userId } });
-			if (user?.bannedAt) {
+			if (!user) {
+				throw new NotFoundException('User not found');
+			}
+			if (user.bannedAt) {
 				throw new ForbiddenException('Banned users cannot create post');
 			}
 			const post = await this.prisma.post.create({
@@ -80,6 +83,14 @@ export class PostsService {
 	}
 
 	async deletePost(userId: number, userRole: Role, postId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot delete posts');
+		}
+
 		const post = await this.prisma.post.findUnique({ where: { id: postId, deletedAt: null } });
 		if (!post) throw new NotFoundException('Post not found');
 
@@ -95,7 +106,7 @@ export class PostsService {
 				if (userId !== post.authorId) {
 					await prisma.moderationLog.create({
 						data: {
-							action: 'DELETE_ANY_POST',
+							action: ModerationLogType.DELETE_ANY_POST,
 							actorId: userId,
 							targetUserId: post.authorId,
 							targetPostId: postId,
@@ -208,6 +219,14 @@ export class PostsService {
 	}
 
 	async getFriendsPosts(userId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access friends posts');
+		}
+
 		const blockedIds = await this.getBlockedIds(userId);
 		const reporterIds = await this.getReporterIdsForUser(userId);
 

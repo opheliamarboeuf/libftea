@@ -13,6 +13,14 @@ export class CommentsService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async createComment(postId: number, userId: number, content: string) {
+		
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot create comments'); 
+
 		const post = await this.prisma.post.findUnique({
 			where: { id: postId, deletedAt: null },
 		});
@@ -35,6 +43,14 @@ export class CommentsService {
 	}
 
 	async deleteComment(commentId: number, userId: number) {
+
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot delete comments'); 
+
 		const comment = await this.prisma.comment.findUnique({
 			where: { id: commentId, deletedAt: null },
 			include: { replies: true },
@@ -66,6 +82,14 @@ export class CommentsService {
 	}
 
 	async replyComment(parentCommentId: number, userId: number, content: string) {
+
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot reply comments'); 
+
 		const parentComment = await this.prisma.comment.findUnique({
 			where: { id: parentCommentId },
 		});
@@ -93,6 +117,14 @@ export class CommentsService {
 	}
 
 	async getComments(postId: number, currentUserId: number) {
+
+		const user = await this.prisma.user.findUnique({ where: {id: currentUserId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot get comments');
+		 
 		const comments = await this.prisma.comment.findMany({
 			where: {
 				postId,

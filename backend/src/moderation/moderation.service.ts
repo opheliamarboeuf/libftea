@@ -107,6 +107,14 @@ export class ModerationService {
 
 	async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role) {
 		try {
+			const actor = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!actor) {
+				throw new NotFoundException('User not found');
+			}
+			if (actor.bannedAt) {
+				throw new ForbiddenException('Banned users cannot perform moderation actions');
+			}
+
 			const report = await this.prisma.report.findUnique({ where: { id: reportId } });
 			if (!report) throw new BadRequestException('Failed to find the report');
 
@@ -168,6 +176,14 @@ export class ModerationService {
 
 	async rejectReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role) {
 		try {
+			const actor = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!actor) {
+				throw new NotFoundException('User not found');
+			}
+			if (actor.bannedAt) {
+				throw new ForbiddenException('Banned users cannot perform moderation actions');
+			}
+
 			const report = await this.prisma.report.findUnique({ where: { id: reportId } });
 			if (!report) throw new BadRequestException('Failed to find the report');
 
@@ -222,6 +238,14 @@ export class ModerationService {
 
 	async assignReport(reportId: number, userId: number, userRole: Role) {
 		try {
+			const actor = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!actor) {
+				throw new NotFoundException('User not found');
+			}
+			if (actor.bannedAt) {
+				throw new ForbiddenException('Banned users cannot perform moderation actions');
+			}
+
 			const report = await this.prisma.report.findUnique({ where: { id: reportId } });
 			if (!report) throw new BadRequestException('Failed to find the report');
 			if (report.reportedUserId) {
@@ -305,6 +329,14 @@ export class ModerationService {
 
 	async unassignReport(reportId: number, userId: number, userRole: Role) {
 		try {
+			const actor = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!actor) {
+				throw new NotFoundException('User not found');
+			}
+			if (actor.bannedAt) {
+				throw new ForbiddenException('Banned users cannot perform moderation actions');
+			}
+
 			const report = await this.prisma.report.findUnique({ where: { id: reportId } });
 			if (!report) throw new BadRequestException('Failed to find the report');
 			if (report.reportedUserId) {
@@ -397,12 +429,20 @@ export class ModerationService {
 
 	async banUser(targetId: number, userId: number, userRole: Role) {
 		try {
+			const actor = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!actor) {
+				throw new NotFoundException('User not found');
+			}
+			if (actor.bannedAt) {
+				throw new ForbiddenException('Banned users cannot perform moderation actions');
+			}
+
 			if (!hasPermission(userRole, 'BAN_USER')) {
 				throw new ForbiddenException('You do not have permission to ban a user');
 			}
 
 			if (targetId === userId) {
-				throw new BadRequestException('You cannot bann yourself');
+				throw new BadRequestException('You cannot ban yourself');
 			}
 
 			const targetUser = await this.prisma.user.findUnique({
@@ -445,12 +485,15 @@ export class ModerationService {
 					data: { deletedAt: new Date() },
 				});
 
-				// 	// 4. Delete friendships
-				// 	await tx.friendship.deleteMany({
-				// 		where: {
-				// 			OR: [{ requesterId: targetId }, { addresseId: targetId }],
-				// 		},
-				// 	});
+				// 4. Add log
+				await tx.moderationLog.create({
+						data: {
+							action: ModerationLogType.BAN_USER,
+							actorId: userId,
+							targetUserId: targetId,
+						},
+					});
+
 				return updateUser;
 			});
 
@@ -462,10 +505,93 @@ export class ModerationService {
 		}
 	}
 
+		async unbanUser(targetId: number, userId: number, userRole: Role) {
+		try {
+			const actor = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!actor) {
+				throw new NotFoundException('User not found');
+			}
+			if (actor.bannedAt) {
+				throw new ForbiddenException('Banned users cannot perform moderation actions');
+			}
+
+			if (!hasPermission(userRole, 'UNBAN_USER')) {
+				throw new ForbiddenException('You do not have permission to unban a user');
+			}
+
+			if (targetId === userId) {
+				throw new BadRequestException('You cannot unban yourself');
+			}
+
+			const targetUser = await this.prisma.user.findUnique({
+				where: { id: targetId },
+				select: {
+					id: true,
+					role: true,
+					bannedAt: true,
+				},
+			});
+
+			if (!targetUser) {
+				throw new NotFoundException('User not found');
+			}
+
+			if (!targetUser.bannedAt) {
+				throw new BadRequestException('User has already been unbanned');
+			}
+
+			const unbannedUser = await this.prisma.$transaction(async (tx) => {
+				// Set the user as banned
+				const updateUser = await tx.user.update({
+					where: { id: targetId },
+					data: {
+						bannedAt: null,
+					},
+				});
+				// Cancel soft-delete for comments
+				await tx.comment.updateMany({
+					where: { userId: targetId, deletedAt: { not: null } },
+					data: { deletedAt: null },
+				});
+
+				// 3. Cancel soft-delete for posts
+				await tx.post.updateMany({
+					where: { authorId: targetId, deletedAt: { not: null } },
+					data: { deletedAt: null},
+				});
+
+				// 4. Add log
+				await tx.moderationLog.create({
+						data: {
+							action: ModerationLogType.UNBAN_USER,
+							actorId: userId,
+							targetUserId: targetId,
+						},
+					});
+
+				return updateUser;
+			});
+
+			return unbannedUser;
+		} catch (error) {
+			if (error instanceof HttpException) throw error;
+			console.error('Error unbanning user:', error);
+			throw new InternalServerErrorException('Could not unban the user');
+		}
+	}
+
 	// ---------------------------------- USER REPORTS ----------------------------------
 
 	async reportUser(userId: number, dto: ReportDto, currentUserId: number) {
 		try {
+			const reporter = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+			if (!reporter) {
+				throw new NotFoundException('User not found');
+			}
+			if (reporter.bannedAt) {
+				throw new ForbiddenException('Banned users cannot report users');
+			}
+
 			const reportedUser = await this.prisma.user.findUnique({
 				where: { id: userId },
 				select: { id: true },
@@ -903,6 +1029,14 @@ export class ModerationService {
 
 	async reportPost(postId: number, dto: ReportDto, currentUserId: number) {
 		try {
+			const reporter = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+			if (!reporter) {
+				throw new NotFoundException('User not found');
+			}
+			if (reporter.bannedAt) {
+				throw new ForbiddenException('Banned users cannot report posts');
+			}
+
 			const reportedPost = await this.prisma.post.findUnique({
 				where: { id: postId, deletedAt: null },
 				select: { authorId: true },

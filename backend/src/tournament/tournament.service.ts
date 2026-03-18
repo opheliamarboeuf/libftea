@@ -3,6 +3,7 @@ import {
 	BadRequestException,
 	InternalServerErrorException,
 	NotFoundException,
+	ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
@@ -16,6 +17,14 @@ export class TournamentService {
 	constructor(private readonly prisma: PrismaService) {}
 	// async = attend une reponse lente
 	async createTournament(data: CreateTournamentDto, userId: number, userRole: Role) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot create tournaments');
+		}
+
 		if (!hasPermission(userRole, 'CREATE_TOURNAMENT'))
 			throw new BadRequestException('You do not have the right to create a tournament');
 		const overlappingBattle = await this.prisma.battle.findFirst({
@@ -92,6 +101,14 @@ export class TournamentService {
 		postData: JoinTournamentDto,
 		imageUrl: string,
 	) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot join tournaments');
+		}
+
 		// await nous permet de recuperer les donnes pour les verifier plus bas
 		// si on assigne le resultat a une variable on DOIT utiliser await
 		// pas besoin de await seulement si on utilise return
@@ -246,6 +263,14 @@ export class TournamentService {
 		return lastWinnerPost;
 	}
 	async getUserTournamentPosts(userId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access tournament posts');
+		}
+
 		return this.prisma.post.findMany({
 			where: {
 				authorId: userId,

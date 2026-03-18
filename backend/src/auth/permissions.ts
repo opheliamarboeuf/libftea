@@ -5,6 +5,7 @@ export const PERMISSIONS: Record<string, Role[]> = {
 	CHANGE_ADMIN_ROLE: [Role.ADMIN],
 	CHANGE_MOD_ROLE: [Role.ADMIN, Role.MOD],
 	BAN_USER: [Role.ADMIN],
+	UNBAN_USER: [Role.ADMIN],
 	VIEW_ADMIN_LOGS: [Role.ADMIN],
 	VIEW_MOD_LOGS: [Role.ADMIN, Role.MOD],
 	REVIEW_POST_REPORT: [Role.ADMIN, Role.MOD],

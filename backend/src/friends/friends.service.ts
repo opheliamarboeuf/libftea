@@ -29,6 +29,14 @@ export class FriendsService {
 	}
 
 	async sendFriendRequest(requesterId: number, addresseId: number) {
+
+		const user = await this.prisma.user.findUnique({ where: {id: requesterId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot send a friend request');
+		
 		if (requesterId === addresseId) {
 			throw new BadRequestException('You cannot add yourself as a friend');
 		}
@@ -71,6 +79,14 @@ export class FriendsService {
 	}
 
 	async acceptFriendRequest(requesterId: number, addresseId: number) {
+
+		const user = await this.prisma.user.findUnique({ where: {id: addresseId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot accept a friend request');
+
 		const friendship = await this.prisma.friendship.findUnique({
 			where: {
 				requesterId_addresseId: {
@@ -111,6 +127,14 @@ export class FriendsService {
 	}
 
 	async rejectFriendRequest(requesterId: number, addresseId: number): Promise<void> {
+
+			const user = await this.prisma.user.findUnique({ where: {id: addresseId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot reject a friend request');
+
 		const friendship = await this.prisma.friendship.findFirst({
 			where: {
 				requesterId,
@@ -134,6 +158,14 @@ export class FriendsService {
 	}
 
 	async getFriends(userId: number) {
+
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot access to friends list');
+
 		const friendships = await this.prisma.friendship.findMany({
 			where: {
 				status: 'ACCEPTED',
@@ -191,6 +223,14 @@ export class FriendsService {
 	}
 
 	async getPendingRequests(userId: number) {
+
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot access to pending friend request');
+
 		const friendships = await this.prisma.friendship.findMany({
 			where: {
 				status: 'PENDING',
@@ -216,6 +256,14 @@ export class FriendsService {
 	}
 
 	async removeFriend(userId: number, friendId: number): Promise<void> {
+
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot remove a friendship');
+
 		const friendship = await this.prisma.friendship.findFirst({
 			where: {
 				status: 'ACCEPTED',
@@ -236,6 +284,14 @@ export class FriendsService {
 	}
 
 	async cancelRequest(requesterId: number, addresseId: number): Promise<void> {
+
+		const user = await this.prisma.user.findUnique({ where: {id: requesterId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot cancel a friend request');
+
 		const friendship = await this.prisma.friendship.findFirst({
 			where: {
 				requesterId,
@@ -254,6 +310,14 @@ export class FriendsService {
 	}
 
 	async blockFriend(userId: number, targetId: number): Promise<void> {
+
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot block a friend');
+		
 		if (userId === targetId) throw new BadRequestException('Cannot block yourself');
 
 		const existing = await this.prisma.friendship.findFirst({
@@ -286,6 +350,14 @@ export class FriendsService {
 	}
 
 	async unBlockFriend(userId: number, targetId: number): Promise<void> {
+
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot unblock a friend');
+
 		const blocked = await this.prisma.friendship.findFirst({
 			where: {
 				status: 'BLOCKED',
@@ -306,6 +378,14 @@ export class FriendsService {
 	}
 
 	async getBlockedUsers(userId: number) {
+
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot get blocked suers list');
+
 		const blocked = await this.prisma.friendship.findMany({
 			where: {
 				requesterId: userId,

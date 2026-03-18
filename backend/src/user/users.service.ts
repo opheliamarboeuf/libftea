@@ -14,6 +14,14 @@ export class UsersService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async getBlockedIds(currentUserId: number): Promise<number[]> {
+		const user = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access blocked list');
+		}
+
 		const blocked = await this.prisma.friendship.findMany({
 			where: {
 				status: 'BLOCKED',
@@ -32,6 +40,14 @@ export class UsersService {
 	}
 
 	async getHiddenUserIds(userId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access hidden list');
+		}
+
 		const hiddenUsers = await this.prisma.userHiddenForUser.findMany({
 			where: {
 				userId: userId,
@@ -44,6 +60,14 @@ export class UsersService {
 	}
 
 	async getReportedUserIds(userId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access reported list');
+		}
+
 		const reportedUsers = await this.prisma.report.findMany({
 			where: {
 				reporterId: userId,
@@ -55,6 +79,14 @@ export class UsersService {
 	}
 
 	async getReporterIdsForUser(userId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access reporter list');
+		}
+
 		const reporters = await this.prisma.report.findMany({
 			where: {
 				reportedUserId: userId,
@@ -65,6 +97,14 @@ export class UsersService {
 	}
 
 	async getAllUsers(currentUserId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access user list');
+		}
+
 		return this.prisma.user.findMany({
 			select: {
 				id: true,
@@ -79,6 +119,14 @@ export class UsersService {
 	}
 
 	async getAllAdmin(currentUserId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access admin list');
+		}
+
 		return this.prisma.user.findMany({
 			where: { role: Role.ADMIN },
 			select: {
@@ -94,6 +142,14 @@ export class UsersService {
 	}
 
 	async getAllMod(currentUserId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access mod list');
+		}
+
 		return this.prisma.user.findMany({
 			where: { role: Role.MOD },
 			select: {
@@ -109,6 +165,14 @@ export class UsersService {
 	}
 
 	async getAllBanned(currentUserId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access banned list');
+		}
+
 		return this.prisma.user.findMany({
 			where: { bannedAt: { not: null } },
 			select: {
@@ -152,6 +216,14 @@ export class UsersService {
 	}
 
 	async searchUsername(username: string, currentUserId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot search users');
+		}
+
 		const blockedIds = await this.getBlockedIds(currentUserId);
 		const hiddenUserIds = await this.getHiddenUserIds(currentUserId);
 		const reportedUserIds = await this.getReportedUserIds(currentUserId);
@@ -187,6 +259,14 @@ export class UsersService {
 	}
 
 	async findId(id: number, currentUserId: number) {
+		const currentUser = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+		if (!currentUser) {
+			throw new NotFoundException('User not found');
+		}
+		if (currentUser.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access user profiles');
+		}
+
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id,
@@ -284,6 +364,14 @@ export class UsersService {
 	}
 
 	async getAllUserPosts(currentUserId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access posts');
+		}
+
 		const blockedIds = await this.getBlockedIds(currentUserId);
 		const hiddenUserIds = await this.getHiddenUserIds(currentUserId);
 		const reporterIds = await this.getReporterIdsForUser(currentUserId);

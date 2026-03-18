@@ -13,6 +13,13 @@ export class LikesService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async toggleLike(postId: number, userId: number) {
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot like posts');
+
 		const post = await this.prisma.post.findUnique({
 			where: { id: postId, deletedAt: null },
 			include: {
@@ -74,6 +81,13 @@ export class LikesService {
 	}
 
 	async isLiked(postId: number, userId: number) {
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot check likes');
+
 		const like = await this.prisma.like.findFirst({
 			where: {
 				postId,
