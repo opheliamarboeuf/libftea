@@ -83,25 +83,25 @@ export class TournamentService {
 				data: {status: "ACTIVE"},
 			});
 		}
-		if (battle.status === "ACTIVE" && battle.NotifSent === false)
-		{
-			//notification
-			const users = await this.prisma.user.findMany({
-				where: { id: { not: battle.createdById } },
-				select: { id: true },
-			});
+		// if (battle.status === "ACTIVE" && battle.NotifSent === false)
+		// {
+		// 	//notification
+		// 	const users = await this.prisma.user.findMany({
+		// 		where: { id: { not: battle.createdById } },
+		// 		select: { id: true },
+		// 	});
 
-			await Promise.all(
-				users.map(user =>
-					this.notificationsService.notifyNewBattle(user.id, battle.theme)
-				)
-			);
+		// 	await Promise.all(
+		// 		users.map(user =>
+		// 			this.notificationsService.notifyNewBattle(user.id, battle.theme)
+		// 		)
+		// 	);
 
-			await this.prisma.battle.update({
-				where: { id: battle.id },
-				data: { NotifSent: true },
-			});
-		}
+		// 	await this.prisma.battle.update({
+		// 		where: { id: battle.id },
+		// 		data: { NotifSent: true },
+		// 	});
+		// }
 		if (now > battle.endsAt && !battle.winnerId)
 		{
 			await this.computeTournamentWinner(battle.id);

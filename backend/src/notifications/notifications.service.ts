@@ -120,21 +120,21 @@ export class NotificationsService {
 		
 	}
 
-	async notifyNewBattle(recipientId: number, battleName: string): Promise<void> {
-		try {
-			const notification = await this.prisma.notification.create({
-				data: {
-					type: NotificationType.NEW_BATTLE,
-					userId: recipientId,
-					isRead: false,
-					message: `A new tournament has started! The theme is: ${battleName}`,
-				}
-			});
-			this.notificationsGateway.sendToUser(recipientId, notification);
-		} catch (err) {
-			console.log("Error notifying bnew battle:", err);
-		}
-	}
+	// async notifyNewBattle(recipientId: number, battleName: string): Promise<void> {
+	// 	try {
+	// 		const notification = await this.prisma.notification.create({
+	// 			data: {
+	// 				type: NotificationType.NEW_BATTLE,
+	// 				userId: recipientId,
+	// 				isRead: false,
+	// 				message: `A new tournament has started! The theme is: ${battleName}`,
+	// 			}
+	// 		});
+	// 		this.notificationsGateway.sendToUser(recipientId, notification);
+	// 	} catch (err) {
+	// 		console.log("Error notifying bnew battle:", err);
+	// 	}
+	// }
 
 	async notifyBattleWinner(recipientId: number, battleName: string): Promise<void> {
 		try {
