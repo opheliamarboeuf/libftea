@@ -36,7 +36,7 @@ const ProfilePage = () => {
 		<div className="fixed top-[50px] left-[60px] flex flex-col w-[calc(100vw-60px)] h-[calc(100vh-50px)] text-gray-800 overflow-y-auto">
 			<div className="flex flex-1 h-full">
 				<div className="flex-shrink-0 w-[250px] min-w-[150px] bg-white/85 backdrop-blur-md p-6 flex flex-col items-center rounded-2xl border border-black/5 shadow-md m-5 gap-4 self-stretch max-lg:hidden">
-					<p className="w-full font-bold text-xl flex justify-center items-center" style={{ fontFamily: "'Blosta Script', cursive" }}>
+					<p className="w-full font-bold text-xl flex justify-center items-center">
 						{user.profile.displayName ? user.profile.displayName : '\u00A0'}
 					</p>
 					<div>
@@ -50,7 +50,7 @@ const ProfilePage = () => {
 							className="w-24 h-24 rounded-full object-cover shadow-md"
 						/>
 					</div>
-					<p className="font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>{user.username}</p>
+					<p className="font-bold">{user.username}</p>
 					<div className="flex justify-center gap-2 w-full">
 						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
 							<strong className="text-lg font-bold">{user.friends?.length ?? 0}</strong>
@@ -81,7 +81,6 @@ const ProfilePage = () => {
 						<button 
 							className="absolute bottom-3 right-3 px-3 py-2 text-sm bg-gray-600/30 border-none rounded-lg cursor-pointer opacity-70 hover:opacity-100 hover:bg-gray-500/30 transition-opacity z-[5]"
 							onClick={() => setShowEditModal(true)}
-							style={{ fontFamily: "'Playfair Display', serif" }}
 						>
 							Edit Profile
 						</button>
@@ -99,7 +98,6 @@ const ProfilePage = () => {
 										profileTab === "posts" ? "font-semibold" : ""
 									}`}
 									onClick={() => setProfileTab("posts")}
-									style={{ fontFamily: "'Playfair Display', serif" }}
 								>
 									Posts
 								</button>
@@ -108,7 +106,6 @@ const ProfilePage = () => {
 										profileTab === "tournament" ? "font-semibold" : ""
 									}`}
 									onClick={() => setProfileTab("tournament")}
-									style={{ fontFamily: "'Playfair Display', serif" }}
 								>
 									Tournament
 								</button>
@@ -116,9 +113,8 @@ const ProfilePage = () => {
 
 							{profileTab === "posts" && (
 								<button 
-									className="group flex items-center justify-center w-10 h-10 bg-neutral-800 text-white rounded-full hover:bg-neutral-600 hover:w-auto hover:px-4 transition-all duration-300 outline-none overflow-hidden"
+									className="group flex items-center justify-center w-10 h-10 bg-neutral-400 text-gray-800 rounded-full hover:bg-neutral-600 hover:w-auto hover:px-4 transition-all duration-300 outline-none overflow-hidden"
 									onClick={() => setShowPostModal(true)}
-									style={{ fontFamily: "'Playfair Display', serif" }}
 								>
 									<span>＋</span>
 									<span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-[150px] group-hover:ml-2 transition-all duration-300">

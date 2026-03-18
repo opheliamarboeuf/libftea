@@ -4,6 +4,7 @@ import { useModalAnimation } from "../common/hooks/useModalAnimation";
 import { ConfirmDialog } from "../common/components/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../common/hooks/useUnsavedChangesGuard";
 import { useBeforeUnload } from "../common/hooks/useBeforeUnload";
+import "../App.css";
 
 interface EditProfileModalProps {
 	onClose: () => void;
@@ -67,6 +68,8 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 						<textarea
 							value={displayName}
 							onChange={(e) => setDisplayName(e.target.value)}
+							rows={1}
+							className="create-post-input"
 						/>
 						<div
 							className={`char-counter ${
@@ -80,6 +83,7 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 							value={bio}
 							onChange={(e) => setBio(e.target.value)}
 							rows={5}
+							className="create-post-input"
 						/>
 						<div
 							className={`char-counter ${

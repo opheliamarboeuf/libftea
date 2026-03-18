@@ -7,10 +7,10 @@
 	padding: 5px 10px;
 	border: 1px solid #ccc;
 	border-radius: 20px;
-	width: 180px;
+	width: 100%; /* allow header container to control width */
 	color: #212529;
 	background-color: white;
-	font-family: 'Playfair Display', serif;
+	font-family: inherit; /* use Gotham Book */
 	outline: none;
 	font-size: 0.85rem;
 }
@@ -53,5 +53,5 @@
 
 .search-username {
 	color: #212529;
-	font-family: 'Playfair Display', serif;
+	font-family: inherit;
 }

@@ -67,10 +67,12 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 					<h2>Post an outfit</h2>
 					<form onSubmit={handleSubmit}>
 						<label>Title</label>
-						<textarea
+						<input
+							type="text"
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
-							className="create-post-input"
+							className="title-input"
+							maxLength={MAX_TITLE_LENGTH}
 						/>
 						<div
 							className={`char-counter ${
