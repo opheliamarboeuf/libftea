@@ -115,7 +115,7 @@ const RegisterPage = () => {
 						/> 
 					</div>
 					{errorMessage && (
-						<div className="text-red-500 text-center text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
+						<div className="text-gray-500 text-center text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
 							{errorMessage}
 						</div>
 					)}

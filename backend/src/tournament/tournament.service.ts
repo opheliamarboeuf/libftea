@@ -12,6 +12,12 @@ export class TournamentService {
 	async createTournament(data: CreateTournamentDto, userId: number, userRole: Role){
 		if ( !hasPermission(userRole, "CREATE_TOURNAMENT"))
 			throw new BadRequestException("You do not have the right to create a tournament");
+				const now = new Date();
+		if (new Date(data.endDate) <= now)
+			throw new BadRequestException("Tournament end date must be in the future");
+		if (new Date(data.startDate) > new Date(data.endDate))
+			throw new BadRequestException("Start date must be before end date");
+
 	const overlappingBattle = await this.prisma.battle.findFirst({
 		where: {
 			status: { in: ["ACTIVE", "UPCOMING"] },
@@ -76,10 +82,6 @@ export class TournamentService {
 				where: { id: battle.id },
 				data: {status: "ACTIVE"},
 			});
-		}
-		if (now > battle.endsAt && !battle.winnerId)
-		{
-			await this.computeTournamentWinner(battle.id);
 		}
 		return battle;
 	}
@@ -174,80 +176,90 @@ export class TournamentService {
 		});
 		if (!battle)
 			throw new NotFoundException ("Tournament doesn't exist");
-		// if (new Date() < battle.endsAt)
-		// 	throw new BadRequestException("Battle is not finished yet");
+		if (new Date() < battle.endsAt)
+			throw new BadRequestException("Battle is not finished yet");
 		if (battle.winnerId)
 			return battle.winnerId;
-		const forTheWin = await this.prisma.post.findFirst({
+		const winningPost = await this.prisma.post.findFirst({
 			where: {
-				battleParticipants: { some: { battleId } },
-			},
-			orderBy: [
-				{
-					Like: { _count: "desc" },
+				battleParticipants: { 
+					some: { battleId } 
 				},
-				{
-					createdAt: "asc"
+			},
+			orderBy: {
+				Like: {
+					_count: "desc"
 				}
-			],
+			},
 			include: {
 				author: true,
 				_count: {
 					select: { Like: true }
 				}
 			}
-		});
-		if (!forTheWin)
-			throw new NotFoundException ("No one partipated at that tournament");
+		});	
+		if (!winningPost)
+			throw new NotFoundException ("No one participated in that tournament");
 		await this.prisma.battle.update({
 			where: {id: battleId },
 			data: {
 				status: "FINISHED",
-				winnerId: forTheWin.authorId,
+				winnerId: winningPost.authorId,
 			}
 		});
-		return forTheWin;
+		return winningPost;
 	}
-	async getLastTournamentWinner()
-	{
-		return this.prisma.battle.findFirst({
-			where: { status: "FINISHED" },
-			orderBy: { endsAt: "desc" },
-			include: {
-				winner: true,
-				BattleParticipant: {
-					include: {
-						post: true,
-						user: true,
-					}
-				}
-			},
-		})
-	}
+
 	async getLastTournamentWinnerPost() {
+		const now = new Date();
+		
+		// D'abord, vérifier s'il y a un tournoi terminé (date passée) mais pas encore marqué FINISHED
+		const justFinishedBattle = await this.prisma.battle.findFirst({
+			where: {
+				endsAt: { lt: now },
+				status: { not: "FINISHED" }
+			},
+			orderBy: { endsAt: "desc" },
+		});
+		
+		// Si on trouve un tournoi qui vient de finir, calculer son gagnant
+		if (justFinishedBattle) {
+			try {
+				await this.computeTournamentWinner(justFinishedBattle.id);
+			} catch (error) {
+				console.log("Could not compute winner:", error);
+			}
+		}
+		
+		// Maintenant récupérer le dernier tournoi FINISHED avec un gagnant
 		const battle = await this.prisma.battle.findFirst({
-			where: { status: "FINISHED"},
+			where: { 
+				status: "FINISHED",
+				winnerId: { not: null }
+			},
 			orderBy: { endsAt: "desc"},
 		});
-		if (!battle)
+		
+		if (!battle || !battle.winnerId)
 			return null;
+		
+		// Récupérer le post gagnant
 		const lastWinnerPost = await this.prisma.post.findFirst({
-			where:
-			{
+			where: {
 				authorId: battle.winnerId,
-				battleParticipants: 
-				{
+				battleParticipants: {
 					some: { battleId: battle.id },
 				},
 			},
-			include: 
-			{
+			include: {
 				author: true,
 				Like: true,
 			},
 		});
+		
 		return lastWinnerPost;
 	}
+
 	async getUserTournamentPosts(userId: number)
 	{
 		return this.prisma.post.findMany({

@@ -80,7 +80,6 @@ export class TournamentController {
 	@Get(':battleId/posts')
 	async getBattlePosts(@Param('battleId') battleId: string)
 	{
-		await this.tournamentService.computeTournamentWinner(Number(battleId));
 		return this.tournamentService.getBattlePosts(Number(battleId));
 	}
 }
