@@ -153,6 +153,11 @@
 	color: #e65100;
 }
 
+.action-btn.unban {
+    background-color: #fdecea;
+    color: #c62828;
+}
+
 /* Empty state inside the card */
 .user-empty {
 	padding: 20px;

@@ -104,7 +104,7 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 				buttons.push(
 					<button
 						key="unban"
-						className="action-btn promote"
+						className="action-btn unban"
 						onClick={(e) => {
 							e.stopPropagation();
 							setPendingAction({
