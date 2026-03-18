@@ -10,12 +10,31 @@
 	display: flex;
 	flex-direction: column;
 	gap: 2rem;
-	z-index: 90;
+	z-index: 200;
 	transition: width 0.3s ease;
 	overflow: hidden;
 	border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 	border-radius: 20px;
+}
+
+/* Overlay global qui couvre tout sauf le menu */
+.menu-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(2px);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+	z-index: 150; /* entre le contenu normal et le menu */
+}
+
+.menu-overlay.active {
+	opacity: 1;
 }
 
 .menu-item {
