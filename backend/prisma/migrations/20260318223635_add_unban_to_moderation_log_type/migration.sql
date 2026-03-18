@@ -1,0 +1,5 @@
+-- Add UNBAN_USER to ModerationLogType enum
+ALTER TYPE "ModerationLogType" ADD VALUE 'UNBAN_USER';
+
+-- Verify the enum now contains all required values
+-- DELETE_ANY_POST, CHANGE_ADMIN_ROLE, CHANGE_MOD_ROLE, BAN_USER, UNBAN_USER, REVIEW_USER_REPORT, REVIEW_POST_REPORT, CREATE_TOURNAMENT

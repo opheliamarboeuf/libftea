@@ -18,7 +18,7 @@ type SortField = 'id' | 'username' | 'role' | 'status';
 // Pending action before confirmation
 interface PendingAction {
 	userId: number;
-	type: 'admin' | 'mod';
+	type: 'admin' | 'mod' | 'ban';
 	message: string;
 }
 
@@ -98,8 +98,28 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 		// Array used to collect all action buttons dynamically based on roles/permissions
 		const buttons: React.ReactNode[] = [];
 
-		if (target.bannedAt)
-			return;
+		// If the user is banned, only ADMIN can unban
+		if (target.bannedAt) {
+			if (currentUser?.role === 'ADMIN') {
+				buttons.push(
+					<button
+						key="unban"
+						className="action-btn promote"
+						onClick={(e) => {
+							e.stopPropagation();
+							setPendingAction({
+								userId: target.id,
+								type: 'ban',
+								message: `Unban ${target.username}?`,
+							});
+						}}
+					>
+						Unban
+					</button>,
+				);
+			}
+			return buttons.length > 0 ? <div className="action-buttons">{buttons}</div> : null;
+		}
 
 		if (currentUser?.role === 'ADMIN') {
 			// ADMIN can toggle MOD <-> ADMIN
@@ -179,8 +199,10 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 		try {
 			if (pendingAction.type === 'admin') {
 				await moderationApi.changeAdminRole(pendingAction.userId);
-			} else {
+			} else if (pendingAction.type === 'mod') {
 				await moderationApi.changeModRole(pendingAction.userId);
+			} else if (pendingAction.type === 'ban') {
+				await moderationApi.unbanUser(pendingAction.userId);
 			}
 			onUpdate?.();
 		} catch (error: any) {
@@ -234,7 +256,7 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 								className="user-username-clickable"
 								onClick={() => goToProfile(user.id)}
 							>
-									<UserNameWithRole username={user.username} role={user.role} />
+								<UserNameWithRole username={user.username} role={user.role} />
 							</span>
 							<span>{user.role}</span>
 							<span className={user.bannedAt ? 'status-banned' : 'status-active'}>

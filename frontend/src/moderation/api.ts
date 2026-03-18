@@ -164,7 +164,7 @@ export const moderationApi = {
 		return data;
 	},
 
-	// ---------------------------------- USER REPORTS ----------------------------------
+	// ---------------------------------- BAN USERS ----------------------------------
 
 	banUser: async (targetId: number) => {
 		const res = await fetch(`${API_URL}/moderation/ban/${targetId}`, {
@@ -178,7 +178,25 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Bann user failed';
+				: data.message || 'Ban user failed';
+			throw new Error(message);
+		}
+		return data;
+	},
+
+	unbanUser: async (targetId: number) => {
+		const res = await fetch(`${API_URL}/moderation/unban/${targetId}`, {
+			method: 'PUT',
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			const message = Array.isArray(data.message)
+				? data.message[0]
+				: data.message || 'Unban user failed';
 			throw new Error(message);
 		}
 		return data;

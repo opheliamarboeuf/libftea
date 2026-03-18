@@ -67,6 +67,15 @@ export class ModerationController {
 		return this.moderationService.banUser(id, req.user.id, req.user.role);
 	}
 
+	@Roles(Role.ADMIN)
+	@Put('unban/:id')
+	async unbanUser(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.unbanUser(id, req.user.id, req.user.role);
+	}
+
 	// ---------------------------------- HANDLE REPORTS ----------------------------------
 
 	@Roles(Role.ADMIN, Role.MOD)
