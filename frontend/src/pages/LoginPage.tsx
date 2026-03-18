@@ -76,7 +76,6 @@ const LoginPage = () => {
 							onChange={handleUsernameChange}
 							required
 							className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-gray-500"
-							style={{ fontFamily: "'Playfair Display', serif" }}
 						/>
 					</div>
 					<div>
@@ -89,29 +88,26 @@ const LoginPage = () => {
 							onChange={handlePasswordChange}
 							required
 							className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-gray-500"
-							style={{ fontFamily: "'Playfair Display', serif" }}
 						/>
 					</div>
 					{errorMessage && (
-						<div className="text-gray-500 text-center text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
+						<div className="text-gray-500 text-center text-sm">
 							{errorMessage}
 						</div>
 					)}
 					<button 
 						type="submit"
 						className="w-full py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-600 transition-all outline-none"
-						style={{ fontFamily: "'Playfair Display', serif" }}
 					>
 						Login
 					</button>
-					<p className="text-center text-gray-600 text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
+					<p className="text-center text-gray-600 text-sm">
 						No account yet?
 					</p>
 					<button 
 						type="button"
 						onClick={() => navigate("/register")}
 						className="w-full py-2 border border-gray-300 rounded-lg hover:bg-neutral-200 transition-all outline-none"
-						style={{ fontFamily: "'Playfair Display', serif" }}
 					>
 						Create new account
 					</button>

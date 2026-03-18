@@ -85,7 +85,6 @@ const RegisterPage = () => {
 							onChange={handleUsernameChange}
 							required
 							className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-gray-500"
-							style={{ fontFamily: "'Playfair Display', serif" }}
 						/> 
 					</div>
 					<div>
@@ -98,7 +97,6 @@ const RegisterPage = () => {
 							onChange={handleEmailChange}
 							required
 							className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-gray-500"
-							style={{ fontFamily: "'Playfair Display', serif" }}
 						/>
 					</div>
 					<div>
@@ -111,29 +109,26 @@ const RegisterPage = () => {
 							onChange={handlePasswordChange}
 							required
 							className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-gray-500"
-							style={{ fontFamily: "'Playfair Display', serif" }}
 						/> 
 					</div>
 					{errorMessage && (
-						<div className="text-gray-500 text-center text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
+						<div className="text-gray-500 text-center text-sm">
 							{errorMessage}
 						</div>
 					)}
 					<button 
 						type="submit"
 						className="w-full py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-600 transition-all outline-none"
-						style={{ fontFamily: "'Playfair Display', serif" }}
 					>
 						Register
 					</button>
-					<p className="text-center text-gray-600 text-sm" style={{ fontFamily: "'Playfair Display', serif" }}>
+					<p className="text-center text-gray-600 text-sm">
 						Already have an account?
 					</p>
 					<button 
 						type="button"
 						onClick={() => navigate("/login")}
 						className="w-full py-2 border border-gray-300 rounded-lg hover:bg-neutral-200 transition-all outline-none"
-						style={{ fontFamily: "'Playfair Display', serif" }}
 					>
 						Log in to account
 					</button>
