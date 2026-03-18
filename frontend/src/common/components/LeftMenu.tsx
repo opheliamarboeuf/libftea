@@ -4,6 +4,10 @@ import { FaCrown, FaHome, FaUser, FaUsers, FaTachometerAlt } from "react-icons/f
 import "./LeftMenu.css"
 import "../../App.css"
 import { useTranslation } from "react-i18next";
+import { PrivacyButton } from "./PrivacyPolicy";
+import { TermsButton } from "./TermsOfService";
+import { FaLock } from "react-icons/fa";
+import { FaFileAlt } from "react-icons/fa";
 
 export const LeftMenu = () => {
 	
@@ -40,6 +44,10 @@ export const LeftMenu = () => {
 				<FaTachometerAlt className="icon" />
 				<span className="label">{t('leftmenu.dashboard')}</span>
 			</div> ) : null}
+			<div className="menu-bottom">
+				<PrivacyButton  icon={<FaLock />}/>
+				<TermsButton icon={<FaFileAlt />}/>
+			</div>
 		</div>
 	);
 }

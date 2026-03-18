@@ -81,3 +81,47 @@
     transform-origin: right top;
   }
 }
+
+.login-bottom {
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	margin-top: 1rem;
+	justify-content: center;
+}
+
+.login-bottom button {
+	font-size: 0.75rem;
+	padding: 0.25rem;
+	background-color: transparent;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.login-bottom button:hover {
+	text-decoration: underline;
+}
+
+.login-bottom .menu-bottom-item {
+	background-color: transparent;
+	border: none;
+	padding: 0;
+	opacity: 1 !important;
+}
+
+.login-bottom .menu-bottom-item .label {
+	opacity: 1 !important;
+}
+
+.login-bottom .menu-bottom-item:hover .label {
+	text-decoration: underline;
+	background-color: transparent;
+}
+
+.login-bottom .menu-bottom-item:hover,
+.login-bottom .menu-bottom-item:focus,
+.login-bottom .menu-bottom-item:active {
+	background: none !important;
+}

@@ -111,7 +111,10 @@
 
 	"common": {
 		"yes": "Oui",
-		"no": "Non"
+		"no": "Non",
+		"privacy": "Politique de confidentialité",
+		"terms": "Conditions de Service",
+		"back": "Retour à la page de connexion"
 	},
 
 	"feedpage": {

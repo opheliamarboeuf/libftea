@@ -12,6 +12,8 @@ import { LeftMenu } from './common/components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
 import { ModalProvider } from "./context/ModalContext";
 import TournamentFeedPage from './pages/TournamentFeedPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
 
 const App = () => {
 
@@ -90,6 +92,12 @@ const [loading, setLoading] = useState(true);
             <Route
               path="/dashboard"
               element={loading ? null : user ? <Dashboard/> : <Navigate to = "/" replace />} />
+			<Route
+              path="/privacypolicy"
+              element={<PrivacyPage/>} />
+			<Route
+              path="/termsofservice"
+              element={<TermsPage/>} />
           </Routes>
         </BrowserRouter>
         </ModalProvider>

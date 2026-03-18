@@ -10,7 +10,7 @@ const LanguageMenu = ({ fixed = false }: Props) => {
 	const languages = [ 
 		{ code: 'fr', label: '🇫🇷 FR'},
 		{ code: 'en', label: '🇺🇸 EN'},
-		{ code: 'jp', label: '🇯🇵 JP'},
+		{ code: 'jp', label: '🇯🇵 日本'},
 	];
 	const [ langMenuHidden, setLangMenuHidden ] = useState(true);
 

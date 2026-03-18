@@ -5,6 +5,8 @@ import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageMenu from "../common/components/LanguageMenu";
+import { TermsButton } from "../common/components/TermsOfService";
+import { PrivacyButton } from "../common/components/PrivacyPolicy";
 
 const LoginPage = () => {
 	const [username, setUsername] = useState("");
@@ -112,7 +114,11 @@ const LoginPage = () => {
 						</button>
 					</div>
 				</form>
-		</div>
+				<div className="login-bottom">
+					<PrivacyButton />
+					<TermsButton />
+				</div>
+			</div>
 		</div>
 	);
 };

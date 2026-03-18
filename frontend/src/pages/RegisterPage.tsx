@@ -5,6 +5,8 @@ import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import LanguageMenu from "../common/components/LanguageMenu";
+import { PrivacyButton } from "../common/components/PrivacyPolicy";
+import { TermsButton } from "../common/components/TermsOfService";
 
 const RegisterPage = () => {
 	
@@ -135,7 +137,10 @@ const RegisterPage = () => {
 						</button>
 					</div>
 				</form>
-			
+				<div className="login-bottom">
+					<PrivacyButton />
+					<TermsButton />
+				</div>
 			</div>
 		</div>
 	);

@@ -112,7 +112,10 @@
 
 	"common": {
 		"yes": "Yes",
-		"no": "No"
+		"no": "No",
+		"privacy": "Privacy policy",
+		"terms": "Terms of service",
+		"back": "Back to login page"
 	},
 
 	"feedpage": {
