@@ -5,6 +5,7 @@ import { FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostMenu } from "../hooks/usePostMenu";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
+import { UserNameWithRole } from "../../common/components/UserNameWithRole";
 import { EditPostModal } from "./EditPostModal";
 import { LikeButton } from "../../likes/LikeButton";
 import { CommentSection } from "../../comments/CommentSection";
@@ -78,7 +79,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				className="post-author"
 				onClick={() => goToProfile(post.author.id)}
 			>
-				{post.author.username},
+				<UserNameWithRole username={post.author.username} role={(post.author as any).role} />,
 			</span>
 			<span className="post-date">
 			{

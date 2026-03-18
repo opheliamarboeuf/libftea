@@ -198,6 +198,7 @@ export class PostsService {
 					select: {
 						id: true,
 						username: true,
+						role: true,
 					},
 				},
 			},

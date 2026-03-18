@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import { SearchBar } from './SearchBar';
 import { useFriendsSocket } from '../../friends/useFriendsSocket';
+import { UserNameWithRole } from './UserNameWithRole';
 import './Header.css';
 import '../../App.css';
 import { friendsSocket } from '../../socket/socket';
@@ -89,7 +90,9 @@ export const Header = () => {
 					onMouseLeave={() => setMenuHidden(false)}
 				>
 					<div className="small-avatar-container">
-						<p className="header-username">{user.username || ''}</p>
+						<p className="header-username">
+							<UserNameWithRole username={user.username || ''} role={user.role} />
+						</p>
 						<div className="small-avatar">
 							<img
 								src={

@@ -3,6 +3,7 @@ import { BlockFriendButton } from './BlockFriendButton';
 import { RemoveFriendButton } from './RemoveFriendButton';
 import { Link } from 'react-router-dom';
 import './friends.css';
+import { UserNameWithRole } from '../common/components/UserNameWithRole';
 
 export function FriendsList() {
 	const { friends } = useFriends();
@@ -36,7 +37,14 @@ export function FriendsList() {
 									pointerEvents: friend.bannedAt ? 'none' : 'auto',
 								}}
 							>
-								{friend.bannedAt ? 'Unknown User' : friend.username}
+								{friend.bannedAt ? (
+									'Unknown User'
+								) : (
+									<UserNameWithRole
+										username={friend.username}
+										role={friend.role}
+									/>
+								)}
 							</Link>
 						</div>
 						<div className="friend-card-actions">

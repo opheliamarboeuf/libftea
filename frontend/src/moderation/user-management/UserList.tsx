@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ModerationUser } from './types';
 import { useUser } from '../../context/UserContext';
 import { ConfirmDialog } from '../../common/components/ConfirmDialog';
+import { UserNameWithRole } from '../../common/components/UserNameWithRole';
 import { useModal } from '../../context/ModalContext';
 import { moderationApi } from '../api';
 import './UserList.css';
@@ -233,7 +234,7 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 								className="user-username-clickable"
 								onClick={() => goToProfile(user.id)}
 							>
-								{user.username}
+									<UserNameWithRole username={user.username} role={user.role} />
 							</span>
 							<span>{user.role}</span>
 							<span className={user.bannedAt ? 'status-banned' : 'status-active'}>

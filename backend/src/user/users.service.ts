@@ -172,6 +172,7 @@ export class UsersService {
 			select: {
 				id: true,
 				username: true,
+				role: true,
 				profile: {
 					select: {
 						avatarUrl: true,
@@ -193,6 +194,7 @@ export class UsersService {
 			select: {
 				id: true,
 				username: true,
+				role: true,
 				bannedAt: true,
 				profile: {
 					select: {
@@ -308,6 +310,7 @@ export class UsersService {
 					select: {
 						id: true,
 						username: true,
+						role: true,
 					},
 				},
 			},

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import './CommentSection.css';
 import { ConfirmDialog } from '../common/components/ConfirmDialog';
 import { Link } from 'react-router-dom';
+import { UserNameWithRole } from '../common/components/UserNameWithRole';
 
 interface Props {
 	postId: number;
@@ -42,7 +43,10 @@ export function CommentSection({ postId }: Props) {
 								to={`/users/${reply.user.id}`}
 								style={{ textDecoration: 'none', color: 'inherit' }}
 							>
-								{reply.user.username}
+								<UserNameWithRole
+									username={reply.user.username}
+									role={(reply.user as any).role}
+								/>
 							</Link>
 						</strong>{' '}
 						• {new Date(reply.createdAt).toLocaleString()}
@@ -88,7 +92,10 @@ export function CommentSection({ postId }: Props) {
 									to={`/users/${comment.user.id}`}
 									style={{ textDecoration: 'none', color: 'inherit' }}
 								>
-									{comment.user.username}
+									<UserNameWithRole
+										username={comment.user.username}
+										role={(comment.user as any).role}
+									/>
 								</Link>
 							</strong>{' '}
 							• {new Date(comment.createdAt).toLocaleString()}

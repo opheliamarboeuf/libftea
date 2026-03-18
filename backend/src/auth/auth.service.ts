@@ -130,6 +130,7 @@ export class AuthService {
 					select: {
 						id: true,
 						username: true,
+						role: true,
 						bannedAt: true,
 						profile: { select: { avatarUrl: true } },
 					},
@@ -138,6 +139,7 @@ export class AuthService {
 					select: {
 						id: true,
 						username: true,
+						role: true,
 						bannedAt: true,
 						profile: { select: { avatarUrl: true } },
 					},
@@ -150,6 +152,7 @@ export class AuthService {
 			return {
 				id: friend.id,
 				username: friend.username,
+				role: friend.role,
 				bannedAt: friend.bannedAt,
 				avatarUrl: friend.profile?.avatarUrl,
 			};

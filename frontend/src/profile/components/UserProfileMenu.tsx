@@ -1,4 +1,3 @@
-// UserProfileMenu.tsx
 import './UserProfileMenu.css';
 import { FaEllipsisV } from 'react-icons/fa';
 import { useDropdownMenu } from '../../common/hooks/useDropdownMenu';

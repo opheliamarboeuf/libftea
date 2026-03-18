@@ -6,6 +6,7 @@ export type Friend = {
 	username: string;
 	avatarUrl: string | null;
 	bannedAt: string | null;
+	role?: string;
 };
 
 // Type for post data
@@ -19,6 +20,7 @@ export type Post = {
 	author: {
 		id: number;
 		username: string;
+		role?: string;
 	};
 	likes: number;
 };
