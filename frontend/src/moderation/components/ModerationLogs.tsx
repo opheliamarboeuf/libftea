@@ -1,22 +1,21 @@
 import { moderationApi } from '../api';
 import { useState, useEffect } from 'react';
 import { ModerationLogType } from '../types';
-import { useUser } from '../../context/UserContext';
+import { useLocation } from 'react-router-dom';
 
 export function ModerationLogs() {
 	const [logs, setLogs] = useState<ModerationLogType[]>([]);
 	const [loading, setLoading] = useState(false);
-	const { user } = useUser();
+	const location = useLocation();
+
+	const isAdminTab = location.pathname.startsWith('/dashboard/admin');
 
 	useEffect(() => {
-		if (!user || user.role === 'USER') return;
-
 		const fetchLogs = async () => {
 			setLoading(true);
 			try {
 				// Each role calls its own endpoint
-				const data =
-					user.role === 'ADMIN'
+				const data = isAdminTab
 						? await moderationApi.fetchAdminLogs()
 						: await moderationApi.fetchModLogs();
 				setLogs(data);
@@ -28,9 +27,7 @@ export function ModerationLogs() {
 		};
 
 		fetchLogs();
-	}, [user]);
-
-	if (!user || user.role === 'USER') return null;
+	}, [isAdminTab]);
 
 	if (loading) return <p>Loading logs...</p>;
 
