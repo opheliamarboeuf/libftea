@@ -6,10 +6,14 @@ import { InternalServerErrorException, HttpException, NotFoundException } from '
 import { HandleReportDto } from './dto/handleReport.dto';
 import { ReportDto } from './dto/report.dto';
 import { ModerationLogType } from '@prisma/client';
+import { MailService } from 'src/email/email.service';
 
 @Injectable()
 export class ModerationService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		private mailService: MailService,
+	) {}
 
 	private buildCountByKey<T, K extends number | string>(
 		items: T[],
@@ -151,6 +155,7 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 				throw new BadRequestException('Report must be assigned before being handled');
 			}
 
+			let bannedUserData = null;
 			await this.prisma.$transaction(async (prisma) => {
 				// Update all reports for the same post
 				if (report.reportedPostId) {
@@ -180,6 +185,17 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 					// Fallback: if report is associated with a user
 					if (!report.reportedUserId)
 						throw new BadRequestException('No user associated with this report');
+					
+					// Get user details before banning
+					bannedUserData = await prisma.user.findUnique({
+						where: { id: report.reportedUserId },
+						select: {
+							id: true,
+							email: true,
+							username: true,
+						},
+					});
+
 					await prisma.report.updateMany({
 						where: { reportedUserId: report.reportedUserId },
 						data: {
@@ -211,6 +227,20 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 					});
 				}
 			});
+
+			// Send email to banned user after transaction completes
+			if (bannedUserData) {
+				try {
+					await this.mailService.sendMail(
+						bannedUserData.email,	
+						'Your account has been banned',
+						`Hello ${bannedUserData.username},\n\nYour account has been banned upon review of a report.\n\nIf you think this is a mistake, please contact us.\n\nThe MyApp team`,
+					);
+				} catch (mailError) {
+					console.error('Error sending ban notification email:', mailError);
+				}
+			}
+
 			return true;
 		} catch (error) {
 			if (error instanceof HttpException) throw error;
@@ -512,6 +542,8 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 					id: true,
 					role: true,
 					bannedAt: true,
+					username: true,
+					email: true,
 				},
 			});
 
@@ -554,10 +586,15 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 							targetUserId: targetId,
 						},
 					});
-
 				return updateUser;
 			});
-
+			
+			await this.mailService.sendMail(
+				targetUser.email,	
+				'Your account has been banned',
+				`Hello ${targetUser.username},\n\nYour account has been banned.\n\nIf you think this is a mistake, please contact us.\n\nThe MyApp team`,
+			);
+			
 			return bannedUser;
 		} catch (error) {
 			if (error instanceof HttpException) throw error;

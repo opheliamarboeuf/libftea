@@ -16,6 +16,7 @@ import { RolesGuard } from './auth/roles.guard';
 import { LikesModule } from './likes/likes.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { CommentsModule } from './comments/comments.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
 	imports: [
@@ -23,6 +24,20 @@ import { CommentsModule } from './comments/comments.module';
 			isGlobal: true,
 			envFilePath: '.env',
 		}),
+		MailerModule.forRoot({
+			transport: {
+				host: process.env.MAIL_HOST,
+				port: Number(process.env.MAIL_PORT),
+				auth: {
+					user: process.env.MAIL_USER,
+					pass: process.env.MAIL_PASS,
+				},
+			},
+			defaults: {
+				from: '"Libftea" <noreply@libftea.com>',
+				},
+		}),
+
 		PrismaModule,
 		AuthModule,
 		FriendsModule,
@@ -35,6 +50,7 @@ import { CommentsModule } from './comments/comments.module';
 
 		ModerationModule,
 	],
+
 	controllers: [AppController],
 	providers: [
 		AppService,

@@ -66,6 +66,10 @@ export class AuthService {
 			throw new UnauthorizedException('Incorrect password');
 		}
 
+		if (user.bannedAt) {
+			throw new UnauthorizedException('Your account has been banned');
+		}
+
 		return this.generateToken(user.id, user.role, user.username);
 	}
 
@@ -92,6 +96,7 @@ export class AuthService {
 				email: true,
 				username: true,
 				createdAt: true,
+				bannedAt: true,
 				role: true,
 				profile: {
 					select: {
@@ -113,6 +118,10 @@ export class AuthService {
 				},
 			},
 		});
+		
+		if (!user || user.bannedAt) {
+        	throw new UnauthorizedException('Your account has been banned');
+    }
 
 		// Fetch friends (accepted friendships)
 		const friendships = await this.prisma.friendship.findMany({
