@@ -6,7 +6,7 @@ import { InternalServerErrorException, HttpException, NotFoundException } from '
 import { HandleReportDto } from './dto/handleReport.dto';
 import { ReportDto } from './dto/report.dto';
 import { ModerationLogType } from '@prisma/client';
-import { MailService } from 'src/email/email.service';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class ModerationService {
@@ -131,9 +131,16 @@ async updateModRole(
 }
 
 	// ---------------------------------- HANDLE REPORTS ----------------------------------
-async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role) {
+	async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role) {
 		try {
-			const actor = await this.prisma.user.findUnique({ where: { id: userId } });
+			const actor = await this.prisma.user.findUnique({
+				where: { id: userId },
+				select: {
+					username: true,
+					email: true,
+					bannedAt: true,
+				},
+			});
 			if (!actor) {
 				throw new NotFoundException('User not found');
 			}
@@ -231,16 +238,33 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 			// Send email to banned user after transaction completes
 			if (bannedUserData) {
 				try {
-					await this.mailService.sendMail(
+					await this.mailService.sendBanReportNotification(
 						bannedUserData.email,	
-						'Your account has been banned',
-						`Hello ${bannedUserData.username},\n\nYour account has been banned upon review of a report.\n\nIf you think this is a mistake, please contact us.\n\nThe MyApp team`,
+						bannedUserData.username,
 					);
 				} catch (mailError) {
 					console.error('Error sending ban notification email:', mailError);
 				}
 			}
 
+			// Send email to the reporter to inform them on the report handle
+			const reporter = await this.prisma.user.findUnique({
+				where: { id: report.reporterId },
+				select: { username: true, email: true },
+			});
+			if (reporter) {
+				await this.mailService.sendReportUpdate(
+					reporter.username,
+					reporter.email,
+					{
+						id: report.id,
+						reportCategory: report.reportCategory,
+						reportDescription: report.reportDescription,
+						status: ReportStatus.ACCEPTED,
+						moderatorMessage: dto.moderatorMessage,
+					},
+				);
+			}
 			return true;
 		} catch (error) {
 			if (error instanceof HttpException) throw error;
@@ -251,7 +275,15 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 
 	async rejectReport(reportId: number, dto: HandleReportDto, userId: number, userRole: Role) {
 		try {
-			const actor = await this.prisma.user.findUnique({ where: { id: userId } });
+			const actor = await this.prisma.user.findUnique({
+				where: { id: userId },
+				select: {
+					username: true,
+					email: true,
+					bannedAt: true,
+				},
+			});
+
 			if (!actor) {
 				throw new NotFoundException('User not found');
 			}
@@ -285,11 +317,6 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 							handledAt: new Date(),
 						},
 					});
-					// Soft delete the post
-					await prisma.post.update({
-						where: { id: report.reportedPostId },
-						data: { deletedAt: new Date() },
-					});
 					// Log post report review
 					await prisma.moderationLog.create({
 						data: {
@@ -317,13 +344,31 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 							targetUserId: report.reportedUserId,
 						},
 					});
-				}
+				}	
 			});
+			// Send email to the reporter to inform them on the report handle
+			const reporter = await this.prisma.user.findUnique({
+				where: { id: report.reporterId },
+				select: { username: true, email: true },
+			});
+			if (reporter) {
+				await this.mailService.sendReportUpdate(
+					reporter.username,
+					reporter.email,
+					{
+						id: report.id,
+						reportCategory: report.reportCategory,
+						reportDescription: report.reportDescription,
+						status: ReportStatus.REJECTED,
+						moderatorMessage: dto.moderatorMessage,
+					},
+				);
+			}
 			return true;
 		} catch (error) {
 			if (error instanceof HttpException) throw error;
 			console.error('Error rejecting report:', error);
-			throw new InternalServerErrorException('Could not rejecting report');
+			throw new InternalServerErrorException('Could not reject report');
 		}
 	}
 
@@ -589,10 +634,9 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 				return updateUser;
 			});
 			
-			await this.mailService.sendMail(
+			await this.mailService.sendBanNotification(
 				targetUser.email,	
-				'Your account has been banned',
-				`Hello ${targetUser.username},\n\nYour account has been banned.\n\nIf you think this is a mistake, please contact us.\n\nThe MyApp team`,
+				targetUser.username,
 			);
 			
 			return bannedUser;
@@ -603,7 +647,7 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 		}
 	}
 
-		async unbanUser(targetId: number, userId: number, userRole: Role) {
+	async unbanUser(targetId: number, userId: number, userRole: Role) {
 		try {
 			const actor = await this.prisma.user.findUnique({ where: { id: userId } });
 			if (!actor) {
@@ -670,6 +714,11 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 				return updateUser;
 			});
 
+			//
+			await this.mailService.sendUnbanNotification(
+				unbannedUser.email,	
+				unbannedUser.username,
+			);
 			return unbannedUser;
 		} catch (error) {
 			if (error instanceof HttpException) throw error;
@@ -682,7 +731,15 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 
 	async reportUser(userId: number, dto: ReportDto, currentUserId: number) {
 		try {
-			const reporter = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+			const reporter = await this.prisma.user.findUnique({ 
+				where: { id: currentUserId },
+				select: {
+					username: true,
+					email: true,
+					bannedAt: true,
+				},
+			});
+
 			if (!reporter) {
 				throw new NotFoundException('User not found');
 			}
@@ -750,6 +807,16 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 
 				return createdReport;
 			});
+
+			await this.mailService.sendReportConfirmation(
+				reporter.email,
+				reporter.username,
+				{
+					id: report.id,
+					reportCategory: report.reportCategory,
+					reportDescription: report.reportDescription,
+				},
+			);
 			return report;
 		} catch (error) {
 			if (error instanceof HttpException) throw error;
@@ -1127,7 +1194,15 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 
 	async reportPost(postId: number, dto: ReportDto, currentUserId: number) {
 		try {
-			const reporter = await this.prisma.user.findUnique({ where: { id: currentUserId } });
+			const reporter = await this.prisma.user.findUnique({ 
+				where: { id: currentUserId },
+				select: {
+					username: true,
+					email: true,
+					bannedAt: true,
+				},
+			});
+
 			if (!reporter) {
 				throw new NotFoundException('User not found');
 			}
@@ -1192,8 +1267,20 @@ async acceptReport(reportId: number, dto: HandleReportDto, userId: number, userR
 						where: { id: existingFriendship.id },
 					});
 				}
+
 				return createdReport;
 			});
+
+			await this.mailService.sendReportConfirmation(
+				reporter.email,
+				reporter.username,
+				{
+					id: report.id,
+					reportCategory: report.reportCategory,
+					reportDescription: report.reportDescription,
+				},
+			);
+
 			return report;
 		} catch (error) {
 			if (error instanceof HttpException) throw error;

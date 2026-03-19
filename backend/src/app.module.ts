@@ -17,6 +17,8 @@ import { LikesModule } from './likes/likes.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { CommentsModule } from './comments/comments.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import * as path from 'path';
 
 @Module({
 	imports: [
@@ -35,7 +37,14 @@ import { MailerModule } from '@nestjs-modules/mailer';
 			},
 			defaults: {
 				from: '"Libftea" <noreply@libftea.com>',
+			},
+			template: {
+				dir: path.join(__dirname, '..', '..', 'src', 'mail', 'templates'),
+				adapter: new HandlebarsAdapter(),
+				options: {
+					strict: false,
 				},
+			},
 		}),
 
 		PrismaModule,
