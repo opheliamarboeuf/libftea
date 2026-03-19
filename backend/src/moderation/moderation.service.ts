@@ -985,6 +985,7 @@ async updateModRole(
 					reportedUserId: { not: null },
 					status: ReportStatus.ASSIGNED,
 					handledById: userId,
+					reportedUser: { bannedAt: null },
 				},
 				select: {
 					id: true,
@@ -1061,6 +1062,7 @@ async updateModRole(
 				where: {
 					reportedUserId: { not: null },
 					status: ReportStatus.ASSIGNED,
+					reportedUser: { bannedAt: null },
 				},
 				select: {
 					id: true,
@@ -1351,49 +1353,50 @@ async updateModRole(
 				where: {
 					reportedPostId: { not: null },
 					status: ReportStatus.PENDING,
-				},
-				select: {
-					id: true,
-					reporter: { select: { id: true, username: true } },
-					reportedPost: {
-						select: {
-							id: true,
-							title: true,
-							imageUrl: true,
-							caption: true,
-							createdAt: true,
-							author: { select: { id: true, username: true } },
-						},
+				reportedPost: { author: { bannedAt: null } },
+			},
+			select: {
+				id: true,
+				reporter: { select: { id: true, username: true } },
+				reportedPost: {
+					select: {
+						id: true,
+						title: true,
+						imageUrl: true,
+						caption: true,
+						createdAt: true,
+						author: { select: { id: true, username: true } },
 					},
-					reportCategory: true,
-					reportDescription: true,
-					createdAt: true,
-					status: true,
-					handledBy: { select: { id: true, username: true } },
 				},
-			});
+				reportCategory: true,
+				reportDescription: true,
+				createdAt: true,
+				status: true,
+				handledBy: { select: { id: true, username: true } },
+			},
+		});
 
-			// Get all ASSIGNED reports for this post
-			const assignedReports = await this.prisma.report.findMany({
-				where: {
-					reportedPostId: { not: null },
-					status: ReportStatus.ASSIGNED,
-				},
-				select: {
-					reportedPost: { select: { id: true } },
-				},
-			});
-			// Create a set if postIds already assigned
-			const assignedPostIds = new Set(assignedReports.map((r) => r.reportedPost.id));
+		// Get all ASSIGNED reports for this post
+		const assignedReports = await this.prisma.report.findMany({
+			where: {
+				reportedPostId: { not: null },
+				status: ReportStatus.ASSIGNED,
+			},
+			select: {
+				reportedPost: { select: { id: true } },
+		},
+	});
+	// Create a set if postIds already assigned
+	const assignedPostIds = new Set(assignedReports.map((r) => r.reportedPost.id));
 
-			// Filter PENDING reports to exclude those whose post has already been assigned
-			const filteredPendingReports = pendingReports.filter(
-				(report) => !assignedPostIds.has(report.reportedPost.id),
-			);
+	// Filter PENDING reports to exclude those whose post has already been assigned
+	const filteredPendingReports = pendingReports.filter(
+		(report) => !assignedPostIds.has(report.reportedPost.id),
+	);
 
-			// Keep one report per post
-			const seenPostIds = new Set<number>();
-			const uniqueReports = [];
+	// Keep one report per post
+	const seenPostIds = new Set<number>();
+	const uniqueReports = [];
 			// Loop through each report in the list of filtered pending reports.
 			for (const report of filteredPendingReports) {
 				const postId = report.reportedPost.id;
@@ -1441,6 +1444,7 @@ async updateModRole(
 					reportedPostId: { not: null },
 					status: ReportStatus.ASSIGNED,
 					handledById: userId,
+					reportedPost: { author: { bannedAt: null } },
 				},
 				select: {
 					id: true,
@@ -1507,6 +1511,7 @@ async updateModRole(
 				where: {
 					reportedPostId: { not: null },
 					status: ReportStatus.ASSIGNED,
+					reportedPost: { author: { bannedAt: null } },
 				},
 				select: {
 					id: true,
