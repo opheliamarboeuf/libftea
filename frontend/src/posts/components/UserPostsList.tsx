@@ -56,7 +56,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				)}
 				{(post as any).isWinner && (
 					<div className="winner-container">
-					<h3 className="winner-badge">Last week's winner 💅🏼</h3>
+					<h3 className="winner-badge">{t('tournament.lastweek')} 💅🏼</h3>
 					</div>
 				)}
 				</div>

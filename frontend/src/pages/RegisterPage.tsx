@@ -37,6 +37,13 @@ const RegisterPage = () => {
 	const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) =>{
 		setPassword(e.target.value);
 	}
+
+	const errorMessages = (message: string): string => {
+		if (message.includes("email")) return 'errors.email';
+		if (message.includes("password")) return 'errors.pswnotstrong';
+		if (message.includes("already exists")) return 'errors.exists';
+		return 'errors.failed';
+	}
 	
 	// Handle form submission
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) =>{
@@ -59,9 +66,9 @@ const RegisterPage = () => {
 
 			if (!res.ok){	// based on a NestJS error structure
 				if (Array.isArray(data.message)){ // if it's an Array, set the message of the first array in errorMessage
-					setErrorMessage(data.message[0]);} 
+					setErrorMessage(t(errorMessages(data.message[0])));} 
 				else {
-					setErrorMessage(data.message || "Registration Failed") // if it is a string, set "Registration Failed" is the string is empty
+					setErrorMessage(t(errorMessages(data.message || ""))) // if it is a string, set "Registration Failed" is the string is empty
 				}
 				return ;
 			}

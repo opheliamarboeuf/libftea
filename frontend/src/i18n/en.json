@@ -115,7 +115,8 @@
 		"no": "No",
 		"privacy": "Privacy policy",
 		"terms": "Terms of service",
-		"back": "Back to login page"
+		"back": "Back to login page",
+		"confirm": "Confirm"
 	},
 
 	"feedpage": {
@@ -177,5 +178,14 @@
 		"logs": "Moderation Logs",
 		"nologs": "No logs available",
 		"action": "<0>{{action}}</0> by {{username}} on {{date}}"
+	},
+
+	"errors": {
+		"email": "Please enter a valid email address",
+		"exists": "Email or username already exists",
+		"notfound": "User not found",
+		"pswincorrect": "Incorrect password",
+		"pswnotstrong": "Password is not strong enough",
+		"failed": "Registration failed"
 	}
 }

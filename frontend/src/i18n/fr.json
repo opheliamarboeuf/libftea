@@ -114,7 +114,8 @@
 		"no": "Non",
 		"privacy": "Politique de confidentialité",
 		"terms": "Conditions de Service",
-		"back": "Retour à la page de connexion"
+		"back": "Retour à la page de connexion",
+		"confirm": "Confirmer"
 	},
 
 	"feedpage": {
@@ -175,5 +176,14 @@
 		"logs": "Logs de modération",
 		"nologs": "Pas de log disponible",
 		"action": "<0>{{action}}</0> par {{username}} le {{date}}"
+	},
+
+	"errors": {
+		"email": "Veuillez fournir une adresse email valide",
+		"exists": "Ce nom d'utilisateur ou adresse email existe déjà",
+		"notfound": "Utilisateur introuvable",
+		"pswincorrect": "Mot de passe incorrect",
+		"pswnotstrong": "Le mot de passe n'est pas assez fort",
+		"failed": "Échec de l'inscription"
 	}
 }
