@@ -1,11 +1,13 @@
-import { Injectable, BadRequestException, ForbiddenException, NotFoundException, Inject } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException, NotFoundException, Inject, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Friendship, User, Post, Comment } from '@prisma/client';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class CommentsService {
     constructor (
         private readonly prisma: PrismaService,
+		private readonly notificationsService: NotificationsService,
     ) {}
 
     async createComment(
@@ -13,55 +15,77 @@ export class CommentsService {
 		userId: number,
         content: string,
 	) {
-        const post = await this.prisma.post.findUnique({
-			where: { id: postId },
-		});
-
-		if (!post) {
-			throw new NotFoundException('Post not found');
-		}
-
-        return this.prisma.comment.create({
-				data: {
-                    content,
-					userId,
-					postId,
-				},
-                include: {
-                    User: true,
-                    replies: true,
-                }
+		try {
+			const post = await this.prisma.post.findUnique({
+				where: { id: postId },
 			});
+
+			if (!post) {
+				throw new NotFoundException('Post not found');
+			}
+
+			const comment = await this.prisma.comment.create({
+					data: {
+						content,
+						userId,
+						postId,
+					},
+					include: {
+						User: true,
+						replies: true,
+					}
+			});
+
+			//notification
+			const commenter = await this.prisma.user.findUnique({
+				where: { id: userId },
+			});
+			if (userId !== post.authorId) {
+				await this.notificationsService.notifyPostCommented(post.authorId, commenter.username);
+			}
+
+			return comment;
+		} catch (err) {
+			console.log("Error creating comment:", err);
+			throw new InternalServerErrorException("Could not create comment");
+		}
+        
     }
 
     async deleteComment(
 		commentId: number,
 		userId: number,
 	) {
-        const comment = await this.prisma.comment.findUnique({
-			where: { id: commentId },
-            include: { replies: true },
-		});
-
-		if (!comment) {
-			throw new NotFoundException('Comment not found');
-		}
-
-        if (comment.userId !== userId) {
-            throw new ForbiddenException('You cannot delete this comment');
-        }
-
-        if (comment.replies && comment.replies.length > 0) {
-            await this.prisma.comment.deleteMany({
-                where: { parentId: commentId },
-            });
-        }
-
-        await this.prisma.comment.delete({
+		try {
+			const comment = await this.prisma.comment.findUnique({
 				where: { id: commentId },
-		});
+				include: { replies: true },
+			});
+
+			if (!comment) {
+				throw new NotFoundException('Comment not found');
+			}
+
+			if (comment.userId !== userId) {
+				throw new ForbiddenException('You cannot delete this comment');
+			}
+
+			if (comment.replies && comment.replies.length > 0) {
+				await this.prisma.comment.deleteMany({
+					where: { parentId: commentId },
+				});
+			}
+
+			await this.prisma.comment.delete({
+					where: { id: commentId },
+			});
+			
+			return { success: true, deletedId: commentId };
+		} catch (err) {
+			console.log("Error deleting:", err);
+			throw new InternalServerErrorException("Could not delete comment");
+		}
         
-        return { success: true, deletedId: commentId };
     }
 
     async replyComment(
@@ -69,30 +93,55 @@ export class CommentsService {
 		userId: number,
         content: string,
 	) {
-        const parentComment = await this.prisma.comment.findUnique({
-            where: { id: parentCommentId },
-        });
+		try {
+			const parentComment = await this.prisma.comment.findUnique({
+				where: { id: parentCommentId },
+			});
 
-        if (!parentComment) {
-            throw new NotFoundException('Comment not found');
-        }
+			if (!parentComment) {
+				throw new NotFoundException('Comment not found');
+			}
 
-        if (parentComment.parentId !== null) {
-            throw new BadRequestException('Cannot reply to a reply');
-        }
+			if (parentComment.parentId !== null) {
+				throw new BadRequestException('Cannot reply to a reply');
+			}
 
-        return this.prisma.comment.create({
-            data: {
-                content,
-                userId,
-                postId: parentComment.postId,
-                parentId: parentCommentId,
-            },
-            include: {
-                User: true,
-                replies: true,
-            },
-        });
+			const reply = await this.prisma.comment.create({
+				data: {
+					content,
+					userId,
+					postId: parentComment.postId,
+					parentId: parentCommentId,
+				},
+				include: {
+					User: true,
+					replies: true,
+				},
+			});
+
+			//notification
+			const commenter = await this.prisma.user.findUnique({
+				where: { id: userId },
+			});
+			const recipient = await this.prisma.user.findUnique({
+				where: { id: parentComment.userId },
+			});
+			const post = await this.prisma.post.findUnique({
+				where: { id: parentComment.postId },
+			});
+			if (userId !== parentComment.userId) {
+				await this.notificationsService.notifyCommentReplied(recipient.id, commenter.username);
+			}
+			if (userId !== post.authorId) {
+				await this.notificationsService.notifyPostCommented(post.authorId, commenter.username);
+			}
+
+			return reply;
+		} catch (err) {
+			console.log("Error replying to comment:", err);
+			throw new InternalServerErrorException("Could not reply to comment");
+		}
+        
     }
 
     async getComments(postId: number, currentUserId: number) {

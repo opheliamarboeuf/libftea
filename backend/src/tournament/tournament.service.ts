@@ -4,10 +4,14 @@ import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { JoinTournamentDto } from './dto/join-tournament.dto';
 import { hasPermission } from 'src/auth/permissions';
 import { Role } from '@prisma/client';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class TournamentService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly notificationsService: NotificationsService,
+	) {}
 	// async = attend une reponse lente
 	async createTournament(data: CreateTournamentDto, userId: number, userRole: Role){
 		if ( !hasPermission(userRole, "CREATE_TOURNAMENT"))
@@ -39,6 +43,7 @@ export class TournamentService {
 						startsAt: new Date(data.startDate),
 						endsAt: new Date(data.endDate),
 						createdById: userId,
+						NotifSent: false,
 					},
 				});
 				await prisma.moderationLog.create({
@@ -50,6 +55,7 @@ export class TournamentService {
 				});
 				return newBattle;
 			});
+
 			return battle;
 		}
 		catch (error)
@@ -207,7 +213,52 @@ export class TournamentService {
 				winnerId: winningPost.authorId,
 			}
 		});
+<<<<<<< HEAD
 		return winningPost;
+=======
+
+		//notification
+		const winner = await this.prisma.user.findUnique({
+			where: { id: forTheWin.authorId },
+		});
+
+		if (!winner) {
+			throw new NotFoundException("Winner user not found");
+		}
+
+		await this.notificationsService.notifyBattleWinner(forTheWin.authorId, battle.theme);
+
+		const participants = await this.prisma.battleParticipant.findMany({
+				where: { battleId },
+				select: { userId: true },
+		});
+
+		const participantsIds = participants.map(p => p.userId).filter(id => id !== forTheWin.authorId);
+
+		await Promise.all(
+			participantsIds.map(userId =>
+				this.notificationsService.notifyTournamentParticipants(userId, battle.theme, winner.username)
+			)
+		);
+
+		return forTheWin;
+	}
+	async getLastTournamentWinner()
+	{
+		return this.prisma.battle.findFirst({
+			where: { status: "FINISHED" },
+			orderBy: { endsAt: "desc" },
+			include: {
+				winner: true,
+				BattleParticipant: {
+					include: {
+						post: true,
+						user: true,
+					}
+				}
+			},
+		})
+>>>>>>> main
 	}
 
 	async getLastTournamentWinnerPost() {

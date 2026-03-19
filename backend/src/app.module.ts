@@ -16,6 +16,7 @@ import { RolesGuard } from './auth/roles.guard';
 import { LikesModule } from './likes/likes.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { CommentsModule } from './comments/comments.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CommentsModule } from './comments/comments.module';
 	TournamentModule,
 	LikesModule,
 	CommentsModule,
+	NotificationsModule,
 
 	ModerationModule,
   ],
