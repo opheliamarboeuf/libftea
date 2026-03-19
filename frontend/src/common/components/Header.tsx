@@ -17,7 +17,7 @@ export const Header = () => {
 	const { user, setUser, refreshUser } = useUser();
 	const API_URL = "http://localhost:3000";
 	const [menuHidden, setMenuHidden] = useState(false);
-	const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(user?.id);
+	const { notifications, unreadCount, markAsRead, markAllAsRead, getNotifMessage } = useNotifications(user?.id);
 	const [notifOpen, setNotifOpen] = useState(false);
 	const notifRef = useRef<HTMLDivElement | null>(null);
 	const { t } = useTranslation();
@@ -85,15 +85,15 @@ export const Header = () => {
 					</span>
 					{notifOpen && (
 						<div className="notif-dropdown">
-							<button onClick={markAllAsRead}>Clear notifications</button>
-							{notifications.length === 0 && <p>No notifications</p>}
+							<button onClick={markAllAsRead}>{t('notifications.clear')}</button>
+							{notifications.length === 0 && <p>{t('notifications.nonotif')}</p>}
 							{notifications.map((n) => (
 								<div
 									key={n.id}
 									className={`notif-item ${n.isRead ? 'read' : 'unread'}`}
 									onClick={() => markAsRead(n.id)}
 								>
-									{n.message}
+									{getNotifMessage(n)}
 								</div>
 							))}
 						</div>

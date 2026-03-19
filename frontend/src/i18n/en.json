@@ -141,6 +141,8 @@
 	},
 
 	"notifications": {
+		"clear": "Clear notifications",
+		"nonotif": "No notifications",
 		"like": "{{username}} liked your post",
 		"comment": "{{username}} commented on your post",
 		"replycomment": "{{username}} replied to your comment",
@@ -166,7 +168,8 @@
 		"today": "The tournament ends today!",
 		"tomorrow": "The tournament ends tomorrow!",
 		"days": "The tournament will be active for {{count}} more days, until {{date}}",
-		"changes": "Looks like you've made some changes. Are you sure you want to exit without saving?"
+		"changes": "Looks like you've made some changes. Are you sure you want to exit without saving?",
+		"lastweek": "Last week's winner"
 	},
 
 	"moderationlogs": {

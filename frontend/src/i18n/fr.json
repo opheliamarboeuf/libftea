@@ -140,12 +140,17 @@
 	},
 
 	"notifications": {
+		"clear": "Supprimer les notifications",
+		"nonotif": "Pas de notifications",
 		"like": "{{username}} a liké votre post",
 		"comment": "{{username}} a écrit un commentaire sur votre post",
 		"replycomment": "{{username}} a répondu à votre commentaire",
 		"friendrequest": "{{username}} vous a envoyé une demande en ami",
 		"friendaccept": "{{username}} a accepté votre demande en ami",
-		"friendpost": "{{username}} a posté une tenue"
+		"friendpost": "{{username}} a posté une tenue",
+		"newbattle": "Un nouveau tournoi commence! Le thème est: {{theme}}",
+		"battlewinner": "Félicitations! Vous avez gagné le tournoi du thème: {{theme}}!",
+		"battleparticipants": "Merci d'avoir participé au tournoi thème {{theme}}. Le gagnant est {{username}}!"
 	},
 
 	"tournament": {
@@ -161,7 +166,8 @@
 		"today": "Le tournoi finit aujourd'hui!",
 		"tomorrow": "Le tournoi finit demain!",
 		"days": "Le tournoi sera actif pendant encore {{count}} jours, jusq'au {{date}}",
-		"changes": "Vous avez modifié le tournoi. Etes-vous sûr de vouloir quitter sans sauvegarder ?"
+		"changes": "Vous avez modifié le tournoi. Etes-vous sûr de vouloir quitter sans sauvegarder ?",
+		"lastweek": "Le gagnant de la semaine dernière"
 	},
 
 	"moderationlogs": {
