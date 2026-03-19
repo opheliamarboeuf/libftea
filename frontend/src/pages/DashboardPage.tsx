@@ -27,6 +27,16 @@ const DashboardPage = () => {
 	const activeTab = isModRoute ? 'MOD' : 'ADMIN';
 
 	if (!user) return <Navigate to="/" replace />;
+	
+	// Prevent unauthorized access to the wrong dashboard
+	const isOnAdminDash = location.pathname.startsWith('/dashboard/admin');
+	const isAdmin = user.role === 'ADMIN';
+	
+	if (isOnAdminDash && !isAdmin) {
+		// MOD trying to access admin dashboard
+		return <Navigate to="/dashboard/mod/users/all" replace />;
+	}
+	
 	// display Admin Dashboard by default if the user is an Admin
 	if (location.pathname === '/dashboard') {
 		const lastPage = localStorage.getItem(DASHBOARD_PAGE_KEY);
