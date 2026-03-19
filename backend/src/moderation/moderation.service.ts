@@ -614,13 +614,13 @@ async updateModRole(
 				// Soft-delete comments
 				await tx.comment.updateMany({
 					where: { userId: targetId, deletedAt: null },
-					data: { deletedAt: new Date() },
+					data: { deletedAt: new Date(),  bannedDeletion: true },
 				});
 
 				// 3. Soft-delete posts
 				await tx.post.updateMany({
 					where: { authorId: targetId, deletedAt: null },
-					data: { deletedAt: new Date() },
+					data: { deletedAt: new Date(), bannedDeletion: true},
 				});
 
 				// 4. Add log
@@ -679,7 +679,7 @@ async updateModRole(
 			}
 
 			if (!targetUser.bannedAt) {
-				throw new BadRequestException('User has already been unbanned');
+				throw new BadRequestException('User is not banned');
 			}
 
 			const unbannedUser = await this.prisma.$transaction(async (tx) => {
@@ -689,17 +689,22 @@ async updateModRole(
 					data: {
 						bannedAt: null,
 					},
+					select: {
+						id: true,
+						email: true,
+						username: true,
+					},
 				});
 				// Cancel soft-delete for comments
 				await tx.comment.updateMany({
-					where: { userId: targetId, deletedAt: { not: null } },
-					data: { deletedAt: null },
+					where: { userId: targetId, bannedDeletion: true},
+					data: { deletedAt: null,  bannedDeletion: false},
 				});
 
 				// 3. Cancel soft-delete for posts
 				await tx.post.updateMany({
-					where: { authorId: targetId, deletedAt: { not: null } },
-					data: { deletedAt: null},
+					where: { authorId: targetId, bannedDeletion: true },
+					data: { deletedAt: null,  bannedDeletion: false},
 				});
 
 				// 4. Add log

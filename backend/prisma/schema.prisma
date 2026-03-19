@@ -151,6 +151,7 @@ model	Comment {
 	content		String
 	createdAt	DateTime	@default(now())
 	deletedAt   DateTime?
+	bannedDeletion    Boolean 			  @default(false)
 
 	userId		Int
 	postId		Int
@@ -257,6 +258,7 @@ model Post {
 	title             String
 	updatedAt         DateTime            @default(now())
 	deletedAt		  DateTime?
+	bannedDeletion    Boolean 			  @default(false)
 	battleParticipants BattleParticipant[]
 	Comment           Comment[]
 	Like              Like[]
