@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useConversations } from '../hooks/useConversations';
-import { ChatWindow } from '../components/ChatWindow';
+import { useConversations } from '../chat/components/hooks/useConversations';
+import { ChatWindow } from '../chat/components/ChatWindow';
 import { useUser } from "../context/UserContext";
 
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useChat } from '../hooks/useChat';
+import { useChat } from './hooks/useChat';
 
 interface Props {
   conversationId: number;
