@@ -2,56 +2,74 @@ Terms of Service – Libftea
 
 Last updated: March 17, 2026
 
-Welcome to Libftea, a fictional site created for an educational project. By using this site, you agree to these Terms of Service.
+1. Acceptance of Terms
 
-⚠️ Note: This is a student project, not a real commercial service.
+By creating an account and accessing Libftea, you agree to be bound by these Terms of Service. If you do not agree to these terms, you may not use the platform.
 
-1. Using the Site
+2. Description of Service
 
-You can use Libftea to:
+Libftea is a social platform that allows users to:
 
-- Explore site features
-- Test forms and interactions
-- Have fun navigating a simulated environment
+- Share outfit photos and styled looks
+- Follow friends and interact with their content via likes and comments
+- Exchange messages through the chat feature
+- Participate in style tournaments by submitting photos and voting
 
-You must not:
+3. Account Registration
 
-- Submit real sensitive information
-- Attempt to hack or damage the site
-- Use the site for commercial purposes
+You must register an account to access the platform. You agree to:
 
-2. Site Content
+- Provide accurate and truthful information upon registration
+- Keep your login credentials confidential
+- Be solely responsible for all activity that occurs under your account
+- Notify us immediately if you suspect unauthorized use of your account
 
-All content on Libftea (text, images, code) is fictional and for educational purposes only.
+4. User Content
 
-- Do not copy content for commercial use without permission
-- Features or results on the site may be incomplete or inaccurate
+You retain ownership of the content you post on Libftea. By posting content, you grant Libftea a non-exclusive license to display that content to other users of the platform.
 
-3. Accounts & Security
+You are solely responsible for the content you share. You agree not to post content that:
 
-If the project includes user accounts:
+- Infringes on the intellectual property rights of others
+- Is offensive, abusive, threatening, or discriminatory
+- Contains nudity or sexually explicit material
+- Promotes violence or illegal activities
+vImpersonates another person or entity
 
-- Use only fictional information
-- Libftea does not guarantee data security
-- You are responsible for keeping your login information safe
+5. Prohibited Conduct
 
-4. Limitation of Liability
+You agree not to:
 
-Libftea is provided “as is.”
+- Use the platform for any unlawful purpose
+- Attempt to gain unauthorized access to other accounts or the platform's systems
+- Harass, bully, or intimidate other users
+- Use automated scripts or bots to interact with the platform
+- Upload malicious code or attempt to disrupt the service
 
-- We do not guarantee perfect functionality
-- The creator is not responsible for any direct or indirect damage from using the site
-- This site is not intended for real or commercial use
+6. Tournaments
 
-5. Changes to the Service
+Libftea organizes style tournaments open to all registered users. By participating, you agree that:
 
-The site and these Terms may change at any time during the project.
-Changes take effect immediately without notice.
+- The winning post is determined by the number of likes received
+- Libftea reserves the right to moderate or remove any submission that violates these Terms
+- Tournament results are final once determined by the platform
 
-6. Contact
+7. Moderation & Account Termination
 
-For questions or feedback, contact the project author (aka the caffeine-powered student ☕).
+Libftea reserves the right to remove any content or suspend any account that violates these Terms of Service, without prior notice. Repeated or severe violations may result in permanent account deletion.
 
----
+8. Intellectual Property
 
-Libftea – Where the code (maybe) compiles, but the tea is always hot!
+All platform elements including the name, logo, design, and code of Libftea are the property of the development team. You may not reproduce or reuse any part of the platform without explicit permission.
+
+9. Limitation of Liability
+
+Libftea is a student project provided as-is. We do not guarantee uninterrupted or error-free service. We shall not be held liable for any loss of data, service interruption, or damages arising from the use of the platform.
+
+10. Changes to These Terms
+
+These Terms of Service may be updated at any time. Continued use of the platform following any changes constitutes your acceptance of the revised terms.
+
+11. Contact
+
+For any questions regarding these Terms of Service, please contact the Libftea development team at: libftea@student.42.fr

@@ -1,83 +1,69 @@
-Politique de confidentialité – Libftea
+Politique de Confidentialité – Libftea
 
-Dernière mise à jour: 17 mars 2026
-
-Bienvenue sur Libftea, un projet fictif créé à des fins éducatives. Cette politique de confidentialité explique comment nous (pas vraiment) collectons, utilisons et protégeons vos informations lorsque vous interagissez avec notre site.
+Dernière mise à jour : 17 mars 2026
 
 1. Introduction
 
-Libftea est un projet scolaire et ne représente pas un service commercial réel. Toutes les données collectées sur ce site sont minimales, simulées ou utilisées uniquement à des fins de démonstration.
+Libftea est une plateforme sociale permettant aux utilisateurs de partager des photos de tenues, d'interagir avec leurs amis, de commenter et liker des publications, et de participer à des tournois de style. Cette politique de confidentialité explique quelles données personnelles nous collectons, comment nous les utilisons et comment nous les protégeons.
+En créant un compte et en utilisant Libftea, vous acceptez les pratiques décrites dans cette politique.
 
-2. Informations collectées
+2. Informations que nous collectons
 
-Selon l’implémentation du site, nous pouvons collecter :
+Informations que vous fournissez directement :
 
-- Des informations de base (ex : nom, email) via des formulaires  
-- Des données techniques (type de navigateur, appareil, adresse IP)  
-- Des données d’utilisation (pages visitées, temps passé)
+- Nom d'utilisateur et adresse e-mail lors de l'inscription
+- Informations de profil telles que l'avatar et le nom d'affichage
+- Photos et légendes que vous publiez
+- Messages envoyés via la fonctionnalité de chat
+- Commentaires et likes sur les publications
 
-⚠️ Dans la plupart des cas, ces données ne sont pas stockées de manière permanente et servent uniquement à tester des fonctionnalités.
+Informations collectées automatiquement :
 
-3. Utilisation des informations
+- Adresse IP et informations sur l'appareil/navigateur
+- Horodatages de connexion et données de session
 
-Les informations collectées peuvent être utilisées pour :
 
-- Démontrer le fonctionnement des formulaires et du backend  
-- Améliorer la structure et l’ergonomie du projet  
-- Simuler le comportement d’une application réelle  
+3. Utilisation de vos informations
 
-Aucune donnée n’est utilisée à des fins marketing, de profilage ou commerciales.
+Nous utilisons les données collectées pour :
+
+- Créer et gérer votre compte
+- Afficher vos publications, profil et interactions aux autres utilisateurs
+- Activer le chat en temps réel et les notifications
+- Gérer les tournois et déterminer les gagnants
+- Assurer la sécurité et le bon fonctionnement de la plateforme
+
 
 4. Partage des données
 
-Nous ne vendons, n’échangeons et ne partageons aucune donnée personnelle avec des tiers.
+Nous ne vendons ni ne partageons vos données personnelles avec des tiers. Votre contenu (publications, nom d'utilisateur, photo de profil) est visible par les autres utilisateurs inscrits de la plateforme, conformément à la nature sociale du service.
 
-Dans le cadre du projet :
+5. Stockage et sécurité des données
 
-- Les données peuvent être accessibles aux enseignants ou évaluateurs  
-- Les données peuvent être stockées localement ou sur des serveurs temporaires  
+Vos données sont stockées sur un serveur de développement local. Nous mettons en œuvre des mesures de sécurité standard, notamment l'authentification par JWT et des routes API protégées. Libftea étant un projet étudiant, nous déconseillons de soumettre des informations personnelles sensibles au-delà de ce qui est nécessaire pour utiliser la plateforme.
 
-5. Sécurité des données
+6. Cookies et sessions
 
-Nous prenons des mesures raisonnables (dans le cadre d’un projet étudiant) pour protéger les données. Cependant :
+Libftea utilise des tokens JWT stockés dans le localStorage de votre navigateur pour maintenir votre session. Ceux-ci sont strictement nécessaires à l'authentification et ne sont pas utilisés à des fins publicitaires ou de suivi intersites.
 
-- Ce n’est pas un système en production  
-- Les mesures de sécurité peuvent être limitées ou incomplètes  
+7. Vos droits
 
-Veuillez ne pas soumettre d’informations sensibles ou réelles.
+Vous avez le droit de :
 
-6. Cookies
+- Accéder aux données personnelles associées à votre compte
+- Demander la correction ou la suppression de vos données
+- Supprimer votre compte et le contenu associé
 
-Libftea peut utiliser des cookies ou technologies similaires pour :
-
-- Simuler des sessions  
-- Améliorer l’expérience utilisateur  
-
-Ces cookies ne sont pas utilisés à des fins de suivi ou de publicité.
-
-7. Droits des utilisateurs
-
-Étant donné qu’il ne s’agit pas d’un service réel, les droits formels (RGPD, etc.) ne sont pas entièrement implémentés. Cependant, vous pouvez :
-
-- Éviter de fournir des données personnelles  
-- Demander la suppression de données de test (si applicable)
+Pour exercer ces droits, veuillez nous contacter via les informations ci-dessous.
 
 8. Services tiers
 
-Ce projet peut inclure des outils, bibliothèques ou API externes à des fins de démonstration. Ces services peuvent avoir leurs propres politiques de confidentialité.
+Libftea peut utiliser des bibliothèques et outils open source pour assurer son fonctionnement. Ceux-ci ne collectent pas vos données personnelles de manière indépendante.
 
-9. Modifications
+9. Modifications de cette politique
 
-Cette politique de confidentialité peut être modifiée à tout moment dans le cadre du développement du projet.
+Cette politique peut être mise à jour au fur et à mesure de l'évolution du projet. Tout changement significatif sera reflété dans la date de « Dernière mise à jour » en haut de cette page.
 
 10. Contact
 
-Pour toute question concernant cette politique, vous pouvez contacter l’auteur du projet (aka l’étudiant stressé derrière Libftea 👀).
-
-11. Avertissement
-
-Libftea est un projet fictif et éducatif. Cette politique est fournie à titre d’exemple et ne constitue pas un avis juridique.
-
----
-
-*Merci de visiter Libftea – où le code compile (peut-être) et le thé est toujours chaud ☕*
+Pour toute question concernant cette politique de confidentialité ou vos données, veuillez contacter l'équipe de développement Libftea à : libftea@student.42.fr

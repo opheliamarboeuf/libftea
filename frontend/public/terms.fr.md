@@ -1,57 +1,80 @@
-Conditions de Service – Libftea
+Conditions Générales d'Utilisation – Libftea
 
-Dernière mise à jour: March 17, 2026
+Dernière mise à jour : 17 mars 2026
 
-Bienvenue sur Libftea, un site fictif créé dans le cadre d’un projet scolaire. En utilisant ce site, vous acceptez ces Conditions d’Utilisation.
+1. Acceptation des conditions
 
-⚠️ Note : Ce site est un projet éducatif et n’est pas un service commercial réel.
+En créant un compte et en accédant à Libftea, vous acceptez d'être lié par les présentes Conditions Générales d'Utilisation. Si vous n'acceptez pas ces conditions, vous ne pouvez pas utiliser la plateforme.
 
-1. Utilisation du Site
+2. Description du service
 
-Vous pouvez utiliser Libftea pour :
+Libftea est une plateforme sociale permettant aux utilisateurs de :
 
-- Explorer les fonctionnalités du site
-- Tester des interactions et des formulaires
-- Vous amuser à naviguer dans un environnement simulé
+- Partager des photos de tenues et de looks stylisés
+- Suivre des amis et interagir avec leur contenu via des likes et des commentaires
+- Échanger des messages via la fonctionnalité de chat
+- articiper à des tournois de style en soumettant des photos et en votant
 
-Vous n’êtes pas autorisé à :
 
-- Fournir des informations sensibles réelles
-- Tenter de pirater ou d’endommager le site
-- Utiliser le site pour des activités commerciales
+3. Inscription au compte
 
-2. Contenu du Site
+Vous devez créer un compte pour accéder à la plateforme. Vous vous engagez à :
 
-Tout le contenu de Libftea (textes, images, code) est fictif et fourni uniquement à des fins éducatives.
+- Fournir des informations exactes et véridiques lors de l'inscription
+- Garder vos identifiants de connexion confidentiels
+- Être seul responsable de toute activité effectuée depuis votre compte
+- Nous informer immédiatement en cas d'utilisation non autorisée de votre compte
 
-- Vous ne pouvez pas copier le contenu pour un usage commercial sans autorisation
-- Les résultats ou fonctionnalités du site peuvent être incomplets ou erronés
 
-3. Comptes et Sécurité
+4. Contenu utilisateur
 
-Si le projet inclut des comptes utilisateurs :
+Vous conservez la propriété du contenu que vous publiez sur Libftea. En publiant du contenu, vous accordez à Libftea une licence non exclusive pour afficher ce contenu aux autres utilisateurs de la plateforme.
 
-- Utilisez uniquement des informations fictives
-- Libftea ne garantit pas la sécurité des données
-- Vous êtes responsable de la confidentialité de vos identifiants
+Vous êtes seul responsable du contenu que vous partagez. Vous vous engagez à ne pas publier de contenu :
 
-4. Limitation de Responsabilité
+- Portant atteinte aux droits de propriété intellectuelle d'autrui
+- Offensant, abusif, menaçant ou discriminatoire
+- Contenant de la nudité ou du matériel à caractère sexuel explicite
+- Faisant la promotion de la violence ou d'activités illégales
+- Usurpant l'identité d'une autre personne ou entité
 
-Libftea est fourni “tel quel”.
 
-- Nous ne garantissons pas le fonctionnement parfait du site
-- Aucun dommage direct ou indirect causé par l’utilisation du site ne pourra être imputé au créateur
-- Ce site n’est pas destiné à un usage réel ou commercial
+5. Comportements interdits
 
-5. Modifications du Service
+Vous vous engagez à ne pas :
 
-Le site et ces Conditions peuvent changer à tout moment pendant le projet.
-Les modifications seront visibles immédiatement et sans préavis.
+- Utiliser la plateforme à des fins illégales
+- Tenter d'accéder sans autorisation à d'autres comptes ou aux systèmes de la plateforme
+- Harceler, intimider ou menacer d'autres utilisateurs
+- Utiliser des scripts automatisés ou des bots pour interagir avec la plateforme
+- Télécharger du code malveillant ou tenter de perturber le service
 
-6. Contact
 
-Pour toute question ou commentaire sur ce projet, contactez l’auteur (aka l’étudiant qui carbure au café ☕).
+6. Tournois
 
----
+Libftea organise des tournois de style ouverts à tous les utilisateurs inscrits. En participant, vous acceptez que :
 
-Libftea – Où le code compile (ou pas), mais le thé est toujours chaud !
+- La publication gagnante est déterminée par le nombre de likes reçus
+- Libftea se réserve le droit de modérer ou de supprimer toute soumission enfreignant les présentes conditions
+- Les résultats des tournois sont définitifs une fois déterminés par la plateforme
+
+
+7. Modération et résiliation de compte
+
+Libftea se réserve le droit de supprimer tout contenu ou de suspendre tout compte enfreignant les présentes Conditions Générales d'Utilisation, sans préavis. Des violations répétées ou graves peuvent entraîner la suppression définitive du compte.
+
+8. Propriété intellectuelle
+
+Tous les éléments de la plateforme, notamment le nom, le logo, le design et le code de Libftea, sont la propriété de l'équipe de développement. Vous ne pouvez pas reproduire ou réutiliser une partie de la plateforme sans autorisation explicite.
+
+9. Limitation de responsabilité
+
+Libftea est un projet étudiant fourni tel quel. Nous ne garantissons pas un service ininterrompu ou sans erreur. Nous ne saurions être tenus responsables de toute perte de données, interruption de service ou dommage découlant de l'utilisation de la plateforme.
+
+10. Modifications des conditions
+
+Les présentes Conditions Générales d'Utilisation peuvent être mises à jour à tout moment. L'utilisation continue de la plateforme après toute modification vaut acceptation des conditions révisées.
+
+11. Contact
+
+Pour toute question concernant les présentes Conditions Générales d'Utilisation, veuillez contacter l'équipe de développement Libftea à : libftea@student.42.fr

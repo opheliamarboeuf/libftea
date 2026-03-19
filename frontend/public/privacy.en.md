@@ -2,82 +2,68 @@ Privacy Policy – Libftea
 
 Last updated: March 17, 2026
 
-Welcome to Libftea, a fictional project created for educational purposes. This Privacy Policy explains how we (don’t really) collect, use, and protect your information when you interact with our website.
-
 1. Introduction
 
-Libftea is a school project and does not represent a real commercial service. Any data collected through this site is either minimal, simulated, or used strictly for demonstration purposes.
+Libftea is a social platform that allows users to share outfit photos, interact with friends, comment on and like posts, and participate in style tournaments. This Privacy Policy explains what personal data we collect, how we use it, and how we protect it.
+By creating an account and using Libftea, you agree to the practices described in this policy.
 
 2. Information We Collect
 
-Depending on how the site is implemented, we may collect:
+Information you provide directly:
 
-- Basic information (e.g., name, email) through forms
-- Technical data such as browser type, device, or IP address
-- Usage data (e.g., pages visited, time spent)
+- Username and email address upon registration
+- Profile information such as avatar and display name
+- Photos and captions you upload as posts
+- Messages sent through the chat feature
+- Comments and likes on posts
 
-⚠️ In most cases, this data is not stored permanently and may be used only for testing features.
+Information collected automatically:
 
-3. How We Use Information
+- IP address and device/browser information
+- Connection timestamps and session data
 
-Information collected may be used to:
 
-- Demonstrate form handling and backend functionality
-- Improve the structure and usability of the project
-- Simulate real-world web application behavior
+3. How We Use Your Information
 
-No data is used for marketing, profiling, or commercial purposes.
+We use the data collected to:
+
+- Create and manage your account
+- Display your posts, profile, and interactions to other users
+- Enable real-time chat and notifications
+- Run tournament features and determine winners
+- Ensure the security and proper functioning of the platform
+
 
 4. Data Sharing
 
-We do not sell, trade, or share your personal information with third parties.
+We do not sell or share your personal data with third parties. Your content (posts, username, profile picture) is visible to other registered users of the platform in accordance with the social nature of the service.
 
-Since this is a school project:
+5. Data Storage & Security
 
-- Data may be accessible to instructors or evaluators
-- Data may be stored locally or on temporary servers
+Your data is stored on a local development server. We implement standard security measures including JWT-based authentication and protected API routes. As Libftea is a student project, we advise against submitting sensitive personal information beyond what is necessary to use the platform.
 
-5. Data Security
+6. Cookies & Sessions
 
-We take reasonable steps (within the scope of a student project) to protect data. However:
+Libftea uses JWT tokens stored in your browser's local storage to maintain your session. These are strictly necessary for authentication and are not used for advertising or cross-site tracking.
 
-- This is not a production-grade system
-- Security measures may be limited or incomplete
+7. Your Rights
 
-Do not submit sensitive or real personal information.
+You have the right to:
 
-6. Cookies
+- Access the personal data associated with your account
+- Request correction or deletion of your data
+- Delete your account and associated content
 
-Libftea may use cookies or similar technologies to:
-
-- Simulate session handling
-- Improve user experience
-
-These cookies are not used for tracking or advertising.
-
-7. User Rights
-
-As this is not a real service, formal data rights (GDPR, etc.) are not fully implemented. However, you can:
-
-- Avoid submitting personal data
-- Request deletion of any test data (if applicable)
+To exercise these rights, please contact us via the information below.
 
 8. Third-Party Services
 
-This project may include external tools, libraries, or APIs for demonstration purposes. These services may have their own privacy policies.
+Libftea may use open-source libraries and tools to support its functionality. These do not collect your personal data independently.
 
 9. Changes to This Policy
 
-This Privacy Policy may be updated at any time as part of the project development process.
+This policy may be updated as the project evolves. Any significant changes will be reflected in the "Last updated" date at the top of this page.
 
 10. Contact
 
-For any questions regarding this policy, you can contact the project author (aka the stressed student behind Libftea 👀).
-
-11. Disclaimer
-
-Libftea is a fictional and educational project. This Privacy Policy is provided as an example and does not constitute legal advice.
-
----
-
-*Thanks for visiting Libftea – where the code compiles (hopefully) and the tea is always hot ☕*
+For any questions regarding this Privacy Policy or your data, please contact the Libftea development team at: libftea@student.42.fr
