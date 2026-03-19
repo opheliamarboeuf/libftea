@@ -17,7 +17,6 @@ export const LeftMenu = () => {
 	
 	return (
 		<>
-			{/* Overlay qui couvre tout l'écran sauf le menu */}
 			<div className={`menu-overlay ${isHovered ? 'active' : ''}`}></div>
 			
 			<div 
@@ -44,7 +43,6 @@ export const LeftMenu = () => {
 					<MdOutlineWorkspacePremium className="icon" />
 					<span className="label">Tournament</span>
 				</div>
-				{/* Only show Dashboard if user is ADMIN or MOD */}
 				{user.role === "ADMIN" || user.role === "MOD" ? (
 				<div className="menu-item" onClick={() => navigate("/dashboard")}>
 					<MdOutlineDashboard className="icon" />

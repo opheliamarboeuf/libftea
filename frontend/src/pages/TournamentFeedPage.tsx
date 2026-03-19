@@ -84,9 +84,7 @@ const TournamentFeedPage = () => {
 							<p>
 								{(() => {
 									const now = new Date();
-									const endDate = new Date(battle.endsAt);
-									
-									// Comparer uniquement les dates (sans les heures)
+									const endDate = new Date(battle.endsAt);									
 									const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 									const endDateStart = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
 									const diffTime = endDateStart.getTime() - todayStart.getTime();
@@ -133,7 +131,6 @@ const TournamentFeedPage = () => {
 					)}
 				</>
 			)}
-			{/* Afficher le dernier gagnant s'il n'y a pas de tournoi actif */}
 			{!battle && winnerPost && (
 				<UserPostsList posts={[{ ...winnerPost, isWinner: true }]} />
 			)}

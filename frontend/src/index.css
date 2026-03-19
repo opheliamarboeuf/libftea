@@ -5,8 +5,6 @@
     font-style: normal;
 }
 
-/* Removed Playfair import to allow the app's Gotham Book font to be the global default */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -55,7 +53,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: trasn;
+  background-color: transparent;
   cursor: pointer;
   transition: border-color 0.25s;
 }

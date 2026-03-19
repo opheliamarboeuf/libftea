@@ -7,10 +7,10 @@
 	padding: 5px 10px;
 	border: 1px solid #ccc;
 	border-radius: 20px;
-	width: 100%; /* allow header container to control width */
+	width: 100%;
 	color: #212529;
 	background-color: white;
-	font-family: inherit; /* use Gotham Book */
+	font-family: inherit;
 	outline: none;
 	font-size: 0.85rem;
 }

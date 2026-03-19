@@ -5,7 +5,6 @@ const LandingPage = () => {
 
     return (
         <div className="fixed inset-0 flex flex-col items-center justify-center bg-white">
-            {/* Image qui tourne */}
             <div 
                 className="relative flex items-center justify-center cursor-pointer"
                 onClick={() => navigate('/login')}

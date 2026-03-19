@@ -212,7 +212,6 @@ const UserProfilePage = () => {
 						className={buttonClass}
 						onClick={handleAddFriend} 
 						disabled={loading}
-						style={{ fontFamily: "'Playfair Display', serif" }}
 					>
 						Add Friend
 					</button>
@@ -223,7 +222,6 @@ const UserProfilePage = () => {
 						className={buttonClass}
 						onClick={handleCancelRequest} 
 						disabled={loading}
-						style={{ fontFamily: "'Playfair Display', serif" }}
 					>
 						Cancel Request
 					</button>
@@ -235,7 +233,6 @@ const UserProfilePage = () => {
 							className={buttonClass}
 							onClick={handleAccept} 
 							disabled={loading}
-							style={{ fontFamily: "'Playfair Display', serif" }}
 						>
 							Accept Friend Request
 						</button>
@@ -243,7 +240,6 @@ const UserProfilePage = () => {
 							className={buttonClass}
 							onClick={handleReject} 
 							disabled={loading}
-							style={{ fontFamily: "'Playfair Display', serif" }}
 						>
 							Reject Friend Request
 						</button>
@@ -256,7 +252,6 @@ const UserProfilePage = () => {
 							className={buttonClass}
 							onClick={() => navigate("/chat")} 
 							disabled={loading}
-							style={{ fontFamily: "'Playfair Display', serif" }}
 						>
 							Send Message
 						</button>
@@ -264,7 +259,6 @@ const UserProfilePage = () => {
 							className={buttonClass}
 							onClick={() => setShowDeleteConfirm(true)} 
 							disabled={loading}
-							style={{ fontFamily: "'Playfair Display', serif" }}
 						>
 							Delete friend
 						</button>
@@ -323,7 +317,7 @@ const UserProfilePage = () => {
 							className="w-24 h-24 rounded-full object-cover shadow-md"
 						/>
 					</div>
-					<p className="font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>{userData.username}</p>
+					<p className="font-bold" style={{ fontFamily: "'Blosta Script', cursive" }}>{userData.username}</p>
 					<div className="flex justify-center gap-2 w-full">
 						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
 							<strong className="text-lg font-bold">{userData.friendsCount}</strong>
@@ -384,7 +378,6 @@ const UserProfilePage = () => {
 												profileTab === "posts" ? "font-semibold" : ""
 											}`}
 											onClick={() => setProfileTab("posts")}
-											style={{ fontFamily: "'Playfair Display', serif" }}
 										>
 											Posts
 										</button>
@@ -393,7 +386,6 @@ const UserProfilePage = () => {
 												profileTab === "tournament" ? "font-semibold" : ""
 											}`}
 											onClick={() => setProfileTab("tournament")}
-											style={{ fontFamily: "'Playfair Display', serif" }}
 										>
 											Tournament
 										</button>
