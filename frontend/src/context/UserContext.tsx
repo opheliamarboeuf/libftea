@@ -23,6 +23,7 @@ export type Post = {
 		role?: string;
 	};
 	likes: number;
+	battleParticipants?: any[];
 };
 
 export type Blocked = {

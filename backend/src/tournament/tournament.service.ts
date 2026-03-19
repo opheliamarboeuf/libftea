@@ -11,10 +11,14 @@ import { JoinTournamentDto } from './dto/join-tournament.dto';
 import { hasPermission } from 'src/auth/permissions';
 import { Role } from '@prisma/client';
 import { ModerationLogType } from '@prisma/client';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class TournamentService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly notificationsService: NotificationsService,
+	) {}
 	// async = attend une reponse lente
 	async createTournament(data: CreateTournamentDto, userId: number, userRole: Role) {
 		const user = await this.prisma.user.findUnique({ where: { id: userId } });
@@ -46,6 +50,7 @@ export class TournamentService {
 						startsAt: new Date(data.startDate),
 						endsAt: new Date(data.endDate),
 						createdById: userId,
+						NotifSent: false,
 					},
 				});
 				await prisma.moderationLog.create({
@@ -57,6 +62,7 @@ export class TournamentService {
 				});
 				return newBattle;
 			});
+
 			return battle;
 		} catch (error) {
 			console.error('Error creating tournament:', error);
@@ -90,7 +96,27 @@ export class TournamentService {
 				data: { status: 'ACTIVE' },
 			});
 		}
-		if (now > battle.endsAt && !battle.winnerId) {
+		// if (battle.status === "ACTIVE" && battle.NotifSent === false)
+		// {
+		// 	//notification
+		// 	const users = await this.prisma.user.findMany({
+		// 		where: { id: { not: battle.createdById } },
+		// 		select: { id: true },
+		// 	});
+
+		// 	await Promise.all(
+		// 		users.map(user =>
+		// 			this.notificationsService.notifyNewBattle(user.id, battle.theme)
+		// 		)
+		// 	);
+
+		// 	await this.prisma.battle.update({
+		// 		where: { id: battle.id },
+		// 		data: { NotifSent: true },
+		// 	});
+		// }
+		if (now > battle.endsAt && !battle.winnerId)
+		{
 			await this.computeTournamentWinner(battle.id);
 		}
 		return battle;
@@ -225,6 +251,31 @@ export class TournamentService {
 				winnerId: forTheWin.authorId,
 			},
 		});
+
+		//notification
+		const winner = await this.prisma.user.findUnique({
+			where: { id: forTheWin.authorId },
+		});
+
+		if (!winner) {
+			throw new NotFoundException("Winner user not found");
+		}
+
+		await this.notificationsService.notifyBattleWinner(forTheWin.authorId, battle.theme);
+
+		const participants = await this.prisma.battleParticipant.findMany({
+				where: { battleId },
+				select: { userId: true },
+		});
+
+		const participantsIds = participants.map(p => p.userId).filter(id => id !== forTheWin.authorId);
+
+		await Promise.all(
+			participantsIds.map(userId =>
+				this.notificationsService.notifyTournamentParticipants(userId, battle.theme, winner.username)
+			)
+		);
+
 		return forTheWin;
 	}
 	async getLastTournamentWinner() {

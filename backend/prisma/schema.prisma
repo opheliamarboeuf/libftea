@@ -31,13 +31,6 @@ enum ModerationLogType {
 	CREATE_TOURNAMENT
 }
 
-enum NotificationType {
-	LIKE
-	COMMENT
-	BATTLE_WIN
-	FRIEND_REQUEST
-}
-
 enum Role {
 	USER
 	ADMIN
@@ -56,6 +49,18 @@ enum ReportStatus {
 	ASSIGNED
 	ACCEPTED
 	REJECTED
+}
+
+enum NotificationType {
+	LIKE
+	COMMENT
+	COMMENT_REPLY
+	NEW_BATTLE
+	BATTLE_WIN
+	BATTLE_END
+	FRIEND_REQUEST
+	FRIEND_REQUEST_ACCEPTED
+	POST
 }
 
 model User {
@@ -125,6 +130,7 @@ model Battle {
 	winner						    User?               @relation("Battle_winnerIdToUser", fields: [winnerId], references: [id])
 	BattleParticipant             BattleParticipant[]
 	moderationLogs ModerationLog[] @relation("TargetBattleRelation")
+	NotifSent					  Boolean			   @default(false)
 }
 
 model BattleParticipant {
@@ -239,6 +245,7 @@ model Notification {
 	userId    Int
 	createdAt DateTime         @default(now())
 	User      User             @relation(fields: [userId], references: [id])
+	message   String           @default("")
 }
 
 model Post {

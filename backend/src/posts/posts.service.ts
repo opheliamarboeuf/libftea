@@ -12,10 +12,14 @@ import { join } from 'path';
 import { unlink } from 'fs/promises';
 import { hasPermission } from 'src/auth/permissions';
 import { ModerationLogType, Role } from '@prisma/client';
+import { NotificationsService } from "src/notifications/notifications.service";
 
 @Injectable()
 export class PostsService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		private readonly notificationsService: NotificationsService,
+	) {}
 
 	private async getBlockedIds(currentUserId: number): Promise<number[]> {
 		const blocked = await this.prisma.friendship.findMany({
@@ -58,7 +62,24 @@ export class PostsService {
 					caption: dto.caption,
 				},
 			});
+			const friendships = await this.prisma.friendship.findMany({
+				where: {
+					status: 'ACCEPTED',
+					OR: [
+						{ requesterId: userId },
+						{ addresseId: userId },
+					],
+				},
+			});
+
+			const friendIds = friendships.map(f => f.requesterId === userId ? f.addresseId : f.requesterId
+			);
+
+			await Promise.all(
+				friendIds.map(friendId => this.notificationsService.notifyFriendPost(friendId, user.username)
+			));
 			return post;
+			
 		} catch (error) {
 			console.log('Error creating post:', error);
 			throw new InternalServerErrorException('Could not create post');
