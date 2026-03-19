@@ -10,3 +10,8 @@ export const friendsSocket = io(`${API_URL}/friends`, {
 	withCredentials: true,
 	autoConnect: false,
 });
+
+export const notifSocket = io("http://localhost:3000/notifications", {
+	withCredentials: true,
+	autoConnect: false,
+});

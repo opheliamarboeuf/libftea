@@ -36,17 +36,24 @@ export class LikesGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		@MessageBody() data: { postId: number; userId: number },
 		@ConnectedSocket() client: Socket,
 	) {
-		const result = await this.likesService.toggleLike(
-			data.postId,
-			data.userId,
-		);
+		try {
+			const result = await this.likesService.toggleLike(
+				data.postId,
+				data.userId,
+			);
 
-		this.server.emit('like_updated', {
-			postId: data.postId,
-			liked: result.liked,
-			count: result.count,
-			userId: data.userId,
-		});
-		return result;
+			this.server.emit('like_updated', {
+				postId: data.postId,
+				liked: result.liked,
+				count: result.count,
+				userId: data.userId,
+			});
+			return result;
+		} catch (err) {
+			client.emit("like_error", {
+				message: err.message,
+				postId: data.postId,
+			});
+		}
 	}
 }
