@@ -11,7 +11,7 @@ export const friendsSocket = io(`${API_URL}/friends`, {
 	autoConnect: false,
 });
 
-export const notifSocket = io("http://localhost:3000/notifications", {
+export const notifSocket = io(`${API_URL}/notifications`, {
 	withCredentials: true,
 	autoConnect: false,
 });
