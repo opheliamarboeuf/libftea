@@ -20,6 +20,7 @@ export type Post = {
 		username: string;
 	};
 	likes: number;
+	battleParticipants?: any[];
 };
 
 export type Blocked = {
