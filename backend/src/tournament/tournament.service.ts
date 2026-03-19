@@ -213,27 +213,24 @@ export class TournamentService {
 				winnerId: winningPost.authorId,
 			}
 		});
-<<<<<<< HEAD
-		return winningPost;
-=======
 
 		//notification
 		const winner = await this.prisma.user.findUnique({
-			where: { id: forTheWin.authorId },
+			where: { id: winningPost.authorId },
 		});
 
 		if (!winner) {
 			throw new NotFoundException("Winner user not found");
 		}
 
-		await this.notificationsService.notifyBattleWinner(forTheWin.authorId, battle.theme);
+		await this.notificationsService.notifyBattleWinner(winningPost.authorId, battle.theme);
 
 		const participants = await this.prisma.battleParticipant.findMany({
 				where: { battleId },
 				select: { userId: true },
 		});
 
-		const participantsIds = participants.map(p => p.userId).filter(id => id !== forTheWin.authorId);
+		const participantsIds = participants.map(p => p.userId).filter(id => id !== winningPost.authorId);
 
 		await Promise.all(
 			participantsIds.map(userId =>
@@ -241,25 +238,8 @@ export class TournamentService {
 			)
 		);
 
-		return forTheWin;
-	}
-	async getLastTournamentWinner()
-	{
-		return this.prisma.battle.findFirst({
-			where: { status: "FINISHED" },
-			orderBy: { endsAt: "desc" },
-			include: {
-				winner: true,
-				BattleParticipant: {
-					include: {
-						post: true,
-						user: true,
-					}
-				}
-			},
-		})
->>>>>>> main
-	}
+		return winningPost;
+	}	
 
 	async getLastTournamentWinnerPost() {
 		const now = new Date();
