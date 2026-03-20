@@ -6,6 +6,22 @@ import { ReportType, ReportStatus } from '@prisma/client';
 export class MailService {
 	constructor(private readonly mailerService: MailerService) {}
 
+	async sendTestMail(to: string, subject: string, text: string): Promise<void> {
+		try {
+			await this.mailerService.sendMail({
+				to,
+				subject,
+				html: `<p>${text}</p>`,
+			});
+		} catch (error) {
+			console.error(`Failed to send simple email to ${to}`, error.stack);
+			throw error;
+		}
+	}
+	// curl -X POST http://localhost:3000/mail/test \
+    // -H "Content-Type: application/json" \
+    // -d '{"to": "test@test.com", "subject": "Test email", "text": "this is a test"}'
+
 	async sendBanNotification(email: string, username: string, reason?: string): Promise<void> {
 		try {
 			const result = await this.mailerService.sendMail({

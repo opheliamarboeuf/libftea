@@ -3,6 +3,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { Module } from '@nestjs/common';
 import { join } from 'path';
 import { MailService } from './mail.service';
+import { MailController } from './mail.controller';
 
 @Module({
 	imports: [
@@ -10,10 +11,7 @@ import { MailService } from './mail.service';
 			transport: {
 				host: process.env.MAIL_HOST,
 				port: Number(process.env.MAIL_PORT),
-				auth: {
-					user: process.env.MAIL_USER,
-					pass: process.env.MAIL_PASS,
-				},
+				secure: false,
 			},
 			defaults: {
 				from: '"Libftea" <no-reply@libftea.com>',
@@ -27,6 +25,7 @@ import { MailService } from './mail.service';
 			},
 		}),
 	],
+	controllers: [MailController], 
 	providers: [MailService],
 	exports: [MailService],
 })
