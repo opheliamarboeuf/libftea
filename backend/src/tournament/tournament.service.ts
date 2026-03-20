@@ -198,6 +198,7 @@ export class TournamentService {
 	async getBattlePosts(battleId: number) {
 		return this.prisma.post.findMany({
 			where: {
+				bannedDeletion: false,
 				battleParticipants: {
 					some: {
 						battleId: battleId,
@@ -226,6 +227,7 @@ export class TournamentService {
 		if (battle.winnerId) return battle.winnerId;
 		const forTheWin = await this.prisma.post.findFirst({
 			where: {
+				bannedDeletion: false,
 				battleParticipants: { some: { battleId } },
 			},
 			orderBy: [
@@ -336,5 +338,39 @@ export class TournamentService {
 			},
 			orderBy: { createdAt: 'desc' },
 		});
+	}
+
+	async handleBannedPostInTournament(postId: number)
+	{
+		try {
+			const battleParticipant = await this.prisma.battleParticipant.findFirst({
+				where: { postId },
+			});
+			if (!battleParticipant)
+				return;
+			await this.prisma.battleParticipant.delete({
+				where: { id: battleParticipant.id },
+			});
+			const battle = await this.prisma.battle.findUnique({
+				where: { id: battleParticipant.battleId },
+				include: { winner: true },
+			});
+			if (!battle)
+				return;
+			const post = await this.prisma.post.findUnique({ where: { id: postId } });
+			if (post && battle.winnerId === post.authorId) {
+				await this.prisma.battle.update({
+					where: { id: battle.id },
+					data: {
+						winnerId: null,
+						status: 'ACTIVE',
+					},
+				});
+			}
+		}
+		catch (error)
+		{
+			console.error('Error handling banned post in tournament:', error);
+		}
 	}
 }
