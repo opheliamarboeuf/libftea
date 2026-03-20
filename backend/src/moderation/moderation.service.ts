@@ -7,12 +7,16 @@ import { HandleReportDto } from './dto/handleReport.dto';
 import { ReportDto } from './dto/report.dto';
 import { ModerationLogType } from '@prisma/client';
 import { MailService } from 'src/mail/mail.service';
+import { TournamentService } from 'src/tournament/tournament.service';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class ModerationService {
 	constructor(
 		private prisma: PrismaService,
 		private mailService: MailService,
+		private tournamentService: TournamentService,
+		private notificationsService: NotificationsService,
 	) {}
 
 	private buildCountByKey<T, K extends number | string>(
@@ -67,6 +71,13 @@ async updateAdminRole(
 		}
 		throw new BadRequestException('Invalid role transition');
 	});
+
+	//notification
+	const actor = await this.prisma.user.findUnique({
+		where: { id: actorId },
+	});
+
+	await this.notificationsService.notifyPromotionAdmin(targetId, actor.username);
 
 	return updatedUser;
 }
@@ -127,6 +138,15 @@ async updateModRole(
 		throw new BadRequestException('Invalid role transition');
 	});
 
+	//notification
+	const actor = await this.prisma.user.findUnique({
+		where: { id: actorId },
+	});
+	if (updatedUser.role === Role.MOD)
+		await this.notificationsService.notifyPromotionMod(targetId, actor.username);
+	else if (updatedUser.role === Role.USER)
+		await this.notificationsService.notifyDemoted(targetId, actor.username);
+
 	return updatedUser;
 }
 
@@ -175,12 +195,21 @@ async updateModRole(
 							handledAt: new Date(),
 						},
 					});
-					// Soft delete the post
+					// Soft delete the post and mark as bannedDeletion
 					await prisma.post.update({
 						where: { id: report.reportedPostId },
-						data: { deletedAt: new Date() },
+						data: { deletedAt: new Date(), bannedDeletion: true },
 					});
 					// Log post report review
+					await prisma.moderationLog.create({
+						data: {
+							action: ModerationLogType.REVIEW_POST_REPORT,
+							actorId: userId,
+							targetPostId: report.reportedPostId,
+						},
+					});
+					// Handle removal from tournament and winner reset
+					await this.tournamentService.handleBannedPostInTournament(report.reportedPostId);
 					await prisma.moderationLog.create({
 						data: {
 							action: ModerationLogType.REVIEW_POST_REPORT,
@@ -700,6 +729,12 @@ async updateModRole(
 					data: { deletedAt: new Date(), bannedDeletion: true},
 				});
 
+				// Get all posts to handle tournament cleanup
+				const bannedPosts = await tx.post.findMany({
+					where: { authorId: targetId, deletedAt: { not: null }, bannedDeletion: true },
+					select: { id: true },
+				});
+
 				// 4. Add log
 				await tx.moderationLog.create({
 						data: {
@@ -708,15 +743,20 @@ async updateModRole(
 							targetUserId: targetId,
 						},
 					});
-				return updateUser;
+				return { updateUser, bannedPosts };
 			});
+
+			// Handle removal of banned posts from tournaments
+			for (const post of bannedUser.bannedPosts) {
+				await this.tournamentService.handleBannedPostInTournament(post.id);
+			}
 			
 			await this.mailService.sendBanNotification(
 				targetUser.email,	
 				targetUser.username,
 			);
 			
-			return bannedUser;
+			return bannedUser.updateUser;
 		} catch (error) {
 			if (error instanceof HttpException) throw error;
 			console.error('Error banning user:', error);

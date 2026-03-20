@@ -115,8 +115,7 @@ export class TournamentService {
 		// 		data: { NotifSent: true },
 		// 	});
 		// }
-		if (now > battle.endsAt && !battle.winnerId)
-		{
+		if (now > battle.endsAt && !battle.winnerId) {
 			await this.computeTournamentWinner(battle.id);
 		}
 		return battle;
@@ -195,13 +194,17 @@ export class TournamentService {
 			},
 		});
 	}
-	async getBattlePosts(battleId: number) {
+	async getBattlePosts(battleId: number, currentUserId: number) {
 		return this.prisma.post.findMany({
 			where: {
+				bannedDeletion: false,
 				battleParticipants: {
 					some: {
 						battleId: battleId,
 					},
+				},
+				hiddenForUsers: {
+					none: { userId: currentUserId },
 				},
 			},
 			include: {
@@ -226,6 +229,7 @@ export class TournamentService {
 		if (battle.winnerId) return battle.winnerId;
 		const forTheWin = await this.prisma.post.findFirst({
 			where: {
+				bannedDeletion: false,
 				battleParticipants: { some: { battleId } },
 			},
 			orderBy: [
@@ -258,22 +262,28 @@ export class TournamentService {
 		});
 
 		if (!winner) {
-			throw new NotFoundException("Winner user not found");
+			throw new NotFoundException('Winner user not found');
 		}
 
 		await this.notificationsService.notifyBattleWinner(forTheWin.authorId, battle.theme);
 
 		const participants = await this.prisma.battleParticipant.findMany({
-				where: { battleId },
-				select: { userId: true },
+			where: { battleId },
+			select: { userId: true },
 		});
 
-		const participantsIds = participants.map(p => p.userId).filter(id => id !== forTheWin.authorId);
+		const participantsIds = participants
+			.map((p) => p.userId)
+			.filter((id) => id !== forTheWin.authorId);
 
 		await Promise.all(
-			participantsIds.map(userId =>
-				this.notificationsService.notifyTournamentParticipants(userId, battle.theme, winner.username)
-			)
+			participantsIds.map((userId) =>
+				this.notificationsService.notifyTournamentParticipants(
+					userId,
+					battle.theme,
+					winner.username,
+				),
+			),
 		);
 
 		return forTheWin;
@@ -293,7 +303,7 @@ export class TournamentService {
 			},
 		});
 	}
-	async getLastTournamentWinnerPost() {
+	async getLastTournamentWinnerPost(currentUserId: number) {
 		const battle = await this.prisma.battle.findFirst({
 			where: { status: 'FINISHED' },
 			orderBy: { endsAt: 'desc' },
@@ -304,6 +314,9 @@ export class TournamentService {
 				authorId: battle.winnerId,
 				battleParticipants: {
 					some: { battleId: battle.id },
+				},
+				hiddenForUsers: {
+					none: { userId: currentUserId },
 				},
 			},
 			include: {
@@ -336,5 +349,34 @@ export class TournamentService {
 			},
 			orderBy: { createdAt: 'desc' },
 		});
+	}
+
+	async handleBannedPostInTournament(postId: number) {
+		try {
+			const battleParticipant = await this.prisma.battleParticipant.findFirst({
+				where: { postId },
+			});
+			if (!battleParticipant) return;
+			await this.prisma.battleParticipant.delete({
+				where: { id: battleParticipant.id },
+			});
+			const battle = await this.prisma.battle.findUnique({
+				where: { id: battleParticipant.battleId },
+				include: { winner: true },
+			});
+			if (!battle) return;
+			const post = await this.prisma.post.findUnique({ where: { id: postId } });
+			if (post && battle.winnerId === post.authorId) {
+				await this.prisma.battle.update({
+					where: { id: battle.id },
+					data: {
+						winnerId: null,
+						status: 'ACTIVE',
+					},
+				});
+			}
+		} catch (error) {
+			console.error('Error handling banned post in tournament:', error);
+		}
 	}
 }
