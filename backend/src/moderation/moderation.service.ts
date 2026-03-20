@@ -247,23 +247,61 @@ async updateModRole(
 				}
 			}
 
-			// Send email to the reporter to inform them on the report handle
-			const reporter = await this.prisma.user.findUnique({
-				where: { id: report.reporterId },
-				select: { username: true, email: true },
-			});
-			if (reporter) {
-				await this.mailService.sendReportUpdate(
-					reporter.username,
-					reporter.email,
-					{
-						id: report.id,
-						reportCategory: report.reportCategory,
-						reportDescription: report.reportDescription,
-						status: ReportStatus.ACCEPTED,
-						moderatorMessage: dto.moderatorMessage,
+			// Send email to all reporters to inform them on the report handle
+			const reportData = {
+				id: report.id,
+				reportCategory: report.reportCategory,
+				reportDescription: report.reportDescription,
+				status: ReportStatus.ACCEPTED,
+				moderatorMessage: dto.moderatorMessage,
+			};
+
+			if (report.reportedPostId) {
+				const reporters = await this.prisma.report.findMany({
+					where: { reportedPostId: report.reportedPostId },
+					select: {
+						reporter: { select: { username: true, email: true } },
 					},
+				});
+				const uniqueReporters = Array.from(
+					new Map(
+						reporters.map((r) => [r.reporter.email, r.reporter]),
+					).values(),
 				);
+				for (const reporter of uniqueReporters) {
+					try {
+						await this.mailService.sendReportUpdate(
+							reporter.username,
+							reporter.email,
+							reportData,
+						);
+					} catch (mailError) {
+						console.error('Error sending report update email:', mailError);
+					}
+				}
+			} else if (report.reportedUserId) {
+				const reporters = await this.prisma.report.findMany({
+					where: { reportedUserId: report.reportedUserId },
+					select: {
+						reporter: { select: { username: true, email: true } },
+					},
+				});
+				const uniqueReporters = Array.from(
+					new Map(
+						reporters.map((r) => [r.reporter.email, r.reporter]),
+					).values(),
+				);
+				for (const reporter of uniqueReporters) {
+					try {
+						await this.mailService.sendReportUpdate(
+							reporter.username,
+							reporter.email,
+							reportData,
+						);
+					} catch (mailError) {
+						console.error('Error sending report update email:', mailError);
+					}
+				}
 			}
 			return true;
 		} catch (error) {
@@ -327,8 +365,8 @@ async updateModRole(
 					});
 				} else {
 					// Fallback: if report is associated with a user
-					await prisma.report.update({
-						where: { id: reportId },
+					await prisma.report.updateMany({
+						where: { reportedUserId: report.reportedUserId },
 						data: {
 							handledById: userId,
 							moderatorMessage: dto.moderatorMessage,
@@ -336,7 +374,7 @@ async updateModRole(
 							handledAt: new Date(),
 						},
 					});
-					//Log user report review
+					// Log user report review
 					await prisma.moderationLog.create({
 						data: {
 							action: ModerationLogType.REVIEW_USER_REPORT,
@@ -344,25 +382,64 @@ async updateModRole(
 							targetUserId: report.reportedUserId,
 						},
 					});
-				}	
+				}
 			});
-			// Send email to the reporter to inform them on the report handle
-			const reporter = await this.prisma.user.findUnique({
-				where: { id: report.reporterId },
-				select: { username: true, email: true },
-			});
-			if (reporter) {
-				await this.mailService.sendReportUpdate(
-					reporter.username,
-					reporter.email,
-					{
-						id: report.id,
-						reportCategory: report.reportCategory,
-						reportDescription: report.reportDescription,
-						status: ReportStatus.REJECTED,
-						moderatorMessage: dto.moderatorMessage,
+
+			// Send email to all reporters to inform them on the report handle
+			const reportData = {
+				id: report.id,
+				reportCategory: report.reportCategory,
+				reportDescription: report.reportDescription,
+				status: ReportStatus.REJECTED,
+				moderatorMessage: dto.moderatorMessage,
+			};
+
+			if (report.reportedPostId) {
+				const reporters = await this.prisma.report.findMany({
+					where: { reportedPostId: report.reportedPostId },
+					select: {
+						reporter: { select: { username: true, email: true } },
 					},
+				});
+				const uniqueReporters = Array.from(
+					new Map(
+						reporters.map((r) => [r.reporter.email, r.reporter]),
+					).values(),
 				);
+				for (const reporter of uniqueReporters) {
+					try {
+						await this.mailService.sendReportUpdate(
+							reporter.username,
+							reporter.email,
+							reportData,
+						);
+					} catch (mailError) {
+						console.error('Error sending report update email:', mailError);
+					}
+				}
+			} else if (report.reportedUserId) {
+				const reporters = await this.prisma.report.findMany({
+					where: { reportedUserId: report.reportedUserId },
+					select: {
+						reporter: { select: { username: true, email: true } },
+					},
+				});
+				const uniqueReporters = Array.from(
+					new Map(
+						reporters.map((r) => [r.reporter.email, r.reporter]),
+					).values(),
+				);
+				for (const reporter of uniqueReporters) {
+					try {
+						await this.mailService.sendReportUpdate(
+							reporter.username,
+							reporter.email,
+							reportData,
+						);
+					} catch (mailError) {
+						console.error('Error sending report update email:', mailError);
+					}
+				}
 			}
 			return true;
 		} catch (error) {
