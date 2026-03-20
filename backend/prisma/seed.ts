@@ -7,6 +7,7 @@ async function createUserIfNotExists(
 	email: string,
 	username: string,
 	passwordPlain: string,
+	role: Role,
 	displayName: string,
 	bio: string
 ) {
@@ -17,7 +18,7 @@ async function createUserIfNotExists(
 	});
 
 	if (existingUser) {
-		console.log(`User already exists:`, existingUser.email);
+		console.log(`${role} already exists:`, existingUser.email);
 		return existingUser;
 	}
 
@@ -28,7 +29,7 @@ async function createUserIfNotExists(
 			email,
 			username,
 			password: hashedPassword,
-			role: Role.USER,
+			role,
 		},
 	});
 
@@ -42,11 +43,33 @@ async function createUserIfNotExists(
 		},
 	});
 
-	console.log(`User created successfully:`, user.email);
+	console.log(`${role} created successfully:`, user.email);
 	return user;
 }
 
-async function createClassicUsers() {
+async function seedAdminAndModerators() {
+	console.log("Seeding admin and moderators...");
+	await createUserIfNotExists(
+		"admin@test.com",
+		"admin",
+		"AdminPswd0+",
+		Role.ADMIN,
+		"Administrator",
+		"Admin account"
+	);
+
+	await createUserIfNotExists(
+		"mod@test.com",
+		"mod",
+		"ModPswd0+",
+		Role.MOD,
+		"Moderator",
+		"Moderator account"
+	);
+}
+
+async function seedClassicUsers() {
+	console.log("Seeding classic users...");
 	for (let i = 0; i < 5; i++) {
 		const username = `user${i}`;
 		const email = `user${i}@test.com`;
@@ -56,6 +79,7 @@ async function createClassicUsers() {
 			email,
 			username,
 			password,
+			Role.USER,
 			`User ${i}`,
 			`Classic user account ${i}`
 		);
@@ -63,16 +87,17 @@ async function createClassicUsers() {
 }
 
 async function main() {
-	await createClassicUsers();
+	console.log("Starting database seed...");
+	await seedAdminAndModerators();
+	await seedClassicUsers();
+	console.log("Database seed completed successfully!");
 }
 
 main()
 	.catch((e) => {
-		console.error(e);
+		console.error("Seed failed:", e);
 		process.exit(1);
 	})
 	.finally(async () => {
 		await prisma.$disconnect();
 	});
-
-	// in Backend container -> npx ts-node prisma/seed-users.ts
