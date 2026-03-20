@@ -5,7 +5,7 @@ import { ChatWindow } from '../chat/components/ChatWindow';
 import { ChatNavbar } from '../chat/components/ChatNavbar';
 import { useUser } from '../context/UserContext';
 
-xport function ChatPage() {
+export function ChatPage() {
   const { user } = useUser();
   const { conversations, openConversation, updateLastMessage } = useConversations(user?.id);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
