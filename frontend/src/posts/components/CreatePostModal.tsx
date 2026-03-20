@@ -83,7 +83,7 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 						>
 							{title.length} / {MAX_TITLE_LENGTH}
 						</div>
-						<label>{t('post.pitcure')}</label>
+						<label>{t('post.picture')}</label>
 						<input
 						type = "file"
 						accept="image/jpeg,image/jpg,image/png,image/webp"

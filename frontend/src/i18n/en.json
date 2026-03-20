@@ -138,7 +138,9 @@
 		"submit": "Submit",
 		"edit": "Edit",
 		"report": "Report",
-		"confirmdelete": "Are you sure you want to delete your post?"
+		"confirmdelete": "Are you sure you want to delete your post?",
+		"edited": "edited {{date}}",
+		"created": "created {{date}}"
 	},
 
 	"notifications": {
@@ -186,6 +188,21 @@
 		"notfound": "User not found",
 		"pswincorrect": "Incorrect password",
 		"pswnotstrong": "Password is not strong enough",
-		"failed": "Registration failed"
+		"failed": "Registration failed",
+		"lfailed": "Login failed",
+		"titleenter" : "Please enter a title",
+		"titlelength": "Title cannot exceed {{length}} characters",
+		"captionlength": "Caption cannot exceed {{length}} characters",
+		"image": "Please select an image to upload",
+		"type": "{{type}} must be JPEG, PNG, or WebP",
+		"volume": "{{type}} must be under 5MB",
+		"namelength": "Name cannot exceed {{length}} characters",
+		"biolength": "Bio cannot exceed {{length}} characters",
+		"theme": "Please enter a theme",
+		"themelength": "Theme cannot exceed {{length}} characters",
+		"start": "Please select a start date",
+		"end": "Please select an end date",
+		"planned": "A tournament is already planned from {{date1}} to {{date2}}",
+		"tfailed": "Tournament creation failed"
 	}
 }

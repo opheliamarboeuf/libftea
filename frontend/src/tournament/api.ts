@@ -1,6 +1,7 @@
 // tournament/api.ts
 // helpers for interacting with the backend's tournament endpoints.
 
+
 const API_URL = "http://localhost:3000";
 
 export const tournamentApi = {
@@ -25,7 +26,18 @@ export const tournamentApi = {
 		return data;
 	},
 
-	createTournament: async (payload: any): Promise<any> => {
+	createTournament: async (payload: any, t: (key: string, options?: any) => string): Promise<any> => {
+
+		const errorMessages = (message: string): string => {
+			if (message.includes("already planned")) {
+				const match = message.match(/(\d{1,2}\/\d{1,2}\/\d{4})/g);
+				if (match && match.length >= 2) {
+					return t('errors.planned', { date1: match[0], date2: match[1] });
+				}
+			} 
+			return t('errors.tfailed');
+		}
+
 		const res = await fetch(`${API_URL}/tournament`, {
 			method: "POST",
 			headers: {
@@ -39,7 +51,8 @@ export const tournamentApi = {
 			const message = Array.isArray(data.message)
 				? data.message[0]
 				: data.message || "Tournament creation failed";
-			throw new Error(message);
+			console.log("Backend error message:", message);
+			throw new Error(errorMessages(message));
 		}
 		return data;
 	},

@@ -91,9 +91,9 @@ const TournamentFeedPage = () => {
 									const diffTime = endDate.getTime() - now.getTime();
 									const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // convert ms → days
 
-									if (diffDays < 0) return "The tournament has ended";
-									if (diffDays === 0) return "The tournament ends today!";
-									if (diffDays === 1) return "The tournament ends tomorrow!";
+									if (diffDays < 0) return t('tournament.ended');
+									if (diffDays === 0) return t('tournament.today');
+									if (diffDays === 1) return t('tournament.tomorrow');
 									return t('tournament.days', {
 										count: diffDays,
 										date: endDate.toLocaleDateString(i18n.language),

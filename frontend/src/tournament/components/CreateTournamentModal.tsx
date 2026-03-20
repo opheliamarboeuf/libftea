@@ -103,7 +103,7 @@ export function CreateTournamentModal ({onCreated , onClose }: CreateTournamentM
 						<div className="modal-actions">
 							<button type="submit"  className="modal-btn" disabled={isLoading}> 
 								{isLoading ? t('tournament.creating') : t('tournament.create') } </button>
-							<button type="button" className="modal-btn" onClick={requestClose}> {t('post.cancel')} </button>
+							<button type="button" className="modal-btn" onClick={requestClose}> {t('editprofile.cancel')} </button>
 						</div>
 					</form>
 				</div>

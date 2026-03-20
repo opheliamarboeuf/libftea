@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { tournamentApi } from "../../api";
+import { useTranslation } from "react-i18next";
 
 const MAX_TITLE_LENGTH = 50;
 const MAX_CAPTION_LENGTH = 500;
@@ -14,13 +15,14 @@ export function useTournamentJoin(battleId: number) {
 	const [imageFile, setImageFile] = useState<File | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const { t } = useTranslation();
 
 	const validateImage = (file: File, type: string): string | null => {
 		if (!ALLOWED_TYPES.includes(file.type)) {
-			return `${type} must be JPEG, PNG, or WebP`;
+			return t('errors.type', { type: type });
 		}
 		if (file.size > MAX_FILE_SIZE) {
-			return `${type} must be under 5MB`;
+			return t('errors.volume', { type: type });
 		}
 		return null;
 	};
@@ -55,22 +57,22 @@ export function useTournamentJoin(battleId: number) {
 
 	const handleJoinTournament = async (): Promise<boolean> => {
 		if (title === ""){
-			setErrorMessage("Please enter a title");
+			setErrorMessage(t('errors.titleenter'));
 			return false;
 		}
 
 		if (title.length > MAX_TITLE_LENGTH) {
-			setErrorMessage(`Title cannot exceed ${MAX_TITLE_LENGTH} characters`);
+			setErrorMessage(t('errors.titlelength', { length: MAX_TITLE_LENGTH }));
 			return false;
 		}
 
 		if (caption.length > MAX_CAPTION_LENGTH) {
-			setErrorMessage(`Caption cannot exceed ${MAX_CAPTION_LENGTH} characters`);
+			setErrorMessage(t('errors.captionlength', { length: MAX_CAPTION_LENGTH }));
 			return false;
 		}
 
 		if (!imageFile) {
-			setErrorMessage("Please select an image to upload");
+			setErrorMessage(t('errors.image'));
 			return false;
 		}
 
@@ -89,7 +91,7 @@ export function useTournamentJoin(battleId: number) {
 			if (error instanceof Error) {
 				setErrorMessage(error.message);
 			} else {
-				setErrorMessage("Server unreachable");
+				setErrorMessage(t('registerpage.serverfail'));
 			}
 		} finally {
 			setIsLoading(false);

@@ -71,8 +71,8 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 			<span className="post-date">
 			{
 				post.updatedAt && post.updatedAt !== post.createdAt
-				? `edited ${new Date(post.updatedAt).toLocaleString()}`
-				: `created ${new Date(post.createdAt).toLocaleString()}`
+				? t('post.edited', { date: new Date(post.updatedAt).toLocaleString() })
+				: t('post.created', { date: new Date(post.createdAt).toLocaleString() })
 			}
 			</span>
 			</div>
@@ -84,7 +84,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 						{post.author.id === user.id || user.role === "ADMIN" || user.role === "MOD" ? (
 							<>
 								{/* Edit only if owner */}
-								{post.author.id === user.id && <button onClick={() => handleEdit(post)}>Edit</button>}
+								{post.author.id === user.id && <button onClick={() => handleEdit(post)}>{t('post.editpost')}</button>}
 								{/* Delete if owner or admin/mod */}
 								<button 
 									onClick={() => setPostToDelete(post.id)}
@@ -134,7 +134,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message="Are you sure you want to delete this post?"
+				message={t('post.confirmdelete')}
 				onConfirm={confirmDelete}
 				onCancel={cancelDelete}
 			/>

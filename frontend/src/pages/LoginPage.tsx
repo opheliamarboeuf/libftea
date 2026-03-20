@@ -23,6 +23,11 @@ const LoginPage = () => {
 		setPassword(e.target.value);
 	}
 
+	const errorMessages = (message: string): string => {
+		if (message.includes("not found")) return 'errors.notfound';
+		if (message.includes("incorrect")) return 'errors.pswincorrect';
+		return 'errors.lfailed';
+	}
 
 	const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) =>{
 		e.preventDefault();
@@ -41,11 +46,11 @@ const LoginPage = () => {
 
 			const data = await res.json();
 
-			if (!res.ok){
-				if (Array.isArray(data.message)){
-					setErrorMessage(data.message[0]);} 
+			if (!res.ok){	// based on a NestJS error structure
+				if (Array.isArray(data.message)){ // if it's an Array, set the message of the first array in errorMessage
+					setErrorMessage(t(errorMessages(data.message[0])));} 
 				else {
-					setErrorMessage(data.message || "Login Failed")
+					setErrorMessage(t(errorMessages(data.message || ""))) // if it is a string, set "Registration Failed" is the string is empty
 				}
 				return ;
 			}

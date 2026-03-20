@@ -137,7 +137,9 @@
 		"submit": "Poster",
 		"edit": "Modifier",
 		"report": "Signaler",
-		"confirmdelete": "Etes-vous sûr de vouloir supprimer votre post ?"
+		"confirmdelete": "Etes-vous sûr de vouloir supprimer votre post ?",
+		"edited": "modifié le {{date}}",
+		"created": "créé le {{date}}"
 	},
 
 	"notifications": {
@@ -184,6 +186,21 @@
 		"notfound": "Utilisateur introuvable",
 		"pswincorrect": "Mot de passe incorrect",
 		"pswnotstrong": "Le mot de passe n'est pas assez fort",
-		"failed": "Échec de l'inscription"
+		"failed": "Échec de l'inscription",
+		"lfailed": "Échec de la connexion",
+		"titleenter" : "Veuillez entrer un titre",
+		"titlelength": "Le titre ne peut pas dépasser {{length}} caractères",
+		"captionlength": "La description ne peut pas dépasser {{length}} caractères",
+		"image": "Veuillez sélectionner une image à télécharger",
+		"type": "{{type}} doit être au format JPEG, PNG ou WebP",
+		"volume": "{{type}} doit faire moins de 5MB",
+		"namelength": "Votre nom ne peut pas dépasser {{length}} caractères",
+		"biolength": "Votre bio ne ne peut pas dépasser {{length}} caractères",
+		"theme": "Veuillez entrer un thème",
+		"themelength": "Le thème ne peut pas dépasser {{length}} caractères",
+		"start": "Veuillez sélectionner une date de début",
+		"end": "Veuillez sélectionner une date de fin",
+		"planned": "Un tournoi est déjà prévu du {{date1}} au {{date2}}",
+		"tfailed": "Échec de la création du tournoi"
 	}
 }
