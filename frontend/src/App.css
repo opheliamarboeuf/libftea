@@ -3,7 +3,15 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('//www.rickowens.eu/cdn/shop/t/3/assets/gotham-book.woff2?v=31029345294833635061725024672') format('woff2');
+  src: url('./assets/fonts/Gotham\ Book.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Gotham Bold';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/Gotham\ Bold.otf') format('opentype');
 }
 
 html, body {

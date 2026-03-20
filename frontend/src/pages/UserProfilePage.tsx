@@ -380,6 +380,7 @@ const UserProfilePage = () => {
 											className={`relative z-[2] px-5 py-2 text-sm bg-transparent border-none cursor-pointer min-w-[120px] outline-none ${
 												profileTab === "posts" ? "font-semibold" : ""
 											}`}
+											style={profileTab === "posts" ? { fontFamily: "'Gotham Bold', sans-serif", fontWeight: "700" } : {}}
 											onClick={() => setProfileTab("posts")}
 										>
 											Posts
@@ -388,6 +389,7 @@ const UserProfilePage = () => {
 											className={`relative z-[2] px-5 py-2 text-sm bg-transparent border-none cursor-pointer min-w-[120px] outline-none ${
 												profileTab === "tournament" ? "font-semibold" : ""
 											}`}
+											style={profileTab === "tournament" ? { fontFamily: "'Gotham Bold', sans-serif", fontWeight: "700" } : {}}
 											onClick={() => setProfileTab("tournament")}
 										>
 											Tournament

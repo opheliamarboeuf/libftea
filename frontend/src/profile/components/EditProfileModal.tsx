@@ -1,18 +1,9 @@
 import { createPortal } from "react-dom";
-<<<<<<< HEAD:frontend/src/profile/EditProfileModal.tsx
-import { useProfileEdit } from "./hooks/hooks";
-import { useModalAnimation } from "../common/hooks/useModalAnimation";
-import { ConfirmDialog } from "../common/components/ConfirmDialog";
-import { useUnsavedChangesGuard } from "../common/hooks/useUnsavedChangesGuard";
-import { useBeforeUnload } from "../common/hooks/useBeforeUnload";
-import "../App.css";
-=======
 import { useProfileEdit } from "../hooks/hooks";
 import { useModalAnimation } from "../../common/hooks/useModalAnimation";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
 import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
->>>>>>> permissions:frontend/src/profile/components/EditProfileModal.tsx
 
 interface EditProfileModalProps {
 	onClose: () => void;

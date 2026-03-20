@@ -63,7 +63,8 @@
 
 .dashboard-tabs button.active {
 	color: black;
-	font-weight: 600;
+	font-family: 'Gotham Bold', sans-serif;
+	font-weight: 700;
 }
 
 .dashboard-tab-indicator {
