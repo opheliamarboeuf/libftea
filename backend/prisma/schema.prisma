@@ -7,6 +7,113 @@ datasource db {
 	url      = env("DATABASE_URL")
 }
 
+enum BattleStatus {
+	UPCOMING
+	ACTIVE
+	FINISHED
+	CANCELLED
+}
+
+enum FriendshipStatus {
+	PENDING
+	ACCEPTED
+	BLOCKED
+}
+
+enum ModerationLogType {
+	DELETE_ANY_POST
+	CHANGE_ADMIN_ROLE
+	CHANGE_MOD_ROLE
+	BAN_USER
+	UNBAN_USER
+	REVIEW_USER_REPORT
+	REVIEW_POST_REPORT
+	CREATE_TOURNAMENT
+}
+
+enum Role {
+	USER
+	ADMIN
+	MOD
+}
+
+enum ReportType { 
+	SPAM
+	HARASSMENT
+	INAPPROPRIATE_CONTENT
+	OTHER
+}
+
+enum ReportStatus {
+	PENDING
+	ASSIGNED
+	ACCEPTED
+	REJECTED
+}
+
+enum NotificationType {
+	LIKE
+	COMMENT
+	COMMENT_REPLY
+	NEW_BATTLE
+	BATTLE_WIN
+	BATTLE_END
+	FRIEND_REQUEST
+	FRIEND_REQUEST_ACCEPTED
+	POST
+}
+
+model User {
+	id                                             Int                 @id @default(autoincrement())
+	email                                          String              @unique
+	createdAt                                      DateTime            @default(now())
+	password                                       String
+	role                                           Role                @default(USER)
+	username                                       String              @unique
+	updatedAt                                      DateTime            @default(now())
+	bannedAt                                       DateTime?
+	Battle_Battle_createdByIdToUser                Battle[]            @relation("Battle_createdByIdToUser")
+	Battle_Battle_winnerIdToUser                   Battle[]            @relation("Battle_winnerIdToUser")
+	BattleParticipant                              BattleParticipant[]
+	Comment                                        Comment[]
+	friendRequestReceived							Friendship[]        @relation("friendRequestReceived")
+	friendRequestSent								Friendship[]        @relation("friendRequestSent")
+	Like                                           Like[]
+	Message                                        Message[]
+	Notification                                   Notification[]
+	posts                                          Post[]
+	profile                                        Profile?
+	Conversation                                   Conversation[]      @relation("UserConversations")
+
+	// relation for UserHiddenForUser
+	hiddenUsers    UserHiddenForUser[] @relation("UserHider") // list of users hidden by the current user
+  	hiddenByUsers  UserHiddenForUser[] @relation("UserTarget") // list of users that hid the current user
+
+	// relation for PostHiddenForUser
+	hiddenPosts		PostHiddenForUser[]
+
+	// relations for ModerationLog
+	moderationLogsAuthored ModerationLog[] @relation("ActorRelation")
+  	moderationLogsTargeted ModerationLog[] @relation("TargetUserRelation")
+
+	// relations for Reports
+
+	reportsAuthored   Report[] @relation("ReporterRelation")    // reports creat by the user
+	reportsAgainst    Report[] @relation("ReportedUserRelation") // reports agaist the user
+	reportsHandled    Report[] @relation("ModeratorRelation")   // reports handled by the user
+}
+
+model UserHiddenForUser {
+	id      Int   @id @default(autoincrement())
+	userId  Int
+	targetUserId  Int
+
+	user		User @relation("UserHider", fields: [userId], references: [id], onDelete: Cascade)
+	targetUser	User @relation("UserTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+	@@unique([targetUserId, userId])
+}
+
 model Battle {
 	id                            Int                 @id @default(autoincrement())
 	theme                         String
@@ -22,7 +129,7 @@ model Battle {
 	User_Battle_createdByIdToUser User?               @relation("Battle_createdByIdToUser", fields: [createdById], references: [id])
 	winner						    User?               @relation("Battle_winnerIdToUser", fields: [winnerId], references: [id])
 	BattleParticipant             BattleParticipant[]
-	ModerationLog                 ModerationLog[]
+	moderationLogs ModerationLog[] @relation("TargetBattleRelation")
 	NotifSent					  Boolean			   @default(false)
 }
 
@@ -39,17 +146,22 @@ model BattleParticipant {
 	@@unique([battleId, userId])
 }
 
-model Comment {
-	id       Int       @id @default(autoincrement())
-	content  String
-	createdAt DateTime  @default(now())
-	userId   Int
-	postId   Int
-	parentId Int?
-	parent   Comment?  @relation("CommentToComment", fields: [parentId], references: [id])
-	replies  Comment[] @relation("CommentToComment")
-	Post     Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
-	User     User      @relation(fields: [userId], references: [id])
+model	Comment {
+	id			Int			@id @default(autoincrement())
+	content		String
+	createdAt	DateTime	@default(now())
+	deletedAt   DateTime?
+	bannedDeletion    Boolean 			  @default(false)
+
+	userId		Int
+	postId		Int
+	parentId	Int?
+
+	user	User	@relation(fields: [userId], references: [id])
+	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
+
+	parent Comment? @relation("Comment replies", fields: [parentId], references: [id])
+	replies Comment[] @relation("Comment replies")
 }
 
 model Conversation {
@@ -93,17 +205,38 @@ model Message {
 }
 
 model ModerationLog {
-	id                                    Int            @id @default(autoincrement())
-	action                                ModerationType
-	actorId                               Int
-	targetUserId                          Int?
-	targetPostId                          Int?
-	targetBattleId                        Int?
-	createdAt                             DateTime       @default(now())
-	actor                                 User           @relation("ModerationLog_actorIdToUser", fields: [actorId], references: [id])
-	Battle                                Battle?        @relation(fields: [targetBattleId], references: [id])
-	Post                                  Post?          @relation(fields: [targetPostId], references: [id])
-	User_ModerationLog_targetUserIdToUser User?          @relation("ModerationLog_targetUserIdToUser", fields: [targetUserId], references: [id])
+	id             Int             @id @default(autoincrement())
+	action         ModerationLogType
+	actorId        Int
+	actor          User            @relation("ActorRelation", fields: [actorId], references: [id])
+	targetUserId   Int?
+	targetUser     User?           @relation("TargetUserRelation", fields: [targetUserId], references: [id])
+	targetPostId   Int?
+	targetPost     Post?           @relation("TargetPostRelation", fields: [targetPostId], references: [id], onDelete: SetNull)
+	targetBattleId Int?
+	targetBattle   Battle?         @relation("TargetBattleRelation", fields: [targetBattleId], references: [id])
+	createdAt      DateTime        @default(now())
+}
+
+model Report {
+	id						Int       @id @default(autoincrement())
+	reporterId			Int
+	reporter			User        @relation("ReporterRelation", fields: [reporterId], references: [id], onDelete: Cascade)
+	reportedUserId 		Int?		// reported user
+	reportedUser		User?       @relation("ReportedUserRelation", fields: [reportedUserId], references: [id], onDelete: Cascade)
+	reportedPostId		Int?		// reported post
+	reportedPost		Post?       @relation("ReportedPostRelation", fields: [reportedPostId], references: [id], onDelete: Cascade)
+	reportCategory		ReportType
+	reportDescription	String?
+	moderatorMessage	String?
+	createdAt			DateTime  @default(now())
+	status				ReportStatus @default(PENDING)
+	handledById			Int?
+	handledBy			User? @relation("ModeratorRelation", fields: [handledById], references: [id])
+	handledAt			DateTime?
+
+	@@unique([reporterId, reportedPostId])
+	@@unique([reporterId, reportedUserId])
 }
 
 model Notification {
@@ -124,12 +257,34 @@ model Post {
 	authorId          Int
 	title             String
 	updatedAt         DateTime            @default(now())
+	deletedAt		  DateTime?
+	bannedDeletion    Boolean 			  @default(false)
 	battleParticipants BattleParticipant[]
 	Comment           Comment[]
 	Like              Like[]
-	ModerationLog     ModerationLog[]
 	author            User                @relation(fields: [authorId], references: [id])
 	PostTag           PostTag[]
+	
+	// relation for PostHiddenForUser
+	hiddenForUsers         PostHiddenForUser[]
+
+	// relation for ModerationLog
+	moderationLogs ModerationLog[] @relation("TargetPostRelation")
+	
+	// relation for Reports
+	reports     Report[] @relation("ReportedPostRelation") //
+}
+
+
+model PostHiddenForUser {
+	id      Int   @id @default(autoincrement())
+	postId  Int
+	userId  Int
+
+	post    Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+	user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@unique([postId, userId])
 }
 
 model PostTag {
@@ -157,66 +312,4 @@ model Tag {
 	PostTag PostTag[]
 }
 
-model User {
-	id                                             Int                 @id @default(autoincrement())
-	email                                          String              @unique
-	createdAt                                      DateTime            @default(now())
-	password                                       String
-	role                                           Role                @default(USER)
-	username                                       String              @unique
-	updatedAt                                      DateTime            @default(now())
-	bannedAt                                       DateTime?
-	Battle_Battle_createdByIdToUser                Battle[]            @relation("Battle_createdByIdToUser")
-	Battle_Battle_winnerIdToUser                   Battle[]            @relation("Battle_winnerIdToUser")
-	BattleParticipant                              BattleParticipant[]
-	Comment                                        Comment[]
-	friendRequestReceived							Friendship[]        @relation("friendRequestReceived")
-	friendRequestSent								Friendship[]        @relation("friendRequestSent")
-	Like                                           Like[]
-	Message                                        Message[]
-	ModerationLog_ModerationLog_actorIdToUser      ModerationLog[]     @relation("ModerationLog_actorIdToUser")
-	ModerationLog_ModerationLog_targetUserIdToUser ModerationLog[]     @relation("ModerationLog_targetUserIdToUser")
-	Notification                                   Notification[]
-	posts                                          Post[]
-	profile                                        Profile?
-	Conversation                                   Conversation[]      @relation("UserConversations")
-}
 
-enum BattleStatus {
-	UPCOMING
-	ACTIVE
-	FINISHED
-	CANCELLED
-}
-
-enum FriendshipStatus {
-	PENDING
-	ACCEPTED
-	BLOCKED
-}
-
-enum ModerationType {
-	DELETE_ANY_POST
-	CHANGE_ROLE
-	BAN_USER
-	CREATE_TOURNAMENT
-	REVIEW_REPORT
-}
-
-enum NotificationType {
-	LIKE
-	COMMENT
-	COMMENT_REPLY
-	NEW_BATTLE
-	BATTLE_WIN
-	BATTLE_END
-	FRIEND_REQUEST
-	FRIEND_REQUEST_ACCEPTED
-	POST
-}
-
-enum Role {
-	USER
-	ADMIN
-	MOD
-}

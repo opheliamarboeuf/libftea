@@ -6,32 +6,33 @@ import { CreatePostModal } from "../posts/components/CreatePostModal";
 import { Post } from "../context/UserContext";
 import { fetchUserPosts, fetchUserTournamentPosts } from "../posts/components/fetchUserPosts";
 import { UserPostsList } from "../posts/components/UserPostsList";
+import { UserNameWithRole } from "../common/components/UserNameWithRole";
 
 const ProfilePage = () => {
 	const { user } = useUser();
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showPostModal, setShowPostModal] = useState(false);
 	const [posts, setPosts] = useState<Post[]>([]);
-	const [profileTab, setProfileTab] = useState("posts");
-	const [tournamentPosts, setTournamentPosts] = useState<Post[]>([])
+	const [profileTab, setProfileTab] = useState('posts');
+	const [tournamentPosts, setTournamentPosts] = useState<Post[]>([]);
 
 	if (!user) return <Navigate to="/" replace />;
 
 	const loadPosts = async () => {
-		const data =  await fetchUserPosts(user.id);
+		const data = await fetchUserPosts(user.id);
 		setPosts(data);
-	}
+	};
 
 	const loadTournamentPosts = async () => {
 		const data = await fetchUserTournamentPosts(user.id);
 		setTournamentPosts(data);
-	}
+	};
 
 	useEffect(() => {
 		loadPosts();
 		loadTournamentPosts();
 	}, [user]);
-	
+
 	return (
 		<div className="fixed top-[50px] left-[60px] flex flex-col w-[calc(100vw-60px)] h-[calc(100vh-50px)] text-gray-800 overflow-y-auto">
 			<div className="flex flex-1 h-full">
@@ -44,13 +45,15 @@ const ProfilePage = () => {
 							src={
 								user.profile.avatarUrl
 									? `${API_URL}${user.profile.avatarUrl}`
-									: "/assets/images/default-avatar.jpeg"
+									: '/assets/images/default-avatar.jpeg'
 							}
 							alt="Profile Avatar"
 							className="w-24 h-24 rounded-full object-cover shadow-md"
 						/>
 					</div>
-					<p className="font-bold">{user.username}</p>
+					<p className="font-bold">
+						<UserNameWithRole username={user.username} role={user.role} />
+					</p>
 					<div className="flex justify-center gap-2 w-full">
 						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
 							<strong className="text-lg font-bold">{user.friends?.length ?? 0}</strong>
@@ -71,9 +74,9 @@ const ProfilePage = () => {
 					<div className="relative h-[250px] overflow-hidden rounded-2xl group">
 						<img
 							src={
-								user.profile.coverUrl
+								user.profile?.coverUrl
 									? `${API_URL}${user.profile.coverUrl}`
-									: "/assets/images/default-cover.jpeg"
+									: '/assets/images/default-cover.jpeg'
 							}
 							alt="Cover"
 							className="w-full h-full object-cover"
@@ -110,7 +113,6 @@ const ProfilePage = () => {
 									Tournament
 								</button>
 							</div>
-
 							{profileTab === "posts" && (
 								<button 
 									className="group flex items-center justify-center w-10 h-10 bg-neutral-400 text-gray-800 rounded-full hover:bg-neutral-600 hover:w-auto hover:px-4 transition-all duration-300 outline-none overflow-hidden"
@@ -133,7 +135,12 @@ const ProfilePage = () => {
 				</div>
 			</div>
 			{showEditModal && <EditProfileModal onClose={() => setShowEditModal(false)} />}
-			{showPostModal && <CreatePostModal onPostCreated={loadPosts} onClose={() => setShowPostModal(false)} />}
+			{showPostModal && (
+				<CreatePostModal
+					onPostCreated={loadPosts}
+					onClose={() => setShowPostModal(false)}
+				/>
+			)}
 		</div>
 	);
 };

@@ -1,0 +1,79 @@
+.mod-layout {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.mod-sidebar {
+  width: 250px;
+  max-width: 180px;
+  flex-shrink: 0;
+  background: rgb(242, 242, 242);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  color: black;
+  align-self: flex-start;
+  height: fit-content;
+  margin-top: 40px;
+}
+
+.mod-title {
+  margin-bottom: 30px;
+  font-size: 1.3rem;
+}
+
+.mod-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mod-section-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.mod-menu ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.mod-menu li {
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.mod-menu a {
+  display: block;
+  padding: 6px 10px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.mod-menu a:visited {
+  color: inherit;
+}
+
+.mod-menu a:hover {
+  background-color: #e0e0e0;
+}
+
+.mod-menu a.active {
+  font-weight: 600;
+  background-color: #e0e0e0;
+}
+
+.mod-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}

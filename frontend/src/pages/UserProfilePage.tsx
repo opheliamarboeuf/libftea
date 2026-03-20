@@ -7,8 +7,10 @@ import { postsApi } from "../posts/api";
 import { UserPostsList } from "../posts/components/UserPostsList";
 import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
 import { BlockFriendButton } from "../friends/BlockFriendButton";
+import { UserProfileMenu } from "../profile/components/UserProfileMenu";
 import { useFriendsSocket } from "../friends/useFriendsSocket";
 import { fetchUserTournamentPosts } from "../posts/components/fetchUserPosts";
+import { UserNameWithRole } from "../common/components/UserNameWithRole";
 
 const API_URL = 'http://localhost:3000/users';
 const BASE_URL = 'http://localhost:3000';
@@ -16,22 +18,23 @@ const BASE_URL = 'http://localhost:3000';
 type FriendshipStatus = 'NONE' | 'PENDING_SENT' | 'PENDING_RECEIVED' | 'ACCEPTED' | 'BLOCKED';
 
 interface UserProfile {
-	id: number,
-	username: string,
+	id: number;
+	username: string;
+	role?: 'ADMIN' | 'MOD' | 'USER' | string;
 	profile: {
-		avatarUrl?: string,
-		coverUrl?: string,
-		bio?: string,
-		displayName?: string,
-	} | null,
-	friendsCount: number,
-	friendshipStatus: FriendshipStatus,
+		avatarUrl?: string;
+		coverUrl?: string;
+		bio?: string;
+		displayName?: string;
+	} | null;
+	friendsCount: number;
+	friendshipStatus: FriendshipStatus;
 }
 
 const UserProfilePage = () => {
 	const { user, refreshUser } = useUser();
 	const { showModal } = useModal();
-	const { id} = useParams<{ id: string }>();
+	const { id } = useParams<{ id: string }>();
 	const [userData, setUserData] = useState<UserProfile | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [posts, setPosts] = useState<Post[]>([]);
@@ -40,7 +43,7 @@ const UserProfilePage = () => {
 	const [blockedByUser, setBlockedByUser] = useState(false);
 	const [blockedPosts, setBlockedPosts] = useState(false);
 	const [isOnline, setIsOnline] = useState(false);
-	const [profileTab, setProfileTab] = useState("posts");
+	const [profileTab, setProfileTab] = useState('posts');
 	const [tournamentPosts, setTournamentPosts] = useState<Post[]>([]);
 
 	const fetchProfile = async () => {
@@ -51,18 +54,17 @@ const UserProfilePage = () => {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-	
+
 			// if blocked by the current user
-			if (res.status === 403)
-			{
+			if (res.status === 403) {
 				setBlockedByUser(true);
-				return ;
+				return;
 			}
 
 			setBlockedByUser(false);
 
 			if (!res.ok) {
-				throw new Error("Error fetching profile");
+				throw new Error('Error fetching profile');
 			}
 
 			const data = await res.json();
@@ -70,28 +72,24 @@ const UserProfilePage = () => {
 			// if the current user has blocked the user's profile
 			if (data.friendshipStatus === 'BLOCKED') {
 				setBlockedPosts(true);
+			} else {
+				setBlockedPosts(false);
 			}
-			else {
-				setBlockedPosts(false)};
-				await loadPosts();
-			}    
-		catch (error) {
+			await loadPosts();
+		} catch (error) {
 			console.error(error);
-			showModal?.("Could not fetch profile");
+			showModal?.('Could not fetch profile');
 		}
-	}
+	};
 
 	const loadPosts = async () => {
-		if (!id)
-			return ;
+		if (!id) return;
 		const data = await postsApi.fetchUserPosts(Number(id));
 		setPosts(data);
-	}
+	};
 
-	const loadTournamentPosts = async () =>
-	{
-		if (!id)
-			return;
+	const loadTournamentPosts = async () => {
+		if (!id) return;
 		const data = await fetchUserTournamentPosts(Number(id));
 		setTournamentPosts(data);
 	};
@@ -104,10 +102,9 @@ const UserProfilePage = () => {
 
 	useEffect(() => {
 		if (user && userData && user.id === userData.id) {
-			navigate('/myprofile');
+			navigate('/myprofile', { replace: true });
 		}
 	}, [user, userData, navigate]);
-
 
 	const { emit } = useFriendsSocket(user?.id, {
 		onRequestSent: () => {
@@ -138,7 +135,7 @@ const UserProfilePage = () => {
 			setLoading(false);
 			refreshUser();
 			fetchProfile();
-			showModal("Friend removed");
+			showModal('Friend removed');
 		},
 		onUserRemoved: () => {
 			refreshUser();
@@ -172,31 +169,31 @@ const UserProfilePage = () => {
 	const handleAddFriend = async () => {
 		if (!userData) return;
 		setLoading(true);
-		emit("send_friend_request", { requesterId: user?.id, addresseId: Number(id) });
+		emit('send_friend_request', { requesterId: user?.id, addresseId: Number(id) });
 	};
 
 	const handleCancelRequest = async () => {
 		if (!userData) return;
 		setLoading(true);
-		emit("unsend_friend_request", { requesterId: user?.id, addresseId: Number(id) });
+		emit('unsend_friend_request', { requesterId: user?.id, addresseId: Number(id) });
 	};
 
 	const handleAccept = async () => {
 		if (!userData) return;
 		setLoading(true);
-		emit("accept_friend_request", { requesterId: Number(id), addresseId: user?.id });
+		emit('accept_friend_request', { requesterId: Number(id), addresseId: user?.id });
 	};
 
 	const handleReject = async () => {
 		if (!userData) return;
 		setLoading(true);
-		emit("reject_friend_request", { requesterId: Number(id), addresseId: user?.id });
+		emit('reject_friend_request', { requesterId: Number(id), addresseId: user?.id });
 	};
 
 	const handleRemoveFriend = async () => {
 		if (!userData) return;
 		setLoading(true);
-		emit("remove_friend", { userId: user?.id, friendId: userData.id });
+		emit('remove_friend', { userId: user?.id, friendId: userData.id });
 		setShowDeleteConfirm(false);
 	};
 
@@ -277,7 +274,7 @@ const UserProfilePage = () => {
 				return null;
 		}
 	};
-	
+
 	if (blockedByUser) {
 		return (
 			<div className="fixed top-[50px] left-[60px] flex flex-col w-[calc(100vw-60px)] h-[calc(100vh-50px)] text-gray-800 items-center justify-start pt-8">
@@ -299,6 +296,7 @@ const UserProfilePage = () => {
 			<div className="flex flex-1 h-full">
 				{/* PROFILE INFO COLUMN */}
 				<div className="flex-shrink-0 w-[250px] min-w-[150px] bg-white/85 backdrop-blur-md p-6 flex flex-col items-center rounded-2xl border border-black/5 shadow-md m-5 gap-4 self-stretch max-lg:hidden">
+					<UserProfileMenu userId={userData.id} onAction={fetchProfile} />
 					<div className="flex items-center gap-2 text-sm self-start pl-2">
 						{isOnline ? <span>☀️</span> : <span className="grayscale">🌙</span>}
 						<span>{isOnline ? 'Online' : 'Offline'}</span>
@@ -311,13 +309,18 @@ const UserProfilePage = () => {
 							src={
 								userData.profile?.avatarUrl
 									? `${BASE_URL}${userData.profile.avatarUrl}`
-									: "/assets/images/default-avatar.jpeg"
+									: '/assets/images/default-avatar.jpeg'
 							}
 							alt="Profile Avatar"
 							className="w-24 h-24 rounded-full object-cover shadow-md"
 						/>
 					</div>
-					<p className="font-bold" style={{ fontFamily: "'Blosta Script', cursive" }}>{userData.username}</p>
+					<p className="font-bold" style={{ fontFamily: "'Blosta Script', cursive" }}>
+						<UserNameWithRole
+							username={userData.username}
+							role={(userData as any).role}
+						/>
+					</p>
 					<div className="flex justify-center gap-2 w-full">
 						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
 							<strong className="text-lg font-bold">{userData.friendsCount}</strong>
@@ -347,7 +350,7 @@ const UserProfilePage = () => {
 							src={
 								userData.profile?.coverUrl
 									? `${BASE_URL}${userData.profile.coverUrl}`
-									: "/assets/images/default-cover.jpeg"
+									: '/assets/images/default-cover.jpeg'
 							}
 							alt="Cover"
 							className="w-full h-full object-cover"
@@ -391,7 +394,6 @@ const UserProfilePage = () => {
 										</button>
 									</div>
 								</div>
-
 								{/* Posts list */}
 								{profileTab === "posts" && <UserPostsList posts={posts} />}
 								{profileTab === "tournament" && <UserPostsList posts={tournamentPosts} />}
