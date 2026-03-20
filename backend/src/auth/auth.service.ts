@@ -75,18 +75,17 @@ export class AuthService {
 		// if 2FA is enabled, generate a 6 figures code
 		if (user.twoFactorEnabled) {
 			const code = Math.floor(100000 + Math.random() * 900000).toString();
-			const expires = new Date(Date.now() + 10 * 60 * 1000); 
-			
+			const expires = new Date(Date.now() + 10 * 60 * 1000);
+
 			await this.prisma.user.update({
-				where: {id: user.id},
-				data: { twoFactorCode: code, twoFactorExpires: expires }
-			})
+				where: { id: user.id },
+				data: { twoFactorCode: code, twoFactorExpires: expires },
+			});
 
 			await this.mailService.send2FACode(user.email, user.username, code);
 
 			return { twoFactorRequired: true, userId: user.id };
 		}
-
 
 		return this.generateToken(user.id, user.role, user.username);
 	}
@@ -107,13 +106,12 @@ export class AuthService {
 	}
 
 	async verify2FA(userId: number, code: string) {
-		const user = await this.prisma.user.findUnique({ where: {id: userId} });
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
-		if (!user)
-			throw new UnauthorizedException('User not found');
-		
+		if (!user) throw new UnauthorizedException('User not found');
+
 		if (user.bannedAt) {
-				throw new UnauthorizedException('Your account has been banned');
+			throw new UnauthorizedException('Your account has been banned');
 		}
 
 		if (!user.twoFactorCode || !user.twoFactorExpires) {
@@ -131,8 +129,32 @@ export class AuthService {
 			where: { id: user.id },
 			data: { twoFactorCode: null, twoFactorExpires: null },
 		});
-		
+
 		return this.generateToken(user.id, user.role, user.username);
+	}
+
+	async change2FASettings(userId: number) {
+		try {
+			const user = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!user) {
+				throw new UnauthorizedException('User not found');
+			}
+
+			if (user.bannedAt) {
+				throw new UnauthorizedException('Banned users cannot change their security settings');
+			}
+			const updatedUser = await this.prisma.user.update({
+				where: { id: userId },
+				data: { twoFactorEnabled: !user.twoFactorEnabled },
+			});
+
+			return updatedUser;
+		} catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				throw new BadRequestException('Error while updating 2FA settings');
+			}
+			throw error;
+		}
 	}
 
 	async getMe(userId: number) {
@@ -141,6 +163,7 @@ export class AuthService {
 			select: {
 				id: true,
 				email: true,
+				twoFactorEnabled: true,
 				username: true,
 				createdAt: true,
 				bannedAt: true,
@@ -165,10 +188,10 @@ export class AuthService {
 				},
 			},
 		});
-		
+
 		if (!user || user.bannedAt) {
-        	throw new UnauthorizedException('Your account has been banned');
-    }
+			throw new UnauthorizedException('Your account has been banned');
+		}
 
 		// Fetch friends (accepted friendships)
 		const friendships = await this.prisma.friendship.findMany({
