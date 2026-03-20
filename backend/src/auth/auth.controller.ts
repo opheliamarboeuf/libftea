@@ -9,6 +9,12 @@ export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
 	@Public()
+	@Post('2fa/verify')
+	verify2FA(@Body() body: { userId: number; code: string }) {
+		return this.authService.verify2FA(body.userId, body.code);
+}
+
+	@Public()
 	@Post('register')
 	register(@Body() dto: RegisterDto) {
 		return this.authService.register(dto);
