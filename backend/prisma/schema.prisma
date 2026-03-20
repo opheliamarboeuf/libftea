@@ -66,6 +66,9 @@ enum NotificationType {
 model User {
 	id                                             Int                 @id @default(autoincrement())
 	email                                          String              @unique
+	twoFactorEnabled							   Boolean			   @default(false)
+	twoFactorCode								   String?
+	twoFactorExpires 							   DateTime?
 	createdAt                                      DateTime            @default(now())
 	password                                       String
 	role                                           Role                @default(USER)

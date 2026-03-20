@@ -6,12 +6,14 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Prisma } from '@prisma/client';
 import { Role } from '@prisma/client';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private prisma: PrismaService,
 		private jwtService: JwtService,
+		private mailService: MailService,
 	) {}
 
 	async register(dto: RegisterDto) {
@@ -70,6 +72,22 @@ export class AuthService {
 			throw new UnauthorizedException('Your account has been banned');
 		}
 
+		// if 2FA is enabled, generate a 6 figures code
+		if (user.twoFactorEnabled) {
+			const code = Math.floor(100000 + Math.random() * 900000).toString();
+			const expires = new Date(Date.now() + 10 * 60 * 1000); 
+			
+			await this.prisma.user.update({
+				where: {id: user.id},
+				data: { twoFactorCode: code, twoFactorExpires: expires }
+			})
+
+			await this.mailService.send2FACode(user.email, user.username, code);
+
+			return { twoFactorRequired: true, userId: user.id };
+		}
+
+
 		return this.generateToken(user.id, user.role, user.username);
 	}
 
@@ -86,6 +104,35 @@ export class AuthService {
 		return {
 			access_token: this.jwtService.sign(payload),
 		};
+	}
+
+	async verify2FA(userId: number, code: string) {
+		const user = await this.prisma.user.findUnique({ where: {id: userId} });
+
+		if (!user)
+			throw new UnauthorizedException('User not found');
+		
+		if (user.bannedAt) {
+				throw new UnauthorizedException('Your account has been banned');
+		}
+
+		if (!user.twoFactorCode || !user.twoFactorExpires) {
+			throw new UnauthorizedException('No 2FA pending');
+		}
+		if (new Date() > user.twoFactorExpires) {
+			throw new UnauthorizedException('Code expired');
+		}
+		if (user.twoFactorCode !== code) {
+			throw new UnauthorizedException('Invalid code');
+		}
+
+		// Clean the code after the user used it
+		await this.prisma.user.update({
+			where: { id: user.id },
+			data: { twoFactorCode: null, twoFactorExpires: null },
+		});
+		
+		return this.generateToken(user.id, user.role, user.username);
 	}
 
 	async getMe(userId: number) {
