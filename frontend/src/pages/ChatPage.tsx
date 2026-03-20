@@ -2,14 +2,12 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useConversations } from '../chat/components/hooks/useConversations';
 import { ChatWindow } from '../chat/components/ChatWindow';
-import { useUser } from "../context/UserContext";
-
+import { ChatNavbar } from '../chat/components/ChatNavbar';
+import { useUser } from '../context/UserContext';
 
 export function ChatPage() {
-
-  const { user } = useUser(); // ← plus de prop currentUser
-
-  const { conversations, openConversation } = useConversations();
+  const { user } = useUser();
+  const { conversations, openConversation, updateLastMessage } = useConversations(user?.id);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const [searchParams] = useSearchParams();
 
@@ -22,61 +20,39 @@ export function ChatPage() {
     }
   }, []);
 
+  if (!user) return null;
 
-  if (!user) return null; // user pas encore chargé
-
+  // Trouve la conversation active et l'autre user
+  const activeConv = conversations.find(c => c.id === activeConversationId);
+  const otherUser = activeConv?.User.find(u => u.id !== user.id);
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div style={{
+      position: 'fixed', top: '50px', left: '60px',
+      width: 'calc(100vw - 60px)', height: 'calc(100vh - 50px)',
+      display: 'flex', flexDirection: 'row', overflow: 'hidden',
+      backgroundColor: '#fff', color: 'black',
+    }}>
+      <ChatNavbar
+        conversations={conversations}
+        activeConversationId={activeConversationId}
+        onSelectConversation={setActiveConversationId}
+      />
 
-      {/* Sidebar — liste des conversations */}
-      <div style={{ width: '280px', borderRight: '1px solid #e5e7eb', overflowY: 'auto' }}>
-        <h2 style={{ padding: '16px' }}>Messages</h2>
-        {conversations.map(conv => {
-
-          const other = conv.User.find(u => u.id !== user.id);
-
-          const lastMsg = conv.Message[0];
-          return (
-            <div
-              key={conv.id}
-              onClick={() => setActiveConversationId(conv.id)}
-              style={{
-                padding: '12px 16px',
-                cursor: 'pointer',
-                background: activeConversationId === conv.id ? '#eff6ff' : 'transparent',
-                borderBottom: '1px solid #f3f4f6',
-              }}
-            >
-              <p style={{ fontWeight: 500, margin: 0 }}>{other?.username}</p>
-              {lastMsg && (
-                <p style={{ fontSize: '12px', color: '#6b7280', margin: '2px 0 0',
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {lastMsg.content}
-                </p>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Zone de chat */}
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
         {activeConversationId ? (
           <ChatWindow
             conversationId={activeConversationId}
-
             currentUserId={user.id}
-
+            otherUser={otherUser}
+            onNewMessage={updateLastMessage}
           />
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',
-            height: '100%', color: '#9ca3af' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9ca3af', fontSize: '15px' }}>
             Sélectionne une conversation
           </div>
         )}
       </div>
-
     </div>
   );
 }

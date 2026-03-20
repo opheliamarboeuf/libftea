@@ -77,6 +77,39 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return message;
   }
 
+	@SubscribeMessage('typing')
+  handleTyping(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { conversationId: number; senderId: number; username: string },
+  ) {
+    client.to(`conversation_${data.conversationId}`).emit('userTyping', {
+      senderId: data.senderId,
+      username: data.username,
+    });
+  }
+
+  @SubscribeMessage('stopTyping')
+  handleStopTyping(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { conversationId: number; senderId: number },
+  ) {
+    client.to(`conversation_${data.conversationId}`).emit('userStopTyping', {
+      senderId: data.senderId,
+    });
+  }
+
+	@SubscribeMessage('markRead')
+  handleMarkRead(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { conversationId: number; userId: number },
+  ) {
+    // Broadcast à tous dans la conv sauf l'émetteur
+    client.to(`conversation_${data.conversationId}`).emit('messageRead', {
+      userId: data.userId,
+      conversationId: data.conversationId,
+    });
+  }
+
   @SubscribeMessage('getMessages')
   async handleGetMessages(
     @ConnectedSocket() client: Socket,
@@ -97,3 +130,5 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.emit('messageHistory', messages);
   }
 }
+
+
