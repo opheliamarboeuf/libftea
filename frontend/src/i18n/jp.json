@@ -202,5 +202,62 @@
 		"end": "終了日を選んでください",
 		"planned": "{{date1}}から{{date2}}まで、すでにトーナメントが予定されています",
 		"tfailed": "トーナメントの作成に失敗しました"
+	},
+
+	"dashboard": {
+		"admindash": "管理者ダッシュボード",
+		"moddash": "モデレーターダッシュボード",
+		"manage": "ユーザー管理",
+		"users": "全ユーザー",
+		"admins": "管理者",
+		"pending": "保留中の報告",
+		"assignedme": "自分に割り当て済み",
+		"assignedall": "すべての割り当て済み報告",
+		"resolved": "解決",
+		"adminlogs": "管理者ログ",
+		"userreports": "ユーザー報告",
+		"logs": "ログ",
+		"mods": "モデレーター",
+		"postreports": "投稿報告",
+		"modlogs": "モデレーター管理者ログ"
+	},
+
+	"userlist": {
+		"unban": "バン解除",
+		"unbanconfirm": "{{name}}のバンを解除しますか？",
+		"admin": "→ 管理者",
+		"mod": "→ モデ",
+		"user": "→ ユーザー",
+		"promoteadmin": "{{name}}を管理者に昇格しますか?",
+		"promotemod": "{{name}}をモデレーターに昇格しますか?",
+		"demote": "{{name}}をユーザーに降格しますか?",
+		"nousers": "ユーザーが見つかりません",
+		"search": "ユーザーを検索...",
+		"banned": "バン済み",
+		"active": "アクティブ",
+		"username": "ユーザーネーム",
+		"role": "役割",
+		"status": "状態",
+		"action": "操作"
+	},
+
+	"postreport": {
+		"noreports": "報告はありません",
+		"assignedto": "担当者:",
+		"assign": "報告を割り当てる",
+		"unassign": "割り当てを解除する",
+		"handle": "報告を処理する",
+		"reporter": "報告者:",
+		"category": "報告カテゴリー:",
+		"description": "報告内容:",
+		"creation": "報告作成日:",
+		"view": "すべての報告を見る",
+		"status": "報告状態:",
+		"handled": "処理者:",
+		"message": "モデレーションメッセージ:",
+		"date": "処理日:",
+		"unassignconfirm": "この報告の割り当てを解除してもよろしいですか?",
+		"accepted": "承認",
+		"rejected": "却下"
 	}
 }

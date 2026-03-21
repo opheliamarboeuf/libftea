@@ -7,6 +7,7 @@ import { UserNameWithRole } from '../../common/components/UserNameWithRole';
 import { useModal } from '../../context/ModalContext';
 import { moderationApi } from '../api';
 import './UserList.css';
+import { useTranslation } from 'react-i18next';
 
 interface UserListProps {
 	users: ModerationUser[];
@@ -26,6 +27,7 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 	const navigate = useNavigate();
 	const { user: currentUser } = useUser();
 	const { showModal } = useModal();
+	const { t } = useTranslation();
 
 	const [sortField, setSortField] = useState<SortField>('id');
 	const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -110,11 +112,11 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 							setPendingAction({
 								userId: target.id,
 								type: 'ban',
-								message: `Unban ${target.username}?`,
+								message: t('userlist.unbanconfirm'),
 							});
 						}}
 					>
-						Unban
+						{t('userlist.unban')}
 					</button>,
 				);
 			}
@@ -133,11 +135,11 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 							setPendingAction({
 								userId: target.id,
 								type: 'admin',
-								message: `Promote ${target.username} to ADMIN?`,
+								message: t('userlist.promoteadmin', { name: target.username }),
 							});
 						}}
 					>
-						→ ADMIN
+						{t('userlist.admin')}
 					</button>,
 				);
 			}
@@ -155,12 +157,12 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 								type: 'mod',
 								message:
 									target.role === 'USER'
-										? `Promote ${target.username} to MOD?`
-										: `Demote ${target.username} to USER?`,
+										? t('userlist.promotemod', { name: target.username })
+										: t('userlist.demote', { name: target.username }),
 							});
 						}}
 					>
-						{target.role === 'USER' ? '→ MOD' : '→ USER'}
+						{target.role === 'USER' ? t('userlist.mod') : t('userlist.user')}
 					</button>,
 				);
 			}
@@ -178,12 +180,12 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 								type: 'mod',
 								message:
 									target.role === 'USER'
-										? `Promote ${target.username} to MOD?`
-										: `Demote ${target.username} to USER?`,
+										? t('userlist.promotemod', { name: target.username })
+										: t('userlist.demote', { name: target.username }),
 							});
 						}}
 					>
-						{target.role === 'USER' ? '→ MOD' : '→ USER'}
+						{target.role === 'USER' ? t('userlist.mod') : t('userlist.user')}
 					</button>,
 				);
 			}
@@ -213,7 +215,7 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 	};
 
 	if (!Array.isArray(initialUsers) || initialUsers.length === 0) {
-		return <div className="user-list">No users found</div>;
+		return <div className="user-list">{t('userlist.nousers')}</div>;
 	}
 
 	return (
@@ -222,7 +224,7 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 			<div className="user-search">
 				<input
 					type="text"
-					placeholder="Search users..."
+					placeholder={t('userlist.search')}
 					value={searchTerm}
 					onChange={(e) => setSearchTerm(e.target.value)}
 				/>
@@ -235,19 +237,19 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 						ID {sortField === 'id' && (sortDirection === 'asc' ? '▲' : '▼')}
 					</span>
 					<span onClick={() => handleSort('username')}>
-						Username {sortField === 'username' && (sortDirection === 'asc' ? '▲' : '▼')}
+						{t('userlist.username')} {sortField === 'username' && (sortDirection === 'asc' ? '▲' : '▼')}
 					</span>
 					<span onClick={() => handleSort('role')}>
-						Role {sortField === 'role' && (sortDirection === 'asc' ? '▲' : '▼')}
+						{t('userlist.role')} {sortField === 'role' && (sortDirection === 'asc' ? '▲' : '▼')}
 					</span>
 					<span onClick={() => handleSort('status')}>
-						Status {sortField === 'status' && (sortDirection === 'asc' ? '▲' : '▼')}
+						{t('userlist.status')} {sortField === 'status' && (sortDirection === 'asc' ? '▲' : '▼')}
 					</span>
-					<span>Actions</span>
+					<span>{t('userlist.action')}</span>
 				</div>
 
 				{filteredAndSortedUsers.length === 0 ? (
-					<div className="user-empty">No users found</div>
+					<div className="user-empty">{t('userlist.nousers')}</div>
 				) : (
 					filteredAndSortedUsers.map((user) => (
 						<div key={user.id} className="user-row">
@@ -260,7 +262,7 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 							</span>
 							<span>{user.role}</span>
 							<span className={user.bannedAt ? 'status-banned' : 'status-active'}>
-								{user.bannedAt ? 'BANNED' : 'ACTIVE'}
+								{user.bannedAt ? t('userlist.banned') : t('userlist.active')}
 							</span>
 							<span>{getActionButtons(user)}</span>
 						</div>

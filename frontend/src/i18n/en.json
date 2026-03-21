@@ -204,5 +204,62 @@
 		"end": "Please select an end date",
 		"planned": "A tournament is already planned from {{date1}} to {{date2}}",
 		"tfailed": "Tournament creation failed"
+	},
+
+	"dashboard": {
+		"admindash": "Administrator Dashboard",
+		"moddash": "Moderator Dashboard",
+		"manage": "Users Management",
+		"users": "All Users",
+		"admins": "Administrators",
+		"pending": "Pending reports",
+		"assignedme": "Assigned to me",
+		"assignedall": "All assigned reports",
+		"resolved": "Resolved",
+		"adminlogs": "Admin logs",
+		"userreports": "User Reports",
+		"logs": "Logs",
+		"mods": "Moderators",
+		"postreports": "Post reports",
+		"modlogs": "Mod logs"
+	},
+
+	"userlist": {
+		"unban": "Unban",
+		"unbanconfirm": "Unban {{name}}?",
+		"admin": "→ ADMIN",
+		"mod": "→ MOD",
+		"user": "→ USER",
+		"promoteadmin": "Promote {{name}} to ADMIN?",
+		"promotemod": "Promote {{name}} to MOD?",
+		"demote": "Demote {{name}} to USER?",
+		"nousers": "No users found",
+		"search": "Search users...",
+		"banned": "BANNED",
+		"active": "ACTIVE",
+		"username": "Username",
+		"role": "Role",
+		"status": "Status",
+		"action": "Actions"
+	},
+
+	"postreport": {
+		"noreports": "No reports available",
+		"assignedto": "Assigned to",
+		"assign": "Assign Report",
+		"unassign": "Unassign Report",
+		"handle": "Handle Report",
+		"reporter": "Reporter:",
+		"category": "Report Category:",
+		"description": "Report Description:",
+		"creation": "Report Creation:",
+		"view": "View all the reports",
+		"status": "Report Status:",
+		"handled": "Handled by:",
+		"message": "Moderation Message:",
+		"date": "Report handle date:",
+		"unassignconfirm": "Are you sure you want to unassign this report?",
+		"accepted": "ACCEPTED",
+		"rejected": "REJECTED"
 	}
 }

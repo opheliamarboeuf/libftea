@@ -202,5 +202,62 @@
 		"end": "Veuillez sélectionner une date de fin",
 		"planned": "Un tournoi est déjà prévu du {{date1}} au {{date2}}",
 		"tfailed": "Échec de la création du tournoi"
+	},
+
+	"dashboard": {
+		"admindash": "Dashboard Administrateur",
+		"moddash": "Dashboard Modérateur",
+		"manage": "Gestion des utilisateurs",
+		"users": "Tous les utilisateurs",
+		"admins": "Administrateurs",
+		"pending": "Signalements en attente",
+		"assignedme": "Assignés à moi",
+		"assignedall": "Tous les signalements assignés",
+		"resolved": "Résolus",
+		"adminlogs": "Logs administrateur",
+		"userreports": "Utilisateurs signalés",
+		"logs": "Logs",
+		"mods": "Modérateurs",
+		"postreports": "Post signalés",
+		"modlogs": "Logs de modérateur"
+	},
+
+	"userlist": {
+		"unban": "Débannir",
+		"unbanconfirm": "Débannir {{name}}?",
+		"admin": "→ ADMIN",
+		"mod": "→ MOD",
+		"user": "→ USER",
+		"promoteadmin": "Promouvoir {{name}} en ADMIN?",
+		"promotemod": "Promouvoir {{name}} en MOD?",
+		"demote": "Rétrograder {{name}} en USER?",
+		"nousers": "Aucun utilisateur trouvé",
+		"search": "Rechercher des utilisateurs...",
+		"banned": "BANNI",
+		"active": "ACTIF",
+		"username": "Nom d'utilisateur",
+		"role": "Rôle",
+		"status": "Statut",
+		"action": "Actions"
+	},
+
+	"postreport": {
+		"noreports": "Aucun signalement disponible",
+		"assignedto": "Assigné à",
+		"assign": "Assigner le signalement",
+		"unassign": "Désassigner le signalement",
+		"handle": "Traiter le signalement",
+		"reporter": "Signalé par:",
+		"category": "Catégorie du signalement:",
+		"description": "Description du signalement:",
+		"creation": "Création du signalement:",
+		"view": "Voir tous les signalements",
+		"status": "Statut du signalement:",
+		"handled": "Traité par:",
+		"message": "Message de modération:",
+		"date": "Date de traitement:",
+		"unassignconfirm": "Êtes-vous sûr de vouloir désassigner ce signalement?",
+		"accepted": "ACCEPTÉ",
+		"rejected": "REJETÉ"
 	}
 }

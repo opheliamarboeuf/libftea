@@ -2,6 +2,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { useEffect } from 'react';
 import './DashboardPage.css';
+import { useTranslation } from 'react-i18next';
 
 const DASHBOARD_PAGE_KEY = 'lastDashboardPage';
 const DASHBOARD_ADMIN_PAGE_KEY = 'lastDashboardAdminPage';
@@ -11,6 +12,7 @@ const DashboardPage = () => {
 	const { user } = useUser();
 	const location = useLocation();
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 
 	// Save the current page in the current key
 	useEffect(() => {
@@ -75,13 +77,13 @@ const DashboardPage = () => {
 						className={activeTab === 'ADMIN' ? 'active' : ''}
 						onClick={() => navigate(getLastAdminPage())}
 					>
-						Administrator Dashboard
+						{t('dashboard.admindash')}
 					</button>
 					<button
 						className={activeTab === 'MOD' ? 'active' : ''}
 						onClick={() => navigate(getLastModPage())}
 					>
-						Moderator Dashboard
+						{t('dashboard.moddash')}
 					</button>
 				</div>
 			</div>
