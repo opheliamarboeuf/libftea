@@ -7,7 +7,7 @@ import {
 	OnGatewayDisconnect,
 	WebSocketServer,
 } from '@nestjs/websockets';
-import { Server , Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { LikesService } from './likes.service';
 
 @WebSocketGateway({
@@ -16,7 +16,6 @@ import { LikesService } from './likes.service';
 		credentials: true,
 	},
 })
-
 export class LikesGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	server: Server;

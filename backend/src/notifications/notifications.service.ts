@@ -177,6 +177,64 @@ export class NotificationsService {
 		}
 	}
 
+	async notifyPromotionAdmin(recipientId: number, promoterUsername: string): Promise<void> {
+		try {
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.ADMIN_PROMOTE,
+					userId: recipientId,
+					isRead: false,
+					message: `${promoterUsername} has promoted you to administrator role`,
+				},
+			});
+			
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying promotion:", err);
+		}
+		
+	}
+
+	async notifyPromotionMod(recipientId: number, promoterUsername: string): Promise<void> {
+		try {
+			console.log("Gateway server:", this.notificationsGateway.server); // ← est-il null ?
+        	console.log("Sending notif to:", recipientId);
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.MOD_PROMOTE,
+					userId: recipientId,
+					isRead: false,
+					message: `${promoterUsername} has promoted you to moderator role`,
+				},
+			});
+			
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying promotion:", err);
+		}
+		
+	}
+
+	async notifyDemoted(recipientId: number, demoterUsername: string): Promise<void> {
+		try {
+			console.log("Gateway server:", this.notificationsGateway.server); // ← est-il null ?
+        	console.log("Sending notif to:", recipientId);
+			const notification = await this.prisma.notification.create({
+				data: {
+					type: NotificationType.DEMOTED,
+					userId: recipientId,
+					isRead: false,
+					message: `${demoterUsername} has demoted you to user`,
+				},
+			});
+			
+			this.notificationsGateway.sendToUser(recipientId, notification);
+		} catch (err) {
+			console.log("Error notifying demotion:", err);
+		}
+		
+	}
+
 	async getMyNotifications(userId: number): Promise<Notification[]> {
 		const notifications = await this.prisma.notification.findMany({
 			where: { userId, isRead: false },

@@ -11,5 +11,4 @@ import { PostsModule } from 'src/posts/posts.module';
 	providers: [UsersService, PrismaService],
 	exports: [UsersService],
 })
-
 export class UsersModule {}

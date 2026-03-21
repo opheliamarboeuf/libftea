@@ -5,49 +5,55 @@ import "./CommentSection.css";
 import { ConfirmDialog } from "../common/components/ConfirmDialog";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { UserNameWithRole } from "../common/components/UserNameWithRole";
 
 interface Props {
-    postId: number;
+	postId: number;
 }
 
 export function CommentSection({ postId }: Props) {
-    const { comments, loading, error, createComment, deleteComment, replyComment } = useComments(postId);
-    const { user } = useUser();
-    const [newComment, setNewcomment] = useState("");
-    const [activeReplyId, setActiveReplyId] = useState<number | null>(null);
-    const [replyContent, setReplyContent] = useState("");
+	const { comments, loading, error, createComment, deleteComment, replyComment } =
+		useComments(postId);
+	const { user } = useUser();
+	const [newComment, setNewcomment] = useState('');
+	const [activeReplyId, setActiveReplyId] = useState<number | null>(null);
+	const [replyContent, setReplyContent] = useState('');
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
 	const { t } = useTranslation();
 
-    const handleCommentSubmit = async () => {
-        if (!newComment.trim()) return;
-        createComment(newComment.trim());
-        setNewcomment("");
-    };
+	const handleCommentSubmit = async () => {
+		if (!newComment.trim()) return;
+		createComment(newComment.trim());
+		setNewcomment('');
+	};
 
-    const handleReplySubmit = async (parentId: number) => {
-        if (!replyContent.trim()) return;
-        await replyComment(parentId, replyContent.trim());
-        setReplyContent("");
-        setActiveReplyId(null);
-    };
+	const handleReplySubmit = async (parentId: number) => {
+		if (!replyContent.trim()) return;
+		await replyComment(parentId, replyContent.trim());
+		setReplyContent('');
+		setActiveReplyId(null);
+	};
 
-    const renderReplies = (replies: any[]) => (
-        <ul className="replies-list">
-            {replies.map(reply => (
-                <li key={reply.id} className="reply-item">
-                    <p>
-                        <strong>
+	const renderReplies = (replies: any[]) => (
+		<ul className="replies-list">
+			{replies.map((reply) => (
+				<li key={reply.id} className="reply-item">
+					<p>
+						<strong>
 							<Link
-								to={`/users/${reply.User.id}`}
-								style={{ textDecoration: "none", color: "inherit" }}
+								to={`/users/${reply.user.id}`}
+								style={{ textDecoration: 'none', color: 'inherit' }}
 							>
-							{reply.User.username}
+								<UserNameWithRole
+									username={reply.user.username}
+									role={(reply.user as any).role}
+								/>
 							</Link>
-						</strong> • {new Date(reply.createdAt).toLocaleString()}
-                    </p>
-                    <p>{reply.content}</p>
+						</strong>{' '}
+						• {new Date(reply.createdAt).toLocaleString()}
+					</p>
+					<p>{reply.content}</p>
 					<div className="comment-actions">
                     {reply.userId === user?.id && (
                         <button onClick={() => {
@@ -58,10 +64,10 @@ export function CommentSection({ postId }: Props) {
 						</button>
                     )}
 					</div>
-                </li>
-            ))}
-        </ul>
-    );
+				</li>
+			))}
+		</ul>
+	);
 
 	return (
 		<div className="comment-section">
@@ -85,12 +91,15 @@ export function CommentSection({ postId }: Props) {
                         <p>
                            <strong>
 								<Link
-									to={`/users/${comment.User.id}`}
-									style={{ textDecoration: "none", color: "inherit" }}
+									to={`/users/${comment.user.id}`}
+									style={{ textDecoration: 'none', color: 'inherit' }}
 								>
-								{comment.User.username}
+									<UserNameWithRole
+										username={comment.user.username}
+										role={(comment.user as any).role}
+									/>
 								</Link>
-							</strong> • {new Date(comment.createdAt).toLocaleString()}
+							</strong>{' '} • {new Date(comment.createdAt).toLocaleString()}
                         </p>
                         <p>{comment.content}</p>
                         <div className="comment-actions">

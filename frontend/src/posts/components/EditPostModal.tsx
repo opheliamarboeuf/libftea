@@ -5,9 +5,8 @@ import { usePostEdition } from "../hooks/usePostEdition";
 import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
-import { Post
+import { Post } from "../../context/UserContext";
 
- } from "../../context/UserContext";
 import { useTranslation } from "react-i18next";
 interface EditPostModalProps {
 	post: Post,

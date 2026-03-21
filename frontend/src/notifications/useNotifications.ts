@@ -9,6 +9,11 @@ export interface Notification {
 	message: string;
 	createdAt: string;
 	metadata: JSON;
+	User: {
+		id: number;
+		username: string;
+		role: string;
+	};
 }
 
 export const useNotifications = (userId: number | undefined) => {

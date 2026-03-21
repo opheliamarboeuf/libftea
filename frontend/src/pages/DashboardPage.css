@@ -1,0 +1,88 @@
+.dashboard-page {
+	position: fixed;
+	top: 50px;
+	left: 60px;
+	display: flex;
+	flex-direction: column;
+	width: calc(100vw - 60px);
+	height: calc(100vh - 50px);
+	color: black;
+	align-items: center;
+	overflow: hidden;
+}
+
+.dashboard-header {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 10px 20px;
+	margin-top: 20px;
+}
+
+.dash-board-content {
+	max-width: 1200px;
+	width: 100%;
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
+}
+
+/* Tabs */
+.dashboard-tabs {
+	position: relative;
+	display: flex;
+	border-radius: 8px;
+	overflow: hidden;
+	background-color: white;
+}
+
+.dashboard-tabs button {
+	flex: 1;
+	background-color: transparent;
+	border: none;
+	padding: 10px 20px;
+	font-size: 0.95rem;
+	cursor: pointer;
+	position: relative;
+	z-index: 2;
+	color: black;
+	transition: color 0.2s ease;
+	outline: none;
+	min-width: 140px;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.dashboard-tabs button:hover {
+	background-color: transparent;
+}
+
+.dashboard-tabs button.active {
+	color: black;
+	font-weight: 600;
+}
+
+.dashboard-tab-indicator {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: calc(100% / 2);
+	height: 100%;
+	background-color: #f0f0f0;
+	border-radius: 8px;
+	transition: transform 0.25s ease;
+	z-index: 1;
+}
+
+.dashboard-tab-indicator.ADMIN {
+	transform: translateX(0%);
+}
+
+.dashboard-tab-indicator.MOD {
+	transform: translateX(100%);
+}
+

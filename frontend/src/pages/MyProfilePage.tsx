@@ -1,13 +1,14 @@
-import "../App.css";
-import "./MyProfilePage.css";
-import { Navigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
-import { useEffect, useState } from "react";
-import { EditProfileModal, API_URL } from "../profile";
-import { CreatePostModal } from "../posts/components/CreatePostModal";
-import { Post } from "../context/UserContext";
-import { fetchUserPosts, fetchUserTournamentPosts } from "../posts/components/fetchUserPosts";
-import { UserPostsList } from "../posts/components/UserPostsList";
+import '../App.css';
+import './MyProfilePage.css';
+import { Navigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
+import { useEffect, useState } from 'react';
+import { EditProfileModal, API_URL } from '../profile';
+import { CreatePostModal } from '../posts/components/CreatePostModal';
+import { UserNameWithRole } from '../common/components/UserNameWithRole';
+import { Post } from '../context/UserContext';
+import { fetchUserPosts, fetchUserTournamentPosts } from '../posts/components/fetchUserPosts';
+import { UserPostsList } from '../posts/components/UserPostsList';
 import { useTranslation } from "react-i18next";
 
 const ProfilePage = () => {
@@ -15,27 +16,27 @@ const ProfilePage = () => {
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showPostModal, setShowPostModal] = useState(false);
 	const [posts, setPosts] = useState<Post[]>([]);
-	const [profileTab, setProfileTab] = useState("posts");
-	const [tournamentPosts, setTournamentPosts] = useState<Post[]>([])
+	const [profileTab, setProfileTab] = useState('posts');
+	const [tournamentPosts, setTournamentPosts] = useState<Post[]>([]);
 	const { t } = useTranslation();
 
 	if (!user) return <Navigate to="/" replace />;
 
 	const loadPosts = async () => {
-		const data =  await fetchUserPosts(user.id);
+		const data = await fetchUserPosts(user.id);
 		setPosts(data);
-	}
+	};
 
 	const loadTournamentPosts = async () => {
 		const data = await fetchUserTournamentPosts(user.id);
 		setTournamentPosts(data);
-	}
+	};
 
 	useEffect(() => {
 		loadPosts();
 		loadTournamentPosts();
 	}, [user]);
-	
+
 	return (
 		<div className="profile-page">
 			{/* MAIN CONTENT */}
@@ -43,19 +44,22 @@ const ProfilePage = () => {
 				{/* PROFILE INFO COLUMN */}
 				<div className="profile-info">
 					<p className="display-name">
-						{user.profile.displayName ? user.profile.displayName : '\u00A0'} {/*space to keep the height*/}
+						{user.profile?.displayName ? user.profile.displayName : '\u00A0'}{' '}
+						{/*space to keep the height*/}
 					</p>
 					<div className="profile-pic">
 						<img
 							src={
 								user.profile.avatarUrl
 									? `${API_URL}${user.profile.avatarUrl}`
-									: "/assets/images/default-avatar.jpeg"
+									: '/assets/images/default-avatar.jpeg'
 							}
 							alt="Profile Avatar"
 						/>
 					</div>
-					<p className="display-username">{user.username}</p>
+					<p className="display-username">
+						<UserNameWithRole username={user.username} role={user.role} />
+					</p>
 					<div className="stats">
 						<span>{t('userprofile.friends')}: {user.friends?.length ?? 0}</span>
 						<span>{t('userprofile.posts')}: {posts.length}</span>
@@ -70,9 +74,9 @@ const ProfilePage = () => {
 					<div className="cover">
 						<img
 							src={
-								user.profile.coverUrl
+								user.profile?.coverUrl
 									? `${API_URL}${user.profile.coverUrl}`
-									: "/assets/images/default-cover.jpeg"
+									: '/assets/images/default-cover.jpeg'
 							}
 							alt="Cover"
 						/>
@@ -85,37 +89,48 @@ const ProfilePage = () => {
 							<div className="profile-tabs">
 								<div className={`profile-tab-indicator ${profileTab}`} />
 								<button
-									className={profileTab === "posts" ? "active" : ""}
-									onClick={() => setProfileTab("posts")}
+									className={profileTab === 'posts' ? 'active' : ''}
+									onClick={() => setProfileTab('posts')}
 								>
 									{t('userprofile.posts')}
 								</button>
 								<button
-									className={profileTab === "tournament" ? "active" : ""}
-									onClick={() => setProfileTab("tournament")}
+									className={profileTab === 'tournament' ? 'active' : ''}
+									onClick={() => setProfileTab('tournament')}
 								>
 									{t('tournament.tournament')}
 								</button>
 							</div>
-							{profileTab === "posts" && (
-								<button className="expand-btn expand-btn-post" onClick={() => setShowPostModal(true)}>
+							{profileTab === 'posts' && (
+								<button
+									className="expand-btn expand-btn-post"
+									onClick={() => setShowPostModal(true)}
+								>
 									<span className="icon">＋</span>
 									<span className="expand-btn-text">{t('feedpage.postoutfit')}</span>
 								</button>
 							)}
-							</div>
-							{profileTab === "posts" && (
-								<UserPostsList posts = {posts} onPostDeleted={loadPosts} />
-							)}
-						{profileTab === "tournament" && (
-							<UserPostsList posts={tournamentPosts} onPostDeleted={loadTournamentPosts} />
+						</div>
+						{profileTab === 'posts' && (
+							<UserPostsList posts={posts} onPostDeleted={loadPosts} />
+						)}
+						{profileTab === 'tournament' && (
+							<UserPostsList
+								posts={tournamentPosts}
+								onPostDeleted={loadTournamentPosts}
+							/>
 						)}
 					<UserPostsList posts = {posts} onPostDeleted={loadPosts} />
 					</div>
 				</div>
 			</div>
 			{showEditModal && <EditProfileModal onClose={() => setShowEditModal(false)} />}
-			{showPostModal && <CreatePostModal onPostCreated={loadPosts} onClose={() => setShowPostModal(false)} />}
+			{showPostModal && (
+				<CreatePostModal
+					onPostCreated={loadPosts}
+					onClose={() => setShowPostModal(false)}
+				/>
+			)}
 		</div>
 	);
 };

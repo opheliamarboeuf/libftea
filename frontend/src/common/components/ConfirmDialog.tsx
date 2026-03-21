@@ -18,7 +18,8 @@ export function ConfirmDialog({ message, onConfirm, onCancel, confirmLabel, canc
 	cancelLabel = t('editprofile.cancel');
 	
 	return createPortal(
-		<div className="confirm-overlay">
+		<div className="confirm-overlay"
+			onMouseDown={(e) => e.stopPropagation()}>
 			<div className="confirm-box">
 				<p>{message}</p>
 				<div className="confirm-actions">
