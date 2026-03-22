@@ -55,6 +55,11 @@ export function useTournamentJoin(battleId: number) {
 		setErrorMessage(null);
 	}
 
+	const errorMessages = (message: string): string => {
+		if (message.includes("already registered")) return 'errors.tournamentuser';
+		else if (message.includes("not active")) return 'errors.tournamentactive';
+	}
+
 	const handleJoinTournament = async (): Promise<boolean> => {
 		if (title === ""){
 			setErrorMessage(t('errors.titleenter'));
@@ -89,7 +94,7 @@ export function useTournamentJoin(battleId: number) {
 		}
 		catch (error) {
 			if (error instanceof Error) {
-				setErrorMessage(error.message);
+				setErrorMessage(t(errorMessages(error.message)));
 			} else {
 				setErrorMessage(t('registerpage.serverfail'));
 			}

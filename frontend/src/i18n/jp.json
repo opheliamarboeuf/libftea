@@ -215,7 +215,10 @@
 		"tfailed": "トーナメントの作成に失敗しました",
 		"deslength": "内容は{{length}}文字を超えることはできません",
 		"selectcat": "カテゴリーを選択してください",
-		"meslength": "モデレーターメッセージは{{length}}文字を超えることはできません"
+		"meslength": "モデレーターメッセージは{{length}}文字を超えることはできません",
+		"tournamentlike": "トーナメント中の自分の投稿にいいねすることはできません",
+		"tournamentuser": "このユーザーはすでにこのトーナメントに登録されています",
+		"tournamentactive": "トーナメントはアクティブではありませんv"
 	},
 
 	"dashboard": {

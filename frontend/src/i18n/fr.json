@@ -215,7 +215,10 @@
 		"tfailed": "Échec de la création du tournoi",
 		"deslength": "La description ne peut pas dépasser {{length}} caractères",
 		"selectcat": "Veuillez sélectionner une catégorie",
-		"meslength": "Le message de modérateur ne peut pas dépasser {{length}} caractères"
+		"meslength": "Le message de modérateur ne peut pas dépasser {{length}} caractères",
+		"tournamentlike": "Vous ne pouvez pas liker votre propre post s'il participe à un tournoi",
+		"tournamentuser": "Cet utilisateur est déjà inscrit à ce tournoi",
+		"tournamentactive": "Le tournoi n'est pas actif"
 	},
 
 	"dashboard": {

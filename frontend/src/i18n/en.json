@@ -217,7 +217,10 @@
 		"tfailed": "Tournament creation failed",
 		"deslength": "Description cannot exceed {{length}} characters",
 		"selectcat": "Please select a category",
-		"meslength": "Moderator message cannot exceed {{length}} characters"
+		"meslength": "Moderator message cannot exceed {{length}} characters",
+		"tournamentlike": "You can't like your own post if it is in a tournament",
+		"tournamentuser": "This user is already registered for this tournament",
+		"tournamentactive": "Tournament is not active"
 	},
 
 	"dashboard": {
