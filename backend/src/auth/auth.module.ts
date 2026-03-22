@@ -7,6 +7,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailModule } from 'src/mail/mail.module';
+import { GithubStrategy } from './github.strategy';
 
 @Module({
 	imports: [
@@ -17,7 +18,7 @@ import { MailModule } from 'src/mail/mail.module';
 			signOptions: { expiresIn: '1h' },
 		}),
 	],
-	providers: [AuthService, PrismaService, JwtStrategy, JwtAuthGuard],
+	providers: [AuthService, PrismaService, JwtStrategy, JwtAuthGuard, GithubStrategy],
 	exports: [JwtAuthGuard, JwtStrategy, PassportModule],
 	controllers: [AuthController],
 })

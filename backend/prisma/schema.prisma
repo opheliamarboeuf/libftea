@@ -72,6 +72,7 @@ model User {
 	twoFactorEnabled							   Boolean			   @default(false)
 	twoFactorCode								   String?
 	twoFactorExpires 							   DateTime?
+	githubId String?							   @unique
 	createdAt                                      DateTime            @default(now())
 	password                                       String
 	role                                           Role                @default(USER)

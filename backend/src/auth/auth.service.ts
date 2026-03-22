@@ -16,6 +16,16 @@ export class AuthService {
 		private mailService: MailService,
 	) {}
 
+// Generates a unique username by appending a number if the base username is already taken
+private async generateUniqueUsername(base: string): Promise<string> {
+	let username = base;
+	let count = 1;
+	while (await this.prisma.user.findUnique({ where: { username } })) {
+		username = `${base}${count++}`;
+	}
+	return username;
+}
+
 	async register(dto: RegisterDto) {
 		const hashedPassword = await bcrypt.hash(dto.password, 10);
 
@@ -104,6 +114,52 @@ export class AuthService {
 			access_token: this.jwtService.sign(payload),
 		};
 	}
+
+	async findOrCreateGithubUser(githubProfile: any) {
+		const githubId = githubProfile.id.toString();
+		const email = githubProfile.emails?.[0]?.value;
+		const username = githubProfile.username;
+
+		// Check if user already has this githubId
+		const user = await this.prisma.user.findUnique({ where: { githubId }});
+		if (user)
+			return (user);
+
+		// Check if mail already exists
+		if (email) {
+			const user = await this.prisma.user.findUnique({ where: { email}});
+			if (user) {
+				// Link github to existing account
+				return this.prisma.user.update({
+					where: { id: user.id },
+					data: {githubId},
+				});
+			}
+		}
+
+		// Create new user
+		const baseUsername = username || `github_${githubId}`; // if username does not exist, fall back to "github_<githubId>"
+		const finalUsername = await this.generateUniqueUsername(baseUsername);
+
+		return this.prisma.user.create({
+			data: {
+				email: email || `${githubId}@github.noemail`, // if email does not exist, create a fallback email based on the GitHub ID
+				username: finalUsername,
+				password: '',
+				githubId,
+				profile: {
+						create: {
+							bio: '',
+							displayName: '',
+							avatarUrl: '/assets/default/default-avatar.jpeg',
+							coverUrl: '/assets/default/default-cover.jpeg',
+						},
+					},
+				},
+			})
+		}
+
+
 
 	async verify2FA(userId: number, code: string) {
 		const user = await this.prisma.user.findUnique({ where: { id: userId } });
