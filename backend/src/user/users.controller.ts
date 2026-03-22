@@ -31,7 +31,7 @@ export class UsersController {
 	}
 
 	@Get('posts')
-	async getAllUserPosts(@Req() req: Request) {
+	async getAllUserPosts(@Req() req: Request & { user: { id: number } }) {
 		const currentUserId = req.user?.id;
 		if (!currentUserId) {
 			throw new UnauthorizedException('User not authenticated');
@@ -47,35 +47,35 @@ export class UsersController {
 
 	@Roles(Role.ADMIN, Role.MOD)
 	@Get('all')
-	async getAllUsers(@Req() req: Request & { user: { role: Role } }) {
+	async getAllUsers(@Req() req: Request & { user: { id: number, role: Role } }) {
 		return this.usersService.getAllUsers(req.user.id);
 	}
 
 	@Roles(Role.ADMIN)
 	@Get('all/ban')
-	async getAllBanned(@Req() req: Request & { user: { role: Role } }) {
+	async getAllBanned(@Req() req: Request & { user: { id: number, role: Role } }) {
 		return this.usersService.getAllBanned(req.user.id);
 	}
 
 	@Roles(Role.ADMIN)
 	@Get('all/admin')
-	async getAllAdmin(@Req() req: Request & { user: { role: Role } }) {
+	async getAllAdmin(@Req() req: Request & { user: { id: number, role: Role } }) {
 		return this.usersService.getAllAdmin(req.user.id);
 	}
 
 	@Roles(Role.ADMIN, Role.MOD)
 	@Get('all/mod')
-	async getAllMod(@Req() req: Request & { user: { role: Role } }) {
+	async getAllMod(@Req() req: Request & { user: { id: number, role: Role } }) {
 		return this.usersService.getAllMod(req.user.id);
 	}
 
 	@Get(':id')
-	async getUserId(@Param('id') id: string, @Req() req: Request) {
+	async getUserId(@Param('id') id: string, @Req() req: Request & { user: { id: number }}) {
 		return this.usersService.findId(Number(id), req.user.id);
 	}
 
 	@Get(':id/posts')
-	async getUserPosts(@Param('id') id: string, @Req() req: Request) {
+	async getUserPosts(@Param('id') id: string, @Req() req: Request & { user: { id: number }}) {
 		return this.postService.getUserPosts(Number(id), req.user?.id);
 	}
 

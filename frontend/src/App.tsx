@@ -14,6 +14,7 @@ import { ModerationRoutes } from './moderation/routes/ModerationRoutes';
 import { SettingsRoutes } from './settings/SettingsRoute';
 import TournamentFeedPage from './pages/TournamentFeedPage';
 import DashboardPage from './pages/DashboardPage';
+import GithubCallbackPage from './pages/GithubCallbackPage';
 
 const App = () => {
 
@@ -94,7 +95,9 @@ const [loading, setLoading] = useState(true);
             <Route
               path="/dashboard"
               element={loading ? null : user ? <DashboardPage/> : <Navigate to = "/" replace />} />
-
+            <Route
+              path="/auth/github/callback"
+              element={<GithubCallbackPage />} />
           </Routes>
         </BrowserRouter>
         </ModalProvider>

@@ -184,6 +184,10 @@ const LoginPage = () => {
 								<button type="button" onClick={() => navigate('/register')}>
 									Create new account
 								</button>
+								{/* GitHub OAuth login */}
+								<button type="button" onClick={() => window.location.href = 'http://localhost:3000/auth/github'}>
+									Login with GitHub
+								</button>
 							</div>
 						</form>
 					</>
