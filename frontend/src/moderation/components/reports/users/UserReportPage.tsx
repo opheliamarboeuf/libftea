@@ -5,6 +5,7 @@ import { Navigate, useParams, useNavigate } from 'react-router-dom';
 import { UserReportType, SimpleReportType } from '../../../types';
 import './UserReportList.css';
 import './UserReportPage.css';
+import { useTranslation } from 'react-i18next';
 
 const UserReportPage = () => {
 	const API_URL = 'http://localhost:3000';
@@ -12,6 +13,7 @@ const UserReportPage = () => {
 	const { postId } = useParams<{ postId: string }>(); // get the id from URL
 	const [fullReport, setFullReport] = useState<UserReportType | null>(null);
 	const [simpleReports, setSimpleReports] = useState<SimpleReportType[]>([]);
+	const { t } = useTranslation();
 
 	const navigate = useNavigate();
 	const goToProfile = (userId: number) => {
@@ -64,7 +66,7 @@ const UserReportPage = () => {
 											</span>
 										) : (
 											<span className="user-report-target-username">
-												Unknown user
+												{t('userreport.unknown')}
 											</span>
 										)}
 									</div>
@@ -76,40 +78,40 @@ const UserReportPage = () => {
 								{fullReport.reportedUser && fullReport.reportedUser.profile ? (
 									<>
 										<div className="user-report-cover">
-											<div className="user-report-label">Cover</div>
+											<div className="user-report-label">{t('userreport.cover')}</div>
 											{fullReport.reportedUser.profile.coverUrl ? (
 												<img
 													src={`${API_URL}${fullReport.reportedUser.profile.coverUrl}`}
 													alt="Cover"
 												/>
 											) : (
-												<span>No cover available</span>
+												<span>{t('userreport.nocover')}</span>
 											)}
 										</div>
 										<div className="user-report-avatar-bio-row">
 											<div className="user-report-avatar">
-												<div className="user-report-label">Avatar</div>
+												<div className="user-report-label">{t('userreport.avatar')}</div>
 												{fullReport.reportedUser.profile.avatarUrl ? (
 													<img
 														src={`${API_URL}${fullReport.reportedUser.profile.avatarUrl}`}
 														alt="Avatar"
 													/>
 												) : (
-													<span>No avatar available</span>
+													<span>{t('userreport.noavatar')}</span>
 												)}
 											</div>
 											<div className="user-report-bio">
-												<div className="user-report-label">Bio</div>
+												<div className="user-report-label">{t('editprofile.bio')}</div>
 												{fullReport.reportedUser.profile.bio &&
 												fullReport.reportedUser.profile.bio.trim() !== ''
 													? fullReport.reportedUser.profile.bio
-													: 'No bio available'}
+													: t('userreport.nobio')}
 											</div>
 										</div>
 									</>
 								) : (
 									<div className="user-report-profile-missing">
-										User profile unavailable
+										{t('userreport.unavailable')}
 									</div>
 								)}
 							</div>
@@ -119,16 +121,16 @@ const UserReportPage = () => {
 			</div>
 			<div className="right-scroll">
 				<div className="simple-user-reports">
-					<div className="user-report-title">All reports for this user</div>
+					<div className="user-report-title">{t('userreport.all')}</div>
 					{simpleReports.length === 0 ? (
-						<p>No reports found for this post.</p>
+						<p>{t('userreport.nonefound')}</p>
 					) : (
 						simpleReports.map((r) => (
 							<div key={r.id} className="simple-report-card">
 								<div className="simple-report-header">
 									<div className="simple-report-header-flex">
 										<div className="simple-report-header-left">
-											<strong>Reporter:</strong>
+											<strong>{t('postreport.reporter')}</strong>
 											<span
 												className="simple-report-author"
 												onClick={() => goToProfile(r.reporter.id)}
@@ -137,16 +139,16 @@ const UserReportPage = () => {
 											</span>
 										</div>
 										<span className="simple-report-date">
-											reported {new Date(r.createdAt).toLocaleString()}
+											{t('postreport.reported', { date: new Date(r.createdAt).toLocaleString() })}
 										</span>
 									</div>
 								</div>
 								<div className="simple-report-category">
-									<strong>Category:</strong>
+									<strong>{t('postreport.category')}</strong>
 									<br /> {r.reportCategory.replace(/_/g, ' ')}
 								</div>
 								<div className="simple-report-description">
-									<strong>Description:</strong>
+									<strong>{t('postreport.description')}</strong>
 									<br /> {r.reportDescription}
 								</div>
 							</div>

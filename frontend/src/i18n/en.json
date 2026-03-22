@@ -116,7 +116,10 @@
 		"privacy": "Privacy policy",
 		"terms": "Terms of service",
 		"back": "Back to login page",
-		"confirm": "Confirm"
+		"confirm": "Confirm",
+		"close": "Close",
+		"admin": "Admin",
+		"mod": "Moderator"
 	},
 
 	"feedpage": {
@@ -154,7 +157,10 @@
 		"friendpost": "{{username}} posted an outfit",
 		"newbattle": "A new tournament has started! The theme is: {{theme}}",
 		"battlewinner": "Congratulations! You have won the tournament for the following theme: {{theme}}!",
-		"battleparticipants": "Thank you for participating to the tournament for {{theme}}. The winner is {{username}}!"
+		"battleparticipants": "Thank you for participating to the tournament for {{theme}}. The winner is {{username}}!",
+		"promotemod": "{{username}} has promoted you to moderator role",
+		"promoteadmin": "{{username}} has promoted you to administrator role",
+		"demote": "{{username}} has demoted you to user"
 	},
 
 	"tournament": {
@@ -179,7 +185,12 @@
 		"loadinglogs": "Loading logs...",
 		"logs": "Moderation Logs",
 		"nologs": "No logs available",
-		"action": "<0>{{action}}</0> by {{username}} on {{date}}"
+		"actionold": "<0>{{action}}</0> by {{username}} on {{date}}",
+		"actor": "Actor",
+		"action": "Action",
+		"target": "Target",
+		"title": "Title",
+		"date": "Date"
 	},
 
 	"errors": {
@@ -203,7 +214,10 @@
 		"start": "Please select a start date",
 		"end": "Please select an end date",
 		"planned": "A tournament is already planned from {{date1}} to {{date2}}",
-		"tfailed": "Tournament creation failed"
+		"tfailed": "Tournament creation failed",
+		"deslength": "Description cannot exceed {{length}} characters",
+		"selectcat": "Please select a category",
+		"meslength": "Moderator message cannot exceed {{length}} characters"
 	},
 
 	"dashboard": {
@@ -260,6 +274,38 @@
 		"date": "Report handle date:",
 		"unassignconfirm": "Are you sure you want to unassign this report?",
 		"accepted": "ACCEPTED",
-		"rejected": "REJECTED"
+		"rejected": "REJECTED",
+		"all": "All reports for this post",
+		"nonefound": "No reports found for this post.",
+		"reported": "reported {{date}}",
+		"submitted": "Report submitted successfully",
+		"reportpost": "Report Post",
+		"cat": "Category",
+		"catselect": "Select a report category",
+		"des": "Description",
+		"desplaceholder": "You can add more details here",
+		"changes": "Looks like you've made some changes. Are you sure you want to exit without saving?"
+	},
+
+	"userreport": {
+		"unknown": "Unknown user",
+		"nocover": "No cover available",
+		"noavatar": "No avatar available",
+		"unavailable": "User profile unavailable",
+		"nobio": "No bio available",
+		"cover": "Cover",
+		"avatar": "Avatar",
+		"all": "All reports for this user",
+		"nonefound": "No reports found for this user.",
+		"report": "Report User",
+		"ban": "Ban User",
+		"banconfirm": "Are you sure you want to ban this user?"
+	},
+
+	"reporthandle": {
+		"rejected": "Report rejected successfully",
+		"accepted": "Report accepted successfully",
+		"handle": "Handle report",
+		"changes": "Looks like you've made some changes. Are you sure you want to exit without saving?"
 	}
 }

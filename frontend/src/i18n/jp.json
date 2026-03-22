@@ -115,7 +115,10 @@
 		"privacy": "プライバシーポリシー",
 		"terms": "利用規約",
 		"back": "ログイン画面に戻る",
-		"confirm": "はい"
+		"confirm": "はい",
+		"close": "閉める",
+		"admin": "管理者",
+		"mod": "モデレーター"
 	},
 
 	"feedpage": {
@@ -153,7 +156,10 @@
 		"friendpost": "{{username}}がコーデを投稿しました",
 		"newbattle": "新しいトーナメントが始まりました！テーマは：{{theme}}",
 		"battlewinner": "おめでとうございます！「{{theme}}」のトーナメントで優勝しました！",
-		"battleparticipants": "「{{theme}}」のトーナメントにご参加いただきありがとうございます。優勝者は{{username}}です！"
+		"battleparticipants": "「{{theme}}」のトーナメントにご参加いただきありがとうございます。優勝者は{{username}}です！",
+		"promotemod": "{{username}}があなたをモデレーターに昇格しました",
+		"promoteadmin": "{{username}}があなたを管理者に昇格しました",
+		"demote": "{{username}}があなたをユーザーに降格しました"
 	},
 
 	"tournament": {
@@ -177,7 +183,12 @@
 		"loadinglogs": "ログを読み込み中...",
 		"logs": "モデレーションログ",
 		"nologs": "ログはありません",
-		"action": "{{username}}が{{date}}に<0>{{action}}</0>を実行しました"
+		"actionold": "{{username}}が{{date}}に<0>{{action}}</0>を実行しました",
+		"actor": "実行者",
+		"action": "操作",
+		"target": "対象",
+		"title": "タイトル",
+		"date": "日付"
 	},
 
 	"errors": {
@@ -201,7 +212,10 @@
 		"start": "開始日を選んでください",
 		"end": "終了日を選んでください",
 		"planned": "{{date1}}から{{date2}}まで、すでにトーナメントが予定されています",
-		"tfailed": "トーナメントの作成に失敗しました"
+		"tfailed": "トーナメントの作成に失敗しました",
+		"deslength": "内容は{{length}}文字を超えることはできません",
+		"selectcat": "カテゴリーを選択してください",
+		"meslength": "モデレーターメッセージは{{length}}文字を超えることはできません"
 	},
 
 	"dashboard": {
@@ -258,6 +272,38 @@
 		"date": "処理日:",
 		"unassignconfirm": "この報告の割り当てを解除してもよろしいですか?",
 		"accepted": "承認",
-		"rejected": "却下"
+		"rejected": "却下",
+		"all": "この投稿のすべての報告",
+		"nonefound": "この投稿の報告が見つかりません。",
+		"reported": "{{date}}に報告",
+		"submitted": "報告が正常に送信されました",
+		"reportpost": "投稿を報告する",
+		"cat": "カテゴリー",
+		"catselect": "報告カテゴリーを選択する",
+		"des": "内容",
+		"desplaceholder": "詳細をここに追加できます",
+		"changes": "変更が保存されていません。 保存せずに終了しますか?"
+	},
+
+	"userreport": {
+		"unknown": "ユーザー不明",
+		"nocover": "カバー画像がありません",
+		"noavatar": "アバターがありません",
+		"unavailable": "ユーザープロフィールは利用できません",
+		"nobio": "自己紹介がありません",
+		"cover": "カバー",
+		"avatar": "アバター",
+		"all": "このユーザーのすべての報告",
+		"nonefound": "このユーザーの報告が見つかりません",
+		"report": "ユーザーを報告する",
+		"ban": "ユーザーをバンする",
+		"banconfirm": "このユーザーをバンしてもよろしいですか?"
+	},
+
+	"reporthandle": {
+		"rejected": "報告が正常に却下されました",
+		"accepted": "報告が正常に承認されました",
+		"handle": "報告を処理する",
+		"changes": "変更が保存されていません。 保存せずに終了しますか?"
 	}
 }

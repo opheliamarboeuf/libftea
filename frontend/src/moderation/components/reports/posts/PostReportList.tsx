@@ -51,7 +51,7 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 									{report.reportedPost.author.username},
 								</span>
 								<span className="post-report-date">
-									{` created ${new Date(report.reportedPost.createdAt).toLocaleString()}`}
+									{t('post.created', { date: new Date(report.reportedPost.createdAt).toLocaleString() })}
 								</span>
 							</div>
 						</div>
@@ -143,7 +143,7 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 										<strong>{t('postreport.status')}</strong>
 										<br />
 										<span className={report.status.toLowerCase()}>
-											{report.status}
+											{report.status === 'ACCEPTED' ? t('postreport.accepted') : t('postreport.rejected')}
 										</span>
 									</div>
 									<div className="reporter-info">

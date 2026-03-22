@@ -6,6 +6,7 @@ import { moderationApi } from '../../../api';
 import { useUser } from '../../../../context/UserContext';
 import { ConfirmDialog } from '../../../../common/components/ConfirmDialog';
 import { HandleReportModal } from '../handleReportModal';
+import { useTranslation } from 'react-i18next';
 
 interface UserReportListProps {
 	reports: UserReportType[];
@@ -18,6 +19,7 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [reportToUnassign, setReportToUnassign] = useState<number | null>(null);
 	const [reportToHandle, setReportToHandle] = useState<number | null>(null);
+	const { t } = useTranslation();
 
 	const navigate = useNavigate();
 	const goToProfile = (userId: number) => {
@@ -28,7 +30,7 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 		return (
 			<div className="user-report-list">
 				<div className="user-report-card">
-					<p className="no-reports">No reports available</p>
+					<p className="no-reports">{t('postreport.noreports')}</p>
 				</div>
 			</div>
 		);
@@ -52,7 +54,7 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 									</span>
 								) : (
 									<span className="user-report-target-username">
-										Unknown user
+										{t('userreport.unknown')}
 									</span>
 								)}
 							</div>
@@ -60,7 +62,7 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 						<div className="user-report-btn">
 							{report.status === 'ASSIGNED' && report.handledBy && (
 								<span className="assigned-to">
-									Assigned to{' '}
+									{t('postreport.assignedto')}{' '}
 									<span onClick={() => goToProfile(report.handledBy.id)}>
 										{report.handledBy.username}
 									</span>
@@ -73,7 +75,7 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 										if (onUpdate) onUpdate();
 									}}
 								>
-									Assign Report
+									{t('postreport.assign')}
 								</button>
 							)}
 							{report.status === 'ASSIGNED' && report.handledBy?.id === user.id && (
@@ -83,12 +85,12 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 										setShowConfirm(true);
 									}}
 								>
-									Unassign Report
+									{t('postreport.unassign')}
 								</button>
 							)}
 							{report.status === 'ASSIGNED' && report.handledBy?.id === user.id && (
 								<button onClick={() => setReportToHandle(report.id)}>
-									Handle Report
+									{t('postreport.handle')}
 								</button>
 							)}
 						</div>
@@ -99,40 +101,40 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 								{report.reportedUser && report.reportedUser.profile ? (
 									<>
 										<div className="user-report-cover">
-											<div className="user-report-label">Cover</div>
+											<div className="user-report-label">{t('userreport.cover')}</div>
 											{report.reportedUser.profile.coverUrl ? (
 												<img
 													src={`${API_URL}${report.reportedUser.profile.coverUrl}`}
 													alt="Cover"
 												/>
 											) : (
-												<span>No cover available</span>
+												<span>{t('userreport.nocover')}</span>
 											)}
 										</div>
 										<div className="user-report-avatar-bio-row">
 											<div className="user-report-avatar">
-												<div className="user-report-label">Avatar</div>
+												<div className="user-report-label">{t('userreport.avatar')}</div>
 												{report.reportedUser.profile.avatarUrl ? (
 													<img
 														src={`${API_URL}${report.reportedUser.profile.avatarUrl}`}
 														alt="Avatar"
 													/>
 												) : (
-													<span>No avatar available</span>
+													<span>{t('userreport.noavatar')}</span>
 												)}
 											</div>
 											<div className="user-report-bio">
-												<div className="user-report-label">Bio</div>
+												<div className="user-report-label">{t('editprofile.bio')}</div>
 												{report.reportedUser.profile.bio &&
 												report.reportedUser.profile.bio.trim() !== ''
 													? report.reportedUser.profile.bio
-													: 'No bio available'}
+													: t('userreport.nobio')}
 											</div>
 										</div>
 									</>
 								) : (
 									<div className="user-report-profile-missing">
-										User profile unavailable
+										{t('userreport.unavailable')}
 									</div>
 								)}
 							</div>
@@ -140,7 +142,7 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 						<div className="user-report-info">
 							<div className="user-report-pre-handle">
 								<div className="reporter-info">
-									<strong>Reporter:</strong>
+									<strong>{t('postreport.reporter')}</strong>
 									<br />{' '}
 									<span
 										className="reporter-name"
@@ -150,17 +152,17 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 									</span>
 								</div>
 								<div className="user-report-category">
-									<strong>Report Category:</strong>
+									<strong>{t('postreport.category')}</strong>
 									<br />
 									{report.reportCategory.replace(/_/g, ' ')}
 								</div>
 								<div className="user-report-description">
-									<strong>Report Description:</strong>
+									<strong>{t('postreport.description')}</strong>
 									<br />
 									{report.reportDescription}
 								</div>
 								<div className="user-report-date">
-									<strong>Report Creation:</strong>
+									<strong>{t('postreport.creation')}</strong>
 									<br />
 									{new Date(report.createdAt).toLocaleString()}
 								</div>
@@ -173,7 +175,7 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 												)
 											}
 										>
-											View all the reports ({report.reportCount})
+											{t('postreport.view')} ({report.reportCount})
 										</button>
 									</div>
 								)}
@@ -182,14 +184,14 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 							{(report.status === 'ACCEPTED' || report.status === 'REJECTED') && (
 								<div className="user-report-post-handle">
 									<div className="user-report-status">
-										<strong>Report Status:</strong>
+										<strong>{t('postreport.status')}</strong>
 										<br />
 										<span className={report.status.toLowerCase()}>
-											{report.status}
+											{report.status === 'ACCEPTED' ? t('postreport.accepted') : t('postreport.rejected')}
 										</span>
 									</div>
 									<div className="reporter-info">
-										<strong>Handled by:</strong>
+										<strong>{t('postreport.handled')}</strong>
 										<br />{' '}
 										<span
 											className="mod-name"
@@ -199,12 +201,12 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 										</span>
 									</div>
 									<div className="user-report-mod_message">
-										<strong>Moderation Message:</strong>
+										<strong>{t('postreport.message')}</strong>
 										<br />
 										{report.moderatorMessage}
 									</div>
 									<div className="user-report-date">
-										<strong>Report handle date:</strong>
+										<strong>{t('postreport.date')}</strong>
 										<br />
 										{new Date(report.handledAt).toLocaleString()}
 									</div>
@@ -216,7 +218,7 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 			))}
 			{showConfirm && reportToUnassign !== null && (
 				<ConfirmDialog
-					message="Are you sure you want to unassign this report?"
+					message={t('postreport.unassignconfirm')}
 					onConfirm={async () => {
 						await moderationApi.unassignPendingReport(reportToUnassign);
 						setShowConfirm(false);
@@ -227,8 +229,8 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 						setShowConfirm(false);
 						setReportToUnassign(null);
 					}}
-					confirmLabel="Yes"
-					cancelLabel="No"
+					confirmLabel={t('common.yes')}
+					cancelLabel={t('common.no')}
 				/>
 			)}
 			{reportToHandle !== null && (

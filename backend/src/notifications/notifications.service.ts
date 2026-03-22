@@ -184,7 +184,8 @@ export class NotificationsService {
 					type: NotificationType.ADMIN_PROMOTE,
 					userId: recipientId,
 					isRead: false,
-					message: `${promoterUsername} has promoted you to administrator role`,
+					message: "",
+					metadata: JSON.stringify({ username: promoterUsername }),
 				},
 			});
 			
@@ -204,7 +205,8 @@ export class NotificationsService {
 					type: NotificationType.MOD_PROMOTE,
 					userId: recipientId,
 					isRead: false,
-					message: `${promoterUsername} has promoted you to moderator role`,
+					message: "",
+					metadata: JSON.stringify({ username: promoterUsername }),
 				},
 			});
 			
@@ -224,7 +226,8 @@ export class NotificationsService {
 					type: NotificationType.DEMOTED,
 					userId: recipientId,
 					isRead: false,
-					message: `${demoterUsername} has demoted you to user`,
+					message: "",
+					metadata: JSON.stringify({ username: demoterUsername }),
 				},
 			});
 			

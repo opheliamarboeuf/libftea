@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Post } from "../../context/UserContext";
 import { moderationApi } from "../api";
 import { CreateReportType, ReportCategory} from "../types";
+import { useTranslation } from "react-i18next";
 
 const MAX_DESCRIPTION_LENGTH = 150;
 
@@ -10,18 +11,19 @@ export function usePostReport(post: Post) {
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [description, setDescription] = useState("");
 	const [category, setCategory] = useState<ReportCategory | null>(null);
+	const { t } = useTranslation();
 
 	const handlePostReport = async () => {
 		setIsLoading(true);
 		
 		if (!category) {
-			setErrorMessage("Please select a category");
+			setErrorMessage(t('errors.selectcat'));
 			setIsLoading(false);
 			return false;
 		}
 	
 		if (description.length > MAX_DESCRIPTION_LENGTH) {
-			setErrorMessage(`Description cannot exceed ${MAX_DESCRIPTION_LENGTH} characters`);
+			setErrorMessage(t('errors.deslength', { length: MAX_DESCRIPTION_LENGTH }));
 			setIsLoading(false);
 			return false;
 		}
@@ -43,7 +45,7 @@ export function usePostReport(post: Post) {
 				setErrorMessage(error.message);
 			}
 			else {
-				setErrorMessage("Server unreachable");
+				setErrorMessage(t('registerpage.serverfail'));
 			}
 		}
 		finally { 

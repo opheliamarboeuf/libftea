@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { profileApi } from "./api";
 import { useUser } from "../context/UserContext";
+import { useTranslation } from "react-i18next";
 
 const MAX_BIO_LENGTH = 400;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -17,13 +18,14 @@ export function useProfileEdit() {
 	const [coverFile, setCoverFile] = useState<File | null>(null);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const { t } = useTranslation();
 
 	const validateImage = (file: File, type: string): string | null => {
 		if (!ALLOWED_TYPES.includes(file.type)) {
-			return `${type} must be JPEG, PNG, or WebP`;
+			return t('errors.type', { type: type });
 		}
 		if (file.size > MAX_FILE_SIZE) {
-			return `${type} must be under 5MB`;
+			return t('errors.volume', { type: type });
 		}
 		return null;
 	};
@@ -77,7 +79,7 @@ export function useProfileEdit() {
 		setErrorMessage(null);
 
 		if (bio.length > MAX_BIO_LENGTH) {
-			setErrorMessage(`Bio cannot exceed ${MAX_BIO_LENGTH} characters`);
+			setErrorMessage(t('errors.biolength', { length: MAX_BIO_LENGTH }));
 			return false;
 		}
 
@@ -107,7 +109,7 @@ export function useProfileEdit() {
 			if (error instanceof Error) {
 				setErrorMessage(error.message);
 			} else {
-				setErrorMessage("Server unreachable");
+				setErrorMessage(t('registerpage.serverfail'));
 			}
 			return false;
 		} finally {

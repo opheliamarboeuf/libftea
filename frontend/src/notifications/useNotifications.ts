@@ -102,6 +102,12 @@ export const useNotifications = (userId: number | undefined) => {
 				return t('notifications.friendaccept', { username: meta?.username });
 			case "POST":
 				return t('notifications.friendpost', { username: meta?.username });
+			case "ADMIN_PROMOTE":
+				return t('notifications.promoteadmin', { username: meta?.username });
+			case "MOD_PROMOTE":
+				return t('notifications.promotemod', { username: meta?.username });
+			case "DEMOTED":
+				return t('notifications.demote', { username: meta?.username });
 			default:
 				return notif.message;
 		}

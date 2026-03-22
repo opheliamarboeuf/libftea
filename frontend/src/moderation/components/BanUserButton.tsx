@@ -1,6 +1,7 @@
 import { moderationApi } from '../api';
 import { ConfirmDialog } from '../../common/components/ConfirmDialog';
 import { useModal } from '../../context/ModalContext';
+import { useTranslation } from 'react-i18next';
 
 interface BanUserButtonProps {
 	targetId: number;
@@ -16,6 +17,7 @@ export function BanUserButton({
 	setShowConfirm,
 }: BanUserButtonProps) {
 	const { showModal } = useModal();
+	const { t } = useTranslation();
 
 	const handleBan = async () => {
 		try {
@@ -37,13 +39,13 @@ export function BanUserButton({
 				}}
 				className="ban-user-btn"
 			>
-				Ban User
+				{t('userreport.ban')}
 			</button>
 			{showConfirm && (
 				<ConfirmDialog
-					message="Are you sure you want to ban this user?"
-					confirmLabel="Yes"
-					cancelLabel="No"
+					message={t('userreport.banconfirm')}
+					confirmLabel={t('common.yes')}
+					cancelLabel={t('common.no')}
 					onConfirm={async () => {
 						await handleBan();
 						setShowConfirm(false);

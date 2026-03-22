@@ -87,12 +87,12 @@ export function ModerationLogs() {
 			<div className="log-table-card">
 				{/* Header */}
 				<div className="log-header">
-					<span>Actor</span>
-					<span>Action</span>
-					<span>Target</span>
+					<span>{t('moderationlogs.actor')}</span>
+					<span>{t('moderationlogs.action')}</span>
+					<span>{t('moderationlogs.target')}</span>
 					<span>ID</span>
-					<span>Title</span>
-					<span>Date</span>
+					<span>{t('moderationlogs.title')}</span>
+					<span>{t('moderationlogs.date')}</span>
 				</div>
 
 				{/* Rows */}

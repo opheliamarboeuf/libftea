@@ -115,7 +115,10 @@
 		"privacy": "Politique de confidentialité",
 		"terms": "Conditions de Service",
 		"back": "Retour à la page de connexion",
-		"confirm": "Confirmer"
+		"confirm": "Confirmer",
+		"close": "Fermer",
+		"admin": "Admin",
+		"mod": "Modérateur"
 	},
 
 	"feedpage": {
@@ -153,7 +156,10 @@
 		"friendpost": "{{username}} a posté une tenue",
 		"newbattle": "Un nouveau tournoi commence! Le thème est: {{theme}}",
 		"battlewinner": "Félicitations! Vous avez gagné le tournoi du thème: {{theme}}!",
-		"battleparticipants": "Merci d'avoir participé au tournoi thème {{theme}}. Le gagnant est {{username}}!"
+		"battleparticipants": "Merci d'avoir participé au tournoi thème {{theme}}. Le gagnant est {{username}}!",
+		"promotemod": "{{username}} vous a promu au rôle de modérateur",
+		"promoteadmin": "{{username}} vous a promu au rôle d'administrateur",
+		"demote": "{{username}} vous a rétrogradé au rang d'utilisateur"
 	},
 
 	"tournament": {
@@ -177,7 +183,12 @@
 		"loadinglogs": "Chargement des logs...",
 		"logs": "Logs de modération",
 		"nologs": "Pas de log disponible",
-		"action": "<0>{{action}}</0> par {{username}} le {{date}}"
+		"actionold": "<0>{{action}}</0> par {{username}} le {{date}}",
+		"actor": "Auteur",
+		"action": "Action",
+		"target": "Concerné",
+		"title": "Titre",
+		"date": "Date"
 	},
 
 	"errors": {
@@ -201,7 +212,10 @@
 		"start": "Veuillez sélectionner une date de début",
 		"end": "Veuillez sélectionner une date de fin",
 		"planned": "Un tournoi est déjà prévu du {{date1}} au {{date2}}",
-		"tfailed": "Échec de la création du tournoi"
+		"tfailed": "Échec de la création du tournoi",
+		"deslength": "La description ne peut pas dépasser {{length}} caractères",
+		"selectcat": "Veuillez sélectionner une catégorie",
+		"meslength": "Le message de modérateur ne peut pas dépasser {{length}} caractères"
 	},
 
 	"dashboard": {
@@ -258,6 +272,38 @@
 		"date": "Date de traitement:",
 		"unassignconfirm": "Êtes-vous sûr de vouloir désassigner ce signalement?",
 		"accepted": "ACCEPTÉ",
-		"rejected": "REJETÉ"
+		"rejected": "REJETÉ",
+		"all": "Tous les signalements pour ce post",
+		"nonefound": "Aucun signalement trouvé pour ce post.",
+		"reported": "signalé le {{date}}",
+		"submitted": "Signalement envoyé avec succès",
+		"reportpost": "Signaler le post",
+		"cat": "Catégorie",
+		"catselect": "Sélectionner une catégorie de signalement",
+		"des": "Description",
+		"desplaceholder": "Vous pouvez ajouter plus de détails ici",
+		"changes": "Vous avez modifié le signalement. Etes-vous sûr de vouloir quitter sans sauvegarder ?"
+	},
+
+	"userreport": {
+		"unknown": "Utilisateur inconnu",
+		"nocover": "Aucune couverture disponible",
+		"noavatar": "Aucun avatar disponible",
+		"unavailable": "Profil utilisateur indisponible",
+		"nobio": "Aucune bio disponible",
+		"cover": "Couverture",
+		"avatar": "Avatar",
+		"all": "Tous les signalements pour cet utilisateur",
+		"nonefound": "Aucun signalement trouvé pour cet utilisateur.",
+		"report": "Signaler l'utilisateur",
+		"ban": "Bannir l'utilisateur",
+		"banconfirm": "Êtes-vous sûr de vouloir bannir cet utilisateur?"
+	},
+
+	"reporthandle": {
+		"rejected": "Signalement rejeté avec succès",
+		"accepted": "Signalement accepté avec succès",
+		"handle": "Traiter le signalement",
+		"changes": "Vous avez modifié le traitement du signalement. Etes-vous sûr de vouloir quitter sans sauvegarder ?"
 	}
 }

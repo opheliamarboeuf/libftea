@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { moderationApi } from "../api";
 import { ReportHandlePayload } from "../types";
+import { useTranslation } from "react-i18next";
 
 const MAX_MOD_MESSAGE_LENGTH = 150;
 
@@ -9,12 +10,13 @@ export function useHandleReport(reportId: number) {
 	const [mod_message, setMod_message] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const { t } = useTranslation();
 
 	const rejectReport = async () => {
 		setIsLoading(true);
 
 		if (mod_message.length > MAX_MOD_MESSAGE_LENGTH) {
-			setErrorMessage(`Moderator message cannot exceed ${MAX_MOD_MESSAGE_LENGTH} characters`);
+			setErrorMessage(t('errors.meslength', { length: MAX_MOD_MESSAGE_LENGTH }));
 			setIsLoading(false);
 			return false;
 		}
@@ -35,7 +37,7 @@ export function useHandleReport(reportId: number) {
 				setErrorMessage(error.message);
 			}
 			else {
-				setErrorMessage("Server unreachable");
+				setErrorMessage(t('registerpage.serverfail'));
 			}
 		}
 		finally { 
@@ -47,7 +49,7 @@ export function useHandleReport(reportId: number) {
 		setIsLoading(true);
 
 		if (mod_message.length > MAX_MOD_MESSAGE_LENGTH) {
-			setErrorMessage(`Moderator message cannot exceed ${MAX_MOD_MESSAGE_LENGTH} characters`);
+			setErrorMessage(t('errors.meslength', { length: MAX_MOD_MESSAGE_LENGTH }));
 			setIsLoading(false);
 			return false;
 		}
@@ -68,7 +70,7 @@ export function useHandleReport(reportId: number) {
 				setErrorMessage(error.message);
 			}
 			else {
-				setErrorMessage("Server unreachable");
+				setErrorMessage(t('registerpage.serverfail'));
 			}
 		}
 		finally { 
