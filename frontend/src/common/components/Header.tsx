@@ -9,7 +9,7 @@ import '../../App.css';
 import { friendsSocket } from '../../socket/socket';
 import { notifSocket } from "../../socket/socket";
 import { useNotifications } from "../../notifications/useNotifications";
-import { FaBell } from "react-icons/fa";
+import { MdOutlineNotifications } from "react-icons/md";
 
 export const Header = () => {
 	const navigate = useNavigate();
@@ -108,7 +108,7 @@ export const Header = () => {
 			<div className="header-right">
 				<div className="notif-bell" ref={notifRef}>
 					<span onClick={() => setNotifOpen(!notifOpen)}>
-						<FaBell />
+						<MdOutlineNotifications />
 						{unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
 					</span>
 					{notifOpen && (
@@ -151,7 +151,7 @@ export const Header = () => {
 							<span className="label">My Profile</span>
 						</button>
 						<button onClick={() => handleNavigate('/settings')}>
-							<span className="label">Settings</span>
+							<span className="label">Settings & Privacy</span>
 						</button>
 						<button onClick={handleLogout}>
 							<span className="label">Log Out</span>

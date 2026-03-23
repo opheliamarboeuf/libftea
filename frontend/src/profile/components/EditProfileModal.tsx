@@ -67,6 +67,8 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 						<textarea
 							value={displayName}
 							onChange={(e) => setDisplayName(e.target.value)}
+							rows={1}
+							className="create-post-input"
 						/>
 						<div
 							className={`char-counter ${
@@ -80,6 +82,7 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 							value={bio}
 							onChange={(e) => setBio(e.target.value)}
 							rows={5}
+							className="create-post-input"
 						/>
 						<div
 							className={`char-counter ${

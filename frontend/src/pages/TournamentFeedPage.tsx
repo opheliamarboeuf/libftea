@@ -84,9 +84,11 @@ const TournamentFeedPage = () => {
 							<p>
 								{(() => {
 									const now = new Date();
-									const endDate = new Date(battle.endsAt);
-									const diffTime = endDate.getTime() - now.getTime();
-									const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // convert ms → days
+									const endDate = new Date(battle.endsAt);									
+									const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+									const endDateStart = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+									const diffTime = endDateStart.getTime() - todayStart.getTime();
+									const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
 									if (diffDays < 0) return "The tournament has ended";
 									if (diffDays === 0) return "The tournament ends today!";
@@ -97,7 +99,7 @@ const TournamentFeedPage = () => {
 					</div>
 					)}
 					{!battle && ( 
-						<div className= "no-tournament">
+						<div className="no-tournament-message">
 							<h2>No active tournament</h2>
 						</div>
 					)}
@@ -119,7 +121,7 @@ const TournamentFeedPage = () => {
 			{battle && (
 				<>
 					<UserPostsList posts={feedPosts} onPostDeleted={refresh} />
-					{battleError && <p style={{ color: "red" }}>{battleError}</p>}
+					{battleError && <p style={{ color: "gray" }}>{battleError}</p>}
 					{
 						showPostModal && (
 						<JoinTournamentModal
@@ -128,6 +130,9 @@ const TournamentFeedPage = () => {
 							onClose={() => setShowPostModal(false)} />
 					)}
 				</>
+			)}
+			{!battle && winnerPost && (
+				<UserPostsList posts={[{ ...winnerPost, isWinner: true }]} />
 			)}
 			{
 				showCreateTournamentModal && (

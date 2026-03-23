@@ -37,6 +37,7 @@ export type Blocked = {
 export type User = {
 	id: number;
 	email: string;
+	twoFactorEnabled: boolean;
 	username: string;
 	role: string;
 	createdAt: string;
