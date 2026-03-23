@@ -22,12 +22,31 @@ export class MailService {
     // -H "Content-Type: application/json" \
     // -d '{"to": "test@test.com", "subject": "Test email", "text": "this is a test"}'
 
+	async send2FACode(email: string, username: string, code: string): Promise<void> {
+		try {
+			await this.mailerService.sendMail({
+				to: email,
+				subject: 'Your verification code',
+				// template: '2fa-code',
+				context: {
+					username,
+					code,
+					appName: 'Libftea',
+					expiresIn: '10 minutes',
+				},
+			});
+		} catch (error) {
+			console.error(`Failed to send 2FA code to ${email}`, error.stack);
+			throw error;
+		}
+	}
+
 	async sendBanNotification(email: string, username: string, reason?: string): Promise<void> {
 		try {
 			const result = await this.mailerService.sendMail({
 				to: email,
 				subject: 'Your account has been banned',
-				template: 'ban-notification',
+				// template: 'ban-notification',
 				context: {
 					username,
 					reason,
@@ -47,7 +66,7 @@ export class MailService {
 			const result = await this.mailerService.sendMail({
 				to: email,
 				subject: 'Your account has been restored',
-				template: 'unban-notification',
+				// template: 'unban-notification',
 				context: {
 					username,
 					appName: 'Libftea',
@@ -66,7 +85,7 @@ export class MailService {
 			const result = await this.mailerService.sendMail({
 				to: email,
 				subject: 'Your account has been banned',
-				template: 'ban-report-notification',
+				// template: 'ban-report-notification',
 				context: {
 					username,
 					reason,
@@ -89,7 +108,7 @@ export class MailService {
 				await this.mailerService.sendMail({
 					to: email,
 					subject: 'Your report has been submitted',
-					template: 'report-confirmation',
+					// template: 'report-confirmation',
 					context: {
 						username,
 						reportId: report.id,
@@ -119,7 +138,7 @@ export class MailService {
 			await this.mailerService.sendMail({
 				to: email,
 				subject: 'An update on your report',
-				template: 'report-update',
+				// template: 'report-update',
 				context: {
 					username,
 					reportId: report.id,

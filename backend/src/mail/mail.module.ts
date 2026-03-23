@@ -1,5 +1,5 @@
 import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+// import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { Module } from '@nestjs/common';
 import { join } from 'path';
 import { MailService } from './mail.service';
@@ -16,13 +16,13 @@ import { MailController } from './mail.controller';
 			defaults: {
 				from: '"Libftea" <no-reply@libftea.com>',
 			},
-			template: {
-				dir: join(__dirname, 'templates'),
-				adapter: new HandlebarsAdapter(),
-				options: {
-					strict: true,
-				},
-			},
+			// template: {
+			// 	dir: join(__dirname, 'templates'),
+			// 	adapter: new HandlebarsAdapter(),
+			// 	options: {
+			// 		strict: true,
+			// 	},
+			// },
 		}),
 	],
 	controllers: [MailController], 
