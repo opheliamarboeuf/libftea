@@ -368,6 +368,24 @@ form {
   border-color: rgba(99,102,241,0.6);
 }
 
+.report-post-input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(15,23,42,0.08);
+  background-color: #fff;
+  color: #111827;
+  resize: vertical;
+  min-height: 40px;
+  font-family: inherit;
+}
+
+.report-post-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+  border-color: rgba(107, 114, 128, 0.6);
+}
+
 .modal-content form,
 .modal-content-post form,
 .modal-content-profile form {
