@@ -6,13 +6,25 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Prisma } from '@prisma/client';
 import { Role } from '@prisma/client';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AuthService {
 	constructor(
 		private prisma: PrismaService,
 		private jwtService: JwtService,
+		private mailService: MailService,
 	) {}
+
+// Generates a unique username by appending a number if the base username is already taken
+private async generateUniqueUsername(base: string): Promise<string> {
+	let username = base;
+	let count = 1;
+	while (await this.prisma.user.findUnique({ where: { username } })) {
+		username = `${base}${count++}`;
+	}
+	return username;
+}
 
 	async register(dto: RegisterDto) {
 		const hashedPassword = await bcrypt.hash(dto.password, 10);
@@ -70,6 +82,21 @@ export class AuthService {
 			throw new UnauthorizedException('Your account has been banned');
 		}
 
+		// if 2FA is enabled, generate a 6 figures code
+		if (user.twoFactorEnabled) {
+			const code = Math.floor(100000 + Math.random() * 900000).toString();
+			const expires = new Date(Date.now() + 10 * 60 * 1000);
+
+			await this.prisma.user.update({
+				where: { id: user.id },
+				data: { twoFactorCode: code, twoFactorExpires: expires },
+			});
+
+			await this.mailService.send2FACode(user.email, user.username, code);
+
+			return { twoFactorRequired: true, userId: user.id };
+		}
+
 		return this.generateToken(user.id, user.role, user.username);
 	}
 
@@ -88,12 +115,111 @@ export class AuthService {
 		};
 	}
 
+	async findOrCreateGithubUser(githubProfile: any) {
+		const githubId = githubProfile.id.toString();
+		const email = githubProfile.emails?.[0]?.value;
+		const username = githubProfile.username;
+
+		// Check if user already has this githubId
+		const user = await this.prisma.user.findUnique({ where: { githubId }});
+		if (user)
+			return (user);
+
+		// Check if mail already exists
+		if (email) {
+			const user = await this.prisma.user.findUnique({ where: { email}});
+			if (user) {
+				// Link github to existing account
+				return this.prisma.user.update({
+					where: { id: user.id },
+					data: {githubId},
+				});
+			}
+		}
+
+		// Create new user
+		const baseUsername = username || `github_${githubId}`; // if username does not exist, fall back to "github_<githubId>"
+		const finalUsername = await this.generateUniqueUsername(baseUsername);
+
+		return this.prisma.user.create({
+			data: {
+				email: email || `${githubId}@github.noemail`, // if email does not exist, create a fallback email based on the GitHub ID
+				username: finalUsername,
+				password: '',
+				githubId,
+				profile: {
+						create: {
+							bio: '',
+							displayName: '',
+							avatarUrl: '/assets/default/default-avatar.jpeg',
+							coverUrl: '/assets/default/default-cover.jpeg',
+						},
+					},
+				},
+			})
+		}
+
+
+
+	async verify2FA(userId: number, code: string) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+		if (!user) throw new UnauthorizedException('User not found');
+
+		if (user.bannedAt) {
+			throw new UnauthorizedException('Your account has been banned');
+		}
+
+		if (!user.twoFactorCode || !user.twoFactorExpires) {
+			throw new UnauthorizedException('No 2FA pending');
+		}
+		if (new Date() > user.twoFactorExpires) {
+			throw new UnauthorizedException('Code expired');
+		}
+		if (user.twoFactorCode !== code) {
+			throw new UnauthorizedException('Invalid code');
+		}
+
+		// Clean the code after the user used it
+		await this.prisma.user.update({
+			where: { id: user.id },
+			data: { twoFactorCode: null, twoFactorExpires: null },
+		});
+
+		return this.generateToken(user.id, user.role, user.username);
+	}
+
+	async change2FASettings(userId: number) {
+		try {
+			const user = await this.prisma.user.findUnique({ where: { id: userId } });
+			if (!user) {
+				throw new UnauthorizedException('User not found');
+			}
+
+			if (user.bannedAt) {
+				throw new UnauthorizedException('Banned users cannot change their security settings');
+			}
+			const updatedUser = await this.prisma.user.update({
+				where: { id: userId },
+				data: { twoFactorEnabled: !user.twoFactorEnabled },
+			});
+
+			return updatedUser;
+		} catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				throw new BadRequestException('Error while updating 2FA settings');
+			}
+			throw error;
+		}
+	}
+
 	async getMe(userId: number) {
 		const user = await this.prisma.user.findUnique({
 			where: { id: userId },
 			select: {
 				id: true,
 				email: true,
+				twoFactorEnabled: true,
 				username: true,
 				createdAt: true,
 				bannedAt: true,
@@ -118,10 +244,10 @@ export class AuthService {
 				},
 			},
 		});
-		
+
 		if (!user || user.bannedAt) {
-        	throw new UnauthorizedException('Your account has been banned');
-    }
+			throw new UnauthorizedException('Your account has been banned');
+		}
 
 		// Fetch friends (accepted friendships)
 		const friendships = await this.prisma.friendship.findMany({

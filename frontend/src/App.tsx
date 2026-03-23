@@ -11,9 +11,11 @@ import { LeftMenu } from './common/components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
 import { ModalProvider } from "./context/ModalContext";
 import { ModerationRoutes } from './moderation/routes/ModerationRoutes';
+import { SettingsRoutes } from './settings/SettingsRoute';
 import TournamentFeedPage from './pages/TournamentFeedPage';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
+import GithubCallbackPage from './pages/GithubCallbackPage';
 
 const App = () => {
 
@@ -66,6 +68,7 @@ const [loading, setLoading] = useState(true);
         <LeftMenu />
           <Routes>
 			{ModerationRoutes}
+			{SettingsRoutes}
             <Route 
               path="/"
               element={loading ? null : <Navigate to={user ? "/feed" : "/landing"} replace/>}/>
@@ -97,6 +100,9 @@ const [loading, setLoading] = useState(true);
             <Route
               path="/dashboard"
               element={loading ? null : user ? <DashboardPage/> : <Navigate to = "/" replace />} />
+            <Route
+              path="/auth/github/callback"
+              element={<GithubCallbackPage />} />
           </Routes>
         </BrowserRouter>
         </ModalProvider>

@@ -8,6 +8,7 @@ import { ReportDto } from './dto/report.dto';
 import { ModerationLogType } from '@prisma/client';
 import { MailService } from 'src/mail/mail.service';
 import { TournamentService } from 'src/tournament/tournament.service';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class ModerationService {
@@ -15,6 +16,7 @@ export class ModerationService {
 		private prisma: PrismaService,
 		private mailService: MailService,
 		private tournamentService: TournamentService,
+		private notificationsService: NotificationsService,
 	) {}
 
 	private buildCountByKey<T, K extends number | string>(
@@ -69,6 +71,13 @@ async updateAdminRole(
 		}
 		throw new BadRequestException('Invalid role transition');
 	});
+
+	//notification
+	const actor = await this.prisma.user.findUnique({
+		where: { id: actorId },
+	});
+
+	await this.notificationsService.notifyPromotionAdmin(targetId, actor.username);
 
 	return updatedUser;
 }
@@ -128,6 +137,15 @@ async updateModRole(
 
 		throw new BadRequestException('Invalid role transition');
 	});
+
+	//notification
+	const actor = await this.prisma.user.findUnique({
+		where: { id: actorId },
+	});
+	if (updatedUser.role === Role.MOD)
+		await this.notificationsService.notifyPromotionMod(targetId, actor.username);
+	else if (updatedUser.role === Role.USER)
+		await this.notificationsService.notifyDemoted(targetId, actor.username);
 
 	return updatedUser;
 }

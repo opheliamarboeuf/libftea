@@ -9,13 +9,13 @@ export class NotificationsController {
 	constructor(private readonly notificationsService: NotificationsService) {}
 
 	@Get()
-	getMyNotifications(@Req() req: Request) {
+	getMyNotifications(@Req() req: Request & { user: { id: number } }) {
 		const userId = req.user.id;
 		return this.notificationsService.getMyNotifications(userId);
 	}
 
 	@Patch('read-all')
-	markAllAsRead(@Req() req: Request) {
+	markAllAsRead(@Req() req: Request & { user: { id: number } }) {
 		const userId = req.user.id;
 		return this.notificationsService.markAllAsRead(userId);
 	}

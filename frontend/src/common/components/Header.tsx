@@ -151,7 +151,7 @@ export const Header = () => {
 							<span className="label">My Profile</span>
 						</button>
 						<button onClick={() => handleNavigate('/settings')}>
-							<span className="label">Settings</span>
+							<span className="label">Settings & Privacy</span>
 						</button>
 						<button onClick={handleLogout}>
 							<span className="label">Log Out</span>

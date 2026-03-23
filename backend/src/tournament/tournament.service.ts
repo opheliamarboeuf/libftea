@@ -172,7 +172,7 @@ export class TournamentService {
 			},
 		});
 	}
-	async getBattlePosts(battleId: number) {
+	async getBattlePosts(battleId: number, currentUserId: number) {
 		return this.prisma.post.findMany({
 			where: {
 				bannedDeletion: false,
@@ -180,6 +180,9 @@ export class TournamentService {
 					some: {
 						battleId: battleId,
 					},
+				},
+				hiddenForUsers: {
+					none: { userId: currentUserId },
 				},
 			},
 			include: {
@@ -238,27 +241,31 @@ export class TournamentService {
 		});
 
 		if (!winner) {
-			throw new NotFoundException("Winner user not found");
+			throw new NotFoundException('Winner user not found');
 		}
 
 		await this.notificationsService.notifyBattleWinner(winningPost.authorId, battle.theme);
 
 		const participants = await this.prisma.battleParticipant.findMany({
-				where: { battleId },
-				select: { userId: true },
+			where: { battleId },
+			select: { userId: true },
 		});
 
 		const participantsIds = participants.map(p => p.userId).filter(id => id !== winningPost.authorId);
 
 		await Promise.all(
-			participantsIds.map(userId =>
-				this.notificationsService.notifyTournamentParticipants(userId, battle.theme, winner.username)
-			)
+			participantsIds.map((userId) =>
+				this.notificationsService.notifyTournamentParticipants(
+					userId,
+					battle.theme,
+					winner.username,
+				),
+			),
 		);
 		return winningPost;
 	}	
 
-	async getLastTournamentWinnerPost() {
+	async getLastTournamentWinnerPost(currentUserId:number) {
 		const now = new Date();
 		
 		// D'abord, vérifier s'il y a un tournoi terminé (date passée) mais pas encore marqué FINISHED
@@ -298,6 +305,9 @@ export class TournamentService {
 				battleParticipants: {
 					some: { battleId: battle.id },
 				},
+				hiddenForUsers: {
+					none: { userId: currentUserId },
+				},
 			},
 			include: {
 				author: true,
@@ -332,14 +342,12 @@ export class TournamentService {
 		});
 	}
 
-	async handleBannedPostInTournament(postId: number)
-	{
+	async handleBannedPostInTournament(postId: number) {
 		try {
 			const battleParticipant = await this.prisma.battleParticipant.findFirst({
 				where: { postId },
 			});
-			if (!battleParticipant)
-				return;
+			if (!battleParticipant) return;
 			await this.prisma.battleParticipant.delete({
 				where: { id: battleParticipant.id },
 			});
@@ -347,8 +355,7 @@ export class TournamentService {
 				where: { id: battleParticipant.battleId },
 				include: { winner: true },
 			});
-			if (!battle)
-				return;
+			if (!battle) return;
 			const post = await this.prisma.post.findUnique({ where: { id: postId } });
 			if (post && battle.winnerId === post.authorId) {
 				await this.prisma.battle.update({
@@ -359,9 +366,7 @@ export class TournamentService {
 					},
 				});
 			}
-		}
-		catch (error)
-		{
+		} catch (error) {
 			console.error('Error handling banned post in tournament:', error);
 		}
 	}

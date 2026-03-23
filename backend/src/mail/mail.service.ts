@@ -22,6 +22,25 @@ export class MailService {
     // -H "Content-Type: application/json" \
     // -d '{"to": "test@test.com", "subject": "Test email", "text": "this is a test"}'
 
+	async send2FACode(email: string, username: string, code: string): Promise<void> {
+		try {
+			await this.mailerService.sendMail({
+				to: email,
+				subject: 'Your verification code',
+				template: '2fa-code',
+				context: {
+					username,
+					code,
+					appName: 'Libftea',
+					expiresIn: '10 minutes',
+				},
+			});
+		} catch (error) {
+			console.error(`Failed to send 2FA code to ${email}`, error.stack);
+			throw error;
+		}
+	}
+
 	async sendBanNotification(email: string, username: string, reason?: string): Promise<void> {
 		try {
 			const result = await this.mailerService.sendMail({

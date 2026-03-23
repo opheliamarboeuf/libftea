@@ -61,11 +61,18 @@ enum NotificationType {
 	FRIEND_REQUEST
 	FRIEND_REQUEST_ACCEPTED
 	POST
+	ADMIN_PROMOTE
+	MOD_PROMOTE
+	DEMOTED
 }
 
 model User {
 	id                                             Int                 @id @default(autoincrement())
 	email                                          String              @unique
+	twoFactorEnabled							   Boolean			   @default(false)
+	twoFactorCode								   String?
+	twoFactorExpires 							   DateTime?
+	githubId String?							   @unique
 	createdAt                                      DateTime            @default(now())
 	password                                       String
 	role                                           Role                @default(USER)
