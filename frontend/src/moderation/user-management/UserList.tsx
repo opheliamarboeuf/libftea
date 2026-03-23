@@ -112,7 +112,7 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 							setPendingAction({
 								userId: target.id,
 								type: 'ban',
-								message: t('userlist.unbanconfirm'),
+								message: t('userlist.unbanconfirm', { name: target.username }),
 							});
 						}}
 					>
