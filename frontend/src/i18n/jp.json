@@ -142,7 +142,8 @@
 		"report": "通報",
 		"confirmdelete": "本当に投稿を削除しますか?",
 		"edited": "{{date}}に編集",
-		"created": "{{date}}に作成"
+		"created": "{{date}}に作成",
+		"deleted": "この投稿は削除されました"
 	},
 
 	"notifications": {
@@ -176,7 +177,8 @@
 		"tomorrow": "トーナメントは明日終了します！",
 		"days": "トーナメントはあと{{count}}日間開催され、{{date}}まで続きます",
 		"changes": "変更が保存されていません。 保存せずに終了しますか?",
-		"lastweek": "先週の優勝者"
+		"lastweek": "先週の優勝者",
+		"joinfail": "トーナメントへの参加に失敗しました"
 	},
 
 	"moderationlogs": {
@@ -218,7 +220,9 @@
 		"meslength": "モデレーターメッセージは{{length}}文字を超えることはできません",
 		"tournamentlike": "トーナメント中の自分の投稿にいいねすることはできません",
 		"tournamentuser": "このユーザーはすでにこのトーナメントに登録されています",
-		"tournamentactive": "トーナメントはアクティブではありませんv"
+		"tournamentactive": "トーナメントはアクティブではありません",
+		"simple": "エラーが発生しました",
+		"token": "トークンが無効またはユーザーが認証されていません"
 	},
 
 	"dashboard": {
@@ -300,7 +304,9 @@
 		"nonefound": "このユーザーの報告が見つかりません",
 		"report": "ユーザーを報告する",
 		"ban": "ユーザーをバンする",
-		"banconfirm": "このユーザーをバンしてもよろしいですか?"
+		"banconfirm": "このユーザーをバンしてもよろしいですか?",
+		"banned": "ユーザーがバンされました",
+		"success": "報告が正常に送信されました"
 	},
 
 	"reporthandle": {
@@ -308,5 +314,66 @@
 		"accepted": "報告が正常に承認されました",
 		"handle": "報告を処理する",
 		"changes": "変更が保存されていません。 保存せずに終了しますか?"
+	},
+
+	"errorcomments": {
+		"create": "コメントの作成に失敗しました",
+		"delete": "コメントの削除に失敗しました",
+		"reply": "返信の作成に失敗しました",
+		"get": "コメントの取得に失敗しました",
+		"load": "コメントの読み込みに失敗しました"
+	},
+
+	"modfail": {
+		"fetchusers": "ユーザー一覧の取得に失敗しました",
+		"fetchbanned": "バン済みユーザーの取得に失敗しました",
+		"fetchadmin": "管理者一覧の取得に失敗しました",
+		"fetchmod": "モデレーター一覧の取得に失敗しました",
+		"fetchlogsadmin": "管理者ログの取得に失敗しました",
+		"fetchlogsmod": "モデレーターログの取得に失敗しました",
+		"changeroleadmin": "管理者ロールの変更に失敗しました",
+		"changerolemod": "モデレーターロールの変更に失敗しました",
+		"reject": "報告の却下に失敗しました",
+		"accept": "報告の承認に失敗しました",
+		"assign": "報告の割り当てに失敗しました",
+		"unassign": "報告の割り当て解除に失敗しました",
+		"ban": "ユーザーのバンに失敗しまし",
+		"unban": "ユーザーのバン解除に失敗しました",
+		"userreport": "ユーザーの報告に失敗しました",
+		"fetchreports": "保留中のユーザー報告の取得に失敗しました",
+		"fetchuserreports": "このユーザーの報告の取得に失敗しました",
+		"fetchalluser": "このユーザーのすべての報告の取得に失敗しました",
+		"fetchassigned": "割り当て済みユーザー報告の取得に失敗しました",
+		"fetchhandled": "処理済みユーザー報告の取得に失敗しました",
+		"postreport": "投稿の報告に失敗しました",
+		"fetchpost": "保留中の投稿報告の取得に失敗しました",
+		"fetchpostreports": "この投稿の報告の取得に失敗しました",
+		"fetchallpost": "この投稿のすべての報告の取得に失敗しました",
+		"fetchassignedpost": "割り当て済み投稿報告の取得に失敗しました",
+		"fetchhandledpost": "処理済み投稿報告の取得に失敗しました"
+	},
+
+	"errorpage": {
+		"filenotfound": "ファイルが見つかりません",
+    	"contentnotfound": "エラーコンテンツが見つかりません",
+		"loadpost": "投稿の読み込み中にエラーが発生しました",
+		"faildelete": "投稿の削除に失敗しました"
+	},
+
+	"errorpost": {
+		"create": "投稿の作成に失敗しました",
+		"delete": "投稿の削除に失敗しました",
+		"update": "投稿の更新に失敗しました",
+		"fetch": "ユーザーの投稿の取得に失敗しました",
+		"fetchfriends": "友達の投稿の取得に失敗しました",
+		"fetchall": "すべての投稿の取得に失敗しました"
+	},
+	
+	"tournamenterror": {
+		"create": "トーナメントの作成に失敗しました",
+		"fetch": "現在のトーナメントの取得に失敗しました",
+		"fetchparticipants": "参加者の取得に失敗しました",
+		"fetchposts": "トーナメントの投稿の取得に失敗しました",
+		"fetchlast": "最後の優勝投稿の取得に失敗しました"
 	}
 }

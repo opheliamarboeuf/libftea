@@ -87,7 +87,7 @@ function ReportUserModal ({ targetId, onPostReported, onClose }: ReportUserModal
 		e.preventDefault();
 		const res = await handleUserReport();
 		if (res) {
-			showModal("Report submitted successfully");
+			showModal(t('userreport.success'));
 			onPostReported(); 
 			closeWithAnimation();
 		}

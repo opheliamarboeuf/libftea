@@ -17,11 +17,11 @@ function TermsPage() {
 
 		fetch(`/terms.${i18n.language}.md`)
 			.then((res) => {
-				if (!res.ok) throw new Error("File not found");
+				if (!res.ok) throw new Error(t('errorpage.filenotfound'));
 				return res.text();
 			})
 			.then((text) => setContent(text))
-			.catch(() => setContent("Error content not found"))
+			.catch(() => setContent(t('errorpage.contentnotfound')))
 			.finally(() => setLoading(false));
 	}, [i18n.language]);
 

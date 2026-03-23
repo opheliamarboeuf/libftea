@@ -54,7 +54,7 @@ export function BlockFriendButton({ userId, onAction }: Props) {
 			}
         } catch (error) {
             console.error('Error:', error);
-            showModal("Failed to block friend");
+            showModal(t('friends.failblock'));
         }
     }
     return (

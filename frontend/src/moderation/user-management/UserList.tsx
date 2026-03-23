@@ -208,7 +208,7 @@ export function UserList({ users: initialUsers, onUpdate }: UserListProps) {
 			}
 			onUpdate?.();
 		} catch (error: any) {
-			showModal(error.message || 'An error occurred');
+			showModal(error.message || t('errors.simple'));
 		} finally {
 			setPendingAction(null);
 		}

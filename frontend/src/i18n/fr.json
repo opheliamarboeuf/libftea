@@ -142,7 +142,8 @@
 		"report": "Signaler",
 		"confirmdelete": "Etes-vous sûr de vouloir supprimer votre post ?",
 		"edited": "modifié le {{date}}",
-		"created": "créé le {{date}}"
+		"created": "créé le {{date}}",
+		"deleted": "Ce post a été supprimé"
 	},
 
 	"notifications": {
@@ -176,7 +177,8 @@
 		"tomorrow": "Le tournoi finit demain!",
 		"days": "Le tournoi sera actif pendant encore {{count}} jours, jusq'au {{date}}",
 		"changes": "Vous avez modifié le tournoi. Etes-vous sûr de vouloir quitter sans sauvegarder ?",
-		"lastweek": "Le gagnant de la semaine dernière"
+		"lastweek": "Le gagnant de la semaine dernière",
+		"joinfail": "Échec de la participation au tournoi"
 	},
 
 	"moderationlogs": {
@@ -218,7 +220,9 @@
 		"meslength": "Le message de modérateur ne peut pas dépasser {{length}} caractères",
 		"tournamentlike": "Vous ne pouvez pas liker votre propre post s'il participe à un tournoi",
 		"tournamentuser": "Cet utilisateur est déjà inscrit à ce tournoi",
-		"tournamentactive": "Le tournoi n'est pas actif"
+		"tournamentactive": "Le tournoi n'est pas actif",
+		"simple": "Une erreur est survenue",
+		"token": "Token invalide ou utilisateur non autorisé"
 	},
 
 	"dashboard": {
@@ -300,7 +304,9 @@
 		"nonefound": "Aucun signalement trouvé pour cet utilisateur.",
 		"report": "Signaler l'utilisateur",
 		"ban": "Bannir l'utilisateur",
-		"banconfirm": "Êtes-vous sûr de vouloir bannir cet utilisateur?"
+		"banconfirm": "Êtes-vous sûr de vouloir bannir cet utilisateur?",
+		"banned": "Utilisateur banni",
+		"success": "Signalement soumis avec succès"
 	},
 
 	"reporthandle": {
@@ -308,5 +314,66 @@
 		"accepted": "Signalement accepté avec succès",
 		"handle": "Traiter le signalement",
 		"changes": "Vous avez modifié le traitement du signalement. Etes-vous sûr de vouloir quitter sans sauvegarder ?"
+	},
+
+	"errorcomments": {
+		"create": "Échec de la création du commentaire",
+		"delete": "Échec de la suppression du commentaire",
+		"reply": "Échec de la création de la réponse",
+		"get": "Échec de la récupération des commentaires",
+		"load": "Échec du chargement des commentaires"
+	},
+
+	"modfail": {
+		 "fetchusers": "Échec de la récupération des utilisateurs",
+		"fetchbanned": "Échec de la récupération des utilisateurs bannis",
+		"fetchadmin": "Échec de la récupération des administrateurs",
+		"fetchmod": "Échec de la récupération des modérateurs",
+		"fetchlogsadmin": "Échec de la récupération des journaux administrateur",
+		"fetchlogsmod": "Échec de la récupération des journaux modérateur",
+		"changeroleadmin": "Échec du changement de rôle administrateur",
+		"changerolemod": "Échec du changement de rôle modérateur",
+		"reject": "Échec du rejet du signalement",
+		"accept": "Échec de l'acceptation du signalement",
+		"assign": "Échec de l'assignation du signalement",
+		"unassign": "Échec de la désassignation du signalement",
+		"ban": "Échec du bannissement de l'utilisateur",
+		"unban": "Échec du débannissement de l'utilisateur",
+		"userreport": "Échec du signalement de l'utilisateur",
+		"fetchreports": "Échec de la récupération des signalements d'utilisateurs en attente",
+		"fetchuserreports": "Échec de la récupération des signalements pour cet utilisateur",
+		"fetchalluser": "Échec de la récupération de tous les signalements pour cet utilisateur",
+		"fetchassigned": "Échec de la récupération des signalements d'utilisateurs assignés",
+		"fetchhandled": "Échec de la récupération des signalements d'utilisateurs traités",
+		"postreport": "Échec du signalement du post",
+		"fetchpost": "Échec de la récupération des signalements de posts en attente",
+		"fetchpostreports": "Échec de la récupération des signalements pour ce post",
+		"fetchallpost": "Échec de la récupération de tous les signalements pour ce post",
+		"fetchassignedpost": "Échec de la récupération des signalements de posts assignés",
+		"fetchhandledpost": "Échec de la récupération des signalements de posts traités"
+	},
+
+	"errorpage": {
+		"filenotfound": "Fichier introuvable",
+		"contentnotfound": "Contenu de l'erreur introuvable",
+		"loadpost": "Erreur lors du chargement des posts",
+		"faildelete": "Échec de la suppression du post"
+	},
+
+	"errorpost": {
+		"create": "Échec de la création du post",
+		"delete": "Échec de la suppression du post",
+		"update": "Échec de la mise à jour du post",
+		"fetch": "Échec de la récupération des posts de l'utilisateur",
+		"fetchfriends": "Échec de la récupération des posts des amis",
+		"fetchall": "Échec de la récupération de tous les posts"
+	},
+	
+	"tournamenterror": {
+		"create": "Échec de la création du tournoi",
+		"fetch": "Échec de la récupération du tournoi en cours",
+		"fetchparticipants": "Échec de la récupération des participants",
+		"fetchposts": "Échec de la récupération des posts du tournoi",
+		"fetchlast": "Échec de la récupération du dernier post gagnant"
 	}
 }

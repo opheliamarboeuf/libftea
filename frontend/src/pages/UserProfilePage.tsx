@@ -138,7 +138,7 @@ const UserProfilePage = () => {
 			setLoading(false);
 			refreshUser();
 			fetchProfile();
-			showModal('Friend removed');
+			showModal(t('friends.removed'));
 		},
 		onUserRemoved: () => {
 			refreshUser();

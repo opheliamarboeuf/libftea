@@ -1,5 +1,6 @@
 import { Post } from '../context/UserContext';
 import { PostEditPayload } from './types';
+import i18n from '../i18n';
 
 const API_URL = "http://localhost:3000";
 
@@ -19,7 +20,7 @@ export const postsApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || "Post creation failed";
+				: data.message || i18n.t('errorpost.create');
 			throw new Error(message);
 		}
 		return data;
@@ -35,7 +36,7 @@ export const postsApi = {
 		});
 
 		if (!res.ok) {
-			let message = "Posts deletion failed";
+			let message = i18n.t('errorpost.delete');
 			try {
 				const data = await res.json();
 				message = Array.isArray(data.message) ? data.message[0] : data.message || message;
@@ -61,7 +62,7 @@ export const postsApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || "Post creation failed";
+				: data.message || i18n.t('errorpost.update');
 			throw new Error(message);
 		}
 		return data;
@@ -79,7 +80,7 @@ export const postsApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || "Fetch user posts failed";
+				: data.message || i18n.t('errorpost.fetch');
 			throw new Error(message);
 		}
 		return data ?? [];
@@ -103,7 +104,7 @@ export const postsApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data?.message)
 				? data.message[0]
-				: data?.message || res.statusText || "Échec de la récupération des posts des amis";
+				: data?.message || res.statusText || i18n.t('errorpost.fetchfriends');
 			throw new Error(message);
 		}
 		return data ?? [];
@@ -121,7 +122,7 @@ export const postsApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || "Fetch all users posts failed";
+				: data.message || i18n.t('errorpost.fetchall');
 			throw new Error(message);
 		}
 		return data ?? [];

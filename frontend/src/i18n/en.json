@@ -143,7 +143,8 @@
 		"report": "Report",
 		"confirmdelete": "Are you sure you want to delete your post?",
 		"edited": "edited {{date}}",
-		"created": "created {{date}}"
+		"created": "created {{date}}",
+		"deleted": "This post has been deleted"
 	},
 
 	"notifications": {
@@ -178,7 +179,8 @@
 		"tomorrow": "The tournament ends tomorrow!",
 		"days": "The tournament will be active for {{count}} more days, until {{date}}",
 		"changes": "Looks like you've made some changes. Are you sure you want to exit without saving?",
-		"lastweek": "Last week's winner"
+		"lastweek": "Last week's winner",
+		"joinfail": "Tournament join failed"
 	},
 
 	"moderationlogs": {
@@ -220,7 +222,9 @@
 		"meslength": "Moderator message cannot exceed {{length}} characters",
 		"tournamentlike": "You can't like your own post if it is in a tournament",
 		"tournamentuser": "This user is already registered for this tournament",
-		"tournamentactive": "Tournament is not active"
+		"tournamentactive": "Tournament is not active",
+		"simple": "An error occurred",
+		"token": "Token invalid or user unauthorized"
 	},
 
 	"dashboard": {
@@ -302,7 +306,9 @@
 		"nonefound": "No reports found for this user.",
 		"report": "Report User",
 		"ban": "Ban User",
-		"banconfirm": "Are you sure you want to ban this user?"
+		"banconfirm": "Are you sure you want to ban this user?",
+		"banned": "User banned",
+		"success": "Report submitted successfully"
 	},
 
 	"reporthandle": {
@@ -310,5 +316,66 @@
 		"accepted": "Report accepted successfully",
 		"handle": "Handle report",
 		"changes": "Looks like you've made some changes. Are you sure you want to exit without saving?"
+	},
+
+	"errorcomments": {
+		"create": "Failed to create comment",
+		"delete": "Failed to delete comment",
+		"reply": "Failed to create reply",
+		"get": "Failed to get comments",
+		"load": "Failed to load comments"
+	},
+
+	"modfail": {
+		"fetchusers": "Fetch all users failed",
+		"fetchbanned": "Fetch all banned users failed",
+		"fetchadmin": "Fetch all admin users failed",
+		"fetchmod": "Fetch all mod users failed",
+		"fetchlogsadmin": "Fetch amdin logs failed",
+		"fetchlogsmod": "Fetch mod logs failed",
+		"changeroleadmin": "Change admin role failed",
+		"changerolemod": "Change mod role failed",
+		"reject": "Reject report failed",
+		"accept": "Accept report failed",
+		"assign": "Assign report failed",
+		"unassign": "Unassign report failed",
+		"ban": "Ban user failed",
+		"unban": "Unban user failed",
+		"userreport": "User report failed",
+		"fetchreports": "Fetch pending users reports failed",
+		"fetchuserreports": "Failed to fetch the users reports for this user",
+		"fetchalluser": "Fetch all reports for this user failed",
+		"fetchassigned": "Fetch all assigned user reports failed",
+		"fetchhandled": "Fetch all handled user reports failed",
+		"postreport": "Post report failed",
+		"fetchpost": "Fetch pending post reports failed",
+		"fetchpostreports": "Failed to fetch the post reports for this user",
+		"fetchallpost": "Fetch all reports for this post failed",
+		"fetchassignedpost": "Fetch all assigned post reports failed",
+		"fetchhandledpost": "Fetch all handled post reports failed"
+	},
+
+	"errorpage": {
+		"filenotfound": "File not found",
+		"contentnotfound": "Error content not found",
+		"loadpost": "Error while loading posts",
+		"faildelete": "Failed to delete post"
+	},
+
+	"errorpost": {
+		"create": "Post creation failed",
+		"delete": "Posts deletion failed",
+		"update": "Post update failed",
+		"fetch": "Fetch user posts failed",
+		"fetchfriends": "Fetch friend posts failed",
+		"fetchall": "Fetch all users posts failed"
+	},
+	
+	"tournamenterror": {
+		"create": "Tournament creation failed",
+		"fetch": "Fetch current tournament failed",
+		"fetchparticipants": "Fetch participants failed",
+		"fetchposts": "Fetch battle posts failed",
+		"fetchlast": "Fetch last winner post failed"
 	}
 }

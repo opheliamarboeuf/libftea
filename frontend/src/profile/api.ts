@@ -1,4 +1,5 @@
 import { ProfileUpdateResponse } from "./types";
+import i18n from "../i18n";
 
 // Base URL of the backend API
 const API_URL = "http://localhost:3000";
@@ -52,7 +53,7 @@ export const profileApi = {
 		{
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || "Tournament join failed";
+				: data.message || i18n.t('tournament.joinfail');
 			throw new Error(message);
 		}
 		return data;

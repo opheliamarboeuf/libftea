@@ -23,9 +23,9 @@ export function BanUserButton({
 		try {
 			await moderationApi.banUser(targetId);
 			if (onAction) await onAction();
-			showModal('User banned');
+			showModal(t('userreport.banned'));
 		} catch (error) {
-			const message = error instanceof Error ? error.message : 'An error occurred';
+			const message = error instanceof Error ? error.message : t('errors.simple');
 			showModal(message);
 		}
 	};

@@ -15,12 +15,14 @@ import TournamentFeedPage from './pages/TournamentFeedPage';
 import DashboardPage from './pages/DashboardPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
+import { useTranslation } from 'react-i18next';
 
 const App = () => {
 
 const [user, setUser] = useState<User | null>(null);
 const token = localStorage.getItem("token");
 const [loading, setLoading] = useState(true);
+const { t } = useTranslation();
 
 	const fetchUser = useCallback(async () => {
 		const currentToken = localStorage.getItem("token");
@@ -36,7 +38,7 @@ const [loading, setLoading] = useState(true);
 			});
 			if (!res.ok){
 				localStorage.removeItem("token");
-				throw new Error("Token invalid or user unauthorized");
+				throw new Error(t('errors.token'));
 			}
 			const data = await res.json();
 			setUser(data);

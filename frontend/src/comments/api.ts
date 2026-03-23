@@ -1,3 +1,5 @@
+import i18n from "../i18n";
+
 const API_URL = 'http://localhost:3000/comments';
 
 export const commentsApi = {
@@ -13,7 +15,7 @@ export const commentsApi = {
         });
 
         if (!res.ok) {
-            throw new Error('Failed to create comment');
+            throw new Error(i18n.t('errorcomments.create'));
         }
         
         const text = await res.text();
@@ -30,7 +32,7 @@ export const commentsApi = {
         });
 
         if (!res.ok) {
-            throw new Error('Failed to delete comment');
+            throw new Error(i18n.t('errorcomments.delete'));
         }
 
 		const data = await res.json();
@@ -49,7 +51,7 @@ export const commentsApi = {
         });
 
         if (!res.ok) {
-            throw new Error('Failed to create reply');
+            throw new Error(i18n.t('errorcomments.reply'));
         }
 
 		return res.json();
@@ -65,7 +67,7 @@ export const commentsApi = {
         });
 
         if (!res.ok) {
-            throw new Error('Failed to delete comment');
+            throw new Error(i18n.t('errorcomments.get'));
         }
 
 		const text = await res.text();
