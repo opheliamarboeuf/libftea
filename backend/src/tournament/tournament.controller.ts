@@ -75,9 +75,10 @@ export class TournamentController {
 		return this.tournamentService.getParticipants(Number(battleId));
 	}
 	@Get('last-winner-post')
-	getLastTournamentWinner(@Req() req: any) {
+	async getLastTournamentWinner(@Req() req: any) {
 		const userId = req.user.id;
-		return this.tournamentService.getLastTournamentWinnerPost(userId);
+		const post = await this.tournamentService.getLastTournamentWinnerPost(userId);
+		return post ?? null;
 	}
 	@Get('user/:userId/posts')
 	getUserTournamentPosts(@Param('userId', ParseIntPipe) userId: number) {
@@ -86,7 +87,11 @@ export class TournamentController {
 	@Get(':battleId/posts')
 	async getBattlePosts(@Param('battleId') battleId: string, @Req() req: any) {
 		const userId = req.user.id;
-		await this.tournamentService.computeTournamentWinner(Number(battleId));
+		try {
+			await this.tournamentService.computeTournamentWinner(Number(battleId));
+		} catch {
+			// Tournament may not be finished yet — still return the posts
+		}
 		return this.tournamentService.getBattlePosts(Number(battleId), userId);
 	}
 }
