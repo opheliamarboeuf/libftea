@@ -46,9 +46,6 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 										className="user-report-target-username"
 										onClick={() => goToProfile(report.reportedUser.id)}
 									>
-										{report.reportedUser.profile?.displayName
-											? `${report.reportedUser.username} (${report.reportedUser.profile?.displayName})`
-											: report.reportedUser.username}
 									</span>
 								) : (
 									<span className="user-report-target-username">
