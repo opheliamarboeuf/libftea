@@ -27,7 +27,7 @@ export class MailService {
 			await this.mailerService.sendMail({
 				to: email,
 				subject: 'Your verification code',
-				// template: '2fa-code',
+				template: '2fa-code',
 				context: {
 					username,
 					code,

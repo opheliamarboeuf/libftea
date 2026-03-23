@@ -21,19 +21,19 @@ export class FriendsController {
 	}
 
 	@Delete('reject/:requesterId')
-	async rejectFriendRequest(@Req() req: any, @Param('requesterId') requesterId: string) {
+	async rejectFriendRequest(@Req() req: Request & { user: { id: number } }, @Param('requesterId') requesterId: string) {
 		const addresseId = req.user.id;
 		return this.friendsService.rejectFriendRequest(Number(requesterId), addresseId);
 	}
 
 	@Get()
-	async getFriends(@Req() req: any) {
+	async getFriends(@Req() req: Request & { user: { id: number } }) {
 		const userId = req.user.id;
 		return this.friendsService.getFriends(userId);
 	}
 
 	@Get('pending')
-	async getPendingRequests(@Req() req: any) {
+	async getPendingRequests(@Req() req: Request & { user: { id: number } }) {
 		const userId = req.user.id;
 		return this.friendsService.getPendingRequests(userId);
 	}

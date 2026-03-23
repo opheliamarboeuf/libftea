@@ -11,11 +11,17 @@ import { LeftMenu } from './common/components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
 import { ModalProvider } from "./context/ModalContext";
 import { ModerationRoutes } from './moderation/routes/ModerationRoutes';
+import { SettingsRoutes } from './settings/SettingsRoute';
 import TournamentFeedPage from './pages/TournamentFeedPage';
+import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
+<<<<<<< HEAD
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import { useTranslation } from 'react-i18next';
+=======
+import GithubCallbackPage from './pages/GithubCallbackPage';
+>>>>>>> main
 
 const App = () => {
 
@@ -69,9 +75,14 @@ const { t } = useTranslation();
         <LeftMenu />
           <Routes>
 			{ModerationRoutes}
+			{SettingsRoutes}
             <Route 
               path="/"
-              element={loading ? null : <Navigate to = {user ? "/feed" : "/login"} replace/>} />
+              element={loading ? null : <Navigate to={user ? "/feed" : "/landing"} replace/>}/>
+			<Route
+				path="/landing"
+				element={<LandingPage />}
+			/>
             <Route
               path="/register"
               element={<RegisterPage />} />
@@ -96,12 +107,18 @@ const { t } = useTranslation();
             <Route
               path="/dashboard"
               element={loading ? null : user ? <DashboardPage/> : <Navigate to = "/" replace />} />
+<<<<<<< HEAD
 			<Route
               path="/privacypolicy"
               element={<PrivacyPage/>} />
 			<Route
               path="/termsofservice"
               element={<TermsPage/>} />
+=======
+            <Route
+              path="/auth/github/callback"
+              element={<GithubCallbackPage />} />
+>>>>>>> main
           </Routes>
         </BrowserRouter>
         </ModalProvider>

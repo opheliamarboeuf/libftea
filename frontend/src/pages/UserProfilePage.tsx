@@ -1,17 +1,16 @@
-import '../App.css';
-import './MyProfilePage.css';
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useUser } from '../context/UserContext';
-import { useModal } from '../context/ModalContext';
-import { Post } from '../context/UserContext';
-import { postsApi } from '../posts/api';
-import { UserPostsList } from '../posts/components/UserPostsList';
-import { ConfirmBlockDelete } from '../friends/ConfirmBlockDelete';
-import { UserProfileMenu } from '../profile/components/UserProfileMenu';
-import { useFriendsSocket } from '../friends/useFriendsSocket';
-import { fetchUserTournamentPosts } from '../posts/components/fetchUserPosts';
-import { UserNameWithRole } from '../common/components/UserNameWithRole';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
+import { useModal } from "../context/ModalContext";
+import { Post } from "../context/UserContext";
+import { postsApi } from "../posts/api";
+import { UserPostsList } from "../posts/components/UserPostsList";
+import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
+import { BlockFriendButton } from "../friends/BlockFriendButton";
+import { UserProfileMenu } from "../profile/components/UserProfileMenu";
+import { useFriendsSocket } from "../friends/useFriendsSocket";
+import { fetchUserTournamentPosts } from "../posts/components/fetchUserPosts";
+import { UserNameWithRole } from "../common/components/UserNameWithRole";
 import { useTranslation } from "react-i18next";
 
 const API_URL = 'http://localhost:3000/users';
@@ -203,12 +202,14 @@ const UserProfilePage = () => {
 	const renderFriendshipButton = () => {
 		if (!userData) return null;
 
+		const buttonClass = "px-3 py-2 text-sm bg-gray-600/30 border-none rounded-lg cursor-pointer opacity-70 hover:opacity-100 hover:bg-gray-500/30 transition-opacity outline-none";
+
 		switch (userData.friendshipStatus) {
 			case 'NONE':
 				return (
-					<button
-						className="profile-action-btn"
-						onClick={handleAddFriend}
+					<button 
+						className={buttonClass}
+						onClick={handleAddFriend} 
 						disabled={loading}
 					>
 						{t('friends.addfriend')}
@@ -216,9 +217,9 @@ const UserProfilePage = () => {
 				);
 			case 'PENDING_SENT':
 				return (
-					<button
-						className="profile-action-btn"
-						onClick={handleCancelRequest}
+					<button 
+						className={buttonClass}
+						onClick={handleCancelRequest} 
 						disabled={loading}
 					>
 						{t('friends.cancelrequest')}
@@ -226,17 +227,17 @@ const UserProfilePage = () => {
 				);
 			case 'PENDING_RECEIVED':
 				return (
-					<div className="btn-group">
-						<button
-							className="profile-action-btn"
-							onClick={handleAccept}
+					<div className="flex gap-3">
+						<button 
+							className={buttonClass}
+							onClick={handleAccept} 
 							disabled={loading}
 						>
 							{t('friends.acceptrequest')}
 						</button>
-						<button
-							className="profile-action-btn"
-							onClick={handleReject}
+						<button 
+							className={buttonClass}
+							onClick={handleReject} 
 							disabled={loading}
 						>
 							{t('friends.rejectrequest')}
@@ -245,17 +246,17 @@ const UserProfilePage = () => {
 				);
 			case 'ACCEPTED':
 				return (
-					<div className="btn-group">
-						<button
-							className="profile-action-btn"
-							onClick={() => navigate('/chat')}
+					<div className="flex gap-3">
+						<button 
+							className={buttonClass}
+							onClick={() => navigate("/chat")} 
 							disabled={loading}
 						>
 							{t('userprofile.sendmessage')}
 						</button>
-						<button
-							className="profile-action-btn"
-							onClick={() => setShowDeleteConfirm(true)}
+						<button 
+							className={buttonClass}
+							onClick={() => setShowDeleteConfirm(true)} 
 							disabled={loading}
 						>
 							{t('friends.remove')}
@@ -277,28 +278,35 @@ const UserProfilePage = () => {
 	};
 
 	if (blockedByUser) {
-		return <div className="profile-page is-blocked">{t('userprofile.noaccess')}</div>;
+		return (
+			<div className="fixed top-[50px] left-[60px] flex flex-col w-[calc(100vw-60px)] h-[calc(100vh-50px)] text-gray-800 items-center justify-start pt-8">
+				{t('userprofile.noaccess')}
+			</div>
+		);
 	}
 	if (!userData) {
-		return <div className="profile-page">{t('userprofile.loading')}</div>;
+		return (
+			<div className="fixed top-[50px] left-[60px] flex flex-col w-[calc(100vw-60px)] h-[calc(100vh-50px)] text-gray-800 items-center justify-center">
+				{t('userprofile.loading')}
+			</div>
+		);
 	}
 
 	return (
-		<div className="profile-page">
+		<div className="fixed top-[50px] left-[60px] flex flex-col w-[calc(100vw-60px)] h-[calc(100vh-50px)] text-gray-800 overflow-y-auto">
 			{/* MAIN CONTENT */}
-			<div className="main-content">
+			<div className="flex flex-1 h-full">
 				{/* PROFILE INFO COLUMN */}
-				<div className="profile-info">
+				<div className="flex-shrink-0 w-[250px] min-w-[150px] bg-white/85 backdrop-blur-md p-6 flex flex-col items-center rounded-2xl border border-black/5 shadow-md m-5 gap-4 self-stretch max-lg:hidden">
 					<UserProfileMenu userId={userData.id} onAction={fetchProfile} />
-					<div className="online-status">
-						{isOnline ? <span>☀️</span> : <span className="moon">🌙</span>}
+					<div className="flex items-center gap-2 text-sm self-start pl-2">
+						{isOnline ? <span>☀️</span> : <span className="grayscale">🌙</span>}
 						<span>{isOnline ? t('userprofile.online') : t('userprofile.offline')}</span>
 					</div>
-					<p className="display-name">
-						{userData.profile?.displayName ? userData.profile.displayName : '\u00A0'}{' '}
-						{/*space to keep the height*/}
+					<p className="w-full font-bold text-xl flex justify-center items-center" style={{ fontFamily: "'Blosta Script', cursive" }}>
+						{userData.profile?.displayName ? userData.profile.displayName : '\u00A0'}
 					</p>
-					<div className="profile-pic">
+					<div>
 						<img
 							src={
 								userData.profile?.avatarUrl
@@ -306,26 +314,40 @@ const UserProfilePage = () => {
 									: '/assets/images/default-avatar.jpeg'
 							}
 							alt="Profile Avatar"
+							className="w-24 h-24 rounded-full object-cover shadow-md"
 						/>
 					</div>
-					<p className="display-username">
+					<p className="font-bold" style={{ fontFamily: "'Blosta Script', cursive" }}>
 						<UserNameWithRole
 							username={userData.username}
 							role={(userData as any).role}
 						/>
 					</p>
-					<div className="stats">
-						<span>{t('userprofile.friends')}: {userData.friendsCount}</span>
-						<span>{t('userprofile.posts')}: {posts.length}</span>
+					<div className="flex justify-center gap-2 w-full">
+						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
+							<strong className="text-lg font-bold">{userData.friendsCount}</strong>
+							{t('userprofile.friends')}
+						</span>
+						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
+							<strong className="text-lg font-bold">{posts.length}</strong>
+							{t('userprofile.posts')}
+						</span>
 					</div>
-					<div className="bio">
+					<div className="mt-2">
+						<BlockFriendButton userId={userData.id} onAction={fetchProfile} />
+					</div>
+					<div className="text-center p-3 rounded-xl w-full bg-white/90 shadow-sm border border-black/5 text-sm whitespace-pre-line">
 						<p>{userData.profile?.bio || t('userprofile.writebio')}</p>
 					</div>
 				</div>
 
 				{/* COVER, USER INTERACTIONS AND POSTS*/}
-				<div className="cover-and-posts">
-					<div className="cover">
+				<div className="relative flex-1 min-w-0 flex flex-col mt-8">
+					{/* Gradient overlay */}
+					<div className="absolute top-0 left-0 w-full h-[250px] bg-gradient-to-b from-transparent to-gray-300/70 pointer-events-none z-[1]"></div>
+					
+					{/* Cover */}
+					<div className="relative h-[250px] overflow-hidden rounded-2xl group">
 						<img
 							src={
 								userData.profile?.coverUrl
@@ -333,35 +355,52 @@ const UserProfilePage = () => {
 									: '/assets/images/default-cover.jpeg'
 							}
 							alt="Cover"
+							className="w-full h-full object-cover"
 						/>
-						<div className="profile-actions">{renderFriendshipButton()}</div>
+						<div className="absolute bottom-3 right-3 z-[5]">
+							{renderFriendshipButton()}
+						</div>
 					</div>
-					<div className="posts">
+
+					{/* Posts section */}
+					<div className="relative z-[1] flex-1 p-4 overflow-y-auto bg-gray-300/70">
 						{blockedPosts ? (
-							<div className="blocked-line">{t('userprofile.userblocked')}</div>
+							<div className="flex justify-center mt-12 text-lg">{t('userprofile.userblocked')}</div>
 						) : (
 							<>
-								<div className="posts-toolbar">
-									<div className="profile-tabs">
-										<div className={`profile-tab-indicator ${profileTab}`} />
+								{/* Toolbar with tabs */}
+								<div className="flex items-center justify-center gap-4 mb-4 relative">
+									{/* Tabs */}
+									<div className="relative flex rounded-lg overflow-hidden bg-white shadow-sm">
+										{/* Indicator */}
+										<div 
+											className={`absolute top-0 left-0 w-1/2 h-full bg-neutral-200 rounded-lg transition-transform duration-300 ease-in-out z-[1] ${
+												profileTab === "posts" ? "translate-x-0" : "translate-x-full"
+											}`}
+										></div>
 										<button
-											className={profileTab === 'posts' ? 'active' : ''}
-											onClick={() => setProfileTab('posts')}
+											className={`relative z-[2] px-5 py-2 text-sm bg-transparent border-none cursor-pointer min-w-[120px] outline-none ${
+												profileTab === "posts" ? "font-semibold" : ""
+											}`}
+											style={profileTab === "posts" ? { fontFamily: "'Gotham Bold', sans-serif", fontWeight: "700" } : {}}
+											onClick={() => setProfileTab("posts")}
 										>
 											{t('userprofile.posts')}
 										</button>
 										<button
-											className={profileTab === 'tournament' ? 'active' : ''}
-											onClick={() => setProfileTab('tournament')}
+											className={`relative z-[2] px-5 py-2 text-sm bg-transparent border-none cursor-pointer min-w-[120px] outline-none ${
+												profileTab === "tournament" ? "font-semibold" : ""
+											}`}
+											style={profileTab === "tournament" ? { fontFamily: "'Gotham Bold', sans-serif", fontWeight: "700" } : {}}
+											onClick={() => setProfileTab("tournament")}
 										>
 											{t('tournament.tournament')}
 										</button>
 									</div>
 								</div>
-								{profileTab === 'posts' && <UserPostsList posts={posts} />}
-								{profileTab === 'tournament' && (
-									<UserPostsList posts={tournamentPosts} />
-								)}
+								{/* Posts list */}
+								{profileTab === "posts" && <UserPostsList posts={posts} />}
+								{profileTab === "tournament" && <UserPostsList posts={tournamentPosts} />}
 							</>
 						)}
 					</div>

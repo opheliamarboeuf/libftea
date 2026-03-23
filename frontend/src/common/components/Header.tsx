@@ -9,7 +9,7 @@ import '../../App.css';
 import { friendsSocket } from '../../socket/socket';
 import { notifSocket } from "../../socket/socket";
 import { useNotifications } from "../../notifications/useNotifications";
-import { FaBell } from "react-icons/fa";
+import { MdOutlineNotifications } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import LanguageMenu from "./LanguageMenu";
 
@@ -111,7 +111,7 @@ export const Header = () => {
 			<div className="header-right">
 				<div className="notif-bell" ref={notifRef}>
 					<span onClick={() => setNotifOpen(!notifOpen)}>
-						<FaBell />
+						<MdOutlineNotifications />
 						{unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
 					</span>
 					{notifOpen && (
@@ -155,7 +155,7 @@ export const Header = () => {
 							<span className="label">{t('header.profile')}</span>
 						</button>
 						<button onClick={() => handleNavigate('/settings')}>
-							<span className="label">{t('header.settings')}</span>
+							<span className="label">Settings & Privacy</span>
 						</button>
 						<button onClick={handleLogout}>
 							<span className="label">{t('header.logout')}</span>

@@ -33,6 +33,14 @@
   gap: 10px;
 }
 
+.mod-menu > div > strong {
+  font-family: 'Gotham Bold', sans-serif;
+  font-size: 0.95rem;
+  color: black;
+  display: block;
+  margin-bottom: 8px;
+}
+
 .mod-section-title {
   font-size: 0.85rem;
   text-transform: uppercase;

@@ -70,12 +70,12 @@ export class UsersController {
 	}
 
 	@Get(':id')
-	async getUserId(@Param('id') id: string, @Req() req: Request & { user: { id: number } }) {
+	async getUserId(@Param('id') id: string, @Req() req: Request & { user: { id: number }}) {
 		return this.usersService.findId(Number(id), req.user.id);
 	}
 
 	@Get(':id/posts')
-	async getUserPosts(@Param('id') id: string, @Req() req: Request & { user: { id: number } }) {
+	async getUserPosts(@Param('id') id: string, @Req() req: Request & { user: { id: number }}) {
 		return this.postService.getUserPosts(Number(id), req.user?.id);
 	}
 

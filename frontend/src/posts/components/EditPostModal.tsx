@@ -70,10 +70,12 @@ export function EditPostModal ({ post, onPostEdited, onClose }: EditPostModalPro
 					<h2>{t('post.editpost')}</h2>
 					<form onSubmit={handleSubmit}>
 						<label>{t('post.title')}</label>
-						<textarea
+						<input
+							type="text"
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
-							className="create-post-input"
+							className="title-input"
+							maxLength={MAX_TITLE_LENGTH}
 						/>
 						<div
 							className={`char-counter ${

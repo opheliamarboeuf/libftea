@@ -6,16 +6,19 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailModule } from 'src/mail/mail.module';
+import { GithubStrategy } from './github.strategy';
 
 @Module({
 	imports: [
+		MailModule,
 		PassportModule.register({ defaultStrategy: 'jwt' }),
 		JwtModule.register({
 			secret: process.env.JWT_SECRET,
 			signOptions: { expiresIn: '1h' },
 		}),
 	],
-	providers: [AuthService, PrismaService, JwtStrategy, JwtAuthGuard],
+	providers: [AuthService, PrismaService, JwtStrategy, JwtAuthGuard, GithubStrategy],
 	exports: [JwtAuthGuard, JwtStrategy, PassportModule],
 	controllers: [AuthController],
 })

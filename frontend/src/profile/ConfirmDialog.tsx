@@ -6,6 +6,8 @@ interface ConfirmDialogProps {
 	message: string;
 	onConfirm: () => void;
 	onCancel: () => void;
+	confirmLabel?: string;
+	cancelLabel?: string;
 }
 
 // Confirmation dialog component rendered using a React portal
@@ -17,15 +19,15 @@ export function ConfirmDialog({ message, onConfirm, onCancel }: ConfirmDialogPro
 			<div className="confirm-box">
 				<p>{message}</p>
 				<div className="confirm-actions">
-					<button className="modal-btn" onClick={onConfirm}>
+					<button className="modal-btn" onClick={onCancel}>
 						{t('confirmdialog.discard')}
 					</button>
-					<button className="modal-btn" onClick={onCancel}>
+					<button className="modal-btn" onClick={onConfirm}>
 						{t('confirmdialog.stay')}
 					</button>
 				</div>
 			</div>
 		</div>,
-		document.body
+		document.body,
 	);
 }
