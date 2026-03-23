@@ -54,9 +54,9 @@ export function ModerationLogs() {
 
 	// Resolve the identifier of the target (User #, Post #, Battle #)
 	const getId = (log: ModerationLogType) => {
-		if (log.targetUser) return `User #${log.targetUser.id}`;
-		if (log.targetPost) return `Post #${log.targetPost.id}`;
-		if (log.targetBattle) return `Battle #${log.targetBattle.id}`;
+		if (log.targetUser) return `${t('common.user')} #${log.targetUser.id}`;
+		if (log.targetPost) return `${t('common.post')} #${log.targetPost.id}`;
+		if (log.targetBattle) return `${t('common.battle')} #${log.targetBattle.id}`;
 		return '—';
 	};
 

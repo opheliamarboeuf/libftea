@@ -67,7 +67,7 @@ const UserProfilePage = () => {
 			setBlockedByUser(false);
 
 			if (!res.ok) {
-				throw new Error('Error fetching profile');
+				throw new Error(t('errorpage.fetchprofile'));
 			}
 
 			const data = await res.json();
@@ -81,7 +81,7 @@ const UserProfilePage = () => {
 			await loadPosts();
 		} catch (error) {
 			console.error(error);
-			showModal?.('Could not fetch profile');
+			showModal?.(t('errorpage.fetchprofile'));
 		}
 	};
 

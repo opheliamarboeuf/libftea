@@ -118,7 +118,10 @@
 		"confirm": "はい",
 		"close": "閉める",
 		"admin": "管理者",
-		"mod": "モデレーター"
+		"mod": "モデレーター",
+		"user": "ユーザー",
+		"post": "投稿",
+		"battle": "トーナメント"
 	},
 
 	"feedpage": {
@@ -357,7 +360,8 @@
 		"filenotfound": "ファイルが見つかりません",
     	"contentnotfound": "エラーコンテンツが見つかりません",
 		"loadpost": "投稿の読み込み中にエラーが発生しました",
-		"faildelete": "投稿の削除に失敗しました"
+		"faildelete": "投稿の削除に失敗しました",
+		"fetchprofile": "プロフィールの取得中にエラーが発生しました"
 	},
 
 	"errorpost": {

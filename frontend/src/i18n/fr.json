@@ -118,7 +118,10 @@
 		"confirm": "Confirmer",
 		"close": "Fermer",
 		"admin": "Admin",
-		"mod": "Modérateur"
+		"mod": "Modérateur",
+		"user": "Utilisateur",
+		"post": "Post",
+		"battle": "Tournoi"
 	},
 
 	"feedpage": {
@@ -357,7 +360,8 @@
 		"filenotfound": "Fichier introuvable",
 		"contentnotfound": "Contenu de l'erreur introuvable",
 		"loadpost": "Erreur lors du chargement des posts",
-		"faildelete": "Échec de la suppression du post"
+		"faildelete": "Échec de la suppression du post",
+		"fetchprofile": "Erreur lors de la récupération du profil"
 	},
 
 	"errorpost": {

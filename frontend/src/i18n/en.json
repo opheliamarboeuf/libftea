@@ -119,7 +119,10 @@
 		"confirm": "Confirm",
 		"close": "Close",
 		"admin": "Admin",
-		"mod": "Moderator"
+		"mod": "Moderator",
+		"user": "User",
+		"post": "Post",
+		"battle": "Battle"
 	},
 
 	"feedpage": {
@@ -359,7 +362,8 @@
 		"filenotfound": "File not found",
 		"contentnotfound": "Error content not found",
 		"loadpost": "Error while loading posts",
-		"faildelete": "Failed to delete post"
+		"faildelete": "Failed to delete post",
+		"fetchprofile": "Error fetching profile"
 	},
 
 	"errorpost": {
