@@ -12,6 +12,7 @@ services:
   backend:
     build:
       context: ./backend
+      network: host
     container_name: backend
     env_file:
       - ./backend/.env
@@ -27,6 +28,7 @@ services:
   frontend:
     build:
       context: ./frontend
+      network: host
     container_name: frontend
     ports:
       - "5173:5173"
