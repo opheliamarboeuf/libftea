@@ -16,13 +16,13 @@ import { MailController } from './mail.controller';
 			defaults: {
 				from: '"Libftea" <no-reply@libftea.com>',
 			},
-			// template: {
-			// 	dir: join(__dirname, 'templates'),
-			// 	adapter: new HandlebarsAdapter(),
-			// 	options: {
-			// 		strict: true,
-			// 	},
-			// },
+			template: {
+				dir: join(__dirname, 'templates'),
+				adapter: new HandlebarsAdapter(),
+				options: {
+					strict: true,
+				},
+			},
 		}),
 	],
 	controllers: [MailController], 

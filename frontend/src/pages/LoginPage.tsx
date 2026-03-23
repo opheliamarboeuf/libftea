@@ -106,6 +106,7 @@ const LoginPage = () => {
 
 	return (
 		<div className="fixed inset-0 flex items-center justify-center">
+			<LanguageMenu fixed/>
 			<div className="w-80 p-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
 				<h1 className="text-4xl text-center mb-8 text-black" style={{ fontFamily: "'Blosta Script', cursive" }}>
 					{show2FA ? 'Verification' : 'Login'}
