@@ -7,6 +7,11 @@ export interface Notification {
 	isRead: boolean;
 	message: string;
 	createdAt: string;
+	User: {
+		id: number;
+		username: string;
+		role: string;
+	};
 }
 
 export const useNotifications = (userId: number | undefined) => {

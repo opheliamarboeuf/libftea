@@ -1,0 +1,316 @@
+/* Container for all posts */
+.user-report-list {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
+	width: 100%;
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 20px;
+	box-sizing: border-box;
+	overflow-y: auto;
+}
+
+/* Individual report card */
+.user-report-card {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 15px;
+	width: 100%;
+	max-width: 850px;
+}
+
+.user-report-target-username {
+	font-weight: 500;
+	cursor: pointer;
+	display: inline-block;
+	transition: color 0.2s ease;
+}
+
+.user-report-target-username:hover {
+	color: #bebebe;
+}
+
+/* Post header: title + author + date */
+.user-report-header {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	gap: 15px;
+}
+
+.user-report-header-content {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+
+.user-report-title {
+	margin: 0;
+	font-size: 1.2rem;
+	font-weight: bold;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+
+.user-report-meta {
+	margin-bottom: 3px;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.user-report-author {
+	font-size: 0.8rem;
+	color: #555;
+	font-weight: 500;
+	cursor: pointer;
+	display: inline-block;
+	transition: color 0.2s ease;
+}
+
+.user-report-author:hover {
+	color: #bebebe;
+}
+
+.user-report-date {
+	font-size: 0.8rem;
+	color: #555;
+}
+
+.user-report-btn {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.user-report-btn .assigned-to {
+	font-size: 0.85rem;
+	color: #555;
+	cursor: default;
+}
+
+.user-report-btn .assigned-to span {
+	cursor: pointer;
+	font-weight: 500;
+	color: #333;
+}
+
+.user-report-btn .assigned-to span:hover {
+	color: #888;
+}
+
+.reporter-name,
+.mod-name {
+	cursor: pointer;
+	font-weight: 500;
+	color: #333;
+}
+
+.reporter-name:hover,
+.mod-name:hover {
+	color: #888;
+}
+
+.user-report-btn button {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	padding: 6px 12px;
+	font-size: 0.85rem;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	color: black;
+}
+
+.user-report-btn button:hover {
+	background-color: #f5f5f5;
+	border-color: #bbb;
+}
+
+.user-report-body {
+	display: flex;
+	flex-direction: row;
+	gap: 15px;
+	align-items: flex-start;
+}
+
+/* Report content area */
+.user-report-content {
+	flex: 2;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.user-report-avatar-bio-row {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 50px;
+	margin-top: 10px;
+}
+
+.user-report-avatar {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+}
+
+.user-report-bio {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+	max-width: 400px;
+	word-break: break-word;
+	color: #333;
+	font-size: 0.95rem;
+}
+
+.user-report-label {
+	font-weight: bold;
+	font-size: 0.9rem;
+	margin-bottom: 4px;
+	padding: 0;
+	align-self: flex-start;
+}
+
+.user-report-cover {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	height: 200px;
+	margin-bottom: 10px;
+	overflow: hidden;
+	border-radius: 10px;
+}
+
+.user-report-cover img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 10px;
+	display: block;
+}
+
+.user-report-avatar img {
+	border-radius: 10px;
+}
+
+/* Report info area */
+.user-report-info {
+	flex: 2;
+	display: flex;
+	flex-direction: row;
+	gap: 15px;
+	min-height: 0;
+	margin-top: 25px;
+}
+
+.user-report-pre-handle,
+.user-report-profile-handle,
+.user-report-post-handle {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	background-color: #ffffff;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
+	padding: 15px;
+}
+
+.user-report-pre-handle > div,
+.user-report-profile-handle > div,
+.user-report-post-handle > div {
+	font-size: 0.9rem;
+	color: #333;
+	padding: 8px 0;
+	border-bottom: 1px solid #eee;
+}
+
+.user-report-pre-handle > div:last-child,
+.user-report-profile-handle > div:last-child,
+.user-report-post-handle > div:last-child {
+	border-bottom: none;
+}
+
+.reporter-username {
+	cursor: pointer;
+	font-weight: 500;
+	transition: color 0.2s ease;
+}
+
+.reporter-username:hover {
+	color: #888;
+}
+
+.user-report-category,
+.user-report-description,
+.user-report-mod_message {
+	word-wrap: break-word;
+	overflow-wrap: anywhere;
+}
+
+.user-report-text {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	max-height: 100%;
+	overflow: hidden;
+}
+
+.user-report-caption p {
+	margin: 0;
+	color: #333;
+	font-size: 0.9rem;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+
+.no-reports {
+	width: 100%;
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 20px;
+	box-sizing: border-box;
+	text-align: center;
+	color: #666;
+	font-size: 1rem;
+}
+
+.accepted {
+	font-weight: 600;
+	color: #2e7d32;
+}
+
+.rejected {
+	font-weight: 600;
+	color: #c62828;
+}
+
+.user-report-more button {
+	border: none;
+	background: #fff;
+	color: #333;
+	padding: 0;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+}
+
+.user-report-more button:hover {
+	color: #888;
+}

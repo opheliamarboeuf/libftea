@@ -1,13 +1,16 @@
 import "./UserPostsList.css";
 import { Post, useUser } from "../../context/UserContext";
 import { API_URL } from "../../profile";
-import { FaHeart, FaEllipsisV } from "react-icons/fa";
+import { FaEllipsisV } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { usePostMenu } from "../hooks/usePostMenu";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
+import { UserNameWithRole } from "../../common/components/UserNameWithRole";
 import { EditPostModal } from "./EditPostModal";
 import { LikeButton } from "../../likes/LikeButton";
 import { CommentSection } from "../../comments/CommentSection";
+import { useState, useEffect } from "react";
+import { ReportPostModal } from "../../moderation/components/reports/posts/ReportPostModal";
 
 interface UserPostsListProps {
 	posts: Post[];
@@ -19,7 +22,14 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 	
 	const navigate = useNavigate();
 	const { user } = useUser();
-	
+	const [postToReport, setPostToReport] = useState<Post | null>(null);
+	const [visiblePosts, setVisiblePosts] = useState<Post[]>(posts);
+
+	// Synchronise visiblePosts if posts change
+	useEffect(() => {
+		setVisiblePosts(posts);
+	}, [posts]);
+
 	const {
 		openMenuId,
 		isDeleting,
@@ -29,7 +39,6 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		handleEdit,
 		confirmDelete,
 		cancelDelete,
-		handleReport,
 		setPostToDelete,
 		postToEdit,
 		closeModal,
@@ -39,9 +48,15 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		navigate(`/users/${userId}`);
 	};
 
+	// Fonction to hide reported posts
+	const handlePostReported = (reportedPostId: number) => {
+		setVisiblePosts((prev) => prev.filter((p) => p.id !== reportedPostId));
+		setPostToReport(null);
+	};
+
 	return (
-	<div className="posts-list">
-	{posts.map((post) => (
+		<div className="posts-list">
+		{visiblePosts.map((post) => (
 		<div key={post.id} className="post-card">
 		<div className="post-header">
 			<div className="post-title-row">
@@ -64,7 +79,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				className="post-author"
 				onClick={() => goToProfile(post.author.id)}
 			>
-				{post.author.username},
+				<UserNameWithRole username={post.author.username} role={(post.author as any).role} />,
 			</span>
 			<span className="post-date">
 			{
@@ -79,21 +94,27 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				<FaEllipsisV onClick={() => toggleMenu(post.id)} />
 				{openMenuId === post.id && (
 					<div className="menu-dropdown">
-						{post.author.id === user.id || user.role === "ADMIN" || user.role === "MOD" ? (
-							<>
-								{/* Edit only if owner */}
-								{post.author.id === user.id && <button onClick={() => handleEdit(post)}>Edit</button>}
-								{/* Delete if owner or admin/mod */}
-								<button 
-									onClick={() => setPostToDelete(post.id)}
-									disabled={isDeleting}
-								>
-									{isDeleting? "Deleting..." : "Delete"}
-								</button>
-							</>
-						) : (
-							<button onClick={() => handleReport(post.id)}>Report</button>
-						)}
+					{/* Everyone can report except the owner of the post*/}
+					{post.author.id !== user.id && (
+						<button onClick={() => { setPostToReport(post); toggleMenu(post.id); }}>
+						Report
+						</button>
+					)}
+
+					{/* Edit if owner */}
+					{post.author.id === user.id && (
+						<button onClick={() => handleEdit(post)}>Edit</button>
+					)}
+
+					{/* Delete if owner of admin or mod */}
+					{(post.author.id === user.id || user.role === "ADMIN" || user.role === "MOD") && (
+						<button 
+						onClick={() => setPostToDelete(post.id)}
+						disabled={isDeleting}
+						>
+						{isDeleting ? "Deleting..." : "Delete"}
+						</button>
+					)}
 					</div>
 				)}
 			</div>
@@ -117,12 +138,16 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 			<div className="interactions">
 				<LikeButton post={post} />
 			</div>
-			{/* <div className="counters">
-			<span className="count">0 Likes </span>
-			</div> */}
 		</div>
 		</div>
 	))}
+		{postToReport && (
+			<ReportPostModal
+				post={postToReport}
+				onPostReported={() => handlePostReported(postToReport.id)}
+				onClose={() => setPostToReport(null)}
+			/>
+		)}
 		{postToEdit && (
 			<EditPostModal 
 				post={postToEdit} 

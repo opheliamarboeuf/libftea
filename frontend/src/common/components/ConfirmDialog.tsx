@@ -12,7 +12,8 @@ interface ConfirmDialogProps {
 // Confirmation dialog component rendered using a React portal
 export function ConfirmDialog({ message, onConfirm, onCancel, confirmLabel = "Confirm", cancelLabel = "Cancel" }: ConfirmDialogProps) {
 	return createPortal(
-		<div className="confirm-overlay">
+		<div className="confirm-overlay"
+			onMouseDown={(e) => e.stopPropagation()}>
 			<div className="confirm-box">
 				<p>{message}</p>
 				<div className="confirm-actions">

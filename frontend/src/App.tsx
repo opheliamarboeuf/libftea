@@ -6,12 +6,13 @@ import LoginPage from './pages/LoginPage';
 import MyProfilePage from './pages/MyProfilePage';
 import FeedPage from "./pages/FeedPage";
 import FriendsPage from "./pages/FriendsPage";
-import Dashboard from './pages/Dashboard';
 import { Header } from './common/components/Header';
 import { LeftMenu } from './common/components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
 import { ModalProvider } from "./context/ModalContext";
+import { ModerationRoutes } from './moderation/routes/ModerationRoutes';
 import TournamentFeedPage from './pages/TournamentFeedPage';
+import DashboardPage from './pages/DashboardPage';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -65,6 +66,7 @@ const [loading, setLoading] = useState(true);
         <Header />
         <LeftMenu />
           <Routes>
+			{ModerationRoutes}
             <Route 
               path="/"
               element={loading ? null : <Navigate to = {user ? "/feed" : "/login"} replace/>} />
@@ -91,7 +93,7 @@ const [loading, setLoading] = useState(true);
 				element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />
             <Route
               path="/dashboard"
-              element={loading ? null : user ? <Dashboard/> : <Navigate to = "/" replace />} />
+              element={loading ? null : user ? <DashboardPage/> : <Navigate to = "/" replace />} />
           </Routes>
         </BrowserRouter>
         </ModalProvider>

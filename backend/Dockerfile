@@ -10,8 +10,6 @@ COPY package*.json ./
 
 # install dependencies
 RUN npm install
-COPY package*.json ./
-RUN npm install
 RUN npm install --os=linux --libc=musl --cpu=arm64 sharp
 
 COPY prisma ./prisma

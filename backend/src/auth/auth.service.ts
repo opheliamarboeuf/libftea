@@ -1,4 +1,3 @@
-
 import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -25,12 +24,12 @@ export class AuthService {
 					email: dto.email,
 					username: dto.username,
 					password: hashedPassword,
-					profile:{
-						create:{
-							bio: "",
-							displayName: "",
-							avatarUrl: "/assets/default/default-avatar.jpeg",
-							coverUrl: "/assets/default/default-cover.jpeg",
+					profile: {
+						create: {
+							bio: '',
+							displayName: '',
+							avatarUrl: '/assets/default/default-avatar.jpeg',
+							coverUrl: '/assets/default/default-cover.jpeg',
 						},
 					},
 				},
@@ -41,7 +40,6 @@ export class AuthService {
 			console.log('User created successfully:', user.id);
 
 			return this.generateToken(user.id, user.role, user.username);
-
 		} catch (error) {
 			console.error('Error during registration:', error);
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -68,6 +66,10 @@ export class AuthService {
 			throw new UnauthorizedException('Incorrect password');
 		}
 
+		if (user.bannedAt) {
+			throw new UnauthorizedException('Your account has been banned');
+		}
+
 		return this.generateToken(user.id, user.role, user.username);
 	}
 
@@ -75,7 +77,7 @@ export class AuthService {
 	// The token payload contains the user ID under the "sub" claim, and it is signed with the JWT secret.
 	// The returned token can be used by the client to authenticate future requests.
 	generateToken(userId: number, role: Role, username: string) {
-		const payload = { 
+		const payload = {
 			sub: userId,
 			role: role,
 			username: username,
@@ -94,10 +96,11 @@ export class AuthService {
 				email: true,
 				username: true,
 				createdAt: true,
+				bannedAt: true,
 				role: true,
 				profile: {
 					select: {
-						bio:true, 
+						bio: true,
 						displayName: true,
 						avatarUrl: true,
 						coverUrl: true,
@@ -107,29 +110,32 @@ export class AuthService {
 					select: {
 						title: true,
 						caption: true,
-						imageUrl : true,
+						imageUrl: true,
 						createdAt: true,
 						updatedAt: true,
 					},
-					orderBy: { createdAt: 'desc'}
+					orderBy: { createdAt: 'desc' },
 				},
 			},
 		});
+		
+		if (!user || user.bannedAt) {
+        	throw new UnauthorizedException('Your account has been banned');
+    }
 
 		// Fetch friends (accepted friendships)
 		const friendships = await this.prisma.friendship.findMany({
 			where: {
 				status: 'ACCEPTED',
-				OR: [
-					{ requesterId: userId },
-					{ addresseId: userId },
-				],
+				OR: [{ requesterId: userId }, { addresseId: userId }],
 			},
 			include: {
 				requester: {
 					select: {
 						id: true,
 						username: true,
+						role: true,
+						bannedAt: true,
 						profile: { select: { avatarUrl: true } },
 					},
 				},
@@ -137,6 +143,8 @@ export class AuthService {
 					select: {
 						id: true,
 						username: true,
+						role: true,
+						bannedAt: true,
 						profile: { select: { avatarUrl: true } },
 					},
 				},
@@ -148,6 +156,8 @@ export class AuthService {
 			return {
 				id: friend.id,
 				username: friend.username,
+				role: friend.role,
+				bannedAt: friend.bannedAt,
 				avatarUrl: friend.profile?.avatarUrl,
 			};
 		});
@@ -163,6 +173,7 @@ export class AuthService {
 					select: {
 						id: true,
 						username: true,
+						bannedAt: true,
 						profile: { select: { avatarUrl: true } },
 					},
 				},
@@ -172,6 +183,7 @@ export class AuthService {
 		const pendingRequests = pendingFriendships.map((f) => ({
 			id: f.requester.id,
 			username: f.requester.username,
+			bannedAt: f.requester.bannedAt,
 			avatarUrl: f.requester.profile?.avatarUrl,
 		}));
 
@@ -185,17 +197,19 @@ export class AuthService {
 					select: {
 						id: true,
 						username: true,
+						bannedAt: true,
 						profile: {
-							select: { avatarUrl: true }
-						}
-					}
-				}
-			}
+							select: { avatarUrl: true },
+						},
+					},
+				},
+			},
 		});
 
 		const blockedUsers = blocked.map((f) => ({
 			id: f.addresse.id,
 			username: f.addresse.username,
+			bannedAt: f.addresse.bannedAt,
 			avatarUrl: f.addresse.profile?.avatarUrl,
 		}));
 

@@ -1,8 +1,9 @@
-import { useFriends } from "./hooks";
-import { BlockFriendButton } from "./BlockFriendButton";
-import { RemoveFriendButton } from "./RemoveFriendButton";
-import { Link } from "react-router-dom"
-import "./friends.css"
+import { useFriends } from './hooks';
+import { BlockFriendButton } from './BlockFriendButton';
+import { RemoveFriendButton } from './RemoveFriendButton';
+import { Link } from 'react-router-dom';
+import './friends.css';
+import { UserNameWithRole } from '../common/components/UserNameWithRole';
 
 export function FriendsList() {
 	const { friends } = useFriends();
@@ -10,41 +11,46 @@ export function FriendsList() {
 
 	return (
 		<div>
-			{friends.length === 0 && <p>No friends yet</p>}
-			<div style={{ maxWidth: "300px" }}>
-				{friends.map(friend => (
-					<div
-					key={friend.id}
-					style={{
-						display: "flex",
-						alignItems: "center",
-						gap: "20px",
-						marginBottom: "8px",
-					}}
-					>
-					<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-					<div className="small-avatar-container">
-						<div className="small-avatar">
-							<img
-								src={friend.avatarUrl ? `${API_URL}${friend.avatarUrl}` : "/default-avatar.png"}
-								alt="Small Avatar"
-							/>
+			{friends.length === 0 && <p className="friends-empty">No friends yet</p>}
+			<div className="friends-list">
+				{friends.map((friend) => (
+					<div key={friend.id} className="friend-card">
+						<div className="friend-card-info">
+							<div className="small-avatar-container">
+								<div className="small-avatar">
+									<img
+										src={
+											friend.avatarUrl
+												? `${API_URL}${friend.avatarUrl}`
+												: '/default-avatar.png'
+										}
+										alt="Small Avatar"
+									/>
+								</div>
+							</div>
+							<Link
+								to={friend.bannedAt ? '#' : `/users/${friend.id}`}
+								style={{
+									textDecoration: 'none',
+									color: 'inherit',
+									cursor: friend.bannedAt ? 'default' : 'pointer',
+									pointerEvents: friend.bannedAt ? 'none' : 'auto',
+								}}
+							>
+								{friend.bannedAt ? (
+									'Unknown User'
+								) : (
+									<UserNameWithRole
+										username={friend.username}
+										role={friend.role}
+									/>
+								)}
+							</Link>
 						</div>
-					</div>
-					<Link
-						to={`/users/${friend.id}`}
-						style={{ textDecoration: "none", color: "inherit" }}
-					>
-						{friend.username}
-					</Link>
-					</div>
-
-					{
-						<div style={{ display: "flex", gap: "8px", marginLeft: "auto"}}>
-						<BlockFriendButton userId={friend.id} />
-						<RemoveFriendButton userId={friend.id} />
+						<div className="friend-card-actions">
+							<BlockFriendButton userId={friend.id} />
+							<RemoveFriendButton userId={friend.id} />
 						</div>
-					}
 					</div>
 				))}
 			</div>

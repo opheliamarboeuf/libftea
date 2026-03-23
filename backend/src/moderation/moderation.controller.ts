@@ -1,19 +1,206 @@
-import { ModerationService } from "./moderation.service";
-import { Controller, UseGuards, Get, Req } from "@nestjs/common";
-import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
-import { Role } from "@prisma/client";
-import { Roles } from "src/auth/roles.decorator";
+import { ModerationService } from './moderation.service';
+import {
+	Controller,
+	UseGuards,
+	Get,
+	Body,
+	Post,
+	Put,
+	Req,
+	Param,
+	ParseIntPipe,
+} from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Role } from '@prisma/client';
+import { Roles } from 'src/auth/roles.decorator';
+import { HandleReportDto } from './dto/handleReport.dto';
+import { ReportDto } from './dto/report.dto';
 
 @Controller('moderation')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ModerationController {
-		constructor(private readonly moderationService: ModerationService) {}
-	
+	constructor(private readonly moderationService: ModerationService) {}
+
+	// ---------------------------------- LOGS ------------------------------------
+
 	@Roles(Role.ADMIN)
-	@Get('admin')
-		async getAdminLogs(
-			@Req() req: Request & { user: { id: number,  role: Role } }
-		) {
-			return this.moderationService.getAdminLogs(req.user.id, req.user.role);
-		}
+	@Get('admin/logs')
+	async getAdminLogs(@Req() req: Request & { user: { id: number; role: Role } }) {
+		return this.moderationService.getAdminLogs(req.user.id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('mod/logs')
+	async getModLogs(@Req() req: Request & { user: { id: number; role: Role } }) {
+		return this.moderationService.getModLogs(req.user.id, req.user.role);
+	}
+
+	// ---------------------------------- CHANGE ROLE ------------------------------------
+
+	@Roles(Role.ADMIN)
+	@Put('role/admin/:id')
+	async updateAdminRole(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.updateAdminRole(id, req.user.id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('role/mod/:id')
+	async updateModRole(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.updateModRole(id, req.user.id, req.user.role);
+	}
+
+	// ---------------------------------- BAN USER ---------------------------------------
+
+	@Roles(Role.ADMIN)
+	@Put('ban/:id')
+	async banUser(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.banUser(id, req.user.id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN)
+	@Put('unban/:id')
+	async unbanUser(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.unbanUser(id, req.user.id, req.user.role);
+	}
+
+	// ---------------------------------- HANDLE REPORTS ----------------------------------
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('reports/:id/assign')
+	async assignReport(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.assignReport(id, req.user.id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('reports/:id/unassign')
+	async unassignReport(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.unassignReport(id, req.user.id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('reports/:id/accept')
+	async acceptPostReport(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() dto: HandleReportDto,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.acceptReport(id, dto, req.user.id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Put('reports/:id/reject')
+	async rejectPostReport(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() dto: HandleReportDto,
+		@Req() req: Request & { user: { id: number; role: Role } },
+	) {
+		return this.moderationService.rejectReport(id, dto, req.user.id, req.user.role);
+	}
+	// ---------------------------------- USER REPORTS ----------------------------------
+
+	@Post('reports/users/:id')
+	async reportUser(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { id: number } },
+		@Body() dto: ReportDto,
+	) {
+		return this.moderationService.reportUser(id, dto, req.user.id);
+	}
+
+	@Roles(Role.ADMIN)
+	@Get('reports/users/pending')
+	async getAllPendingUserReports(@Req() req: Request & { user: { role: Role } }) {
+		return this.moderationService.getAllPendingUserReports(req.user.role);
+	}
+
+	@Roles(Role.ADMIN)
+	@Get('reports/users/all/assigned')
+	async getAllAssignedUserReports(@Req() req: Request & { user: { role: Role } }) {
+		return this.moderationService.getAllAssignedUserReports(req.user.role);
+	}
+
+	@Roles(Role.ADMIN)
+	@Get('reports/users/all/handled')
+	async getAllHandledUserReports(@Req() req: Request & { user: { role: Role } }) {
+		return this.moderationService.getAllHandledUserReports(req.user.role);
+	}
+
+	@Roles(Role.ADMIN)
+	@Get('reports/users/all/:id')
+	async getAllReportsForThisUser(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { role: Role } },
+	) {
+		return this.moderationService.getAllReportsForThisUser(id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN)
+	@Get('reports/users/mine')
+	async getMyUserReports(@Req() req: Request & { user: { id: number; role: Role } }) {
+		return this.moderationService.getMyUserReports(req.user.id, req.user.role);
+	}
+
+	// ---------------------------------- POST REPORTS ----------------------------------
+
+	@Post('reports/posts/:id')
+	async reportPost(
+		@Param('id', ParseIntPipe) id: number,
+		@Body() dto: ReportDto,
+		@Req() req: Request & { user: { id: number } },
+	) {
+		return this.moderationService.reportPost(id, dto, req.user.id);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/pending')
+	async getAllPendingPostReports(@Req() req: Request & { user: { role: Role } }) {
+		return this.moderationService.getAllPendingPostReports(req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/all/assigned')
+	async getAllAssignedPostReports(@Req() req: Request & { user: { role: Role } }) {
+		return this.moderationService.getAllAssignedPostReports(req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/all/handled')
+	async getAllHandledPostReports(@Req() req: Request & { user: { role: Role } }) {
+		return this.moderationService.getAllHandledPostReports(req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/all/:id')
+	async getAllReportsForThisPost(
+		@Param('id', ParseIntPipe) id: number,
+		@Req() req: Request & { user: { role: Role } },
+	) {
+		return this.moderationService.getAllReportsForThisPost(id, req.user.role);
+	}
+
+	@Roles(Role.ADMIN, Role.MOD)
+	@Get('reports/posts/mine')
+	async getMyPostReports(@Req() req: Request & { user: { id: number; role: Role } }) {
+		return this.moderationService.getMyPostReports(req.user.id, req.user.role);
+	}
+
 }

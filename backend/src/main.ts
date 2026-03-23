@@ -5,31 +5,31 @@ import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);  app.enableCors({
-	origin: process.env.FRONTEND_URL,
-	credentials: true,
-	methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-	allowedHeaders: ['Content-Type', 'Authorization'],
-  }); //(Cross-Origin Resource Sharing)
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
-  
-  // Expose the 'uploads' folder so uploaded images are accessible
-  app.useStaticAssets(join(process.cwd(), 'uploads'), {
-    prefix: '/uploads/', // Accessible via http://localhost:3000/uploads/...
-  });
-  
-  // Expose the 'assets' folder for default images
-  app.useStaticAssets(join(process.cwd(), 'assets'), {
-    prefix: '/assets/',
-  });
+	const app = await NestFactory.create<NestExpressApplication>(AppModule);
+	app.enableCors({
+		origin: process.env.FRONTEND_URL,
+		credentials: true,
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+		allowedHeaders: ['Content-Type', 'Authorization'],
+	}); //(Cross-Origin Resource Sharing)
+	app.useGlobalPipes(
+		new ValidationPipe({
+			whitelist: true,
+			forbidNonWhitelisted: true,
+			transform: true,
+		}),
+	);
 
+	// Expose the 'uploads' folder so uploaded images are accessible
+	app.useStaticAssets(join(process.cwd(), 'uploads'), {
+		prefix: '/uploads/', // Accessible via http://localhost:3000/uploads/...
+	});
 
-  await app.listen(process.env.PORT ?? 3000);
+	// Expose the 'assets' folder for default images
+	app.useStaticAssets(join(process.cwd(), 'assets'), {
+		prefix: '/assets/',
+	});
+
+	await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

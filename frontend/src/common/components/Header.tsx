@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../../context/UserContext";
-import { SearchBar } from "./SearchBar";
-import { useFriendsSocket } from "../../friends/useFriendsSocket";
-import "./Header.css"
-import "../../App.css"
-import { friendsSocket } from "../../socket/socket";
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../context/UserContext';
+import { SearchBar } from './SearchBar';
+import { useFriendsSocket } from '../../friends/useFriendsSocket';
+import { UserNameWithRole } from './UserNameWithRole';
+import './Header.css';
+import '../../App.css';
+import { friendsSocket } from '../../socket/socket';
 import { notifSocket } from "../../socket/socket";
 import { useNotifications } from "../../notifications/useNotifications";
 import { FaBell } from "react-icons/fa";
@@ -20,20 +21,48 @@ export const Header = () => {
 	const notifRef = useRef<HTMLDivElement | null>(null);
 
 	useFriendsSocket(user?.id, {
-		onRequestSent: () => { refreshUser(); },
-		onRequestUnsent: () => { refreshUser(); },
-		onRequestReceived: () => { refreshUser(); },
-		onRequestAccepted: () => { refreshUser(); },
-		onRequestRejected: () => { refreshUser(); },
-		onFriendRemoved: () => { refreshUser(); },
-		onUserRemoved: () => { refreshUser(); },
-		onUserBlocked: () => { refreshUser(); },
-		onUserUnblocked: () => { refreshUser(); },
-		onYouWereBlocked: () => { refreshUser(); },
-		onYouWereUnblocked: () => { refreshUser(); },
-		onUserOnline: () => { refreshUser(); },
-		onUserOffline: () => { refreshUser(); },
-		onOnlineStatus: () => { refreshUser(); },
+		onRequestSent: () => {
+			refreshUser();
+		},
+		onRequestUnsent: () => {
+			refreshUser();
+		},
+		onRequestReceived: () => {
+			refreshUser();
+		},
+		onRequestAccepted: () => {
+			refreshUser();
+		},
+		onRequestRejected: () => {
+			refreshUser();
+		},
+		onFriendRemoved: () => {
+			refreshUser();
+		},
+		onUserRemoved: () => {
+			refreshUser();
+		},
+		onUserBlocked: () => {
+			refreshUser();
+		},
+		onUserUnblocked: () => {
+			refreshUser();
+		},
+		onYouWereBlocked: () => {
+			refreshUser();
+		},
+		onYouWereUnblocked: () => {
+			refreshUser();
+		},
+		onUserOnline: () => {
+			refreshUser();
+		},
+		onUserOffline: () => {
+			refreshUser();
+		},
+		onOnlineStatus: () => {
+			refreshUser();
+		},
 	});
 	
 	useEffect(() => {
@@ -54,17 +83,17 @@ export const Header = () => {
 
 	const handleLogout = () => {
 		setMenuHidden(true);
-		localStorage.removeItem("token");
+		localStorage.removeItem('token');
 		friendsSocket.disconnect();
 		notifSocket.disconnect();
 		setUser(null);
-		navigate('/')
-	}
+		navigate('/');
+	};
 
 	const handleNavigate = (path: string) => {
 		setMenuHidden(true);
 		navigate(path);
-	}
+	};
 
 	return (
 		<header className="header">
@@ -73,7 +102,9 @@ export const Header = () => {
 					Libftea
 				</h2>
 			</div>
-			<div className="search-bar-container"><SearchBar /></div>
+			<div className="search-bar-container">
+				<SearchBar />
+			</div>
 			<div className="header-right">
 				<div className="notif-bell" ref={notifRef}>
 					<span onClick={() => setNotifOpen(!notifOpen)}>
@@ -101,10 +132,16 @@ export const Header = () => {
 					onMouseLeave={() => setMenuHidden(false)}
 				>
 					<div className="small-avatar-container">
-						<p className="header-username">{user.username || ""}</p>
+						<p className="header-username">
+							<UserNameWithRole username={user.username || ''} role={user.role} />
+						</p>
 						<div className="small-avatar">
 							<img
-								src={user.profile.avatarUrl ? `${API_URL}${user.profile.avatarUrl}` : "/default-avatar.png"}
+								src={
+									user?.profile?.avatarUrl
+										? `${API_URL}${user.profile.avatarUrl}`
+										: '/default-avatar.png'
+								}
 								alt="Small Avatar"
 							/>
 						</div>
@@ -124,4 +161,4 @@ export const Header = () => {
 			</div>
 		</header>
 	);
-}
+};

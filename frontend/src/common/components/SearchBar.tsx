@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "./SearchBar.css";
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './SearchBar.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const URL = `${API_URL}/users`;
@@ -8,8 +8,11 @@ const URL = `${API_URL}/users`;
 interface SearchResult {
 	id: number;
 	username: string;
+	role?: 'ADMIN' | 'MOD' | 'USER' | string;
 	avatarUrl?: string;
 }
+
+import { UserNameWithRole } from './UserNameWithRole';
 
 export const SearchBar = () => {
 	const [query, setQuery] = useState('');
@@ -73,7 +76,7 @@ export const SearchBar = () => {
 			/>
 			{showResults && results.length > 0 && (
 				<div className="search-results">
-					{results.map(user => (
+					{results.map((user) => (
 						<div
 							key={user.id}
 							className="search-result-item"
@@ -86,7 +89,9 @@ export const SearchBar = () => {
 									className="search-avatar"
 								/>
 							)}
-							<span className="search-username">{user.username}</span>
+							<span className="search-username">
+								<UserNameWithRole username={user.username} role={user.role} />
+							</span>
 						</div>
 					))}
 				</div>

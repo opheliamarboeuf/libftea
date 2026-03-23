@@ -86,19 +86,21 @@ export class LikesService {
 		
 	}
 
-	async countLikes(
-		postId: number,
-	) {
+	async countLikes(postId: number) {
 		const count = await this.prisma.like.count({
 			where: { postId },
 		});
-		return (count);
+		return count;
 	}
 
-	async isLiked(
-		postId: number,
-		userId: number,
-	) {
+	async isLiked(postId: number, userId: number) {
+		const user = await this.prisma.user.findUnique({ where: {id: userId}});
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt)
+			throw new ForbiddenException('Banned users cannot check likes');
+
 		const like = await this.prisma.like.findFirst({
 			where: {
 				postId,

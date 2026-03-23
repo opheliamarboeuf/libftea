@@ -11,5 +11,4 @@ import { NotificationsModule } from "src/notifications/notifications.module";
 	providers: [PostsService, ImageResizeService],
 	exports: [PostsService],
 })
-
 export class PostsModule {}
