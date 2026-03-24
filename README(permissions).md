@@ -86,3 +86,12 @@ This module demonstrates advanced technical complexity across multiple domains:
 - **Demonstrable Skill**: Requires understanding of escalation logic, event-driven architecture, audit trails
 
 ---
+
+## Support for additional browsers (1pt)
+
+Libftea was tested on:
+- Google Chrome
+- Mozilla Firefox
+- Safari
+
+Browser specific issues were minor and fixed (e.g. inability to load MarkDown files with Google Chrome). As of this evaluation, all features behave consistently across the three browsers specified above.
