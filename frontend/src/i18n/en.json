@@ -78,7 +78,8 @@
 		"enter": "Enter your 6-digit code",
 		"verify": "Verify",
 		"back": "Back",
-		"github": "Login with GitHub"
+		"github": "Login with GitHub",
+		"gitconnect": "Connecting with GitHub..."
 	},
 
 	"registerpage": {
@@ -236,7 +237,8 @@
 		"tournamentactive": "Tournament is not active",
 		"simple": "An error occurred",
 		"token": "Token invalid or user unauthorized",
-		"code": "Invalid code"
+		"code": "Invalid code",
+		"2fa": "2FA settings change Failed"
 	},
 
 	"dashboard": {

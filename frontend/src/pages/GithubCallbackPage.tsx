@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import { useTranslation } from 'react-i18next';
 
 const GithubCallbackPage = () => {
 	const navigate = useNavigate();
 	const { refreshUser } = useUser();
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -22,7 +24,7 @@ const GithubCallbackPage = () => {
 
 	return (
 		<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-			<p>Connecting with GitHub...</p>
+			<p>{t('loginpage.gitconnect')}</p>
 		</div>
 	);
 };

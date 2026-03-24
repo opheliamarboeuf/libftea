@@ -34,7 +34,7 @@ export function TwoFactorAuthentification() {
 					showModal(
 						Array.isArray(data.message)
 							? data.message[0]
-							: data.message || '2FA settings change Failed',
+							: data.message || t('errors.2fa'),
 					);
 					return;
 				}

@@ -112,7 +112,7 @@ export const Header = () => {
 				<div className="notif-bell" ref={notifRef}>
 					<span onClick={() => setNotifOpen(!notifOpen)}>
 						<MdOutlineNotifications />
-						{unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
+						{unreadCount > 0 && !notifOpen && <span className="notif-badge">{unreadCount}</span>}
 					</span>
 					{notifOpen && (
 						<div className="notif-dropdown">

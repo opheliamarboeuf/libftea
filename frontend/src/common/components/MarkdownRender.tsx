@@ -1,8 +1,8 @@
 import ReactMarkdown from "react-markdown"
-import '../../pages/Legal.css'
+import './MarkdownRender.css'
 
 function MarkdownRender({ content }) {
-	return <div className="prose prose-neutral max-w-none">
+	return <div className="markdown-content">
 			<ReactMarkdown>{content}</ReactMarkdown>
 		</div>
 }

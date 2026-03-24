@@ -74,10 +74,11 @@
 		"verif": "確認",
 		"sentemail": "コードがメールアドレスに送信されました。",
 		"verifcode": "確認コード",
-		"enter": "6桁のコードを入力",
+		"enter": "6桁のコードを入力してください",
 		"verify": "確認する",
 		"back": "もどる",
-		"github": "GitHubでログインする"
+		"github": "GitHubでログインする",
+		"gitconnect": "GitHubで接続中..."
 	},
 
 	"registerpage": {
@@ -234,7 +235,8 @@
 		"tournamentactive": "トーナメントはアクティブではありません",
 		"simple": "エラーが発生しました",
 		"token": "トークンが無効またはユーザーが認証されていません",
-		"code": "コードが無効です"
+		"code": "コードが無効です",
+		"2fa": "二段階認証の設定変更に失敗しました"
 	},
 
 	"dashboard": {

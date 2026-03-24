@@ -17,7 +17,8 @@ const LoginPage = () => {
 	const [pendingUserId, setPendingUserId] = useState<number | null>(null);
 	const { setUser } = useUser();
 	const navigate = useNavigate();
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
+	const isJp = i18n.language === 'jp';
 
 	const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value);
 	const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
@@ -108,7 +109,7 @@ const LoginPage = () => {
 		<div className="fixed inset-0 flex items-center justify-center">
 			<LanguageMenu fixed/>
 			<div className="w-80 p-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
-				<h1 className="text-4xl text-center mb-8 text-black" style={{ fontFamily: "'Blosta Script', cursive" }}>
+				<h1 className="text-4xl text-center mb-8 text-black" style={{ fontFamily: isJp ? "'Noto Serif JP', serif" : "'Blosta Script', cursive" }}>
 					{show2FA ? t('loginpage.verif') : t('loginpage.login')}
 				</h1>
 
@@ -128,7 +129,7 @@ const LoginPage = () => {
 								onChange={(e) => setTwoFactorCode(e.target.value)}
 								maxLength={6}
 								required
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-gray-500"
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-gray-500 text-sm placeholder:text-sm"
 							/>
 						</div>
 						{errorMessage && (

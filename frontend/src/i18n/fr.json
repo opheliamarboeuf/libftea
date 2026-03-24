@@ -77,7 +77,8 @@
 		"enter": "Entrez votre code à 6 chiffres",
 		"verify": "Vérifier",
 		"back": "Revenir",
-		"github": "Login avec GitHub"
+		"github": "Login avec GitHub",
+		"gitconnect": "Connexion avec GitHub en cours..."
 	},
 
 	"registerpage" : {
@@ -234,7 +235,8 @@
 		"tournamentactive": "Le tournoi n'est pas actif",
 		"simple": "Une erreur est survenue",
 		"token": "Token invalide ou utilisateur non autorisé",
-		"code": "Code invalide"
+		"code": "Code invalide",
+		"2fa": "Échec de la modification des paramètres 2FA"
 	},
 
 	"dashboard": {
