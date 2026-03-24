@@ -299,12 +299,12 @@ const UserProfilePage = () => {
 							className="w-24 h-24 rounded-full object-cover shadow-md"
 						/>
 					</div>
-					<p className="font-bold" style={{ fontFamily: "'Blosta Script', cursive" }}>
-						<UserNameWithRole
-							username={userData.username}
-							role={(userData as any).role}
-						/>
-					</p>
+				<p className="font-bold" style={{ fontFamily: "'Gotham Bold', sans-serif" }}>
+					<UserNameWithRole
+						username={userData.username}
+						role={(userData as any).role}
+					/>
+				</p>
 					<div className="flex justify-center gap-2 w-full">
 						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
 							<strong className="text-lg font-bold">{userData.friendsCount}</strong>
