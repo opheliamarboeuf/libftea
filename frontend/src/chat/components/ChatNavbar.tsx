@@ -121,7 +121,7 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
               border: '1px solid #e5e7eb', borderRadius: '20px', outline: 'none',
               background: '#f9fafb', color: '#111827', boxSizing: 'border-box',
             }}
-            onFocus={e => { e.currentTarget.style.borderColor = '#ffc0cb'; e.currentTarget.style.background = '#fff'; }}
+            onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.background = '#fff'; }}
             onBlur={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}
           />
         </div>
@@ -148,13 +148,13 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
                 style={{
                   display: 'flex', alignItems: 'center', gap: '12px',
                   padding: '12px 20px', cursor: 'pointer',
-                  backgroundColor: isActive ? '#BFFFCB' : 'transparent',
+                  backgroundColor: isActive ? '#f0f0f0' : 'transparent',
                   borderRadius: isActive ? '8px' : '0',
                   margin: isActive ? '0 8px' : '0',
                   transition: 'background-color 0.2s ease',
                   borderBottom: '1px solid #f3f4f6',
                 }}
-                onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLDivElement).style.backgroundColor = '#FFFCBF'; }}
+                onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLDivElement).style.backgroundColor = '#f9fafb'; }}
                 onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLDivElement).style.backgroundColor = 'transparent'; }}
               >
                 <div style={{ position: 'relative', flexShrink: 0 }}>

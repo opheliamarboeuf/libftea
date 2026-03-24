@@ -27,7 +27,7 @@ function formatTime(iso?: string) {
 }
 
 export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMessage }: Props) {
-  const { messages, sendMessage, chatError, isTyping, emitTyping, isRead } = useChat(conversationId, currentUserId);
+  const { messages, sendMessage, chatError, isTyping, emitTyping, lastReadMessageId } = useChat(conversationId, currentUserId);
   const { user } = useUser();
   const [input, setInput] = useState('');
   const [isOnline, setIsOnline] = useState(false);
@@ -101,15 +101,16 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
     ? `${API_URL}${otherUser.profile.avatarUrl}`
     : '/default-avatar.png';
 
+  // Dernier message envoyé par moi
   const lastOwnMessageIndex = messages.reduce((last, msg, i) =>
     msg.senderId === currentUserId ? i : last, -1);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, background: '#FFf' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, background: '#fff' }}>
 
       {/* Barre du haut */}
       <div style={{
-				background: '#fff', height: '57px', display: 'flex', alignItems: 'center', gap: '12px',
+        height: '57px', display: 'flex', alignItems: 'center', gap: '12px',
         padding: '0 20px', borderBottom: '1px solid #111827', flexShrink: 0,
       }}>
         {otherUser && (
@@ -152,6 +153,11 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             ? `${API_URL}${msg.User.profile.avatarUrl}`
             : '/default-avatar.png';
 
+          // Ce message est le dernier lu si son id correspond à lastReadMessageId
+          const isThisMessageRead = isOwn && msg.id === lastReadMessageId;
+          // Affiche "Envoyé" seulement sur le dernier message si pas encore lu
+          const showSent = isLastOwn && lastReadMessageId === null;
+
           return (
             <div key={msg.id}>
               <div style={{ display: 'flex', flexDirection: isOwn ? 'row-reverse' : 'row', alignItems: 'flex-end', gap: 8, marginBottom: 2 }}>
@@ -175,8 +181,8 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                       padding: '9px 14px', borderRadius: 18,
                       borderBottomRightRadius: isOwn ? 4 : 18,
                       borderBottomLeftRadius: isOwn ? 18 : 4,
-                      background: isOwn ? '#ffc0cb' : '#BFFFCB',
-                      color: isOwn ? '#4a4d52' : '#4a4d52',
+                      background: isOwn ? '#2563eb' : '#f3f4f6',
+                      color: isOwn ? '#fff' : '#111827',
                       fontSize: 14, lineHeight: 1.5, wordBreak: 'break-word',
                     }}>
                       {msg.content}
@@ -188,19 +194,20 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                 </div>
               </div>
 
-              {/* Lu — sous le dernier message envoyé par moi */}
-              {isLastOwn && (
+              {/* Lu — sous le message exact qui a été lu */}
+              {isThisMessageRead && (
                 <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 4, marginTop: 2, paddingRight: 4 }}>
-                  {isRead ? (
-                    <>
-                      <div style={{ width: 16, height: 16, borderRadius: '50%', overflow: 'hidden' }}>
-                        <img src={avatarSrc} alt={otherUser?.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
-                      <span style={{ fontSize: 10, color: '#2563eb' }}>Lu</span>
-                    </>
-                  ) : (
-                    <span style={{ fontSize: 10, color: '#9ca3af' }}>Envoyé</span>
-                  )}
+                  <div style={{ width: 16, height: 16, borderRadius: '50%', overflow: 'hidden' }}>
+                    <img src={avatarSrc} alt={otherUser?.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <span style={{ fontSize: 10, color: '#2563eb' }}>Lu</span>
+                </div>
+              )}
+
+              {/* Envoyé — sous le dernier message si pas encore lu */}
+              {showSent && (
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2, paddingRight: 4 }}>
+                  <span style={{ fontSize: 10, color: '#9ca3af' }}>Envoyé</span>
                 </div>
               )}
             </div>
@@ -215,10 +222,10 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                 <img src={avatarSrc} alt={otherUser?.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
             </div>
-            <div style={{ padding: '10px 14px', borderRadius: 18, borderBottomLeftRadius: 4, background: '#BFFFCB', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ padding: '10px 14px', borderRadius: 18, borderBottomLeftRadius: 4, background: '#f3f4f6', display: 'flex', alignItems: 'center', gap: 4 }}>
               {[0, 1, 2].map(i => (
                 <div key={i} style={{
-                  width: 7, height: 7, borderRadius: '50%', background: '#ffc0cb',
+                  width: 7, height: 7, borderRadius: '50%', background: '#9ca3af',
                   animation: 'typingBounce 1.2s infinite',
                   animationDelay: `${i * 0.2}s`,
                 }} />
@@ -251,7 +258,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             padding: '9px 14px', fontSize: 14, lineHeight: 1.5, maxHeight: 120,
             overflowY: 'auto', outline: 'none', fontFamily: 'inherit', color: '#111827', background: '#f9fafb',
           }}
-          onFocus={e => { e.currentTarget.style.borderColor = '#FFC0CB'; e.currentTarget.style.background = '#fff'; }}
+          onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.background = '#fff'; }}
           onBlur={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}
         />
         <button
@@ -259,7 +266,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
           disabled={!input.trim()}
           style={{
             width: 38, height: 38, borderRadius: '50%', border: 'none',
-            background: input.trim() ? '#FFC0CB' : '#e5e7eb',
+            background: input.trim() ? '#2563eb' : '#e5e7eb',
             cursor: input.trim() ? 'pointer' : 'default',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0, transition: 'background 0.15s',

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { friendsSocket } from '../../../socket/socket'; // adapte le chemin
+import { friendsSocket, chatSocket } from '../../../socket/socket'; // adapte si besoin
 
 const API_URL = 'http://localhost:3000';
 
@@ -38,7 +37,6 @@ export interface LastMessage {
 export function useConversations(currentUserId?: number) {
   const [conversations, setConversations] = useState<any[]>([]);
   const conversationsRef = useRef<any[]>([]);
-  const socketRef = useRef<Socket | null>(null);
 
   const updateLastMessage = useCallback((conversationId: number, message: LastMessage) => {
     setConversations(prev => {
@@ -53,12 +51,9 @@ export function useConversations(currentUserId?: number) {
     });
   }, []);
 
-  // Retire toutes les convs avec un user donné
   const removeConversationsWithUser = useCallback((otherUserId: number) => {
     setConversations(prev =>
-      prev.filter(conv =>
-        !conv.User.some((u: any) => u.id === otherUserId)
-      )
+      prev.filter(conv => !conv.User.some((u: any) => u.id === otherUserId))
     );
   }, []);
 
@@ -73,26 +68,25 @@ export function useConversations(currentUserId?: number) {
         const deduped = deduplicateAndSort(data);
         setConversations(deduped);
         conversationsRef.current = deduped;
-        if (socketRef.current) {
-          deduped.forEach(conv => {
-            socketRef.current?.emit('joinConversation', { conversationId: conv.id });
-          });
-        }
+        // Rejoindre toutes les convs sur le socket global
+        deduped.forEach(conv => {
+          chatSocket.emit('joinConversation', { conversationId: conv.id });
+        });
       })
       .catch(console.error);
   }, []);
 
   useEffect(() => {
-    const socket = io(`${API_URL}/chat`, { withCredentials: true });
-    socketRef.current = socket;
+    // Connecte le socket global chat si pas déjà connecté
+    if (!chatSocket.connected) chatSocket.connect();
 
-    socket.on('connect', () => {
+    chatSocket.on('connect', () => {
       conversationsRef.current.forEach(conv => {
-        socket.emit('joinConversation', { conversationId: conv.id });
+        chatSocket.emit('joinConversation', { conversationId: conv.id });
       });
     });
 
-    socket.on('newMessage', (msg: any) => {
+    chatSocket.on('newMessage', (msg: any) => {
       updateLastMessage(msg.conversationId, {
         content: msg.content,
         createdAt: msg.createdAt,
@@ -102,41 +96,42 @@ export function useConversations(currentUserId?: number) {
 
     fetchConversations();
 
-    return () => { socket.disconnect(); };
+    return () => {
+      chatSocket.off('newMessage');
+      chatSocket.off('connect');
+    };
   }, []);
 
-  // Écoute les events d'amitié sur le friendsSocket global
+  // Écoute les events d'amitié
   useEffect(() => {
     if (!currentUserId) return;
 
-    const handleFriendRemoved = (data: any) => {
-      // data contient requesterId et addresseId (ou userId et friendId)
-      const otherUserId = data.requesterId === currentUserId ? data.addresseId : data.requesterId;
-      removeConversationsWithUser(otherUserId);
+    const handleRemoved = (data: any) => {
+      // Tente les deux champs possibles selon le payload
+      const otherUserId =
+        data?.requesterId === currentUserId ? data?.addresseId :
+        data?.addresseId === currentUserId ? data?.requesterId :
+        data?.userId === currentUserId ? data?.friendId :
+        data?.friendId;
+      if (otherUserId) removeConversationsWithUser(otherUserId);
     };
 
-    const handleYouWereRemoved = (data: any) => {
-      const otherUserId = data.requesterId === currentUserId ? data.addresseId : data.requesterId;
-      removeConversationsWithUser(otherUserId);
-    };
+    const handleBlockChange = () => fetchConversations();
 
-    const handleBlocked = () => fetchConversations();
-    const handleUnblocked = () => fetchConversations();
-
-    friendsSocket.on('friend_removed', handleFriendRemoved);
-    friendsSocket.on('you_were_removed', handleYouWereRemoved);
-    friendsSocket.on('friend_blocked', handleBlocked);
-    friendsSocket.on('you_were_blocked', handleBlocked);
-    friendsSocket.on('friend_unblocked', handleUnblocked);
-    friendsSocket.on('you_were_unblocked', handleUnblocked);
+    friendsSocket.on('friend_removed', handleRemoved);
+    friendsSocket.on('you_were_removed', handleRemoved);
+    friendsSocket.on('friend_blocked', handleBlockChange);
+    friendsSocket.on('you_were_blocked', handleBlockChange);
+    friendsSocket.on('friend_unblocked', handleBlockChange);
+    friendsSocket.on('you_were_unblocked', handleBlockChange);
 
     return () => {
-      friendsSocket.off('friend_removed', handleFriendRemoved);
-      friendsSocket.off('you_were_removed', handleYouWereRemoved);
-      friendsSocket.off('friend_blocked', handleBlocked);
-      friendsSocket.off('you_were_blocked', handleBlocked);
-      friendsSocket.off('friend_unblocked', handleUnblocked);
-      friendsSocket.off('you_were_unblocked', handleUnblocked);
+      friendsSocket.off('friend_removed', handleRemoved);
+      friendsSocket.off('you_were_removed', handleRemoved);
+      friendsSocket.off('friend_blocked', handleBlockChange);
+      friendsSocket.off('you_were_blocked', handleBlockChange);
+      friendsSocket.off('friend_unblocked', handleBlockChange);
+      friendsSocket.off('you_were_unblocked', handleBlockChange);
     };
   }, [currentUserId]);
 
