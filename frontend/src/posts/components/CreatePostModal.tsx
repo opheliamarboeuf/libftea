@@ -13,10 +13,8 @@ interface CreatePostModalProps {
 
 export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProps) {
 
-	// Function that runs the closing animation and then calls onClose() after the specified duration
 	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });
 
-	// Custom hook that manages a post creation
 	const {
 		title, 
 		setTitle,
@@ -67,10 +65,12 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 					<h2>Post an outfit</h2>
 					<form onSubmit={handleSubmit}>
 						<label>Title</label>
-						<textarea
+						<input
+							type="text"
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
-							className="create-post-input"
+							className="title-input"
+							maxLength={MAX_TITLE_LENGTH}
 						/>
 						<div
 							className={`char-counter ${

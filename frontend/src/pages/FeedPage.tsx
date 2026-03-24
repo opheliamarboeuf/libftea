@@ -18,7 +18,6 @@ const FeedPage = () => {
 	return (
 		<div className="feed-page">
 				<div className="feed-header">
-					<div className="page-name">My feed</div>
 					<div className="feed-center">
 						<button className="expand-btn expand-btn-left" onClick={() => setShowPostModal(true)}>
 							<span className="icon">＋</span>
@@ -36,7 +35,11 @@ const FeedPage = () => {
 
 			{error && <p style={{ color: "red" }}>{error}</p>}
 			{posts.length === 0 ? (
-				<p className="no-posts-message">No posts to display</p>
+				<div className="no-posts-card-wrapper">
+					<div className="no-posts-card">
+						<p className="no-posts-message">No posts to display</p>
+					</div>
+				</div>
 				) : (
 				<UserPostsList posts={posts} onPostDeleted={refresh} />
 				)}

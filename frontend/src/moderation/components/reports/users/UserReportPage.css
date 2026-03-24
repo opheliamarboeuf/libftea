@@ -1,0 +1,102 @@
+.user-report-page {
+	position: fixed;
+	top: 50px;
+	left: 100px;
+	display: flex;
+	flex-direction: row;
+	width: calc(100vw - 60px);
+	height: calc(100vh - 50px);
+	color: black;
+	align-items: center;
+	overflow-y: auto;
+}
+
+.report-title {
+	font-size: 1rem;
+	font-weight: 500;
+	color: black;
+	margin-bottom: 10px;
+}
+
+/* Layout for two columns */
+.layout-flex {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: center;
+	width: 100%;
+	min-height: 100vh;
+}
+
+.left-fixed .user-report-card {
+	width: 450px;
+	margin-top: -10px;
+}
+
+.simple-user-reports {
+	width: 100%;
+	max-width: 700px;
+	margin: 0 auto;
+}
+
+.simple-report-card {
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.214);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 15px;
+	width: 100%;
+	max-width: 850px;
+	margin-bottom: 18px;
+}
+
+.simple-report-card > div {
+	font-size: 0.9rem;
+	color: #333;
+	padding: 8px 0;
+	border-bottom: 1px solid #eee;
+}
+.simple-report-card > div:last-child {
+	border-bottom: none;
+}
+
+.simple-report-header {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 8px;
+}
+
+.simple-report-header-flex {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+	align-items: flex-start;
+}
+
+.simple-report-header-left {
+	display: flex;
+	flex-direction: column;
+}
+
+.simple-report-author {
+	font-weight: 500;
+	cursor: pointer;
+	color: #333;
+}
+
+.simple-report-author:hover {
+	color: #888;
+}
+
+.simple-report-date {
+	font-size: 0.85rem;
+	color: #555;
+}
+
+.simple-report-category,
+.simple-report-description {
+	margin-bottom: 6px;
+	word-break: break-word;
+}

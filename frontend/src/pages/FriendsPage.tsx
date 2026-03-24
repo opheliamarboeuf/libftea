@@ -7,7 +7,6 @@ const FriendsPage = () => {
 	return (
 		<div className="friends-page">
 			<div className="friends-header">
-				<div className="page-name">My friends</div>
 				<div className="friends-tabs">
 					<div
 						className={`friends-tab-indicator ${friendsType }`}

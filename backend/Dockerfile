@@ -6,12 +6,10 @@ WORKDIR /app
 
 # copy package.json and package-lock.json first
 # this allows Docker to cache dependencies
-COPY package*.json ./
+COPY package*.json .npmrc ./
 
 # install dependencies
-RUN npm install
-COPY package*.json ./
-RUN npm install
+RUN npm ci
 RUN npm install --os=linux --libc=musl --cpu=arm64 sharp
 
 COPY prisma ./prisma

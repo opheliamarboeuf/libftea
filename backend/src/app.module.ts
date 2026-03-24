@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-// APP_GUARD is a special NestJS token to register a guard globally
 import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,39 +16,63 @@ import { LikesModule } from './likes/likes.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { CommentsModule } from './comments/comments.module';
 import { ChatModule } from './chat/chat.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.adapter';
+import * as path from 'path';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
-    }),
-	PrismaModule,
-    AuthModule,
-	FriendsModule,
-	UsersModule,
-	ProfileModule,
-	PostsModule,
-	TournamentModule,
-	LikesModule,
-	CommentsModule,
+	imports: [
+		ConfigModule.forRoot({
+			isGlobal: true,
+			envFilePath: '.env',
+		}),
+		MailerModule.forRoot({
+			transport: {
+				host: process.env.MAIL_HOST,
+				port: Number(process.env.MAIL_PORT),
+				auth: {
+					user: process.env.MAIL_USER,
+					pass: process.env.MAIL_PASS,
+				},
+			},
+			defaults: {
+				from: '"Libftea" <noreply@libftea.com>',
+			},
+			template: {
+				dir: path.join(__dirname, '..', '..', 'src', 'mail', 'templates'),
+				adapter: new HandlebarsAdapter(),
+				options: {
+					strict: false,
+				},
+			},
+		}),
+    ChatModule,
+		PrismaModule,
+		AuthModule,
+		FriendsModule,
+		UsersModule,
+		ProfileModule,
+		PostsModule,
+		TournamentModule,
+		LikesModule,
+		CommentsModule,
+		NotificationsModule,
+		ModerationModule,
+	],
 
-	ModerationModule,
-
-	ChatModule,
-  ],
-  controllers: [AppController], 
-  providers: [
-	AppService,
-  	{
-		// All routes are now protected by JWT by default
-		provide: APP_GUARD,
-		useClass: JwtAuthGuard,
-	},
-	{
-    	provide: APP_GUARD,
-    	useClass: RolesGuard,
-	},
-  ],
+	controllers: [AppController],
+	providers: [
+		AppService,
+		{
+			// All routes are now protected by JWT by default
+			provide: APP_GUARD,
+			useClass: JwtAuthGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RolesGuard,
+		},
+	],
 })
 export class AppModule {}

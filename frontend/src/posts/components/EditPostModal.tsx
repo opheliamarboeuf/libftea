@@ -5,9 +5,8 @@ import { usePostEdition } from "../hooks/usePostEdition";
 import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
-import { Post
+import { Post } from "../../context/UserContext";
 
- } from "../../context/UserContext";
 interface EditPostModalProps {
 	post: Post,
 	onPostEdited: () => void;
@@ -67,10 +66,12 @@ export function EditPostModal ({ post, onPostEdited, onClose }: EditPostModalPro
 					<h2>Edit your post</h2>
 					<form onSubmit={handleSubmit}>
 						<label>Title</label>
-						<textarea
+						<input
+							type="text"
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
-							className="create-post-input"
+							className="title-input"
+							maxLength={MAX_TITLE_LENGTH}
 						/>
 						<div
 							className={`char-counter ${

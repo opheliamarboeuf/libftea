@@ -1,0 +1,17 @@
+.user-role-username {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+}
+
+.user-role-icon {
+	font-size: 0.75em;
+	line-height: 1;
+	display: inline-flex;
+	align-items: center;
+}
+
+.header-username .user-role-icon,
+.user-username-clickable .user-role-icon {
+	font-size: 0.75em;
+}

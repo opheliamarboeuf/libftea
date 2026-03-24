@@ -1,8 +1,7 @@
-import { IsString, IsDate, IsOptional, IsNumber} from "class-validator";
+import { IsString, IsDate, IsOptional, IsNumber } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateTournamentDto {
-	
 	@IsString()
 	theme: string;
 
@@ -25,5 +24,5 @@ export class CreateTournamentDto {
 
 	@IsString()
 	@IsOptional()
-	rules?: string
+	rules?: string;
 }

@@ -1,17 +1,34 @@
-import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+	Injectable,
+	BadRequestException,
+	InternalServerErrorException,
+	NotFoundException,
+	ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { JoinTournamentDto } from './dto/join-tournament.dto';
 import { hasPermission } from 'src/auth/permissions';
 import { Role } from '@prisma/client';
+import { ModerationLogType } from '@prisma/client';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class TournamentService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly notificationsService: NotificationsService,
+	) {}
 	// async = attend une reponse lente
 	async createTournament(data: CreateTournamentDto, userId: number, userRole: Role){
 		if ( !hasPermission(userRole, "CREATE_TOURNAMENT"))
 			throw new BadRequestException("You do not have the right to create a tournament");
+				const now = new Date();
+		if (new Date(data.endDate) <= now)
+			throw new BadRequestException("Tournament end date must be in the future");
+		if (new Date(data.startDate) > new Date(data.endDate))
+			throw new BadRequestException("Start date must be before end date");
+
 	const overlappingBattle = await this.prisma.battle.findFirst({
 		where: {
 			status: { in: ["ACTIVE", "UPCOMING"] },
@@ -33,29 +50,33 @@ export class TournamentService {
 						startsAt: new Date(data.startDate),
 						endsAt: new Date(data.endDate),
 						createdById: userId,
+						NotifSent: false,
 					},
 				});
 				await prisma.moderationLog.create({
 					data: {
-						action: "CREATE_TOURNAMENT",
+						action: ModerationLogType.CREATE_TOURNAMENT,
 						actorId: userId,
 						targetBattleId: newBattle.id,
 					},
 				});
 				return newBattle;
 			});
+
 			return battle;
-		}
-		catch (error)
-		{
-			console.log("Error editing post:", error);
-			throw new InternalServerErrorException("Could not edit post");
+		} catch (error) {
+			console.error('Error creating tournament:', error);
+			if (error instanceof BadRequestException) {
+				throw error;
+			}
+			const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+			throw new InternalServerErrorException(`Failed to create tournament: ${errorMessage}`);
 		}
 	}
 	async getCurrentTournament() {
 		// donne moi le premier battle qui correspond a mes conditions
-		const	now = new Date();
-		const	battle = await this.prisma.battle.findFirst({
+		const now = new Date();
+		const battle = await this.prisma.battle.findFirst({
 			// on cherche un tournoi dont la date de fin est dans le futur
 			// nous permet de ne pas recuperer un ancien tournoi
 			// gte: greater then or equal, lte: later or equal
@@ -68,22 +89,29 @@ export class TournamentService {
 				createdAt: 'desc',
 			},
 		});
-		if (!battle)
-				return null;
-		if (battle.status === "UPCOMING" && now >= battle.startsAt)
-		{
+		if (!battle) return null;
+		if (battle.status === 'UPCOMING' && now >= battle.startsAt) {
 			await this.prisma.battle.update({
 				where: { id: battle.id },
-				data: {status: "ACTIVE"},
+				data: { status: 'ACTIVE' },
 			});
-		}
-		if (now > battle.endsAt && !battle.winnerId)
-		{
-			await this.computeTournamentWinner(battle.id);
 		}
 		return battle;
 	}
-	async joinTournament(battleId: number, userId: number, postData: JoinTournamentDto, imageUrl: string) {
+	async joinTournament(
+		battleId: number,
+		userId: number,
+		postData: JoinTournamentDto,
+		imageUrl: string,
+	) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot join tournaments');
+		}
+
 		// await nous permet de recuperer les donnes pour les verifier plus bas
 		// si on assigne le resultat a une variable on DOIT utiliser await
 		// pas besoin de await seulement si on utilise return
@@ -92,23 +120,24 @@ export class TournamentService {
 		});
 		if (!battle)
 			// erreur 404 ressource non trouvee
-			throw new NotFoundException ("Tournament doesn't exist");
+			throw new NotFoundException("Tournament doesn't exist");
 		const now = new Date();
 		if (now < battle.startsAt || now > battle.endsAt)
 			// 400 requete invalide
-			throw new BadRequestException("Tournament is not active")
+			throw new BadRequestException('Tournament is not active');
 		const userAlreadyExistant = await this.prisma.battleParticipant.findUnique({
 			// battleId_userId > cle composite (@@ dans le schema prisma qui nous assure qu'on ne peut pas avoir deux fois le même couple (battleId, userId) dans la table)
-			where: { battleId_userId: {
-				// battle qu'on verifie
-				battleId: battleId,
-				//user qu'on verifie
-				userId: userId, 
+			where: {
+				battleId_userId: {
+					// battle qu'on verifie
+					battleId: battleId,
+					//user qu'on verifie
+					userId: userId,
 				},
 			},
 		});
 		if (userAlreadyExistant)
-			throw new BadRequestException("This user is already registered for this tournament");
+			throw new BadRequestException('This user is already registered for this tournament');
 		try {
 			const post = await this.prisma.post.create({
 				data: {
@@ -127,32 +156,33 @@ export class TournamentService {
 				},
 			});
 			return participant;
-		}
-		catch (error)
-		{
-			console.log("Error creating post:", error);
-			throw new InternalServerErrorException("Could not create post");
+		} catch (error) {
+			console.log('Error creating post:', error);
+			throw new InternalServerErrorException('Could not create post');
 		}
 	}
-	async getParticipants(battleId: number)
-	{
+	async getParticipants(battleId: number) {
 		// findMany > affiche tous les resultats
 		return this.prisma.battleParticipant.findMany({
 			// filtre par battle, cible une battle en particulier
-			where : { battleId },
-			include : {
-				user:true,
+			where: { battleId },
+			include: {
+				user: true,
 				post: true,
-			}
+			},
 		});
 	}
-	async getBattlePosts(battleId: number) {
+	async getBattlePosts(battleId: number, currentUserId: number) {
 		return this.prisma.post.findMany({
 			where: {
+				bannedDeletion: false,
 				battleParticipants: {
 					some: {
 						battleId: battleId,
 					},
+				},
+				hiddenForUsers: {
+					none: { userId: currentUserId },
 				},
 			},
 			include: {
@@ -163,107 +193,181 @@ export class TournamentService {
 				},
 			},
 			orderBy: {
-				createdAt: "desc",
+				createdAt: 'desc',
 			},
 		});
 	}
-	async computeTournamentWinner(battleId: number)
-	{
+	async computeTournamentWinner(battleId: number) {
 		const battle = await this.prisma.battle.findUnique({
-			where : { id: battleId },
+			where: { id: battleId },
 		});
 		if (!battle)
 			throw new NotFoundException ("Tournament doesn't exist");
-		// if (new Date() < battle.endsAt)
-		// 	throw new BadRequestException("Battle is not finished yet");
+		if (new Date() < battle.endsAt)
+			throw new BadRequestException("Battle is not finished yet");
 		if (battle.winnerId)
 			return battle.winnerId;
-		const forTheWin = await this.prisma.post.findFirst({
+		const winningPost = await this.prisma.post.findFirst({
 			where: {
-				battleParticipants: { some: { battleId } },
-			},
-			orderBy: [
-				{
-					Like: { _count: "desc" },
+				battleParticipants: { 
+					some: { battleId } 
 				},
-				{
-					createdAt: "asc"
+			},
+			orderBy: {
+				Like: {
+					_count: "desc"
 				}
-			],
+			},
 			include: {
 				author: true,
 				_count: {
 					select: { Like: true }
 				}
 			}
-		});
-		if (!forTheWin)
-			throw new NotFoundException ("No one partipated at that tournament");
+		});	
+		if (!winningPost)
+			throw new NotFoundException ("No one participated in that tournament");
 		await this.prisma.battle.update({
-			where: {id: battleId },
+			where: { id: battleId },
 			data: {
 				status: "FINISHED",
-				winnerId: forTheWin.authorId,
+				winnerId: winningPost.authorId,
 			}
 		});
-		return forTheWin;
-	}
-	async getLastTournamentWinner()
-	{
-		return this.prisma.battle.findFirst({
-			where: { status: "FINISHED" },
-			orderBy: { endsAt: "desc" },
-			include: {
-				winner: true,
-				BattleParticipant: {
-					include: {
-						post: true,
-						user: true,
-					}
-				}
+
+		//notification
+		const winner = await this.prisma.user.findUnique({
+			where: { id: winningPost.authorId },
+		});
+
+		if (!winner) {
+			throw new NotFoundException('Winner user not found');
+		}
+
+		await this.notificationsService.notifyBattleWinner(winningPost.authorId, battle.theme);
+
+		const participants = await this.prisma.battleParticipant.findMany({
+			where: { battleId },
+			select: { userId: true },
+		});
+
+		const participantsIds = participants.map(p => p.userId).filter(id => id !== winningPost.authorId);
+
+		await Promise.all(
+			participantsIds.map((userId) =>
+				this.notificationsService.notifyTournamentParticipants(
+					userId,
+					battle.theme,
+					winner.username,
+				),
+			),
+		);
+		return winningPost;
+	}	
+
+	async getLastTournamentWinnerPost(currentUserId:number) {
+		const now = new Date();
+		
+		// D'abord, vérifier s'il y a un tournoi terminé (date passée) mais pas encore marqué FINISHED
+		const justFinishedBattle = await this.prisma.battle.findFirst({
+			where: {
+				endsAt: { lt: now },
+				status: { not: "FINISHED" }
 			},
-		})
-	}
-	async getLastTournamentWinnerPost() {
+			orderBy: { endsAt: "desc" },
+		});
+		
+		// Si on trouve un tournoi qui vient de finir, calculer son gagnant
+		if (justFinishedBattle) {
+			try {
+				await this.computeTournamentWinner(justFinishedBattle.id);
+			} catch (error) {
+				console.log("Could not compute winner:", error);
+			}
+		}
+		
+		// Maintenant récupérer le dernier tournoi FINISHED avec un gagnant
 		const battle = await this.prisma.battle.findFirst({
-			where: { status: "FINISHED"},
+			where: { 
+				status: "FINISHED",
+				winnerId: { not: null }
+			},
 			orderBy: { endsAt: "desc"},
 		});
-		if (!battle)
+		
+		if (!battle || !battle.winnerId)
 			return null;
+		
+		// Récupérer le post gagnant
 		const lastWinnerPost = await this.prisma.post.findFirst({
-			where:
-			{
+			where: {
 				authorId: battle.winnerId,
-				battleParticipants: 
-				{
+				battleParticipants: {
 					some: { battleId: battle.id },
 				},
+				hiddenForUsers: {
+					none: { userId: currentUserId },
+				},
 			},
-			include: 
-			{
+			include: {
 				author: true,
 				Like: true,
 			},
 		});
+		
 		return lastWinnerPost;
 	}
-	async getUserTournamentPosts(userId: number)
-	{
+	async getUserTournamentPosts(userId: number) {
+		const user = await this.prisma.user.findUnique({ where: { id: userId } });
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (user.bannedAt) {
+			throw new ForbiddenException('Banned users cannot access tournament posts');
+		}
+
 		return this.prisma.post.findMany({
 			where: {
 				authorId: userId,
 				battleParticipants: { some: {} },
 			},
-			include: 
-			{
+			include: {
 				author: true,
 				Like: true,
 				battleParticipants: {
 					include: { Battle: true },
-				}
+				},
 			},
-			orderBy: { createdAt: "desc" },
+			orderBy: { createdAt: 'desc' },
 		});
+	}
+
+	async handleBannedPostInTournament(postId: number) {
+		try {
+			const battleParticipant = await this.prisma.battleParticipant.findFirst({
+				where: { postId },
+			});
+			if (!battleParticipant) return;
+			await this.prisma.battleParticipant.delete({
+				where: { id: battleParticipant.id },
+			});
+			const battle = await this.prisma.battle.findUnique({
+				where: { id: battleParticipant.battleId },
+				include: { winner: true },
+			});
+			if (!battle) return;
+			const post = await this.prisma.post.findUnique({ where: { id: postId } });
+			if (post && battle.winnerId === post.authorId) {
+				await this.prisma.battle.update({
+					where: { id: battle.id },
+					data: {
+						winnerId: null,
+						status: 'ACTIVE',
+					},
+				});
+			}
+		} catch (error) {
+			console.error('Error handling banned post in tournament:', error);
+		}
 	}
 }

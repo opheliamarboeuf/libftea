@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
-import { FaCrown, FaHome, FaUser, FaUsers, FaTachometerAlt} from "react-icons/fa";
 import { FaMessage} from "react-icons/fa6";
+import { MdOutlineHome, MdOutlineAccountCircle, MdOutlinePeople, MdOutlineWorkspacePremium, MdOutlineDashboard, MdOutlineChat} from "react-icons/md";
+import { useState } from "react";
 import "./LeftMenu.css"
 import "../../App.css"
 
@@ -9,41 +10,52 @@ export const LeftMenu = () => {
 	
 	const navigate = useNavigate();
 	const { user } = useUser();
+	const [isHovered, setIsHovered] = useState(false);
+
 	if (!user)
 		return ;
 	
 	
 	return (
-		<div className="left-menu">
-			<div className="menu-item" onClick={() => navigate("/feed")}>
-				<FaHome className="icon" />
-				<span className="label">Feed</span>
-			</div>
+		<>
+			<div className={`menu-overlay ${isHovered ? 'active' : ''}`}></div>
+			
+			<div 
+				className="left-menu"
+				onMouseEnter={() => setIsHovered(true)}
+				onMouseLeave={() => setIsHovered(false)}
+			>
+				<div className="menu-item" onClick={() => navigate("/feed")}>
+					<MdOutlineHome className="icon" />
+					<span className="label">Feed</span>
+				</div>
 
-			<div className="menu-item" onClick={() => navigate("/myprofile")}>
-				<FaUser className="icon" />
-				<span className="label">Profile</span>
-			</div>
+				<div className="menu-item" onClick={() => navigate("/myprofile")}>
+					<MdOutlineAccountCircle className="icon" />
+					<span className="label">Profile</span>
+				</div>
 
-			<div className="menu-item" onClick={() => navigate("/friends")}>
-				<FaUsers className="icon" />
-				<span className="label">Friends</span>
-			</div>
+				<div className="menu-item" onClick={() => navigate("/friends")}>
+					<MdOutlinePeople className="icon" />
+					<span className="label">Friends</span>
+				</div>
 
-			<div className="menu-item" onClick={() => navigate("/tournament")}>
-				<FaCrown className="icon" />
-				<span className="label">Tournament</span>
-			</div>
+
 			<div className="menu-item" onClick={() => navigate("/chat")}>
-				<FaMessage className="icon" />
+				<MdOutlineChat className="icon" />
 				<span className="label">Chat</span>
 			</div>
-			{/* Only show Dashboard if user is ADMIN or MOD */}
+		
+			<div className="menu-item" onClick={() => navigate("/tournament")}>
+				<MdOutlineWorkspacePremium className="icon" />
+				<span className="label">Tournament</span>
+			</div>
 			{user.role === "ADMIN" || user.role === "MOD" ? (
 			<div className="menu-item" onClick={() => navigate("/dashboard")}>
-				<FaTachometerAlt className="icon" />
+				<MdOutlineDashboard className="icon" />
 				<span className="label">Dashboard</span>
 			</div> ) : null}
-			</div>
+		</div>
+		</>
 	);
 }
