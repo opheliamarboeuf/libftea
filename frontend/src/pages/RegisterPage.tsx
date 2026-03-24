@@ -152,9 +152,9 @@ const RegisterPage = () => {
 						{t('registerpage.loginto')}
 					</button>
 				</form>
-				<div className="login-bottom">
-					<PrivacyButton />
-					<TermsButton />
+				<div className="flex justify-center gap-4 mt-6">
+					<PrivacyButton className="text-sm text-gray-500 hover:text-gray-800 transition-colors"/>
+					<TermsButton className="text-sm text-gray-500 hover:text-gray-800 transition-colors"/>
 				</div>
 			</div>
 		</div>

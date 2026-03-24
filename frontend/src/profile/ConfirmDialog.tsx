@@ -20,10 +20,10 @@ export function ConfirmDialog({ message, onConfirm, onCancel }: ConfirmDialogPro
 				<p>{message}</p>
 				<div className="confirm-actions">
 					<button className="modal-btn" onClick={onCancel}>
-						{t('confirmdialog.discard')}
+						{t('common.no')}
 					</button>
 					<button className="modal-btn" onClick={onConfirm}>
-						{t('confirmdialog.stay')}
+						{t('common.yes')}
 					</button>
 				</div>
 			</div>
