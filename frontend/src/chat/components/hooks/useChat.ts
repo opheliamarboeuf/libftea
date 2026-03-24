@@ -106,6 +106,20 @@ export function useChat(conversationId: number, currentUserId: number) {
     }
   };
 
+  const sendTournamentMessage = (content: string) => {
+    socketRef.current?.emit('sendMessage', {
+      content,
+      conversationId,
+      senderId: currentUserId,
+    });
+    if (isTypingRef.current) {
+      socketRef.current?.emit('stopTyping', { conversationId, senderId: currentUserId });
+      isTypingRef.current = false;
+    }
+  };
+
+
+
   const emitTyping = (username: string) => {
     if (!isTypingRef.current) {
       socketRef.current?.emit('typing', { conversationId, senderId: currentUserId, username });
@@ -118,5 +132,5 @@ export function useChat(conversationId: number, currentUserId: number) {
     }, 2000);
   };
 
-  return { messages, sendMessage, chatError, isTyping, emitTyping, lastReadMessageId };
+  return { messages, sendMessage, sendTournamentMessage, chatError, isTyping, emitTyping, lastReadMessageId };
 }

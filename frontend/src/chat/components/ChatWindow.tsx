@@ -27,7 +27,7 @@ function formatTime(iso?: string) {
 }
 
 export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMessage }: Props) {
-  const { messages, sendMessage, chatError, isTyping, emitTyping, lastReadMessageId } = useChat(conversationId, currentUserId);
+  const { messages, sendMessage, sendTournamentMessage, chatError, isTyping, emitTyping, lastReadMessageId } = useChat(conversationId, currentUserId);
   const { user } = useUser();
   const [input, setInput] = useState('');
   const [isOnline, setIsOnline] = useState(false);
@@ -94,6 +94,12 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
   const handleSend = () => {
     if (!input.trim()) return;
     sendMessage(input.trim());
+    setInput('');
+  };
+
+  const handleSendTournament = () => {
+    if (!input.trim()) return;
+    sendTournamentMessage(input.trim());
     setInput('');
   };
 
@@ -261,6 +267,18 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
           onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.background = '#fff'; }}
           onBlur={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}
         />
+        <button
+          onClick={handleSend}
+          disabled={!input.trim()}
+          style={{
+            width: 38, height: 38, borderRadius: '50%', border: 'none',
+            background: input.trim() ? '#2563eb' : '#e5e7eb',
+            cursor: input.trim() ? 'pointer' : 'default',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0, transition: 'background 0.15s',
+          }}
+        >
+        </button>
         <button
           onClick={handleSend}
           disabled={!input.trim()}
