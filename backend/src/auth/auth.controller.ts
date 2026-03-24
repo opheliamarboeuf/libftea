@@ -58,6 +58,6 @@ export class AuthController {
 	async githubCallback(@Req() req, @Res() res: Response) {
 		const user = req.user;
 		const token = this.authService.generateToken(user.id, user.role, user.username);
-		res.redirect(`https://localhost:4433/auth/github/callback?token=${token.access_token}`);
+		res.redirect(`${process.env.FRONTEND_URL}/auth/github/callback?token=${token.access_token}`);
 	}
 }
