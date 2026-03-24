@@ -234,7 +234,7 @@ const UserProfilePage = () => {
 					<div className="flex gap-3">
 						<button
 							className={buttonClass}
-							onClick={() => navigate('/chat')}
+							onClick={() => navigate(`/chat?with=${userData?.id}`)}
 							disabled={loading}
 						>
 							Send Message
