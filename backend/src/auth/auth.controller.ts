@@ -38,7 +38,7 @@ export class AuthController {
 
 	@UseGuards(JwtAuthGuard)
 	@Post('2fa/settings')
-	change2FASettings(@Req() req: Request & { user: { id: number }}) {
+	change2FASettings(@Req() req: Request & { user: { id: number } }) {
 		return this.authService.change2FASettings(req.user.id);
 	}
 
@@ -58,6 +58,6 @@ export class AuthController {
 	async githubCallback(@Req() req, @Res() res: Response) {
 		const user = req.user;
 		const token = this.authService.generateToken(user.id, user.role, user.username);
-		res.redirect(`${process.env.FRONTEND_URL}/auth/github/callback?token=${token.access_token}`);
+		res.redirect(`${process.env.FRONTEND_URL}/github/callback?token=${token.access_token}`);
 	}
 }
