@@ -36,7 +36,6 @@ export class ProfileService {
 			// Build an object containing only fields that are defined in the DTO
 			const updateData: Prisma.ProfileUpdateInput = {};
 			if (dto.bio !== undefined) updateData.bio = dto.bio;
-			if (dto.displayName !== undefined) updateData.displayName = dto.displayName;
 			if (dto.avatarUrl !== undefined) updateData.avatarUrl = dto.avatarUrl;
 			if (dto.coverUrl !== undefined) updateData.coverUrl = dto.coverUrl;
 
@@ -88,7 +87,6 @@ export class ProfileService {
 				where: { userId },
 				select: {
 					bio: true,
-					displayName: true,
 					avatarUrl: true,
 					coverUrl: true,
 				},
