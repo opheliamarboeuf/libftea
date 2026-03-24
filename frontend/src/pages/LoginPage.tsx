@@ -183,7 +183,7 @@ const LoginPage = () => {
 						<button 
 							type="button"
 							onClick={() => window.location.href = 'http://localhost:3000/auth/github'}
-							className="w-full py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all outline-none"
+							className="w-full py-2 bg-neutral-600 text-white rounded-lg hover:bg-neutral-400 transition-all outline-none"
 						>
 							Login with GitHub
 						</button>
