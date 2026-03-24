@@ -1,9 +1,11 @@
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { useChat } from './hooks/useChat';
 import { LastMessage } from './hooks/useConversations';
 import { useFriendsSocket } from '../../friends/useFriendsSocket';
 import { useUser } from '../../context/UserContext';
+
 
 interface OtherUser {
   id: number;
@@ -111,7 +113,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
       {/* Barre du haut */}
       <div style={{
         height: '57px', display: 'flex', alignItems: 'center', gap: '12px',
-        padding: '0 20px', borderBottom: '1px solid #111827', flexShrink: 0,
+        padding: '0 20px', borderBottom: '1px solid #e5e7eb', flexShrink: 0,
       }}>
         {otherUser && (
           <>
@@ -126,7 +128,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             <div style={{ cursor: 'pointer' }} onClick={() => navigate(`/users/${otherUser.id}`)}>
               <p style={{ margin: 0, fontWeight: 600, fontSize: '15px', color: '#111827' }}>{otherUser.username}</p>
               <p style={{ margin: 0, fontSize: '11px', color: isOnline ? '#22c55e' : '#9ca3af' }}>
-                {isOnline ? 'En ligne' : 'Hors ligne'}
+                {isOnline ? 'Online' : 'Offline'}
               </p>
             </div>
           </>
@@ -181,7 +183,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                       padding: '9px 14px', borderRadius: 18,
                       borderBottomRightRadius: isOwn ? 4 : 18,
                       borderBottomLeftRadius: isOwn ? 18 : 4,
-                      background: isOwn ? '#2563eb' : '#f3f4f6',
+                      background: isOwn ? '#6b7280' : '#f3f4f6',
                       color: isOwn ? '#fff' : '#111827',
                       fontSize: 14, lineHeight: 1.5, wordBreak: 'break-word',
                     }}>
@@ -200,14 +202,14 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                   <div style={{ width: 16, height: 16, borderRadius: '50%', overflow: 'hidden' }}>
                     <img src={avatarSrc} alt={otherUser?.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
-                  <span style={{ fontSize: 10, color: '#2563eb' }}>Lu</span>
+                  <span style={{ fontSize: 10, color: '#6b7280' }}>Seen</span>
                 </div>
               )}
 
               {/* Envoyé — sous le dernier message si pas encore lu */}
               {showSent && (
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2, paddingRight: 4 }}>
-                  <span style={{ fontSize: 10, color: '#9ca3af' }}>Envoyé</span>
+                  <span style={{ fontSize: 10, color: '#9ca3af' }}>Sent</span>
                 </div>
               )}
             </div>
@@ -258,7 +260,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             padding: '9px 14px', fontSize: 14, lineHeight: 1.5, maxHeight: 120,
             overflowY: 'auto', outline: 'none', fontFamily: 'inherit', color: '#111827', background: '#f9fafb',
           }}
-          onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.background = '#fff'; }}
+          onFocus={e => { e.currentTarget.style.borderColor = '#6b7280'; e.currentTarget.style.background = '#fff'; }}
           onBlur={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}
         />
         <button
@@ -266,14 +268,15 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
           disabled={!input.trim()}
           style={{
             width: 38, height: 38, borderRadius: '50%', border: 'none',
-            background: input.trim() ? '#2563eb' : '#e5e7eb',
+            background: input.trim() ? '#6b7280' : '#e5e7eb',
             cursor: input.trim() ? 'pointer' : 'default',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0, transition: 'background 0.15s',
+            flexShrink: 0, transition: 'background 0.15s', position: 'relative', zIndex: 10,
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke={input.trim() ? '#fff' : '#9ca3af'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', flexShrink: 0 }}>
+            <path d="M22 2L11 13" stroke={input.trim() ? '#fff' : '#9ca3af'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke={input.trim() ? '#fff' : '#9ca3af'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
       </div>

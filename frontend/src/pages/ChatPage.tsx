@@ -31,27 +31,34 @@ export function ChatPage() {
       position: 'fixed', top: '50px', left: '60px',
       width: 'calc(100vw - 60px)', height: 'calc(100vh - 50px)',
       display: 'flex', flexDirection: 'row', overflow: 'hidden',
-      backgroundColor: '#fff', color: 'black',
+      backgroundColor: 'transparent', color: 'black', padding: '20px',
+      boxSizing: 'border-box',
     }}>
-      <ChatNavbar
-        conversations={conversations}
-        activeConversationId={activeConversationId}
-        onSelectConversation={setActiveConversationId}
-      />
+      <div style={{
+        display: 'flex', flexDirection: 'row', overflow: 'hidden',
+        backgroundColor: '#fff', borderRadius: '12px',
+        width: '100%', height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+      }}>
+        <ChatNavbar
+          conversations={conversations}
+          activeConversationId={activeConversationId}
+          onSelectConversation={setActiveConversationId}
+        />
 
-      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-        {activeConversationId ? (
-          <ChatWindow
-            conversationId={activeConversationId}
-            currentUserId={user.id}
-            otherUser={otherUser}
-            onNewMessage={updateLastMessage}
-          />
-        ) : (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9ca3af', fontSize: '15px' }}>
-            Sélectionne une conversation
-          </div>
-        )}
+        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+          {activeConversationId ? (
+            <ChatWindow
+              conversationId={activeConversationId}
+              currentUserId={user.id}
+              otherUser={otherUser}
+              onNewMessage={updateLastMessage}
+            />
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9ca3af', fontSize: '15px' }}>
+              Select a conversation
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

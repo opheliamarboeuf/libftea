@@ -96,15 +96,10 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
       width: '280px', flexShrink: 0, height: '100%',
       display: 'flex', flexDirection: 'column',
       borderRight: '1px solid #e5e7eb', backgroundColor: '#fff',
+      padding: '12px',
     }}>
-      <div style={{
-        height: '57px', display: 'flex', alignItems: 'center',
-        padding: '0 20px', borderBottom: '1px solid #111827', flexShrink: 0,
-      }}>
-        <span style={{ fontSize: '20px', fontWeight: 700, color: 'black' }}>Messages</span>
-      </div>
 
-      <div style={{ padding: '10px 12px', flexShrink: 0, borderBottom: '1px solid #f3f4f6' }}>
+      <div style={{ padding: '0', flexShrink: 0, marginBottom: '0.5rem' }}>
         <div style={{ position: 'relative' }}>
           <svg style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)' }}
             width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -113,7 +108,7 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
           </svg>
           <input
             type="text"
-            placeholder="Rechercher..."
+            placeholder="Search..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             style={{
@@ -129,7 +124,7 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
 
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {filtered.length === 0 ? (
-          <p style={{ padding: '16px', color: '#9ca3af', fontSize: '14px' }}>Aucune conversation</p>
+          <p style={{ padding: '16px', color: '#9ca3af', fontSize: '14px' }}>No conversation yet</p>
         ) : (
           filtered.map(conv => {
             const other = conv.User.find(u => u.id !== user.id);
@@ -139,7 +134,7 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
             const avatarSrc = other?.profile?.avatarUrl
               ? `${API_URL}${other.profile.avatarUrl}`
               : '/default-avatar.png';
-            const senderPrefix = lastMsg?.senderId === user.id ? 'Toi : ' : '';
+            const senderPrefix = lastMsg?.senderId === user.id ? 'You : ' : '';
 
             return (
               <div
