@@ -89,9 +89,17 @@ This module demonstrates advanced technical complexity across multiple domains:
 
 ## Support for additional browsers (1pt)
 
+- **Implementation**: Cross-browser compatibility, ensured through consistent testing, using different browsers as we developped the application/
+
 Libftea was tested on:
 - Google Chrome
 - Mozilla Firefox
 - Safari
 
 Browser specific issues were minor and fixed (e.g. inability to load MarkDown files with Google Chrome). As of this evaluation, all features behave consistently across the three browsers specified above.
+
+- **Features**:
+	- Full compaibility with at least two additional browsers
+	- All features tested and fixed in each browser
+	- Consistent UI/UX across all supported browsers
+	- No remaining browser-specific limitations
