@@ -44,6 +44,12 @@ export const tournamentApi = {
 		return data;
 	},
 
+	getRecentTournament: async () => {
+		const res = await fetch(`${API_URL}/tournament/recent`, { credentials: 'include' });
+		if (!res.ok) return null;
+		return res.json();
+	},
+
 	getCurrentTournament: async (): Promise<any> => {
 		const res = await fetch(`${API_URL}/tournament/current`, {
 			headers: {

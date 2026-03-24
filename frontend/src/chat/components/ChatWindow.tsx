@@ -11,6 +11,16 @@ interface OtherUser {
   profile?: { avatarUrl?: string };
 }
 
+interface Message {
+  id: number;
+  content: string;
+  senderId: number;
+  createdAt: string;
+  type?: string;
+  metadata?: { battleId: number };
+  User: { id: number; username: string; profile: { avatarUrl: string } };
+}
+
 interface Props {
   conversationId: number;
   currentUserId: number;
@@ -27,7 +37,17 @@ function formatTime(iso?: string) {
 }
 
 export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMessage }: Props) {
-  const { messages, sendMessage, sendTournamentMessage, chatError, isTyping, emitTyping, lastReadMessageId } = useChat(conversationId, currentUserId);
+  const {
+    messages,
+    sendMessage,
+    sendTournamentMessage,
+    chatError,
+    isTyping,
+    emitTyping,
+    lastReadMessageId,
+    tournamentState,
+  } = useChat(conversationId, currentUserId);
+
   const { user } = useUser();
   const [input, setInput] = useState('');
   const [isOnline, setIsOnline] = useState(false);
@@ -98,16 +118,21 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
   };
 
   const handleSendTournament = () => {
-    if (!input.trim()) return;
-    sendTournamentMessage(input.trim());
-    setInput('');
+    sendTournamentMessage();
   };
+
+  // Détermine l'état du bouton tournoi
+  const isFinished =
+    !!tournamentState &&
+    (tournamentState.status === 'FINISHED' ||
+      (!!tournamentState.endsAt && new Date(tournamentState.endsAt) < new Date()));
+  const isWinner = tournamentState?.winnerId === currentUserId;
+  const showVictoryButton = isWinner && isFinished;
 
   const avatarSrc = otherUser?.profile?.avatarUrl
     ? `${API_URL}${otherUser.profile.avatarUrl}`
     : '/default-avatar.png';
 
-  // Dernier message envoyé par moi
   const lastOwnMessageIndex = messages.reduce((last, msg, i) =>
     msg.senderId === currentUserId ? i : last, -1);
 
@@ -139,6 +164,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
         )}
       </div>
 
+      {/* Erreur */}
       {chatError && (
         <div style={{ background: '#fef2f2', color: '#b91c1c', fontSize: 13, padding: '8px 16px', borderBottom: '1px solid #fecaca' }}>
           {chatError}
@@ -151,7 +177,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
         onScroll={handleScroll}
         style={{ flex: 1, overflowY: 'auto', padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 4 }}
       >
-        {messages.map((msg, i) => {
+        {(messages as Message[]).map((msg, i) => {
           const isOwn = msg.senderId === currentUserId;
           const showAvatar = !isOwn && (i === 0 || messages[i - 1]?.senderId !== msg.senderId);
           const isLastOwn = isOwn && i === lastOwnMessageIndex;
@@ -159,10 +185,16 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             ? `${API_URL}${msg.User.profile.avatarUrl}`
             : '/default-avatar.png';
 
-          // Ce message est le dernier lu si son id correspond à lastReadMessageId
           const isThisMessageRead = isOwn && msg.id === lastReadMessageId;
-          // Affiche "Envoyé" seulement sur le dernier message si pas encore lu
           const showSent = isLastOwn && lastReadMessageId === null;
+          const isTournamentInvite = msg.type === 'tournament_invite';
+          const isTournamentVictory = msg.type === 'tournament_victory';
+          const isTournamentMessage = isTournamentInvite || isTournamentVictory;
+
+          // Couleur de fond selon le type de message
+          const bubbleBg = isOwn
+            ? isTournamentVictory ? '#7c3aed' : isTournamentInvite ? '#f59e0b' : '#2563eb'
+            : '#f3f4f6';
 
           return (
             <div key={msg.id}>
@@ -187,11 +219,36 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                       padding: '9px 14px', borderRadius: 18,
                       borderBottomRightRadius: isOwn ? 4 : 18,
                       borderBottomLeftRadius: isOwn ? 18 : 4,
-                      background: isOwn ? '#2563eb' : '#f3f4f6',
+                      background: bubbleBg,
                       color: isOwn ? '#fff' : '#111827',
                       fontSize: 14, lineHeight: 1.5, wordBreak: 'break-word',
                     }}>
                       {msg.content}
+
+                      {/* Bouton Join Tournament / See Winner — visible seulement pour le destinataire */}
+                      {isTournamentMessage && !isOwn && msg.metadata?.battleId && (
+                        <div style={{ marginTop: 8 }}>
+                          <button
+                            onClick={() => navigate(`/tournament`)}
+                            style={{
+                              background: '#fff',
+                              color: isTournamentVictory ? '#7c3aed' : '#f59e0b',
+                              border: `1.5px solid ${isTournamentVictory ? '#7c3aed' : '#f59e0b'}`,
+                              borderRadius: 12,
+                              padding: '5px 14px',
+                              fontSize: 13,
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 6,
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {isTournamentVictory ? '👑 See the winner' : '🏆 Join Tournament'}
+                          </button>
+                        </div>
+                      )}
                     </div>
                     <span style={{ fontSize: 10, color: '#9ca3af', whiteSpace: 'nowrap', marginBottom: 2 }}>
                       {formatTime(msg.createdAt)}
@@ -200,7 +257,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                 </div>
               </div>
 
-              {/* Lu — sous le message exact qui a été lu */}
+              {/* Lu */}
               {isThisMessageRead && (
                 <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 4, marginTop: 2, paddingRight: 4 }}>
                   <div style={{ width: 16, height: 16, borderRadius: '50%', overflow: 'hidden' }}>
@@ -210,7 +267,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                 </div>
               )}
 
-              {/* Envoyé — sous le dernier message si pas encore lu */}
+              {/* Envoyé */}
               {showSent && (
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2, paddingRight: 4 }}>
                   <span style={{ fontSize: 10, color: '#9ca3af' }}>Envoyé</span>
@@ -267,18 +324,26 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
           onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.background = '#fff'; }}
           onBlur={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}
         />
-        <button
-          onClick={handleSend}
-          disabled={!input.trim()}
-          style={{
-            width: 38, height: 38, borderRadius: '50%', border: 'none',
-            background: input.trim() ? '#2563eb' : '#e5e7eb',
-            cursor: input.trim() ? 'pointer' : 'default',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0, transition: 'background 0.15s',
-          }}
-        >
-        </button>
+
+        {/* Bouton tournoi — visible seulement si tournoi actif ou terminé depuis moins de 24h */}
+        {tournamentState && (
+          <button
+            onClick={handleSendTournament}
+            title={showVictoryButton ? 'Share your victory' : 'Invite to tournament'}
+            style={{
+              width: 38, height: 38, borderRadius: '50%', border: 'none',
+              background: showVictoryButton ? '#7c3aed' : '#f59e0b',
+              cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0, transition: 'background 0.15s',
+              fontSize: 18,
+            }}
+          >
+            {showVictoryButton ? '👑' : '🏆'}
+          </button>
+        )}
+
+        {/* Bouton envoi normal */}
         <button
           onClick={handleSend}
           disabled={!input.trim()}

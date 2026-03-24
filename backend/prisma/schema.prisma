@@ -209,6 +209,8 @@ model Message {
 	conversationId Int
 	Conversation   Conversation @relation(fields: [conversationId], references: [id])
 	User           User         @relation(fields: [senderId], references: [id])
+  type					 String				@default("text")
+  metadata Json?
 }
 
 model ModerationLog {

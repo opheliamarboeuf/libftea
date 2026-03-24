@@ -197,6 +197,21 @@ export class TournamentService {
 			},
 		});
 	}
+	async getRecentTournament() {
+		const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
+		const battle = await this.prisma.battle.findFirst({
+			where: {
+				OR: [
+					// tournoi en cours
+					{ startsAt: { lte: new Date() }, endsAt: { gte: new Date() } },
+					// terminé depuis moins de 24h
+					{ endsAt: { gte: since24h, lt: new Date() } },
+				],
+			},
+			orderBy: { createdAt: 'desc' },
+		});
+		return battle ?? null;
+	}
 	async computeTournamentWinner(battleId: number) {
 		const battle = await this.prisma.battle.findUnique({
 			where: { id: battleId },

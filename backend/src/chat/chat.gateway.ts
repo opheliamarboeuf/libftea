@@ -55,22 +55,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
 
-    const message = await this.prisma.message.create({
-      data: {
-        content: dto.content,
-        senderId: dto.senderId,
-        conversationId: dto.conversationId,
-      },
-      include: {
-        User: {
-          select: {
-            id: true, username: true,
-            profile: { select: { avatarUrl: true } },
-          },
-        },
-      },
-    });
-
+		const message = await this.prisma.message.create({
+			data: {
+				content: dto.content,
+				senderId: dto.senderId,
+				conversationId: dto.conversationId,
+				type: dto.type ?? 'text',         // ← ajout
+				metadata: dto.metadata ?? {},     // ← ajout
+			},
+			include: {
+				User: {
+					select: {
+						id: true, username: true,
+						profile: { select: { avatarUrl: true } },
+					},
+				},
+			},
+		});
     this.server
       .to(`conversation_${dto.conversationId}`)
       .emit('newMessage', message);

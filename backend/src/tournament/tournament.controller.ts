@@ -84,6 +84,10 @@ export class TournamentController {
 	getUserTournamentPosts(@Param('userId', ParseIntPipe) userId: number) {
 		return this.tournamentService.getUserTournamentPosts(userId);
 	}
+	@Get('recent')
+	getRecentTournament() {
+		return this.tournamentService.getRecentTournament();
+	}
 	@Get(':battleId/posts')
 	async getBattlePosts(@Param('battleId') battleId: string, @Req() req: any) {
 		const userId = req.user.id;

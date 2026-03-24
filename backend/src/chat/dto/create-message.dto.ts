@@ -10,4 +10,7 @@ export class CreateMessageDto {
 
   @IsNumber()
   senderId: number;        // ← manquant (userId → senderId)
+
+  type?: string;
+  metadata?: Record<string, any>;
 }
