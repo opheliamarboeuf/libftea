@@ -91,7 +91,7 @@ const LoginPage = () => {
 
 			if (!res.ok) {
 				setErrorMessage(
-					Array.isArray(data.message) ? data.message[0] : data.message || 'Invalid code',
+					Array.isArray(data.message) ? data.message[0] : data.message || t('errors.code'),
 				);
 				return;
 			}
@@ -109,21 +109,21 @@ const LoginPage = () => {
 			<LanguageMenu fixed/>
 			<div className="w-80 p-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
 				<h1 className="text-4xl text-center mb-8 text-black" style={{ fontFamily: "'Blosta Script', cursive" }}>
-					{show2FA ? 'Verification' : 'Login'}
+					{show2FA ? t('loginpage.verif') : t('loginpage.login')}
 				</h1>
 
 				{show2FA ? (
 					// 2FA Form
 					<form onSubmit={handle2FASubmit} className="flex flex-col gap-4">
 						<p className="text-center text-gray-600 text-sm mb-2">
-							A code has been sent to your email.
+							{t('loginpage.sentemail')}
 						</p>
 						<div>
-							<label htmlFor="code" className="sr-only">Verification code</label>
+							<label htmlFor="code" className="sr-only">{t('loginpage.verifcode')}</label>
 							<input 
 								type="text" 
 								name="code"
-								placeholder="Enter your 6-digit code"
+								placeholder={t('loginpage.enter')}
 								value={twoFactorCode}
 								onChange={(e) => setTwoFactorCode(e.target.value)}
 								maxLength={6}
@@ -140,7 +140,7 @@ const LoginPage = () => {
 							type="submit"
 							className="w-full py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-600 transition-all outline-none"
 						>
-							Verify
+							{t('loginpage.verify')}
 						</button>
 						<button 
 							type="button"
@@ -151,7 +151,7 @@ const LoginPage = () => {
 							}}
 							className="w-full py-2 border border-gray-300 rounded-lg hover:bg-neutral-200 transition-all outline-none"
 						>
-							Back
+							{t('loginpage.back')}
 						</button>
 					</form>
 				) : (
@@ -198,7 +198,7 @@ const LoginPage = () => {
 							onClick={() => window.location.href = 'http://localhost:3000/auth/github'}
 							className="w-full py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all outline-none"
 						>
-							Login with GitHub
+							{t('loginpage.github')}
 						</button>
 						<p className="text-center text-gray-600 text-sm">
 							{t('loginpage.noaccount')}
@@ -211,9 +211,9 @@ const LoginPage = () => {
 							{t('loginpage.create')}
 						</button>
 					</form>
-					<div className="login-bottom">
-						<PrivacyButton />
-						<TermsButton />
+					<div className="flex justify-center gap-4 mt-6">
+						<PrivacyButton className="text-sm text-gray-500 hover:text-gray-800 transition-colors"/>
+						<TermsButton className="text-sm text-gray-500 hover:text-gray-800 transition-colors"/>
 					</div>
 					</>
 				)}

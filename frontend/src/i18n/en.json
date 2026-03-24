@@ -71,7 +71,14 @@
 		"username": "Username",
 		"password": "Password",
 		"noaccount": "No account yet ?",
-		"create": "Create new account"
+		"create": "Create new account",
+		"verif": "Verification",
+		"sentemail": "A code has been sent to your email.",
+		"verifcode": "Verification code",
+		"enter": "Enter your 6-digit code",
+		"verify": "Verify",
+		"back": "Back",
+		"github": "Login with GitHub"
 	},
 
 	"registerpage": {
@@ -122,7 +129,8 @@
 		"mod": "Moderator",
 		"user": "User",
 		"post": "Post",
-		"battle": "Battle"
+		"battle": "Battle",
+		"enter": "Click to enter"
 	},
 
 	"feedpage": {
@@ -227,7 +235,8 @@
 		"tournamentuser": "This user is already registered for this tournament",
 		"tournamentactive": "Tournament is not active",
 		"simple": "An error occurred",
-		"token": "Token invalid or user unauthorized"
+		"token": "Token invalid or user unauthorized",
+		"code": "Invalid code"
 	},
 
 	"dashboard": {
@@ -381,5 +390,20 @@
 		"fetchparticipants": "Fetch participants failed",
 		"fetchposts": "Fetch battle posts failed",
 		"fetchlast": "Fetch last winner post failed"
+	},
+
+	"settings": {
+		"sandp": "Settings & Privacy" ,
+		"security": "Security",
+		"2fa": "2FA",
+		"two": "Two-Factor Authentication",
+		"twodes": "Two-factor authentication adds an extra layer of security to your account. When enabled, you will be asked to enter a verification code sent to your email each time you log in.",
+		"tworecommend": "We recommend enabling 2FA to protect your account from unauthorized access.",
+		"enabled": " enabled",
+		"disabled": " disabled",
+		"enableconfirm": "Are you sure you want to enable two-factor authentication? You will receive a code by email at each login.",
+		"disableconfirm": "Are you sure you want to disable two-factor authentication? Your account will be less secure.",
+		"legal": "Legal",
+		"currently": "2FA is currently"
 	}
 }

@@ -70,7 +70,14 @@
 		"username": "Nom d'utilisateur",
 		"password": "Mot de passe",
 		"noaccount": "Pas de compte ?",
-		"create": "Créer un compte"
+		"create": "Créer un compte",
+		"verif": "Vérification",
+		"sentemail": "Un code a été envoyé à votre adresse email.",
+		"verifcode": "Code de vérification",
+		"enter": "Entrez votre code à 6 chiffres",
+		"verify": "Vérifier",
+		"back": "Revenir",
+		"github": "Login avec GitHub"
 	},
 
 	"registerpage" : {
@@ -121,7 +128,8 @@
 		"mod": "Modérateur",
 		"user": "Utilisateur",
 		"post": "Post",
-		"battle": "Tournoi"
+		"battle": "Tournoi",
+		"enter": "Cliquez pour entrer"
 	},
 
 	"feedpage": {
@@ -225,7 +233,8 @@
 		"tournamentuser": "Cet utilisateur est déjà inscrit à ce tournoi",
 		"tournamentactive": "Le tournoi n'est pas actif",
 		"simple": "Une erreur est survenue",
-		"token": "Token invalide ou utilisateur non autorisé"
+		"token": "Token invalide ou utilisateur non autorisé",
+		"code": "Code invalide"
 	},
 
 	"dashboard": {
@@ -379,5 +388,20 @@
 		"fetchparticipants": "Échec de la récupération des participants",
 		"fetchposts": "Échec de la récupération des posts du tournoi",
 		"fetchlast": "Échec de la récupération du dernier post gagnant"
+	},
+
+	"settings": {
+		"sandp": "Paramètres & Confidentialité",
+		"security": "Sécurité",
+		"2fa": "2FA",
+		"two": "Authentification à deux facteurs",
+		"twodes": "L'authentification à deux facteurs ajoute une couche de sécurité supplémentaire à votre compte. Lorsqu'elle est activée, il vous sera demandé d'entrer un code de vérification envoyé à votre adresse email à chaque connexion.",
+		"tworecommend": "Nous recommandons d'activer la 2FA pour protéger votre compte contre les accès non autorisés.",
+		"enabled": " activée",
+		"disabled": " désactivée",
+		"enableconfirm": "Êtes-vous sûr de vouloir activer l'authentification à deux facteurs ? Vous recevrez un code par email à chaque connexion.",
+		"disableconfirm": "Êtes-vous sûr de vouloir désactiver l'authentification à deux facteurs ? Votre compte sera moins sécurisé.",
+		"legal": "Mentions légales",
+		"currently": "La 2FA est actuellement"
 	}
 }

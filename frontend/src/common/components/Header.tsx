@@ -155,7 +155,7 @@ export const Header = () => {
 							<span className="label">{t('header.profile')}</span>
 						</button>
 						<button onClick={() => handleNavigate('/settings')}>
-							<span className="label">Settings & Privacy</span>
+							<span className="label">{t('settings.sandp')}</span>
 						</button>
 						<button onClick={handleLogout}>
 							<span className="label">{t('header.logout')}</span>

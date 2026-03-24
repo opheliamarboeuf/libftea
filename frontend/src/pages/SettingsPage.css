@@ -65,7 +65,10 @@
 	flex: 1;
 	overflow-y: auto;
 	align-self: flex-start;
-	padding: 400px;
-	margin-bottom: 120px;
-	margin-left: 100px;
+	padding: 2rem;
+	margin-left: 300px;
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
