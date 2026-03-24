@@ -135,7 +135,6 @@ const ProfilePage = () => {
 						{profileTab === "tournament" && (
 							<UserPostsList posts={tournamentPosts} onPostDeleted={loadTournamentPosts} />
 						)}
-					<UserPostsList posts = {posts} onPostDeleted={loadPosts} />
 					</div>
 				</div>
 			</div>

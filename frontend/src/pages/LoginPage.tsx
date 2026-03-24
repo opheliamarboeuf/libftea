@@ -25,7 +25,7 @@ const LoginPage = () => {
 
 	const errorMessages = (message: string): string => {
 		if (message.includes("not found")) return 'errors.notfound';
-		if (message.includes("incorrect")) return 'errors.pswincorrect';
+		if (message.includes("Incorrect")) return 'errors.pswincorrect';
 		return 'errors.lfailed';
 	}
 	// Fetch full user profile after receiving JWT token
