@@ -12,15 +12,18 @@ function PrivacyPage() {
 	const [loading, setLoading] = useState(true);
 	const { user } = useUser();
 
+	const files = {
+		'en': () => import('../../public/privacy.en.txt?raw'),
+		'fr': () => import('../../public/privacy.fr.txt?raw'),
+		'jp': () => import('../../public/privacy.jp.txt?raw'),
+	}
+
 	useEffect(() => {
 		setLoading(true);
 
-		fetch(`/privacy.${i18n.language}.md`)
-			.then((res) => {
-				if (!res.ok) throw new Error(t('errorpage.filenotfound'));
-				return res.text();
-			})
-			.then((text) => setContent(text))
+		const f = files[i18n.language] || files['fr'];
+		f()
+			.then((module) => setContent(module.default))
 			.catch(() => setContent(t('errorpage.contentnotfound')))
 			.finally(() => setLoading(false));
 	}, [i18n.language]);
