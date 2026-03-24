@@ -321,7 +321,7 @@ const UserProfilePage = () => {
 				</div>
 
 				{/* COVER, USER INTERACTIONS AND POSTS*/}
-				<div className="relative flex-1 min-w-0 flex flex-col mt-8">
+				<div className="relative flex-1 min-w-0 flex flex-col mt-5">
 					{/* Gradient overlay */}
 					<div className="absolute top-0 left-0 w-full h-[250px] bg-gradient-to-b from-transparent to-gray-300/70 pointer-events-none z-[1]"></div>
 
