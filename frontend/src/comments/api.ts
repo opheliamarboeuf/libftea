@@ -1,8 +1,8 @@
-const API_URL = 'http://localhost:3000/comments';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const commentsApi = {
     createComment: async (postId: number, content: string) => {
-        const res = await fetch(`${API_URL}/post/${postId}`, {
+        const res = await fetch(`${API_URL}/comments/post/${postId}`, {
             method: 'POST',
 			credentials: 'include',
 			headers: {
@@ -21,7 +21,7 @@ export const commentsApi = {
     },
 
     deleteComment: async (commentId: number) => {
-         const res = await fetch(`${API_URL}/${commentId}`, {
+         const res = await fetch(`${API_URL}/comments/${commentId}`, {
             method: 'DELETE',
 			credentials: 'include',
 			headers: {
@@ -38,7 +38,7 @@ export const commentsApi = {
     },
 
     replyComment: async (parentCommentId: number, content: string) => {
-        const res = await fetch(`${API_URL}/${parentCommentId}/reply`, {
+        const res = await fetch(`${API_URL}/comments/${parentCommentId}/reply`, {
             method: 'POST',
 			credentials: 'include',
 			headers: {
@@ -56,7 +56,7 @@ export const commentsApi = {
     },
 
     getComments: async (postId: number) => {
-        const res = await fetch(`${API_URL}/post/${postId}`, {
+        const res = await fetch(`${API_URL}/comments/post/${postId}`, {
             method: 'GET',
 			credentials: 'include',
 			headers: {

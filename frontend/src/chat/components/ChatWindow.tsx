@@ -28,7 +28,7 @@ interface Props {
   onNewMessage?: (conversationId: number, message: LastMessage) => void;
 }
 
-const API_URL = 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL;
 const SCROLL_THRESHOLD = 100;
 
 function formatTime(iso?: string) {
@@ -158,7 +158,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             <div style={{ cursor: 'pointer' }} onClick={() => navigate(`/users/${otherUser.id}`)}>
               <p style={{ margin: 0, fontWeight: 600, fontSize: '15px', color: '#111827' }}>{otherUser.username}</p>
               <p style={{ margin: 0, fontSize: '11px', color: isOnline ? '#22c55e' : '#9ca3af' }}>
-                {isOnline ? 'En ligne' : 'Hors ligne'}
+                {isOnline ? 'Online' : 'Offline'}
               </p>
             </div>
           </>
@@ -263,14 +263,14 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                   <div style={{ width: 16, height: 16, borderRadius: '50%', overflow: 'hidden' }}>
                     <img src={avatarSrc} alt={otherUser?.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
-                  <span style={{ fontSize: 10, color: '#2563eb' }}>Seen</span>
+                  <span style={{ fontSize: 10, color: '#2563eb' }}>Read</span>
                 </div>
               )}
 
               {/* Envoyé */}
               {showSent && (
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2, paddingRight: 4 }}>
-                  <span style={{ fontSize: 10, color: '#9ca3af' }}>Read</span>
+                  <span style={{ fontSize: 10, color: '#9ca3af' }}>Send</span>
                 </div>
               )}
             </div>

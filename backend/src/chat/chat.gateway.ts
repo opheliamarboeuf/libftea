@@ -12,7 +12,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 
 @WebSocketGateway({
   namespace: '/chat',
-  cors: { origin: 'http://localhost:5173', credentials: true },
+  cors: { origin: process.env.FRONTEND_URL, credentials: true },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()

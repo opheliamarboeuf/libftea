@@ -7,7 +7,7 @@ import { UserNameWithRole } from '../common/components/UserNameWithRole';
 
 export function FriendsList() {
 	const { friends } = useFriends();
-	const API_URL = 'http://localhost:3000';
+	const API_URL = import.meta.env.VITE_API_URL;
 
 	return (
 		<div>

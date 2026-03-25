@@ -1,6 +1,8 @@
-import { useState, ChangeEvent } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const LoginPage = () => {
 	// Form state
@@ -11,15 +13,21 @@ const LoginPage = () => {
 	const [show2FA, setShow2FA] = useState(false);
 	const [twoFactorCode, setTwoFactorCode] = useState('');
 	const [pendingUserId, setPendingUserId] = useState<number | null>(null);
+	const [visible, setVisible] = useState(false);
 	const { setUser } = useUser();
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const t = setTimeout(() => setVisible(true), 20);
+		return () => clearTimeout(t);
+	}, []);
 
 	const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value);
 	const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
 
 	// Fetch full user profile after receiving JWT token
 	const fetchAndSetUser = async (token: string) => {
-		const res = await fetch('http://localhost:3000/auth/me', {
+		const res = await fetch(`${API_URL}/auth/me`, {
 			headers: { Authorization: `Bearer ${token}` },
 		});
 		const fullUserData = await res.json();
@@ -33,7 +41,7 @@ const LoginPage = () => {
 		setErrorMessage(null);
 
 		try {
-			const res = await fetch('http://localhost:3000/auth/login', {
+			const res = await fetch(`${API_URL}/auth/login`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ username, password }),
@@ -70,7 +78,7 @@ const LoginPage = () => {
 		setErrorMessage(null);
 
 		try {
-			const res = await fetch('http://localhost:3000/auth/2fa/verify', {
+			const res = await fetch(`${API_URL}/auth/2fa/verify`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ userId: pendingUserId, code: twoFactorCode }),
@@ -94,7 +102,10 @@ const LoginPage = () => {
 	};
 
 	return (
-		<div className="fixed inset-0 flex items-center justify-center">
+		<div
+			className="fixed inset-0 flex items-center justify-center"
+			style={{ opacity: visible ? 1 : 0, transition: 'opacity 1.2s ease' }}
+		>
 			<div className="w-80 p-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
 				<h1 className="text-4xl text-center mb-8 text-black" style={{ fontFamily: "'Blosta Script', cursive" }}>
 					{show2FA ? 'Verification' : 'Login'}
@@ -182,8 +193,8 @@ const LoginPage = () => {
 						</button>
 						<button 
 							type="button"
-							onClick={() => window.location.href = 'http://localhost:3000/auth/github'}
-							className="w-full py-2 bg-neutral-600 text-white rounded-lg hover:bg-neutral-400 transition-all outline-none"
+							onClick={() => window.location.href = `${API_URL}/auth/github`}
+							className="w-full py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all outline-none"
 						>
 							Login with GitHub
 						</button>
