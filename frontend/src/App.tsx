@@ -124,25 +124,25 @@ const App = () => {
 						<Route 
 							path="/chat"
 							element={loading ? null : user ? <ChatPage /> : <Navigate to="/" replace />} />
-			<Route
-				path="/tournament"
-				element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />
-            <Route
-              path="/dashboard"
-              element={loading ? null : user ? <DashboardPage/> : <Navigate to = "/" replace />} />
-			<Route
-              path="/privacypolicy"
-              element={<PrivacyPage/>} />
-			<Route
-              path="/termsofservice"
-              element={<TermsPage/>} />
-            <Route
-              path="/auth/github/callback"
-              element={<GithubCallbackPage />} />
-          </Routes>
-        </BrowserRouter>
-        </ModalProvider>
-    </UserContext.Provider>
+						<Route
+							path="/tournament"
+							element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />
+						<Route
+						path="/dashboard"
+						element={loading ? null : user ? <DashboardPage/> : <Navigate to = "/" replace />} />
+						<Route
+						path="/privacypolicy"
+						element={<PrivacyPage/>} />
+						<Route
+						path="/termsofservice"
+						element={<TermsPage/>} />
+						<Route
+						path="/auth/github/callback"
+						element={<GithubCallbackPage />} />
+        			</Routes>
+        		</BrowserRouter>
+    		</ModalProvider>
+    	</UserContext.Provider>
   );
 };
 

@@ -6,12 +6,11 @@ import './friends.css';
 import { UserNameWithRole } from '../common/components/UserNameWithRole';
 import { useTranslation } from "react-i18next";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function FriendsList() {
 	const { friends } = useFriends();
-<<<<<<< HEAD
-	const API_URL = import.meta.env.VITE_API_URL;
 	const { t } = useTranslation();
->>>>>>> main
 
 	return (
 		<div>

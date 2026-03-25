@@ -16,14 +16,11 @@ export interface Notification {
 	};
 }
 
-	const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 	
 export const useNotifications = (userId: number | undefined) => {
 	const [notifications, setNotifications] = useState<Notification[]>([]);
-<<<<<<< HEAD
 	const { t } = useTranslation();
-=======
->>>>>>> main
 
 	useEffect(() => {
 		if (!userId) return;

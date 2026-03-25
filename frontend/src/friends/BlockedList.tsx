@@ -10,8 +10,6 @@ export function BlockedList() {
 	const { blocked } = useBlocked();
 	const { t } = useTranslation();
 
->>>>>>> main
-
 	return (
 		<div>
 			{blocked.length === 0 && <p className="friends-empty">{t("friends.noblocked")}</p>}

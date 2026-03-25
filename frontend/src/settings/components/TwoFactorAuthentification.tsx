@@ -2,14 +2,11 @@ import { useState } from 'react';
 import { ConfirmDialog } from '../../profile/ConfirmDialog';
 import { useUser } from '../../context/UserContext';
 import { useModal } from '../../context/ModalContext';
-import './TwoFactorAuthentification.css';
-<<<<<<< HEAD
 import { useTranslation } from 'react-i18next';
-=======
+import './TwoFactorAuthentification.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
->>>>>>> main
 export function TwoFactorAuthentification() {
 	const { user, refreshUser } = useUser();
 	const [showConfirm, setShowConfirm] = useState(false);

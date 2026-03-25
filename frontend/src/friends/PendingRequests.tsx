@@ -12,9 +12,7 @@ export function PendingRequests() {
 	const { pending, refetch } = usePendingRequests();
 	const [loading, setLoading] = useState(false);
 	const { refreshUser, user } = useUser();
-<<<<<<< HEAD
 	const { t } = useTranslation();
-=======
 
 	const { emit } = useFriendsSocket(user?.id, {
 		onRequestAccepted: () => {
