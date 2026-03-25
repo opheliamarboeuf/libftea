@@ -70,6 +70,10 @@ export class TournamentController {
 		// Number(battleId) > conversion de battleId de string à int
 		return this.tournamentService.joinTournament(Number(battleId), userId, data, imageUrl);
 	}
+	@Get('recent')
+	getRecentTournament() {
+		return this.tournamentService.getRecentTournament();
+	}
 	@Get(':battleId/participants')
 	getParticipants(@Param('battleId') battleId: string) {
 		return this.tournamentService.getParticipants(Number(battleId));
@@ -83,10 +87,6 @@ export class TournamentController {
 	@Get('user/:userId/posts')
 	getUserTournamentPosts(@Param('userId', ParseIntPipe) userId: number) {
 		return this.tournamentService.getUserTournamentPosts(userId);
-	}
-	@Get('recent')
-	getRecentTournament() {
-		return this.tournamentService.getRecentTournament();
 	}
 	@Get(':battleId/posts')
 	async getBattlePosts(@Param('battleId') battleId: string, @Req() req: any) {

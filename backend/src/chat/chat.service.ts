@@ -25,7 +25,7 @@ export class ChatService {
   async getOrCreateConversation(userIdA: number, userIdB: number) {
     const friends = await this.areFriends(userIdA, userIdB);
     if (!friends) {
-      throw new ForbiddenException('Vous devez être amis pour discuter.');
+      throw new ForbiddenException('You must be friends to send messages.');
     }
     const existing = await this.prisma.conversation.findFirst({
       where: {

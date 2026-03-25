@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
 import { chatSocket } from '../../../socket/socket';
 import { tournamentApi } from '../../../tournament/api';
 
@@ -20,20 +19,21 @@ interface TournamentState {
   endsAt?: string;
 }
 
+// Cache tournoi partagé entre toutes les conversations
+let tournamentCache: TournamentState | null | undefined = undefined;
+
 export function useChat(conversationId: number, currentUserId: number) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatError, setChatError] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [lastReadMessageId, setLastReadMessageId] = useState<number | null>(null);
   const [tournamentState, setTournamentState] = useState<TournamentState | null>(null);
 
-  const socketRef = useRef<Socket | null>(null);
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isTypingRef = useRef(false);
   const messagesRef = useRef<Message[]>([]);
+  const storageKey = `lastRead_${conversationId}_${currentUserId}`;
 
-  // Met à jour le ref synchroniquement avec le state
   const setMessagesSync = (updater: (prev: Message[]) => Message[]) => {
     setMessages(prev => {
       const next = updater(prev);
@@ -42,113 +42,151 @@ export function useChat(conversationId: number, currentUserId: number) {
     });
   };
 
+  const [lastReadMessageId, setLastReadMessageId] = useState<number | null>(() => {
+    const saved = localStorage.getItem(storageKey);
+    return saved ? Number(saved) : null;
+  });
+
   const setErrorWithTimeout = (msg: string, duration = 3000) => {
     setChatError(msg);
     if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     errorTimerRef.current = setTimeout(() => setChatError(''), duration);
   };
 
-  // Charge le tournoi récent (en cours ou terminé depuis moins de 24h)
+  // Charge le tournoi une seule fois (cache partagé entre conversations)
   useEffect(() => {
-    const loadTournament = async () => {
-      try {
-        const tournament = await tournamentApi.getRecentTournament();
-        setTournamentState(tournament ?? null);
-      } catch {
+    if (tournamentCache !== undefined) {
+      setTournamentState(tournamentCache);
+      return;
+    }
+    tournamentApi.getRecentTournament()
+      .then(t => {
+        tournamentCache = t ?? null;
+        setTournamentState(tournamentCache);
+      })
+      .catch(() => {
+        tournamentCache = null;
         setTournamentState(null);
-      }
-    };
-    loadTournament();
-  }, [conversationId]);
+      });
+  }, []); // plus de dépendance sur conversationId
 
-  // Socket chat
+  // Socket — réutilise le singleton chatSocket, pas de new io()
   useEffect(() => {
+    // Reset immédiat de l'UI
+    setMessages([]);
+    messagesRef.current = [];
     setChatError('');
     setIsTyping(false);
-    messagesRef.current = [];
+
+    const saved = localStorage.getItem(storageKey);
+    setLastReadMessageId(saved ? Number(saved) : null);
+
     if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
 
-    const socket = io('http://localhost:3000/chat', { withCredentials: true });
-    socketRef.current = socket;
+    if (!chatSocket.connected) chatSocket.connect();
 
-    socket.on('connect', () => {
-      socket.emit('joinConversation', { conversationId });
-      socket.emit('getMessages', { conversationId });
+    const onConnect = () => {
+      chatSocket.emit('joinConversation', { conversationId });
+      chatSocket.emit('getMessages', { conversationId });
       chatSocket.emit('markRead', { conversationId, userId: currentUserId });
-    });
+    };
 
-    socket.on('messageHistory', (msgs: Message[]) => {
+    const onMessageHistory = (msgs: Message[]) => {
       messagesRef.current = msgs;
       setMessages(msgs);
-    });
+    };
 
-    socket.on('newMessage', (msg: Message) => {
+    const onNewMessage = (msg: Message & { conversationId: number }) => {
+      // Ignore les messages d'autres conversations reçus sur le socket global
+      if (msg.conversationId !== conversationId) return;
       setMessagesSync(prev => [...prev, msg]);
       setIsTyping(false);
       if (msg.senderId !== currentUserId) {
         chatSocket.emit('markRead', { conversationId, userId: currentUserId });
       }
-    });
+    };
 
-    socket.on('error', (data: { message: string }) => setErrorWithTimeout(data.message));
+    const onError = (data: { message: string }) => setErrorWithTimeout(data.message);
 
-    socket.on('userTyping', () => {
+    const onUserTyping = () => {
       setIsTyping(true);
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
       typingTimerRef.current = setTimeout(() => setIsTyping(false), 3000);
-    });
+    };
 
-    socket.on('userStoppedTyping', () => {
+    const onUserStoppedTyping = () => {
       setIsTyping(false);
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-    });
+    };
 
-    const handleMessageRead = () => {
+    const onMessageRead = () => {
       const myMessages = messagesRef.current.filter(m => m.senderId === currentUserId);
       if (myMessages.length > 0) {
-        setLastReadMessageId(myMessages[myMessages.length - 1].id);
+        const lastId = myMessages[myMessages.length - 1].id;
+        setLastReadMessageId(lastId);
+        localStorage.setItem(storageKey, String(lastId));
       }
     };
-    chatSocket.on('messageRead', handleMessageRead);
+
+    // Si déjà connecté, rejoindre directement sans attendre l'event connect
+    if (chatSocket.connected) {
+      onConnect();
+    } else {
+      chatSocket.once('connect', onConnect);
+    }
+
+    chatSocket.on('messageHistory', onMessageHistory);
+    chatSocket.on('newMessage', onNewMessage);
+    chatSocket.on('error', onError);
+    chatSocket.on('userTyping', onUserTyping);
+    chatSocket.on('userStoppedTyping', onUserStoppedTyping);
+    chatSocket.on('messageRead', onMessageRead);
 
     return () => {
       if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-      socket.emit('leaveConversation', { conversationId });
-      socket.disconnect();
-      chatSocket.off('messageRead', handleMessageRead);
+      chatSocket.emit('leaveConversation', { conversationId });
+      chatSocket.off('connect', onConnect);
+      chatSocket.off('messageHistory', onMessageHistory);
+      chatSocket.off('newMessage', onNewMessage);
+      chatSocket.off('error', onError);
+      chatSocket.off('userTyping', onUserTyping);
+      chatSocket.off('userStoppedTyping', onUserStoppedTyping);
+      chatSocket.off('messageRead', onMessageRead);
     };
   }, [conversationId]);
 
   const sendMessage = (content: string) => {
-    socketRef.current?.emit('sendMessage', {
+    chatSocket.emit('sendMessage', {
       content,
       conversationId,
       senderId: currentUserId,
     });
     if (isTypingRef.current) {
-      socketRef.current?.emit('stopTyping', { conversationId, senderId: currentUserId });
+      chatSocket.emit('stopTyping', { conversationId, senderId: currentUserId });
       isTypingRef.current = false;
     }
   };
 
   const sendTournamentMessage = async () => {
     try {
-      if (!tournamentState?.id) {
-        console.warn('No recent tournament');
+      const fresh = await tournamentApi.getRecentTournament();
+
+      if (!fresh?.id) {
+        console.warn('No active or recent tournament');
         return;
       }
 
+      const now = new Date();
       const isFinished =
-        tournamentState.status === 'FINISHED' ||
-        (!!tournamentState.endsAt && new Date(tournamentState.endsAt) < new Date());
+        fresh.status === 'FINISHED' ||
+        (fresh.endsAt && new Date(fresh.endsAt) < now);
 
-      const isWinner = tournamentState.winnerId === currentUserId;
+      const isWinner = fresh.winnerId === currentUserId;
 
-      // Si le tournoi est terminé, pas besoin de vérifier la participation
       if (!isFinished) {
-        const participants = await tournamentApi.getParticipants(tournamentState.id);
+        const participants = await tournamentApi.getParticipants(fresh.id);
         const isParticipant = participants.some(
           (p: { userId: number }) => p.userId === currentUserId
         );
@@ -166,12 +204,12 @@ export function useChat(conversationId: number, currentUserId: number) {
       const type =
         isWinner && isFinished ? 'tournament_victory' : 'tournament_invite';
 
-      socketRef.current?.emit('sendMessage', {
+      chatSocket.emit('sendMessage', {
         content,
         conversationId,
         senderId: currentUserId,
         type,
-        metadata: { battleId: tournamentState.id },
+        metadata: { battleId: fresh.id },
       });
     } catch (err) {
       console.error('Tournament message failed:', err);
@@ -180,12 +218,12 @@ export function useChat(conversationId: number, currentUserId: number) {
 
   const emitTyping = (username: string) => {
     if (!isTypingRef.current) {
-      socketRef.current?.emit('typing', { conversationId, senderId: currentUserId, username });
+      chatSocket.emit('typing', { conversationId, senderId: currentUserId, username });
       isTypingRef.current = true;
     }
     if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
     typingTimerRef.current = setTimeout(() => {
-      socketRef.current?.emit('stopTyping', { conversationId, senderId: currentUserId });
+      chatSocket.emit('stopTyping', { conversationId, senderId: currentUserId });
       isTypingRef.current = false;
     }, 2000);
   };

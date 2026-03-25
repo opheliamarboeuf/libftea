@@ -1,11 +1,9 @@
-import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { useChat } from './hooks/useChat';
 import { LastMessage } from './hooks/useConversations';
 import { useFriendsSocket } from '../../friends/useFriendsSocket';
 import { useUser } from '../../context/UserContext';
-
 
 interface OtherUser {
   id: number;
@@ -49,6 +47,19 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
     lastReadMessageId,
     tournamentState,
   } = useChat(conversationId, currentUserId);
+
+  const { showVictoryButton, showTournamentButton } = useMemo(() => {
+    const finished =
+      !!tournamentState &&
+      (tournamentState.status === 'FINISHED' ||
+        (!!tournamentState.endsAt && new Date(tournamentState.endsAt) < new Date()));
+    const active = !!tournamentState && !finished;
+    const winner = tournamentState?.winnerId === currentUserId;
+    return {
+      showVictoryButton: winner && finished,
+      showTournamentButton: active || (winner && finished), // actif OU gagnant d'un tournoi terminé
+    };
+  }, [tournamentState, currentUserId]);
 
   const { user } = useUser();
   const [input, setInput] = useState('');
@@ -119,18 +130,6 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
     setInput('');
   };
 
-  const handleSendTournament = () => {
-    sendTournamentMessage();
-  };
-
-  // Détermine l'état du bouton tournoi
-  const isFinished =
-    !!tournamentState &&
-    (tournamentState.status === 'FINISHED' ||
-      (!!tournamentState.endsAt && new Date(tournamentState.endsAt) < new Date()));
-  const isWinner = tournamentState?.winnerId === currentUserId;
-  const showVictoryButton = isWinner && isFinished;
-
   const avatarSrc = otherUser?.profile?.avatarUrl
     ? `${API_URL}${otherUser.profile.avatarUrl}`
     : '/default-avatar.png';
@@ -144,7 +143,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
       {/* Barre du haut */}
       <div style={{
         height: '57px', display: 'flex', alignItems: 'center', gap: '12px',
-        padding: '0 20px', borderBottom: '1px solid #e5e7eb', flexShrink: 0,
+        padding: '0 20px', borderBottom: '1px solid #111827', flexShrink: 0,
       }}>
         {otherUser && (
           <>
@@ -159,7 +158,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             <div style={{ cursor: 'pointer' }} onClick={() => navigate(`/users/${otherUser.id}`)}>
               <p style={{ margin: 0, fontWeight: 600, fontSize: '15px', color: '#111827' }}>{otherUser.username}</p>
               <p style={{ margin: 0, fontSize: '11px', color: isOnline ? '#22c55e' : '#9ca3af' }}>
-                {isOnline ? 'Online' : 'Offline'}
+                {isOnline ? 'En ligne' : 'Hors ligne'}
               </p>
             </div>
           </>
@@ -193,7 +192,6 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
           const isTournamentVictory = msg.type === 'tournament_victory';
           const isTournamentMessage = isTournamentInvite || isTournamentVictory;
 
-          // Couleur de fond selon le type de message
           const bubbleBg = isOwn
             ? isTournamentVictory ? '#7c3aed' : isTournamentInvite ? '#f59e0b' : '#2563eb'
             : '#f3f4f6';
@@ -227,7 +225,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                     }}>
                       {msg.content}
 
-                      {/* Bouton Join Tournament / See Winner — visible seulement pour le destinataire */}
+                      {/* Bouton visible uniquement pour le destinataire */}
                       {isTournamentMessage && !isOwn && msg.metadata?.battleId && (
                         <div style={{ marginTop: 8 }}>
                           <button
@@ -265,14 +263,14 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                   <div style={{ width: 16, height: 16, borderRadius: '50%', overflow: 'hidden' }}>
                     <img src={avatarSrc} alt={otherUser?.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
-                  <span style={{ fontSize: 10, color: '#6b7280' }}>Seen</span>
+                  <span style={{ fontSize: 10, color: '#2563eb' }}>Seen</span>
                 </div>
               )}
 
               {/* Envoyé */}
               {showSent && (
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2, paddingRight: 4 }}>
-                  <span style={{ fontSize: 10, color: '#9ca3af' }}>Sent</span>
+                  <span style={{ fontSize: 10, color: '#9ca3af' }}>Read</span>
                 </div>
               )}
             </div>
@@ -323,14 +321,14 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             padding: '9px 14px', fontSize: 14, lineHeight: 1.5, maxHeight: 120,
             overflowY: 'auto', outline: 'none', fontFamily: 'inherit', color: '#111827', background: '#f9fafb',
           }}
-          onFocus={e => { e.currentTarget.style.borderColor = '#6b7280'; e.currentTarget.style.background = '#fff'; }}
+          onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.background = '#fff'; }}
           onBlur={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}
         />
 
         {/* Bouton tournoi — visible seulement si tournoi actif ou terminé depuis moins de 24h */}
-        {tournamentState && (
+        {showTournamentButton && (
           <button
-            onClick={handleSendTournament}
+            onClick={sendTournamentMessage}
             title={showVictoryButton ? 'Share your victory' : 'Invite to tournament'}
             style={{
               width: 38, height: 38, borderRadius: '50%', border: 'none',
@@ -351,15 +349,14 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
           disabled={!input.trim()}
           style={{
             width: 38, height: 38, borderRadius: '50%', border: 'none',
-            background: input.trim() ? '#6b7280' : '#e5e7eb',
+            background: input.trim() ? '#2563eb' : '#e5e7eb',
             cursor: input.trim() ? 'pointer' : 'default',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0, transition: 'background 0.15s', position: 'relative', zIndex: 10,
+            flexShrink: 0, transition: 'background 0.15s',
           }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', flexShrink: 0 }}>
-            <path d="M22 2L11 13" stroke={input.trim() ? '#fff' : '#9ca3af'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke={input.trim() ? '#fff' : '#9ca3af'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke={input.trim() ? '#fff' : '#9ca3af'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       </div>

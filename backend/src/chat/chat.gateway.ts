@@ -50,7 +50,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
     const otherUser = conversation?.User.find(u => u.id !== dto.senderId);
     if (!otherUser || !(await this.chatService.areFriends(dto.senderId, otherUser.id))) {
-      client.emit('error', { message: 'Vous devez être amis pour envoyer des messages.' });
+      client.emit('error', { message: 'You must be friends to send messages.' });
       return;
     }
 

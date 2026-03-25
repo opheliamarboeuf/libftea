@@ -45,7 +45,11 @@ export const tournamentApi = {
 	},
 
 	getRecentTournament: async () => {
-		const res = await fetch(`${API_URL}/tournament/recent`, { credentials: 'include' });
+		const res = await fetch(`${API_URL}/tournament/recent`, {
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
 		if (!res.ok) return null;
 		return res.json();
 	},

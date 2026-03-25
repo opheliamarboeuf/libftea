@@ -141,7 +141,7 @@ export function useConversations(currentUserId?: number) {
       credentials: 'include',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
-    if (!res.ok) throw new Error('Vous devez être amis pour discuter.');
+    if (!res.ok) throw new Error('You must be friends to send messages.');
     const data = await res.json();
     const conv = Array.isArray(data)
       ? data.reduce((best: any, c: any) => {
