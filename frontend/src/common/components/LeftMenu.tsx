@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
 import { FaMessage} from "react-icons/fa6";
-import { MdOutlineHome, MdOutlineAccountCircle, MdOutlinePeople, MdOutlineWorkspacePremium, MdOutlineDashboard, MdOutlineChat} from "react-icons/md";
+import { MdOutlineHome, MdOutlineAccountCircle, MdOutlineLanguage, MdOutlinePeople, MdOutlineWorkspacePremium, MdOutlineDashboard, MdOutlineChat} from "react-icons/md";
 import { useState } from "react";
 import "./LeftMenu.css"
 import "../../App.css"
 import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 
 export const LeftMenu = () => {
 	
@@ -13,6 +14,13 @@ export const LeftMenu = () => {
 	const { user, setUser } = useUser();
 	const { t } = useTranslation();
 	const [isHovered, setIsHovered] = useState(false);
+	const [langMenuOpen, setLangMenuOpen] = useState(false);
+
+	const languages = [
+		{ code: 'fr', label: 'FR'},
+		{ code: 'en', label: 'EN'},
+		{ code: 'jp', label: 'JP'},
+	];
 
 	if (!user)
 		return ;
@@ -57,6 +65,22 @@ export const LeftMenu = () => {
 				<MdOutlineDashboard className="icon" />
 				<span className="label">{t('leftmenu.dashboard')}</span>
 			</div> ) : null}
+			<div className="menu-item" onClick={() => setLangMenuOpen(prev => !prev)}>
+				<MdOutlineLanguage className="icon" />
+				<span className="label">{i18n.language.toUpperCase()}</span>
+			</div>
+			{langMenuOpen && (
+				<div className="lang-submenu">
+					{languages.map(lang => (
+						<div
+							key={lang.code}
+							className={`lang-submenu-item ${i18n.language === lang.code ? 'active' : ''}`}
+							onClick={() => {i18n.changeLanguage(lang.code); setLangMenuOpen(false); }}>
+								<span className="lang-submenu-code">{lang.label}</span>
+						</div>
+					))}
+				</div>
+			)}
 		</div>
 		</>
 	);

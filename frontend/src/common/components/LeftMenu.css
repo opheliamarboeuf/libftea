@@ -122,3 +122,32 @@
 .menu-item:hover .icon {
 	-webkit-text-stroke: 1px #333;
 }
+
+.lang-submenu {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	margin-top: -1.5rem;
+}
+
+.lang-submenu-item {
+	display: flex;
+	align-items: center;
+	padding: 6px 10px 6px 54px;
+	cursor: pointer;
+	color: #888;
+	font-size: 0.78rem;
+	font-weight: 600;
+	letter-spacing: 0.04rem;
+	white-space: nowrap;
+	transition: background-color 0.15s, color 0.15s;
+}
+
+.lang-submenu-item:hover {
+	background-color: #dddddd;
+	color: #333;
+}
+
+.lang-submenu-item.active {
+	color: #333;
+}
