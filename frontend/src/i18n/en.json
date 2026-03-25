@@ -238,7 +238,8 @@
 		"simple": "An error occurred",
 		"token": "Token invalid or user unauthorized",
 		"code": "Invalid code",
-		"2fa": "2FA settings change Failed"
+		"2fa": "2FA settings change Failed",
+		"chat": "You have to be friends to be able to chat."
 	},
 
 	"dashboard": {
@@ -407,5 +408,15 @@
 		"disableconfirm": "Are you sure you want to disable two-factor authentication? Your account will be less secure.",
 		"legal": "Legal",
 		"currently": "2FA is currently"
+	},
+
+	"chat": {
+		"chat": "Chat",
+		"noconv": "No conversation yet",
+		"seen": "Seen",
+		"sent": "Sent",
+		"write": "Write a message…",
+		"select": "Select a conversation",
+		"you": "You : "
 	}
 }

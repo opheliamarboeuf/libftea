@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '../../context/UserContext';
 import { useFriendsSocket } from '../../friends/useFriendsSocket';
+import { useTranslation } from 'react-i18next';
 
 const API_URL = 'http://localhost:3000';
 
@@ -33,6 +34,7 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
   const [search, setSearch] = useState('');
   const [onlineUsers, setOnlineUsers] = useState<Set<number>>(new Set());
   const [blockedUsers, setBlockedUsers] = useState<Set<number>>(new Set());
+  const { t } = useTranslation();
 
   const fetchBlockedUsers = useCallback(async () => {
     try {
@@ -108,7 +110,7 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
           </svg>
           <input
             type="text"
-            placeholder="Search..."
+            placeholder={t('searchbar.search')}
             value={search}
             onChange={e => setSearch(e.target.value)}
             style={{
@@ -124,7 +126,7 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
 
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {filtered.length === 0 ? (
-          <p style={{ padding: '16px', color: '#9ca3af', fontSize: '14px' }}>No conversation yet</p>
+          <p style={{ padding: '16px', color: '#9ca3af', fontSize: '14px' }}>{t('chat.noconv')}</p>
         ) : (
           filtered.map(conv => {
             const other = conv.User.find(u => u.id !== user.id);
@@ -134,7 +136,7 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
             const avatarSrc = other?.profile?.avatarUrl
               ? `${API_URL}${other.profile.avatarUrl}`
               : '/default-avatar.png';
-            const senderPrefix = lastMsg?.senderId === user.id ? 'You : ' : '';
+            const senderPrefix = lastMsg?.senderId === user.id ? t('chat.you') : '';
 
             return (
               <div
@@ -167,7 +169,7 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
 
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <p style={{ fontWeight: isActive ? 600 : 500, margin: 0, fontSize: '0.95rem', color: 'black' }}>
-                    {other?.username ?? 'Inconnu'}
+                    {other?.username ?? t('userreport.unknown')}
                   </p>
                   {lastMsg && (
                     <p style={{ fontSize: '12px', color: '#6b7280', margin: '2px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

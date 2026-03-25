@@ -4,12 +4,14 @@ import { useConversations } from '../chat/components/hooks/useConversations';
 import { ChatWindow } from '../chat/components/ChatWindow';
 import { ChatNavbar } from '../chat/components/ChatNavbar';
 import { useUser } from '../context/UserContext';
+import { useTranslation } from 'react-i18next';
 
 export function ChatPage() {
   const { user } = useUser();
   const { conversations, openConversation, updateLastMessage } = useConversations(user?.id);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const [searchParams] = useSearchParams();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const withUserId = searchParams.get('with');
@@ -55,7 +57,7 @@ export function ChatPage() {
             />
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9ca3af', fontSize: '15px' }}>
-              Select a conversation
+              {t('chat.select')}
             </div>
           )}
         </div>

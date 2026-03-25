@@ -45,7 +45,7 @@ export const LeftMenu = () => {
 
 			<div className="menu-item" onClick={() => navigate("/chat")}>
 				<MdOutlineChat className="icon" />
-				<span className="label">Chat</span>
+				<span className="label">{t('chat.chat')}</span>
 			</div>
 		
 			<div className="menu-item" onClick={() => navigate("/tournament")}>

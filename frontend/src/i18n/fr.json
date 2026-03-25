@@ -236,7 +236,8 @@
 		"simple": "Une erreur est survenue",
 		"token": "Token invalide ou utilisateur non autorisé",
 		"code": "Code invalide",
-		"2fa": "Échec de la modification des paramètres 2FA"
+		"2fa": "Échec de la modification des paramètres 2FA",
+		"chat": "Vous devez être amis pour discuter."
 	},
 
 	"dashboard": {
@@ -405,5 +406,15 @@
 		"disableconfirm": "Êtes-vous sûr de vouloir désactiver l'authentification à deux facteurs ? Votre compte sera moins sécurisé.",
 		"legal": "Mentions légales",
 		"currently": "La 2FA est actuellement"
+	},
+
+	"chat": {
+		"chat": "Chat",
+		"noconv": "Aucune conversation pour le moment",
+		"seen": "Vu",
+		"sent": "Envoyé",
+		"write": "Écrire un message…",
+		"select": "Sélectionnez une conversation",
+		"you": "Vous : "
 	}
 }
