@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Post } from "../../context/UserContext";
 import { postsApi } from "../api";
+import i18n from "../../i18n";
 
 type FeedType = "all" | "friends";
 
@@ -33,7 +34,7 @@ export function useFeed(initialType: FeedType = "all"): UseFeedResult {
 			setPosts(data);
 		}
 		catch (err: any) {
-			setError(err.message || "Error while loading posts");
+			setError(err.message || i18n.t('errorpage.loadpost'));
 		} finally {
 			setLoading(false);
 		}

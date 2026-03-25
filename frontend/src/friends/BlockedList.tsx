@@ -2,15 +2,17 @@ import { useBlocked } from './hooks';
 import { BlockFriendButton } from './BlockFriendButton';
 import { Link } from 'react-router-dom';
 import './friends.css';
+import { useTranslation } from "react-i18next";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function BlockedList() {
 	const { blocked } = useBlocked();
-	const API_URL = import.meta.env.VITE_API_URL;
-
+	const { t } = useTranslation();
 
 	return (
 		<div>
-			{blocked.length === 0 && <p className="friends-empty">No blocked users</p>}
+			{blocked.length === 0 && <p className="friends-empty">{t("friends.noblocked")}</p>}
 			<div className="friends-list">
 				{blocked.map((blocked) => (
 					<div key={blocked.id} className="friend-card">
@@ -36,7 +38,7 @@ export function BlockedList() {
 									pointerEvents: blocked.bannedAt ? 'none' : 'auto',
 								}}
 							>
-								{blocked.bannedAt ? 'Unknown User' : blocked.username}
+								{blocked.bannedAt ? t('userreport.unknown') : blocked.username}
 							</Link>
 						</div>
 						<div className="friend-card-actions">

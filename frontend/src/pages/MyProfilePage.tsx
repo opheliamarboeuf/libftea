@@ -7,6 +7,7 @@ import { Post } from "../context/UserContext";
 import { fetchUserPosts, fetchUserTournamentPosts } from "../posts/components/fetchUserPosts";
 import { UserPostsList } from "../posts/components/UserPostsList";
 import { UserNameWithRole } from "../common/components/UserNameWithRole";
+import { useTranslation } from "react-i18next";
 
 const ProfilePage = () => {
 	const { user } = useUser();
@@ -15,6 +16,7 @@ const ProfilePage = () => {
 	const [posts, setPosts] = useState<Post[]>([]);
 	const [profileTab, setProfileTab] = useState('posts');
 	const [tournamentPosts, setTournamentPosts] = useState<Post[]>([]);
+	const { t } = useTranslation();
 
 	if (!user) return <Navigate to="/" replace />;
 
@@ -54,15 +56,15 @@ const ProfilePage = () => {
 					<div className="flex justify-center gap-2 w-full">
 						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
 							<strong className="text-lg font-bold">{user.friends?.length ?? 0}</strong>
-							Friends
+							{t('userprofile.friends')}
 						</span>
 						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
 							<strong className="text-lg font-bold">{posts.length}</strong>
-							Posts
+							{t('userprofile.posts')}
 						</span>
 					</div>
 					<div className="text-center p-3 rounded-xl w-full bg-white/90 shadow-sm border border-black/5 text-sm whitespace-pre-line">
-						<p>{user.profile.bio || "Write your bio here..."}</p>
+						<p>{user.profile.bio || t('userprofile.writebio')}</p>
 					</div>
 				</div>
 				<div className="relative flex-1 min-w-0 flex flex-col mt-5">
@@ -82,7 +84,7 @@ const ProfilePage = () => {
 							className="absolute bottom-3 right-3 px-3 py-2 text-sm bg-gray-600/30 border-none rounded-lg cursor-pointer opacity-70 hover:opacity-100 hover:bg-gray-500/30 transition-opacity z-[5]"
 							onClick={() => setShowEditModal(true)}
 						>
-							Edit Profile
+							{t('editprofile.edit')}
 						</button>
 					</div>
 					<div className="relative z-[1] flex-1 p-4 overflow-y-auto bg-gray-300/70">
@@ -100,7 +102,7 @@ const ProfilePage = () => {
 									style={profileTab === "posts" ? { fontFamily: "'Gotham Bold', sans-serif", fontWeight: "700" } : {}}
 									onClick={() => setProfileTab("posts")}
 								>
-									Posts
+									{t('userprofile.posts')}
 								</button>
 								<button
 									className={`relative z-[2] px-5 py-2 text-sm bg-transparent border-none cursor-pointer min-w-[120px] outline-none ${
@@ -109,7 +111,7 @@ const ProfilePage = () => {
 									style={profileTab === "tournament" ? { fontFamily: "'Gotham Bold', sans-serif", fontWeight: "700" } : {}}
 									onClick={() => setProfileTab("tournament")}
 								>
-									Tournament
+									{t('tournament.tournament')}
 								</button>
 							</div>
 							{profileTab === "posts" && (
@@ -119,7 +121,7 @@ const ProfilePage = () => {
 								>
 									<span>＋</span>
 									<span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-[150px] group-hover:ml-2 transition-all duration-300">
-										Post an outfit
+										{t('feedpage.postoutfit')}
 									</span>
 								</button>
 							)}

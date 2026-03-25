@@ -1,4 +1,5 @@
 import { ModerationUser } from './types';
+import i18n from '../../i18n';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -14,7 +15,7 @@ export const userManagementApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch all users failed';
+				: data.message || i18n.t('modfail.fetchusers');
 			throw new Error(message);
 		}
 		return data;
@@ -31,7 +32,7 @@ export const userManagementApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch all banned users failed';
+				: data.message || i18n.t('modfail.fetchbanned');
 			throw new Error(message);
 		}
 		return data;
@@ -48,7 +49,7 @@ export const userManagementApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch all admin users failed';
+				: data.message || i18n.t('modfail.fetchadmin');
 			throw new Error(message);
 		}
 		return data;
@@ -65,7 +66,7 @@ export const userManagementApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch all mod users failed';
+				: data.message || i18n.t('modfail.fetchmod');
 			throw new Error(message);
 		}
 		return data;
@@ -86,7 +87,7 @@ export const userManagementApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch all banned users failed';
+				: data.message || i18n.t('modfail.fetchusers');
 			throw new Error(message);
 		}
 		return data;

@@ -19,7 +19,8 @@ export class NotificationsService {
 					type: NotificationType.LIKE,
 					userId: recipientId,
 					isRead: false,
-					message: `${likerUsername} liked your post`,
+					message: "",
+					metadata: JSON.stringify({ username: likerUsername}),
 				},
 			});
 			
@@ -37,7 +38,8 @@ export class NotificationsService {
 					type: NotificationType.POST,
 					userId: recipientId,
 					isRead: false,
-				message: `${posterUsername} posted an outfit`,
+					message: "",
+					metadata: JSON.stringify({ username: posterUsername}),
 				},
 			});
 			
@@ -55,7 +57,8 @@ export class NotificationsService {
 					type: NotificationType.COMMENT,
 					userId: recipientId,
 					isRead: false,
-					message: `${commenterUsername} commented on your post`,
+					message: "",
+					metadata: JSON.stringify({ username: commenterUsername}),
 				},
 			});
 			
@@ -73,7 +76,8 @@ export class NotificationsService {
 					type: NotificationType.COMMENT_REPLY,
 					userId: recipientId,
 					isRead: false,
-					message: `${commenterUsername} replied to your comment`,
+					message: "",
+					metadata: JSON.stringify({ username: commenterUsername}),
 				},
 			});
 			
@@ -91,7 +95,8 @@ export class NotificationsService {
 					type: NotificationType.FRIEND_REQUEST,
 					userId: recipientId,
 					isRead: false,
-					message: `${requesterUsername} sent you a friend request`,
+					message: "",
+					metadata: JSON.stringify({ username: requesterUsername}),
 				},
 			});
 			
@@ -109,7 +114,8 @@ export class NotificationsService {
 					type: NotificationType.FRIEND_REQUEST_ACCEPTED,
 					userId: recipientId,
 					isRead: false,
-					message: `${newFriendUsername} accepted your friend request`,
+					message: "",
+					metadata: JSON.stringify({ username: newFriendUsername}),
 				}
 			});
 
@@ -127,7 +133,8 @@ export class NotificationsService {
 	// 				type: NotificationType.NEW_BATTLE,
 	// 				userId: recipientId,
 	// 				isRead: false,
-	// 				message: `A new tournament has started! The theme is: ${battleName}`,
+	// 				message: "",
+					// metadata: JSON.stringify({ theme: battleName}),
 	// 			}
 	// 		});
 	// 		this.notificationsGateway.sendToUser(recipientId, notification);
@@ -143,7 +150,8 @@ export class NotificationsService {
 					type: NotificationType.BATTLE_WIN,
 					userId: recipientId,
 					isRead: false,
-					message: `Congratulations! You have won the tournament for the following theme: ${battleName}!`,
+					message: "",
+					metadata: JSON.stringify({ theme: battleName }),
 				}
 			});
 			this.notificationsGateway.sendToUser(recipientId, notification);
@@ -159,7 +167,8 @@ export class NotificationsService {
 					type: NotificationType.BATTLE_END,
 					userId: recipientId,
 					isRead: false,
-					message: `Thank you for participating to the tournament for ${battleName}. The winner is ${winnerUsername}!`,
+					message: "",
+					metadata: JSON.stringify({ theme: battleName, username: winnerUsername }),
 				}
 			});
 			this.notificationsGateway.sendToUser(recipientId, notification);
@@ -175,7 +184,8 @@ export class NotificationsService {
 					type: NotificationType.ADMIN_PROMOTE,
 					userId: recipientId,
 					isRead: false,
-					message: `${promoterUsername} has promoted you to administrator role`,
+					message: "",
+					metadata: JSON.stringify({ username: promoterUsername }),
 				},
 			});
 			
@@ -195,7 +205,8 @@ export class NotificationsService {
 					type: NotificationType.MOD_PROMOTE,
 					userId: recipientId,
 					isRead: false,
-					message: `${promoterUsername} has promoted you to moderator role`,
+					message: "",
+					metadata: JSON.stringify({ username: promoterUsername }),
 				},
 			});
 			
@@ -215,7 +226,8 @@ export class NotificationsService {
 					type: NotificationType.DEMOTED,
 					userId: recipientId,
 					isRead: false,
-					message: `${demoterUsername} has demoted you to user`,
+					message: "",
+					metadata: JSON.stringify({ username: demoterUsername }),
 				},
 			});
 			

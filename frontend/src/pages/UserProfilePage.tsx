@@ -10,6 +10,7 @@ import { UserProfileMenu } from '../profile/components/UserProfileMenu';
 import { useFriendsSocket } from '../friends/useFriendsSocket';
 import { fetchUserTournamentPosts } from '../posts/components/fetchUserPosts';
 import { UserNameWithRole } from '../common/components/UserNameWithRole';
+import { useTranslation } from "react-i18next";
 
 
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -44,6 +45,7 @@ const UserProfilePage = () => {
 	const [isOnline, setIsOnline] = useState(false);
 	const [profileTab, setProfileTab] = useState('posts');
 	const [tournamentPosts, setTournamentPosts] = useState<Post[]>([]);
+	const { t } = useTranslation();
 
 	const fetchProfile = async () => {
 		const token = localStorage.getItem('token');
@@ -63,7 +65,7 @@ const UserProfilePage = () => {
 			setBlockedByUser(false);
 
 			if (!res.ok) {
-				throw new Error('Error fetching profile');
+				throw new Error(t('errorpage.fetchprofile'));
 			}
 
 			const data = await res.json();
@@ -77,7 +79,7 @@ const UserProfilePage = () => {
 			await loadPosts();
 		} catch (error) {
 			console.error(error);
-			showModal?.('Could not fetch profile');
+			showModal?.(t('errorpage.fetchprofile'));
 		}
 	};
 
@@ -134,7 +136,7 @@ const UserProfilePage = () => {
 			setLoading(false);
 			refreshUser();
 			fetchProfile();
-			showModal('Friend removed');
+			showModal(t('friends.removed'));
 		},
 		onUserRemoved: () => {
 			refreshUser();
@@ -206,7 +208,7 @@ const UserProfilePage = () => {
 			case 'NONE':
 				return (
 					<button className={buttonClass} onClick={handleAddFriend} disabled={loading}>
-						Add Friend
+						{t('friends.addfriend')}
 					</button>
 				);
 			case 'PENDING_SENT':
@@ -216,17 +218,17 @@ const UserProfilePage = () => {
 						onClick={handleCancelRequest}
 						disabled={loading}
 					>
-						Cancel Request
+						{t('friends.cancelrequest')}
 					</button>
 				);
 			case 'PENDING_RECEIVED':
 				return (
 					<div className="flex gap-3">
 						<button className={buttonClass} onClick={handleAccept} disabled={loading}>
-							Accept Friend Request
+							{t('friends.acceptrequest')}
 						</button>
 						<button className={buttonClass} onClick={handleReject} disabled={loading}>
-							Reject Friend Request
+							{t('friends.rejectrequest')}
 						</button>
 					</div>
 				);
@@ -238,18 +240,18 @@ const UserProfilePage = () => {
 							onClick={() => navigate(`/chat?with=${userData?.id}`)}
 							disabled={loading}
 						>
-							Send Message
+							{t('userprofile.sendmessage')}
 						</button>
 						<button
 							className={buttonClass}
 							onClick={() => setShowDeleteConfirm(true)}
 							disabled={loading}
 						>
-							Delete friend
+							{t('friends.remove')}
 						</button>
 						{showDeleteConfirm && (
 							<ConfirmBlockDelete
-								message="Are you sure you want to delete this friend from your friendlist?"
+								message={t('friends.confirmremove')}
 								onYes={handleRemoveFriend}
 								onNo={() => setShowDeleteConfirm(false)}
 							/>
@@ -266,14 +268,14 @@ const UserProfilePage = () => {
 	if (blockedByUser) {
 		return (
 			<div className="fixed top-[50px] left-[60px] flex flex-col w-[calc(100vw-60px)] h-[calc(100vh-50px)] text-gray-800 items-center justify-start pt-8">
-				You cannot access this profile
+				{t('userprofile.noaccess')}
 			</div>
 		);
 	}
 	if (!userData) {
 		return (
 			<div className="fixed top-[50px] left-[60px] flex flex-col w-[calc(100vw-60px)] h-[calc(100vh-50px)] text-gray-800 items-center justify-center">
-				Loading...
+				{t('userprofile.loading')}
 			</div>
 		);
 	}
@@ -287,7 +289,7 @@ const UserProfilePage = () => {
 					<UserProfileMenu userId={userData.id} onAction={fetchProfile} />
 					<div className="flex items-center gap-2 text-sm self-start pl-2">
 						{isOnline ? <span>☀️</span> : <span className="grayscale">🌙</span>}
-						<span>{isOnline ? 'Online' : 'Offline'}</span>
+						<span>{isOnline ? t('userprofile.online') : t('userprofile.offline')}</span>
 					</div>
 					<div>
 						<img
@@ -309,15 +311,15 @@ const UserProfilePage = () => {
 					<div className="flex justify-center gap-2 w-full">
 						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
 							<strong className="text-lg font-bold">{userData.friendsCount}</strong>
-							Friends
+							{t('userprofile.friends')}
 						</span>
 						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
 							<strong className="text-lg font-bold">{posts.length}</strong>
-							Posts
+							{t('userprofile.posts')}
 						</span>
 					</div>
 					<div className="text-center p-3 rounded-xl w-full bg-white/90 shadow-sm border border-black/5 text-sm whitespace-pre-line">
-						<p>{userData.profile?.bio || 'Write your bio here...'}</p>
+						<p>{userData.profile?.bio || t('userprofile.writebio')}</p>
 					</div>
 				</div>
 
@@ -346,7 +348,7 @@ const UserProfilePage = () => {
 					<div className="relative z-[1] flex-1 p-4 overflow-y-auto bg-gray-300/70">
 						{blockedPosts ? (
 							<div className="flex justify-center mt-12 text-lg">
-								You have blocked this user
+								{t('userprofile.userblocked')}
 							</div>
 						) : (
 							<>
@@ -376,7 +378,7 @@ const UserProfilePage = () => {
 											}
 											onClick={() => setProfileTab('posts')}
 										>
-											Posts
+											{t('userprofile.posts')}
 										</button>
 										<button
 											className={`relative z-[2] px-5 py-2 text-sm bg-transparent border-none cursor-pointer min-w-[120px] outline-none ${
@@ -392,7 +394,7 @@ const UserProfilePage = () => {
 											}
 											onClick={() => setProfileTab('tournament')}
 										>
-											Tournament
+											{t('tournament.tournament')}
 										</button>
 									</div>
 								</div>

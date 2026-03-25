@@ -4,11 +4,13 @@ import { ModerationLogType } from '../types';
 import { useLocation } from 'react-router-dom';
 import './ModerationLogs.css';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export function ModerationLogs() {
 	const [logs, setLogs] = useState<ModerationLogType[]>([]);
 	const [loading, setLoading] = useState(false);
 	const location = useLocation();
+	const { t } = useTranslation();
 
 	const isAdminTab = location.pathname.startsWith('/dashboard/admin');
 	const navigate = useNavigate();
@@ -52,9 +54,9 @@ export function ModerationLogs() {
 
 	// Resolve the identifier of the target (User #, Post #, Battle #)
 	const getId = (log: ModerationLogType) => {
-		if (log.targetUser) return `User #${log.targetUser.id}`;
-		if (log.targetPost) return `Post #${log.targetPost.id}`;
-		if (log.targetBattle) return `Battle #${log.targetBattle.id}`;
+		if (log.targetUser) return `${t('common.user')} #${log.targetUser.id}`;
+		if (log.targetPost) return `${t('common.post')} #${log.targetPost.id}`;
+		if (log.targetBattle) return `${t('common.battle')} #${log.targetBattle.id}`;
 		return '—';
 	};
 
@@ -78,24 +80,24 @@ export function ModerationLogs() {
 		return '—';
 	};
 
-	if (loading) return <p>Loading logs...</p>;
+	if (loading) return <p>{t('moderationlogs.loadinglogs')}</p>;
 
 	return (
 		<div className="log-list">
 			<div className="log-table-card">
 				{/* Header */}
 				<div className="log-header">
-					<span>Actor</span>
-					<span>Action</span>
-					<span>Target</span>
+					<span>{t('moderationlogs.actor')}</span>
+					<span>{t('moderationlogs.action')}</span>
+					<span>{t('moderationlogs.target')}</span>
 					<span>ID</span>
-					<span>Title</span>
-					<span>Date</span>
+					<span>{t('moderationlogs.title')}</span>
+					<span>{t('moderationlogs.date')}</span>
 				</div>
 
 				{/* Rows */}
 				{logs.length === 0 ? (
-					<div className="log-empty">No logs available</div>
+					<div className="log-empty">{t('moderationlogs.nologs')}</div>
 				) : (
 					logs.map((log) => (
 						<div key={log.id} className="log-row">

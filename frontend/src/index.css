@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400&display=swap');
 @font-face {
     font-family: 'Blosta Script';
     src: url('./assets/fonts/Blosta-Script.otf') format('opentype');
@@ -14,7 +15,7 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
+  color-scheme: light;
   color: #333;
   background-color: white;
 

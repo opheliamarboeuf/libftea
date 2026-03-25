@@ -5,6 +5,7 @@ import { usePostCreation } from "../hooks/usePostCreation";
 import { useBeforeUnload } from "../../common/hooks/useBeforeUnload";
 import { ConfirmDialog } from "../../common/components/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../../common/hooks/useUnsavedChangesGuard";
+import { useTranslation } from "react-i18next";
 
 interface CreatePostModalProps {
 	onPostCreated: () => void;
@@ -15,6 +16,10 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 
 	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });
 
+	//Function to translate
+	const { t } = useTranslation();
+
+	// Custom hook that manages a post creation
 	const {
 		title, 
 		setTitle,
@@ -62,9 +67,9 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 					className={`modal-content-post ${fadeOut ? "fade-out" : "fade-in"}`}
 					onClick={(e) => e.stopPropagation()}
 				>
-					<h2>Post an outfit</h2>
+					<h2>{t('feedpage.postoutfit')}</h2>
 					<form onSubmit={handleSubmit}>
-						<label>Title</label>
+						<label>{t('post.title')}</label>
 						<input
 							type="text"
 							value={title}
@@ -79,13 +84,13 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 						>
 							{title.length} / {MAX_TITLE_LENGTH}
 						</div>
-						<label>Outfit Picture</label>
+						<label>{t('post.picture')}</label>
 						<input
 						type = "file"
 						accept="image/jpeg,image/jpg,image/png,image/webp"
 						onChange={handleImageChange}
 						/>
-						<label>Caption</label>
+						<label>{t('post.caption')}</label>
 						<textarea
 							value={caption}
 							onChange={(e) => setCaption(e.target.value)}
@@ -106,8 +111,8 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 						)}
 						<div className="modal-actions">
 							<button type="submit"  className="modal-btn" disabled={isLoading}> 
-								{isLoading ? "Posting..." : "Submit"} </button>
-							<button type="button" className="modal-btn" onClick={requestClose}> Cancel </button>
+								{isLoading ? t('post.posting') : t('post.submit')} </button>
+							<button type="button" className="modal-btn" onClick={requestClose}> {t('editprofile.cancel')} </button>
 						</div>
 					</form>
 				</div>
@@ -116,7 +121,7 @@ export function CreatePostModal ({ onPostCreated, onClose }: CreatePostModalProp
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message="Looks like you've made some changes. Are you sure you want to exit without saving?"
+				message={t('post.changes')}
 				onConfirm={confirmDiscard}
 				onCancel={cancelDiscard}
 			/>

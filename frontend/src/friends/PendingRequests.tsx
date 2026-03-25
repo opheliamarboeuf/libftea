@@ -4,12 +4,15 @@ import { usePendingRequests } from './hooks';
 import { Link } from 'react-router-dom';
 import { useFriendsSocket } from './useFriendsSocket';
 import './friends.css';
+import { useTranslation } from "react-i18next";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function PendingRequests() {
 	const { pending, refetch } = usePendingRequests();
 	const [loading, setLoading] = useState(false);
 	const { refreshUser, user } = useUser();
-	const API_URL = import.meta.env.VITE_API_URL;
+	const { t } = useTranslation();
 
 	const { emit } = useFriendsSocket(user?.id, {
 		onRequestAccepted: () => {
@@ -36,7 +39,7 @@ export function PendingRequests() {
 
 	return (
 		<div>
-			{pending.length === 0 && <p className="friends-empty">No pending requests</p>}
+			{pending.length === 0 && <p className="friends-empty">{t('friends.nopending')}</p>}
 			<div className="friends-list">
 				{pending.map((user) => (
 					<div key={user.id} className="friend-card">
@@ -62,7 +65,7 @@ export function PendingRequests() {
 									pointerEvents: user.bannedAt ? 'none' : 'auto',
 								}}
 							>
-								{user.bannedAt ? 'Unknown User' : user.username}
+								{user.bannedAt ? t('userreport.unknown') : user.username}
 							</Link>
 						</div>
 						<div className="friend-card-actions">
@@ -71,14 +74,14 @@ export function PendingRequests() {
 								onClick={() => handleAccept(user.id)}
 								disabled={loading}
 							>
-								Accept
+								{t('friends.accept')}
 							</button>
 							<button
 								className="friend-action-btn"
 								onClick={() => handleReject(user.id)}
 								disabled={loading}
 							>
-								Reject
+								{t('friends.reject')}
 							</button>
 						</div>
 					</div>

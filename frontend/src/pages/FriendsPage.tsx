@@ -1,9 +1,12 @@
 import { FriendsList, PendingRequests, BlockedList } from "../friends";
 import "./FriendsPage.css"
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const FriendsPage = () => {
 	const [friendsType, setFriendsType] = useState("friends");
+	const { t } = useTranslation();
+
 	return (
 		<div className="friends-page">
 			<div className="friends-header">
@@ -15,19 +18,19 @@ const FriendsPage = () => {
 						className={friendsType === "friends" ? "active" : "" }
 						onClick={() => setFriendsType("friends")}
 					>
-						Friends
+						{t('feedpage.friends')}
 					</button>
 					<button
 						className={friendsType === "pending" ? "active" : "" }
 						onClick={() => setFriendsType("pending")}
 					>
-						Requests
+						{t('friends.prequests')}
 					</button>
 					<button
 						className={friendsType === "blocked" ? "active" : "" }
 						onClick={() => setFriendsType("blocked")}
 					>
-						Blocked Users
+						{t('friends.blockedusers')}
 					</button>
 					
 				</div>

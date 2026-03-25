@@ -4,6 +4,7 @@ import { useModal } from "../context/ModalContext";
 import { ConfirmBlockDelete } from "./ConfirmBlockDelete";
 import { useState } from "react";
 import { useFriendsSocket } from "./useFriendsSocket";
+import { useTranslation } from "react-i18next";
 
 interface Props {
     userId: number;
@@ -14,12 +15,13 @@ export function RemoveFriendButton({ userId }: Props) {
     const { showModal } = useModal();
     const [showConfirm, setShowConfirm] = useState(false);
     const [loading, setLoading] = useState(false);
+	const { t } = useTranslation();
     
 	const { emit } = useFriendsSocket(user?.id, {
 		onFriendRemoved: () => {
 			setLoading(false);
 			refreshUser();
-			showModal("Friend removed");
+			showModal(t('friends.removed'));
 		},
 		onUserRemoved: () => {
 			refreshUser();
@@ -32,7 +34,7 @@ export function RemoveFriendButton({ userId }: Props) {
 			setShowConfirm(false);
         } catch (error) {
             console.error('Error:', error);
-            showModal("Failed to remove friend");
+            showModal(t('friends.requestfail'));
         }
     }
     return (
@@ -42,12 +44,12 @@ export function RemoveFriendButton({ userId }: Props) {
                 disabled={loading}
 				className="friend-action-btn"
                 >
-                    {loading ? "Deleting..." : "Delete"}
+                    {loading ? t('friends.deleting') : t('friends.delete')}
             </button>
 
             {showConfirm && (
                 <ConfirmBlockDelete
-                    message="Are you sure you want to delete this friend from your friendlist?"
+                    message={t('friends.confirmremove')}
                     onYes={handleClick}
                     onNo={() => setShowConfirm(false)}
                 />

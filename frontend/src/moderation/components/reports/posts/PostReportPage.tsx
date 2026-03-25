@@ -5,6 +5,7 @@ import { Navigate, useParams, useNavigate } from "react-router-dom";
 import { PostReportType, SimpleReportType } from "../../../types";
 import "./PostReportList.css";
 import "./PostReportPage.css";
+import { useTranslation } from "react-i18next";
 
 const PostReportPage = () => {
 	const API_URL = import.meta.env.VITE_API_URL;
@@ -12,6 +13,7 @@ const PostReportPage = () => {
 	const { postId } = useParams<{ postId: string }>(); // get the id from URL
 	const [fullReport, setFullReport] = useState<PostReportType | null>(null);
 	const [simpleReports, setSimpleReports] = useState<SimpleReportType[]>([]);
+	const { t } = useTranslation();
 
 	const navigate = useNavigate();
 	const goToProfile = (userId: number) => {
@@ -61,7 +63,7 @@ const PostReportPage = () => {
 										{fullReport.reportedPost.author?.username},
 									</span>
 									<span className="post-report-date">
-										{` created ${new Date(fullReport.reportedPost.createdAt).toLocaleString()}`}
+										{t('post.created', { date: new Date(fullReport.reportedPost.createdAt).toLocaleString() })}
 									</span>
 								</div>
 							</div>
@@ -76,27 +78,27 @@ const PostReportPage = () => {
 			</div>
 			<div className="right-scroll">
 				<div className="simple-post-reports">
-					<div className="post-report-title">All reports for this post</div>
+					<div className="post-report-title">{t('postreport.all')}</div>
 					{simpleReports.length === 0 ? (
-						<p>No reports found for this post.</p>
+						<p>{t('postreport.nonefound')}</p>
 					) : (
 						simpleReports.map((r) => (
 							<div key={r.id} className="simple-report-card">
 								<div className="simple-report-header">
 									<div className="simple-report-header-flex">
 										<div className="simple-report-header-left">
-											<strong>Reporter:</strong>
+											<strong>{t('postreport.reporter')}</strong>
 											<span className="simple-report-author" onClick={() => goToProfile(r.reporter.id)}>{r.reporter.username}</span>
 										</div>
-										<span className="simple-report-date">reported {new Date(r.createdAt).toLocaleString()}</span>
+										<span className="simple-report-date">{t('postreport.reported', { date: new Date(r.createdAt).toLocaleString() })}</span>
 									</div>
 								</div>
 								<div className="simple-report-category">
-									<strong>Category:</strong><br />{" "}
+									<strong>{t('postreport.category')}</strong><br />{" "}
 									{r.reportCategory.replace(/_/g, " ")}
 								</div>
 								<div className="simple-report-description">
-									<strong>Description:</strong><br />{" "}
+									<strong>{t('postreport.description')}</strong><br />{" "}
 									{r.reportDescription}
 								</div>
 							</div>

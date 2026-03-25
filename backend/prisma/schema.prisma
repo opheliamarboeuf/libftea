@@ -254,6 +254,7 @@ model Notification {
 	createdAt DateTime         @default(now())
 	User      User             @relation(fields: [userId], references: [id])
 	message   String           @default("")
+	metadata  Json			   @default("{}")
 }
 
 model Post {

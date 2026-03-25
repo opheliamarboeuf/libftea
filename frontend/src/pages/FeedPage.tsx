@@ -6,12 +6,14 @@ import { useState } from 'react';
 import { UserPostsList } from "../posts/components/UserPostsList";
 import { useFeed } from "../posts/hooks/useFeed";
 import { CreatePostModal } from "../posts/components/CreatePostModal";
+import { useTranslation } from "react-i18next";
 
 const FeedPage = () => {
 
 	const { user } = useUser();
 	const { posts, error, feedType, setFeedType, refresh } = useFeed("all");
 	const [showPostModal, setShowPostModal] = useState(false);
+	const { t } = useTranslation();
 
 	if (!user) return <Navigate to="/" replace />;
 
@@ -21,14 +23,14 @@ const FeedPage = () => {
 					<div className="feed-center">
 						<button className="expand-btn expand-btn-left" onClick={() => setShowPostModal(true)}>
 							<span className="icon">＋</span>
-							<span className="expand-btn-text">Post an outfit</span>
+							<span className="expand-btn-text">{t('feedpage.postoutfit')}</span>
 						</button>
 					<div className="feed-tabs">
 						<div
 							className={`tab-indicator ${feedType === "friends" ? "right" : ""}`}
 						/>
-						<button className={feedType === "all" ? "active" : ""} onClick={() => setFeedType("all")}>Discover</button>
-						<button className={feedType === "friends" ? "active" : ""} onClick={() => setFeedType("friends")}>Friends</button>
+						<button className={feedType === "all" ? "active" : ""} onClick={() => setFeedType("all")}>{t('feedpage.discover')}</button>
+						<button className={feedType === "friends" ? "active" : ""} onClick={() => setFeedType("friends")}>{t('feedpage.friends')}</button>
 					</div>
 				</div>
 			</div>
@@ -37,7 +39,7 @@ const FeedPage = () => {
 			{posts.length === 0 ? (
 				<div className="no-posts-card-wrapper">
 					<div className="no-posts-card">
-						<p className="no-posts-message">No posts to display</p>
+						<p className="no-posts-message">{t('feedpage.noposts')}</p>
 					</div>
 				</div>
 				) : (

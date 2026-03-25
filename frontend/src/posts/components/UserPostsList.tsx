@@ -11,6 +11,7 @@ import { LikeButton } from "../../likes/LikeButton";
 import { CommentSection } from "../../comments/CommentSection";
 import { useState, useEffect } from "react";
 import { ReportPostModal } from "../../moderation/components/reports/posts/ReportPostModal";
+import { useTranslation } from "react-i18next";
 
 interface UserPostsListProps {
 	posts: Post[];
@@ -22,6 +23,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 	
 	const navigate = useNavigate();
 	const { user } = useUser();
+	const { t } = useTranslation();
 	const [postToReport, setPostToReport] = useState<Post | null>(null);
 	const [visiblePosts, setVisiblePosts] = useState<Post[]>(posts);
 
@@ -69,7 +71,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 				)}
 				{(post as any).isWinner && (
 					<div className="winner-container">
-					<h3 className="winner-badge">Last week's winner 💅🏼</h3>
+					<h3 className="winner-badge">{t('tournament.lastweek')} 💅🏼</h3>
 					</div>
 				)}
 				</div>
@@ -84,8 +86,8 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 			<span className="post-date">
 			{
 				post.updatedAt && post.updatedAt !== post.createdAt
-				? `edited ${new Date(post.updatedAt).toLocaleString()}`
-				: `created ${new Date(post.createdAt).toLocaleString()}`
+				? t('post.edited', { date: new Date(post.updatedAt).toLocaleString() })
+				: t('post.created', { date: new Date(post.createdAt).toLocaleString() })
 			}
 			</span>
 			</div>
@@ -97,13 +99,13 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 					{/* Everyone can report except the owner of the post*/}
 					{post.author.id !== user.id && (
 						<button onClick={() => { setPostToReport(post); toggleMenu(post.id); }}>
-						Report
+						{t('post.report')}
 						</button>
 					)}
 
 					{/* Edit if owner */}
 					{post.author.id === user.id && (
-						<button onClick={() => handleEdit(post)}>Edit</button>
+						<button onClick={() => handleEdit(post)}>{t('post.editpost')}</button>
 					)}
 
 					{/* Delete if owner of admin or mod */}
@@ -112,7 +114,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 						onClick={() => setPostToDelete(post.id)}
 						disabled={isDeleting}
 						>
-						{isDeleting ? "Deleting..." : "Delete"}
+						{isDeleting ? t('friends.deleting') : t('friends.delete')}
 						</button>
 					)}
 					</div>
@@ -157,7 +159,7 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message="Are you sure you want to delete this post?"
+				message={t('post.confirmdelete')}
 				onConfirm={confirmDelete}
 				onCancel={cancelDelete}
 			/>

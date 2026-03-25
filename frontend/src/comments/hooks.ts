@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { commentsApi } from './api';
 import { socket } from '../socket/socket';
 import { useUser } from '../context/UserContext';
+import i18n from '../i18n';
 
 interface User {
 	id: number;
@@ -32,7 +33,7 @@ export const useComments = (postId: number) => {
 				const data = await commentsApi.getComments(postId);
 				setComments(data || []);
 			} catch (err) {
-				setError(err.message || 'Failed to load comments');
+				setError(err.message || i18n.t('errorcomments.load'));
 			} finally {
 				setLoading(false);
 			}

@@ -10,15 +10,17 @@ import { friendsSocket } from '../../socket/socket';
 import { notifSocket } from "../../socket/socket";
 import { useNotifications } from "../../notifications/useNotifications";
 import { MdOutlineNotifications } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 
 export const Header = () => {
 	const navigate = useNavigate();
 	const { user, setUser, refreshUser } = useUser();
 	const API_URL = import.meta.env.VITE_API_URL;
 	const [menuHidden, setMenuHidden] = useState(false);
-	const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(user?.id);
+	const { notifications, unreadCount, markAsRead, markAllAsRead, getNotifMessage } = useNotifications(user?.id);
 	const [notifOpen, setNotifOpen] = useState(false);
 	const notifRef = useRef<HTMLDivElement | null>(null);
+	const { t } = useTranslation();
 
 	useFriendsSocket(user?.id, {
 		onRequestSent: () => {
@@ -109,19 +111,19 @@ export const Header = () => {
 				<div className="notif-bell" ref={notifRef}>
 					<span onClick={() => setNotifOpen(!notifOpen)}>
 						<MdOutlineNotifications />
-						{unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
+						{unreadCount > 0 && !notifOpen && <span className="notif-badge">{unreadCount}</span>}
 					</span>
 					{notifOpen && (
 						<div className="notif-dropdown">
-							<button onClick={markAllAsRead}>Clear notifications</button>
-							{notifications.length === 0 && <p>No notifications</p>}
+							<button onClick={markAllAsRead}>{t('notifications.clear')}</button>
+							{notifications.length === 0 && <p>{t('notifications.nonotif')}</p>}
 							{notifications.map((n) => (
 								<div
 									key={n.id}
 									className={`notif-item ${n.isRead ? 'read' : 'unread'}`}
 									onClick={() => markAsRead(n.id)}
 								>
-									{n.message}
+									{getNotifMessage(n)}
 								</div>
 							))}
 						</div>
@@ -148,13 +150,13 @@ export const Header = () => {
 					</div>
 					<div className="dropdown-menu">
 						<button onClick={() => handleNavigate('/myprofile')}>
-							<span className="label">My Profile</span>
+							<span className="label">{t('header.profile')}</span>
 						</button>
 						<button onClick={() => handleNavigate('/settings')}>
-							<span className="label">Settings & Privacy</span>
+							<span className="label">{t('settings.sandp')}</span>
 						</button>
 						<button onClick={handleLogout}>
-							<span className="label">Log Out</span>
+							<span className="label">{t('header.logout')}</span>
 						</button>
 					</div>
 				</div>
