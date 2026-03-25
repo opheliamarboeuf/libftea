@@ -1,7 +1,6 @@
 import { PrismaClient, Role, NotificationType } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import sharp from 'sharp';
-import { copyFile } from 'fs/promises';
 import { join } from 'path';
 
 const prisma = new PrismaClient();
@@ -117,6 +116,26 @@ async function createNotification(userId: number, type: NotificationType, messag
 	});
 }
 
+// -------------------- MODERATION LOGS --------------------
+
+async function createModerationLog(
+	action: string,
+	actorId: number,
+	targetUserId?: number,
+	targetPostId?: number,
+	createdAt?: Date,
+) {
+	await prisma.moderationLog.create({
+		data: {
+			action: action as any,
+			actorId,
+			targetUserId,
+			targetPostId,
+			createdAt: createdAt || new Date(),
+		},
+	});
+}
+
 // -------------------- POSTS + LIKES --------------------
 
 async function createPostsForUser(
@@ -125,6 +144,9 @@ async function createPostsForUser(
 	postsData: PostData[],
 	allUserIds: number[],
 ) {
+	const existingPosts = await prisma.post.count({ where: { authorId: userId } });
+	if (existingPosts > 0) return;
+
 	await ensureSeedImagesResized(username, postsData.length);
 
 	for (let i = 0; i < postsData.length; i++) {
@@ -311,6 +333,9 @@ async function createMessages() {
 		},
 	});
 
+	const existingMessages = await prisma.message.count();
+	if (existingMessages > 0) return;
+
 	const messages = {
 		1: {
 			first: `What's up?`,
@@ -438,7 +463,179 @@ async function createPostsForTournament(
 	return post;
 }
 
+async function createReports(
+	toxicUser: any,
+	userIds: number[],
+	harassmentPost: any,
+	inappropriatePost: any,
+	modUser: any,
+) {
+	const harassmentDescriptions = [
+		'This feels like direct harassment toward a specific person.',
+		'Clearly targeted and aggressive tone.',
+	];
+
+	const inappropriateDescriptions = [
+		'This content is inappropriate and uncomfortable.',
+		'Does not respect community standards.',
+	];
+
+	const allReporters = shuffleArray(userIds.filter((id) => id !== toxicUser.id));
+	const harassmentReporters = allReporters.slice(0, 2);
+	const inappropriateReporters = allReporters.slice(2, 4);
+
+	let lastReportDate = harassmentPost.createdAt;
+	let harassmentHandledAt: Date | undefined;
+
+	// ---------------- HARASSMENT POST REPORT ----------------
+	for (let i = 0; i < harassmentReporters.length; i++) {
+		const existing = await prisma.report.findFirst({
+			where: {
+				reporterId: harassmentReporters[i],
+				reportedPostId: harassmentPost.id,
+			},
+		});
+		if (existing) continue;
+
+		const reportDate = getRandomDate(harassmentPost.createdAt, now);
+		lastReportDate = reportDate;
+
+		harassmentHandledAt = getRandomDate(reportDate, now);
+		await prisma.report.create({
+			data: {
+				reporterId: harassmentReporters[i],
+				reportedPostId: harassmentPost.id,
+				reportedUserId: null,
+				reportCategory: 'HARASSMENT',
+				reportDescription: harassmentDescriptions[i % harassmentDescriptions.length],
+				status: 'ACCEPTED',
+				handledById: modUser.id,
+				handledAt: harassmentHandledAt,
+				moderatorMessage: 'Post harassment confirmed after review.',
+				createdAt: reportDate,
+			},
+		});
+	}
+
+	// Create single moderation log for this post (harassment)
+	if (harassmentHandledAt) {
+		await createModerationLog(
+			'REVIEW_POST_REPORT',
+			modUser.id,
+			undefined,
+			harassmentPost.id,
+			harassmentHandledAt,
+		);
+	}
+
+	// ---------------- INAPPROPRIATE POST REPORT ----------------
+	let inappropriateHandledAt: Date | undefined;
+
+	for (let i = 0; i < inappropriateReporters.length; i++) {
+		const existing = await prisma.report.findFirst({
+			where: {
+				reporterId: inappropriateReporters[i],
+				reportedPostId: inappropriatePost.id,
+			},
+		});
+		if (existing) continue;
+
+		const reportDate = getRandomDate(inappropriatePost.createdAt, now);
+		lastReportDate = reportDate;
+
+		inappropriateHandledAt = getRandomDate(reportDate, now);
+		await prisma.report.create({
+			data: {
+				reporterId: inappropriateReporters[i],
+				reportedPostId: inappropriatePost.id,
+				reportedUserId: null,
+				reportCategory: 'INAPPROPRIATE_CONTENT',
+				reportDescription: inappropriateDescriptions[i % inappropriateDescriptions.length],
+				status: 'ACCEPTED',
+				handledById: modUser.id,
+				handledAt: inappropriateHandledAt,
+				moderatorMessage:
+					'Post content confirmed as inappropriate and violating guidelines.',
+				createdAt: reportDate,
+			},
+		});
+	}
+
+	// Create single moderation log for this post (inappropriate)
+	if (inappropriateHandledAt) {
+		await createModerationLog(
+			'REVIEW_POST_REPORT',
+			modUser.id,
+			undefined,
+			inappropriatePost.id,
+			inappropriateHandledAt,
+		);
+	}
+
+	return lastReportDate;
+}
+
+// ---------------- HARASSMENT USER REPORT ----------------
+
+async function createUserReport(toxicUser: any, reporterUser: any, modUser: any, afterDate: Date) {
+	const existing = await prisma.report.findFirst({
+		where: {
+			reporterId: reporterUser.id,
+			reportedUserId: toxicUser.id,
+		},
+	});
+	if (existing) return existing.handledAt ?? existing.createdAt;
+
+	const reportDate = getRandomDate(afterDate, now);
+	const userReportHandledAt = getRandomDate(reportDate, now);
+
+	await prisma.report.create({
+		data: {
+			reporterId: reporterUser.id,
+			reportedPostId: null,
+			reportedUserId: toxicUser.id,
+			reportCategory: 'HARASSMENT',
+			reportDescription:
+				'Multiple posts show pattern of targeted harassment and exclusionary behavior.',
+			status: 'ACCEPTED',
+			handledById: modUser.id,
+			handledAt: userReportHandledAt,
+			moderatorMessage: 'User report confirmed. Pattern of harassment behavior documented.',
+			createdAt: reportDate,
+		},
+	});
+	await createModerationLog(
+		'REVIEW_USER_REPORT',
+		modUser.id,
+		toxicUser.id,
+		undefined,
+		userReportHandledAt,
+	);
+
+	return userReportHandledAt;
+}
+
+// -------------------- BAN USER --------------------
+
+async function banToxicUser(toxicUser: any, adminUser: any, banDate: Date) {
+	const user = await prisma.user.findUnique({ where: { id: toxicUser.id } });
+	if (user?.bannedAt) return;
+
+	await prisma.user.update({
+		where: { id: toxicUser.id },
+		data: {
+			bannedAt: banDate,
+		},
+	});
+	await createModerationLog('BAN_USER', adminUser.id, toxicUser.id, undefined, banDate);
+}
+
 async function createTournament(userIds: number[]) {
+	const existingTournament = await prisma.battle.findFirst({
+		where: { theme: 'Fur, Reimagined' },
+	});
+	if (existingTournament) return;
+
 	const tournament = await prisma.battle.create({
 		data: {
 			theme: 'Fur, Reimagined',
@@ -540,16 +737,29 @@ async function createTournament(userIds: number[]) {
 async function main() {
 	console.log('Seeding started...');
 
-	await createUserIfNotExists(
+	const adminUser = await createUserIfNotExists(
 		'admin@test.com',
 		'admin',
 		'AdminPswd0+',
 		Role.ADMIN,
-		'Admin account',
+		'Test account for Admin',
 	);
 
-	await createUserIfNotExists('mod@test.com', 'mod', 'ModPswd0+', Role.MOD, 'Moderator account');
+	const modUser = await createUserIfNotExists(
+		'mod@test.com',
+		'mod',
+		'ModPswd0+',
+		Role.MOD,
+		'Test account for Moderator',
+	);
 
+	const toxicUser = await createUserIfNotExists(
+		'toxic@test.com',
+		'toxic',
+		'Password0+',
+		Role.USER,
+		'Test account for reports, moderation and bans.',
+	);
 	const users = [];
 
 	users.push(
@@ -762,6 +972,56 @@ async function main() {
 		],
 		userIds,
 	);
+
+	// TOXIC USER POSTS
+	const toxicPosts: PostData[] = [
+		{
+			title: 'Say it louder',
+			caption: "Some people really don't belong here.",
+			comments: [],
+		},
+		{
+			title: 'Just being honest',
+			caption: 'If you dress like that, expect comments.',
+			comments: [],
+		},
+	];
+
+	await createPostsForUser(toxicUser.id, toxicUser.username, toxicPosts, userIds);
+
+	// REPORTS ON TOXIC POSTS
+	const toxicPostsFromDB = await prisma.post.findMany({
+		where: {
+			authorId: toxicUser.id,
+		},
+		orderBy: { createdAt: 'asc' },
+	});
+
+	const harassmentPost = toxicPostsFromDB[0];
+	const inappropriatePost = toxicPostsFromDB[1];
+
+	const lastReportDate = await createReports(
+		toxicUser,
+		userIds,
+		harassmentPost,
+		inappropriatePost,
+		modUser,
+	);
+
+	// USER REPORT (HARASSMENT) - Random regular user reports toxic user
+	const reporterUser = users[0];
+	const userReportHandledAt = await createUserReport(
+		toxicUser,
+		reporterUser,
+		adminUser,
+		lastReportDate,
+	);
+
+	// BAN TOXIC USER
+	if (userReportHandledAt) {
+		const banDate = getRandomDate(userReportHandledAt, now);
+		await banToxicUser(toxicUser, adminUser, banDate);
+	}
 
 	// FRIENDSHIPS
 	await createRandomFriendships(userIds);
