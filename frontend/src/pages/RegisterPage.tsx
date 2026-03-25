@@ -6,6 +6,8 @@ import LanguageMenu from "../common/components/LanguageMenu";
 import { PrivacyButton } from "../common/components/PrivacyPolicy";
 import { TermsButton } from "../common/components/TermsOfService";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const RegisterPage = () => {
 	
 	// Local state for form fields
@@ -53,7 +55,7 @@ const RegisterPage = () => {
 			password: password
 		};
 		try {
-			const res = await fetch("http://localhost:3000/auth/register", {
+			const res = await fetch(`${API_URL}/auth/register`, {
 				method: 'POST',
 				headers: {'Content-Type': 'application/json',},
 				body: JSON.stringify(userData),
@@ -72,7 +74,8 @@ const RegisterPage = () => {
 	
 			localStorage.setItem("token", data.access_token);
 
-			const userRes = await fetch("http://localhost:3000/auth/me", {
+			// Fetch full user data and store in context
+			const userRes = await fetch(`${API_URL}/auth/me`, {
 				headers: {
 					Authorization: `Bearer ${data.access_token}`,
 				},

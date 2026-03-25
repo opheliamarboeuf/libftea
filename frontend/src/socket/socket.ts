@@ -1,20 +1,22 @@
 import { io } from "socket.io-client";
 
-export const socket = io("http://localhost:3000", {
+const API_URL = import.meta.env.VITE_API_URL;
+
+export const socket = io(API_URL, {
 	withCredentials: true
 });
 
-export const friendsSocket = io("http://localhost:3000/friends", {
+export const friendsSocket = io(`${API_URL}/friends`, {
 	withCredentials: true,
 	autoConnect: false,
 });
 
-export const chatSocket = io("http://localhost:3000/chat", {
+export const chatSocket = io(`${API_URL}/chat`, {
   withCredentials: true,
   autoConnect: false,
 });
 
-export const notifSocket = io("http://localhost:3000/notifications", {
+export const notifSocket = io(`${API_URL}/notifications`, {
 	withCredentials: true,
 	autoConnect: false,
 });

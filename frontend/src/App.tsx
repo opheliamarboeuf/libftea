@@ -1,15 +1,15 @@
 import { useEffect, useState, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { UserContext, User } from "./context/UserContext";
+import { UserContext, User } from './context/UserContext';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import MyProfilePage from './pages/MyProfilePage';
-import FeedPage from "./pages/FeedPage";
-import FriendsPage from "./pages/FriendsPage";
+import FeedPage from './pages/FeedPage';
+import FriendsPage from './pages/FriendsPage';
 import { Header } from './common/components/Header';
 import { LeftMenu } from './common/components/LeftMenu';
 import UserProfilePage from './pages/UserProfilePage';
-import { ModalProvider } from "./context/ModalContext";
+import { ModalProvider } from './context/ModalContext';
 import { ModerationRoutes } from './moderation/routes/ModerationRoutes';
 import { SettingsRoutes } from './settings/SettingsRoute';
 import TournamentFeedPage from './pages/TournamentFeedPage';
@@ -21,34 +21,46 @@ import TermsPage from './pages/TermsPage';
 import { useTranslation } from 'react-i18next';
 import GithubCallbackPage from './pages/GithubCallbackPage';
 
-const App = () => {
+const API_URL = import.meta.env.VITE_API_URL;
 
+<<<<<<< HEAD
 const [user, setUser] = useState<User | null>(null);
 const token = localStorage.getItem("token");
 const [loading, setLoading] = useState(true);
 const { t } = useTranslation();
+=======
+const App = () => {
+	const [user, setUser] = useState<User | null>(null);
+	const token = localStorage.getItem('token');
+	const [loading, setLoading] = useState(true);
+>>>>>>> main
 
 	const fetchUser = useCallback(async () => {
-		const currentToken = localStorage.getItem("token");
+		const currentToken = localStorage.getItem('token');
 		if (!currentToken) {
 			setUser(null);
 			return;
 		}
 		try {
-			const res = await fetch("http://localhost:3000/auth/me", {
+			const res = await fetch(`${API_URL}/auth/me`, {
 				headers: {
 					Authorization: `Bearer ${currentToken}`,
 				},
 			});
+<<<<<<< HEAD
 			if (!res.ok){
 				localStorage.removeItem("token");
 				throw new Error(t('errors.token'));
+=======
+			if (!res.ok) {
+				localStorage.removeItem('token');
+				throw new Error('Token invalid or user unauthorized');
+>>>>>>> main
 			}
 			const data = await res.json();
 			setUser(data);
-		}
-		catch(err){
-			console.log("Fetch error:", (err as Error).message);
+		} catch (err) {
+			console.log('Fetch error:', (err as Error).message);
 		}
 	}, []);
 
@@ -65,43 +77,66 @@ const { t } = useTranslation();
 		initUser();
 	}, [token, fetchUser]);
 
-  return (
-    <UserContext.Provider value={{ user, setUser, refreshUser: fetchUser }}>
-      <ModalProvider>
-      <BrowserRouter>
-        <Header />
-        <LeftMenu />
-          <Routes>
-			{ModerationRoutes}
-			{SettingsRoutes}
-            <Route 
-              path="/"
-              element={loading ? null : <Navigate to={user ? "/feed" : "/landing"} replace/>}/>
-			<Route
-				path="/landing"
-				element={<LandingPage />}
-			/>
-            <Route
-              path="/register"
-              element={<RegisterPage />} />
-            <Route
-              path = "/login"
-              element = {<LoginPage />} />
-            <Route
-              path = "/myprofile"
-              element = {loading ? null : user ? <MyProfilePage/> : <Navigate to = "/" replace />} />
-            <Route
-              path="/friends"
-              element={loading ? null : user ? <FriendsPage/> : <Navigate to = "/" replace />} />
-            <Route
-              path = "/feed"
-              element = {loading ? null : user ? <FeedPage/> : <Navigate to = "/" replace />} />
-            <Route
-              path="/users/:id"
-              element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
+	return (
+		<UserContext.Provider value={{ user, setUser, refreshUser: fetchUser }}>
+			<ModalProvider>
+				<BrowserRouter>
+					<Header />
+					<LeftMenu />
+					<Routes>
+						{ModerationRoutes}
+						{SettingsRoutes}
+						<Route
+							path="/"
+							element={
+								loading ? null : (
+									<Navigate to={user ? '/feed' : '/landing'} replace />
+								)
+							}
+						/>
+						<Route path="/landing" element={<LandingPage />} />
+						<Route path="/register" element={<RegisterPage />} />
+						<Route path="/login" element={<LoginPage />} />
+						<Route
+							path="/myprofile"
+							element={
+								loading ? null : user ? (
+									<MyProfilePage />
+								) : (
+									<Navigate to="/" replace />
+								)
+							}
+						/>
+						<Route
+							path="/friends"
+							element={
+								loading ? null : user ? (
+									<FriendsPage />
+								) : (
+									<Navigate to="/" replace />
+								)
+							}
+						/>
+						<Route
+							path="/feed"
+							element={
+								loading ? null : user ? <FeedPage /> : <Navigate to="/" replace />
+							}
+						/>
+						<Route
+							path="/users/:id"
+							element={
+								loading ? null : user ? (
+									<UserProfilePage />
+								) : (
+									<Navigate to="/" replace />
+								)
+							}
+						/>
 						<Route 
 							path="/chat"
 							element={loading ? null : user ? <ChatPage /> : <Navigate to="/" replace />} />
+<<<<<<< HEAD
 			<Route
 				path="/tournament"
 				element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />
@@ -122,6 +157,34 @@ const { t } = useTranslation();
         </ModalProvider>
     </UserContext.Provider>
   );
+=======
+						<Route
+							path="/tournament"
+							element={
+								loading ? null : user ? (
+									<TournamentFeedPage />
+								) : (
+									<Navigate to="/" replace />
+								)
+							}
+						/>
+						<Route
+							path="/dashboard"
+							element={
+								loading ? null : user ? (
+									<DashboardPage />
+								) : (
+									<Navigate to="/" replace />
+								)
+							}
+						/>
+						<Route path="/github/callback" element={<GithubCallbackPage />} />
+					</Routes>
+				</BrowserRouter>
+			</ModalProvider>
+		</UserContext.Provider>
+	);
+>>>>>>> main
 };
 
-export default App
+export default App;

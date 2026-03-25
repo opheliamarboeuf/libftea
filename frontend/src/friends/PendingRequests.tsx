@@ -10,8 +10,12 @@ export function PendingRequests() {
 	const { pending, refetch } = usePendingRequests();
 	const [loading, setLoading] = useState(false);
 	const { refreshUser, user } = useUser();
+<<<<<<< HEAD
 	const API_URL = 'http://localhost:3000';
 	const { t } = useTranslation();
+=======
+	const API_URL = import.meta.env.VITE_API_URL;
+>>>>>>> main
 
 	const { emit } = useFriendsSocket(user?.id, {
 		onRequestAccepted: () => {

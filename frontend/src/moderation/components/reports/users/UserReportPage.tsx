@@ -8,7 +8,7 @@ import './UserReportPage.css';
 import { useTranslation } from 'react-i18next';
 
 const UserReportPage = () => {
-	const API_URL = 'http://localhost:3000';
+	const API_URL = import.meta.env.VITE_API_URL;
 	const { user } = useUser();
 	const { postId } = useParams<{ postId: string }>(); // get the id from URL
 	const [fullReport, setFullReport] = useState<UserReportType | null>(null);

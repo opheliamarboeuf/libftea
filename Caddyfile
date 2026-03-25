@@ -1,0 +1,24 @@
+{
+	admin off
+}
+
+:443 {
+	tls /certs/localhost.crt /certs/localhost.key
+
+	reverse_proxy /uploads/* backend:3000
+	reverse_proxy /assets/* backend:3000
+
+	reverse_proxy /auth/* backend:3000
+
+	@api {
+		header Authorization * 
+	}
+	reverse_proxy @api backend:3000
+
+	@socketio {
+		path /socket.io/*
+	}
+	reverse_proxy @socketio backend:3000
+
+	reverse_proxy frontend:5173
+}

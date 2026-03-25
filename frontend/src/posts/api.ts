@@ -2,7 +2,7 @@ import { Post } from '../context/UserContext';
 import { PostEditPayload } from './types';
 import i18n from '../i18n';
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const postsApi = {
 

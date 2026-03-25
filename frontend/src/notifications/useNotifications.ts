@@ -18,8 +18,12 @@ export interface Notification {
 
 export const useNotifications = (userId: number | undefined) => {
 	const [notifications, setNotifications] = useState<Notification[]>([]);
+<<<<<<< HEAD
 	const API_URL = "http://localhost:3000";
 	const { t } = useTranslation();
+=======
+	const API_URL = import.meta.env.VITE_API_URL;
+>>>>>>> main
 
 	useEffect(() => {
 		if (!userId) return;

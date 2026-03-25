@@ -14,7 +14,7 @@ interface UserReportListProps {
 }
 
 export function UserReportList({ reports, onUpdate }: UserReportListProps) {
-	const API_URL = 'http://localhost:3000';
+	const API_URL = import.meta.env.VITE_API_URL;
 	const { user } = useUser();
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [reportToUnassign, setReportToUnassign] = useState<number | null>(null);

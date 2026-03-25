@@ -21,7 +21,7 @@ interface Props {
   onNewMessage?: (conversationId: number, message: LastMessage) => void;
 }
 
-const API_URL = 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL;
 const SCROLL_THRESHOLD = 100;
 
 function formatTime(iso?: string) {

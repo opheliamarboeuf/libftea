@@ -1,8 +1,8 @@
-const API_URL = 'http://localhost:3000/likes';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const likesApi = {
 	countLikes: async (postId: number) => {
-		const res = await fetch(`${API_URL}/${postId}/count`, {
+		const res = await fetch(`${API_URL}/likes/${postId}/count`, {
 			credentials: 'include',
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -11,7 +11,7 @@ export const likesApi = {
 	},
 
 	toggleLike: async (postId: number) => {
-		const res = await fetch(`${API_URL}/${postId}/like`, {
+		const res = await fetch(`${API_URL}/likes/${postId}/like`, {
 			method: 'POST',
 			credentials: 'include',
 			headers: {
@@ -22,7 +22,7 @@ export const likesApi = {
 	},
 
 	isLiked: async (postId: number) => {
-		const res = await fetch(`${API_URL}/${postId}/status`, {
+		const res = await fetch(`${API_URL}/likes/${postId}/status`, {
 			credentials: 'include',
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`,

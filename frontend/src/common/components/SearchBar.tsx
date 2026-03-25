@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./SearchBar.css";
 import { useTranslation } from "react-i18next";
 
-const URL = 'http://localhost:3000/users';
-const API_URL = 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL;
+const URL = `${API_URL}/users`;
 
 interface SearchResult {
 	id: number;

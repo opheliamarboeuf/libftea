@@ -12,6 +12,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
 			clientSecret: process.env.GITHUB_CLIENT_SECRET, // GitHub OAuth client secret 
 			callbackURL: process.env.GITHUB_CALLBACK_URL, // URL where GitHub redirects after authentication
 			scope: ['user:email'], // Permissions requested from the user
+			customHeaders: { 'User-Agent': 'transcendence' },
 		});
 	}
 

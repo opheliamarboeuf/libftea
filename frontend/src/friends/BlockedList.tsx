@@ -6,8 +6,13 @@ import { useTranslation } from "react-i18next";
 
 export function BlockedList() {
 	const { blocked } = useBlocked();
+<<<<<<< HEAD
 	const API_URL = 'http://localhost:3000';
 	const { t } = useTranslation();
+=======
+	const API_URL = import.meta.env.VITE_API_URL;
+
+>>>>>>> main
 
 	return (
 		<div>
