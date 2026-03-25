@@ -11,7 +11,6 @@ import { notifSocket } from "../../socket/socket";
 import { useNotifications } from "../../notifications/useNotifications";
 import { MdOutlineNotifications } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import LanguageMenu from "./LanguageMenu";
 
 export const Header = () => {
 	const navigate = useNavigate();
@@ -130,7 +129,6 @@ export const Header = () => {
 						</div>
 					)}
 				</div>
-				<LanguageMenu />
 				<div 
 					className={`avatar-menu ${menuHidden ? 'menu-hidden' : ''}`}
 					onMouseLeave={() => setMenuHidden(false)}
