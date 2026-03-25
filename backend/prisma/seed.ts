@@ -443,12 +443,12 @@ async function createPostsForTournament(
 async function createTournament(userIds: number[]) {
 	const tournament = await prisma.battle.create({
 		data: {
-			theme: 'Faux fur',
+			theme: 'Fur, Reimagined',
 			createdAt: new Date('2026-03-15'),
 			startsAt: new Date('2026-03-15'),
 			endsAt: new Date('2026-03-22'),
 			status: 'FINISHED',
-			description: 'Fur fashion tournament',
+			description: 'Texture speaks louder than color',
 			maxPlayers: 3,
 		},
 	});
@@ -456,42 +456,41 @@ async function createTournament(userIds: number[]) {
 	const tournamentUserIds = [userIds[2], userIds[1], userIds[3]];
 	const usernames = ['cha', 'leo', 'ophe'];
 
-	// ✅ Définis ici tes titres, captions et commentaires comme pour les posts classiques
 	const tournamentPostsData: PostData[] = [
 		{
-			title: "Cha's fur look",
-			caption: 'Fur is a philosophy. 🖤',
+			title: "Precision softness",
+			caption: 'Balance, proportion, texture. You\'re welcome.🖤',
 			comments: [
 				{
-					userId: userIds[1], // leo
+					userId: userIds[1], 
 					content: 'This is so intentional, love it',
 					reply: {
-						userId: userIds[2], // cha
+						userId: userIds[2], 
 						content: 'Always 💅',
 					},
 				},
 			],
 		},
 		{
-			title: "Leo's fur look",
+			title: "Fluffy mood",
 			caption: 'Soft, warm, and a little extra ✨',
 			comments: [
 				{
-					userId: userIds[3], // ophe
+					userId: userIds[3],
 					content: 'The vibe is immaculate',
 				},
 			],
 		},
 		{
-			title: "Ophe's fur look",
-			caption: 'No need to explain.',
+			title: "Faux",
+			caption: '',
 			comments: [
 				{
-					userId: userIds[2], // cha
+					userId: userIds[2],
 					content: 'Less is always more with you',
 					reply: {
-						userId: userIds[3], // ophe
-						content: '🤍',
+						userId: userIds[3], 
+						content: '🖤',
 					},
 				},
 			],
@@ -751,7 +750,7 @@ async function main() {
 				comments: [
 					{
 						userId: users[1].id,
-						content: 'Love your shoes !! Where did you buy it?',
+						content: 'Love your shoes!! Where did you buy it?',
 					},
 				],
 			},
