@@ -2,6 +2,8 @@ import { useState, useEffect, ChangeEvent } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const LoginPage = () => {
 	// Form state
 	const [username, setUsername] = useState('');
@@ -25,7 +27,7 @@ const LoginPage = () => {
 
 	// Fetch full user profile after receiving JWT token
 	const fetchAndSetUser = async (token: string) => {
-		const res = await fetch('http://localhost:3000/auth/me', {
+		const res = await fetch(`${API_URL}/auth/me`, {
 			headers: { Authorization: `Bearer ${token}` },
 		});
 		const fullUserData = await res.json();
@@ -39,7 +41,7 @@ const LoginPage = () => {
 		setErrorMessage(null);
 
 		try {
-			const res = await fetch('http://localhost:3000/auth/login', {
+			const res = await fetch(`${API_URL}/auth/login`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ username, password }),
@@ -76,7 +78,7 @@ const LoginPage = () => {
 		setErrorMessage(null);
 
 		try {
-			const res = await fetch('http://localhost:3000/auth/2fa/verify', {
+			const res = await fetch(`${API_URL}/auth/2fa/verify`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ userId: pendingUserId, code: twoFactorCode }),
@@ -191,8 +193,8 @@ const LoginPage = () => {
 						</button>
 						<button 
 							type="button"
-							onClick={() => window.location.href = 'http://localhost:3000/auth/github'}
-							className="w-full py-2 bg-neutral-600 text-white rounded-lg hover:bg-neutral-400 transition-all outline-none"
+							onClick={() => window.location.href = `${API_URL}/auth/github`}
+							className="w-full py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all outline-none"
 						>
 							Login with GitHub
 						</button>

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '../../context/UserContext';
 import { useFriendsSocket } from '../../friends/useFriendsSocket';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface Message {
   content: string;

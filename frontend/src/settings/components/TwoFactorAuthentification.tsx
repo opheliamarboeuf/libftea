@@ -3,6 +3,9 @@ import { ConfirmDialog } from '../../profile/ConfirmDialog';
 import { useUser } from '../../context/UserContext';
 import { useModal } from '../../context/ModalContext';
 import './TwoFactorAuthentification.css';
+
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function TwoFactorAuthentification() {
 	const { user, refreshUser } = useUser();
 	const [showConfirm, setShowConfirm] = useState(false);
@@ -18,7 +21,7 @@ export function TwoFactorAuthentification() {
 		setShowConfirm(false);
 		void (async () => {
 			try {
-				const res = await fetch('http://localhost:3000/auth/2fa/settings', {
+				const res = await fetch(`${API_URL}/auth/2fa/settings`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',

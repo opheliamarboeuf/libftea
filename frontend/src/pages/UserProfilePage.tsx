@@ -11,8 +11,9 @@ import { useFriendsSocket } from '../friends/useFriendsSocket';
 import { fetchUserTournamentPosts } from '../posts/components/fetchUserPosts';
 import { UserNameWithRole } from '../common/components/UserNameWithRole';
 
-const API_URL = 'http://localhost:3000/users';
-const BASE_URL = 'http://localhost:3000';
+
+const BASE_URL = import.meta.env.VITE_API_URL;
+const API_URL = `${BASE_URL}/users`;
 
 type FriendshipStatus = 'NONE' | 'PENDING_SENT' | 'PENDING_RECEIVED' | 'ACCEPTED' | 'BLOCKED';
 

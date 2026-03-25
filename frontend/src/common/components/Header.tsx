@@ -14,7 +14,7 @@ import { MdOutlineNotifications } from "react-icons/md";
 export const Header = () => {
 	const navigate = useNavigate();
 	const { user, setUser, refreshUser } = useUser();
-	const API_URL = 'http://localhost:3000';
+	const API_URL = import.meta.env.VITE_API_URL;
 	const [menuHidden, setMenuHidden] = useState(false);
 	const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications(user?.id);
 	const [notifOpen, setNotifOpen] = useState(false);

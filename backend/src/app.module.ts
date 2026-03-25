@@ -47,7 +47,7 @@ import * as path from 'path';
 				},
 			},
 		}),
-    ChatModule,
+    	ChatModule,
 		PrismaModule,
 		AuthModule,
 		FriendsModule,

@@ -1,8 +1,8 @@
-const API_URL = 'http://localhost:3000/friends';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const friendsApi = {
 	getFriends: async () => {
-		const res = await fetch(API_URL, {
+		const res = await fetch(`${API_URL}/friends`, {
 			credentials: 'include',
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -11,7 +11,7 @@ export const friendsApi = {
 	},
 
 	getPendingRequests: async () => {
-		const res = await fetch(`${API_URL}/pending`, {
+		const res = await fetch(`${API_URL}/friends/pending`, {
 			credentials: 'include',
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -20,7 +20,7 @@ export const friendsApi = {
 	},
 
 	sendFriendRequest: async (addresseId: number) => {
-		const res = await fetch(`${API_URL}/request/${addresseId}`, {
+		const res = await fetch(`${API_URL}/friends/request/${addresseId}`, {
 			method: 'POST',
 			credentials: 'include',
 			headers: {
@@ -30,7 +30,7 @@ export const friendsApi = {
 	},
 
 	acceptFriendRequest: async (requesterId: number) => {
-	const res = await fetch(`${API_URL}/accept/${requesterId}`, {
+	const res = await fetch(`${API_URL}/friends/accept/${requesterId}`, {
 			method: 'POST',
 			credentials: 'include',
 			headers: {
@@ -40,7 +40,7 @@ export const friendsApi = {
 	},
 
 	rejectFriendRequest: async (requesterId: number) => {
-		await fetch(`${API_URL}/reject/${requesterId}`, {
+		await fetch(`${API_URL}/friends/reject/${requesterId}`, {
 			method: 'DELETE',
 			credentials: 'include',
 			headers: {
@@ -49,7 +49,7 @@ export const friendsApi = {
 	},
 
 	removeFriend: async (friendId: number) => {
-		await fetch(`${API_URL}/remove/${friendId}`, {
+		await fetch(`${API_URL}/friends/remove/${friendId}`, {
 			method: 'DELETE',
 			credentials: 'include',
 			headers: {
@@ -58,7 +58,7 @@ export const friendsApi = {
 	},
 
 	cancelRequest: async (addresseId: number) => {
-		await fetch(`${API_URL}/cancel/${addresseId}`, {
+		await fetch(`${API_URL}/friends/cancel/${addresseId}`, {
 			method: 'DELETE',
 			credentials: 'include',
 			headers: {
@@ -67,7 +67,7 @@ export const friendsApi = {
 	},
 
 	blockFriend: async (friendId: number) => {
-		await fetch(`${API_URL}/block/${friendId}`, {
+		await fetch(`${API_URL}/friends/block/${friendId}`, {
 			method: 'DELETE',
 			credentials: 'include',
 			headers: {
@@ -76,7 +76,7 @@ export const friendsApi = {
 	},
 
 	unBlockFriend: async (friendId: number) => {
-		await fetch(`${API_URL}/unblock/${friendId}`, {
+		await fetch(`${API_URL}/friends/unblock/${friendId}`, {
 			method: 'DELETE',
 			credentials: 'include',
 			headers: {

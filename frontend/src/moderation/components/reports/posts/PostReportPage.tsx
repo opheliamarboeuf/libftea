@@ -7,7 +7,7 @@ import "./PostReportList.css";
 import "./PostReportPage.css";
 
 const PostReportPage = () => {
-	const API_URL = "http://localhost:3000";
+	const API_URL = import.meta.env.VITE_API_URL;
 	const { user } = useUser();
 	const { postId } = useParams<{ postId: string }>(); // get the id from URL
 	const [fullReport, setFullReport] = useState<PostReportType | null>(null);
