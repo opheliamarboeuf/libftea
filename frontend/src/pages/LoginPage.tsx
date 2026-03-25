@@ -8,8 +8,6 @@ import { PrivacyButton } from "../common/components/PrivacyPolicy";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 const LoginPage = () => {
 	// Form state
 	const [username, setUsername] = useState('');
