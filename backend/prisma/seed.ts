@@ -8,6 +8,10 @@ const prisma = new PrismaClient();
 
 // -------------------- HELPERS --------------------
 
+const now = new Date();
+const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+const nineDaysAgo = new Date(now.getTime() - 9 * 24 * 60 * 60 * 1000);
+
 function getRandomDate(start: Date, end: Date) {
 	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
@@ -121,14 +125,10 @@ async function createPostsForUser(
 	postsData: PostData[],
 	allUserIds: number[],
 ) {
-	const startDate = new Date('2026-03-17');
-	const endDate = new Date('2026-03-24');
-
-	// Resize seed images to match post specifications (500x500)
 	await ensureSeedImagesResized(username, postsData.length);
 
 	for (let i = 0; i < postsData.length; i++) {
-		const createdAt = getRandomDate(startDate, endDate);
+		const createdAt = getRandomDate(weekAgo, now);
 
 		const post = await prisma.post.create({
 			data: {
@@ -141,9 +141,8 @@ async function createPostsForUser(
 			},
 		});
 
-		// Create comments for this post
 		for (const commentData of postsData[i].comments) {
-			const commentDate = commentData.createdAt || getRandomDate(createdAt, new Date());
+			const commentDate = commentData.createdAt || getRandomDate(createdAt, now);
 
 			const comment = await prisma.comment.create({
 				data: {
@@ -160,10 +159,8 @@ async function createPostsForUser(
 				`${commentData.userId} commented on your post`,
 			);
 
-			// Create reply if provided
 			if (commentData.reply) {
-				const replyDate =
-					commentData.reply.createdAt || getRandomDate(commentDate, new Date());
+				const replyDate = commentData.reply.createdAt || getRandomDate(commentDate, now);
 
 				await prisma.comment.create({
 					data: {
@@ -260,7 +257,6 @@ async function createRandomFriendships(userIds: number[]) {
 
 async function createConversations(userIds: number[]) {
 	for (const userId of userIds) {
-		// Get accepted friendships for this user
 		const friendships = await prisma.friendship.findMany({
 			where: {
 				OR: [
@@ -270,12 +266,10 @@ async function createConversations(userIds: number[]) {
 			},
 		});
 
-		// Get friend IDs
 		const friendIds = friendships.map((f) =>
 			f.requesterId === userId ? f.addresseId : f.requesterId,
 		);
 
-		// Create conversation with maximum 2 friends only
 		let conversationsCreated = 0;
 
 		for (const friendId of friendIds) {
@@ -330,27 +324,28 @@ async function createMessages() {
 
 	for (let i = 0; i < conversations.length; i++) {
 		const conv = conversations[i];
-		// Alternate between message type 1 and 2
 		const messageType = (i % 2) + 1;
 		const selectedMessages = messages[messageType];
 
-		// First message from one user
+		const firstMessageDate = getRandomDate(weekAgo, now);
+
 		const firstSender = conv.User[0];
 		await prisma.message.create({
 			data: {
 				content: selectedMessages.first,
 				conversationId: conv.id,
 				senderId: firstSender.id,
+				createdAt: firstMessageDate,
 			},
 		});
 
-		// Reply from the other user
 		const secondSender = conv.User[1];
 		await prisma.message.create({
 			data: {
 				content: selectedMessages.second,
 				conversationId: conv.id,
 				senderId: secondSender.id,
+				createdAt: getRandomDate(firstMessageDate, now),
 			},
 		});
 	}
@@ -386,43 +381,46 @@ async function createPostsForTournament(
 	allUserIds: number[],
 	forcedLikeCount?: number,
 ) {
+	const postDate = getRandomDate(nineDaysAgo, weekAgo);
+
 	const post = await prisma.post.create({
 		data: {
 			title: postData.title,
 			caption: postData.caption,
 			imageUrl: `/uploads/seed/tournament/${username}_tournament-resized.jpg`,
 			authorId: userId,
-			createdAt: new Date('2026-03-20'),
-			updatedAt: new Date('2026-03-20'),
+			createdAt: postDate,
+			updatedAt: postDate,
 		},
 	});
 
-	// Create comments for this post
 	for (const commentData of postData.comments) {
+		const commentDate = getRandomDate(postDate, weekAgo);
+
 		const comment = await prisma.comment.create({
 			data: {
 				content: commentData.content,
 				postId: post.id,
 				userId: commentData.userId,
-				createdAt: new Date('2026-03-20'),
+				createdAt: commentDate,
 			},
 		});
 
-		// Create reply if provided
 		if (commentData.reply) {
+			const replyDate = getRandomDate(commentDate, weekAgo);
+
 			await prisma.comment.create({
 				data: {
 					content: commentData.reply.content,
 					postId: post.id,
 					userId: commentData.reply.userId,
 					parentId: comment.id,
-					createdAt: new Date('2026-03-20'),
+					createdAt: replyDate,
 				},
 			});
 		}
 	}
 
-	// Add arbitrary likes except for the winner
 	const shuffled = shuffleArray(allUserIds);
 	const likeCount = forcedLikeCount ?? Math.floor(Math.random() * 6);
 
@@ -444,9 +442,9 @@ async function createTournament(userIds: number[]) {
 	const tournament = await prisma.battle.create({
 		data: {
 			theme: 'Fur, Reimagined',
-			createdAt: new Date('2026-03-15'),
-			startsAt: new Date('2026-03-15'),
-			endsAt: new Date('2026-03-22'),
+			createdAt: nineDaysAgo,
+			startsAt: nineDaysAgo,
+			endsAt: weekAgo,
 			status: 'FINISHED',
 			description: 'Texture speaks louder than color',
 			maxPlayers: 3,
@@ -458,21 +456,21 @@ async function createTournament(userIds: number[]) {
 
 	const tournamentPostsData: PostData[] = [
 		{
-			title: "Precision softness",
-			caption: 'Balance, proportion, texture. You\'re welcome.🖤',
+			title: 'Precision softness',
+			caption: "Balance, proportion, texture. You're welcome.🖤",
 			comments: [
 				{
-					userId: userIds[1], 
+					userId: userIds[1],
 					content: 'This is so intentional, love it',
 					reply: {
-						userId: userIds[2], 
+						userId: userIds[2],
 						content: 'Always 💅',
 					},
 				},
 			],
 		},
 		{
-			title: "Fluffy mood",
+			title: 'Fluffy mood',
 			caption: 'Soft, warm, and a little extra ✨',
 			comments: [
 				{
@@ -482,14 +480,14 @@ async function createTournament(userIds: number[]) {
 			],
 		},
 		{
-			title: "Faux",
+			title: 'Faux',
 			caption: '',
 			comments: [
 				{
 					userId: userIds[2],
 					content: 'Less is always more with you',
 					reply: {
-						userId: userIds[3], 
+						userId: userIds[3],
 						content: '🖤',
 					},
 				},
@@ -498,12 +496,13 @@ async function createTournament(userIds: number[]) {
 	];
 
 	const tournamentPosts = [];
+	const winnerIndex = Math.floor(Math.random() * tournamentUserIds.length);
+	const winnerId = tournamentUserIds[winnerIndex];
 
 	for (let i = 0; i < tournamentUserIds.length; i++) {
 		const userId = tournamentUserIds[i];
 		const username = usernames[i];
 
-		// All users except the post author can like
 		const allUserIds = userIds.filter((id) => id !== userId);
 
 		await ensureTournamentImageResized(username);
@@ -513,6 +512,7 @@ async function createTournament(userIds: number[]) {
 			username,
 			tournamentPostsData[i],
 			allUserIds,
+			userId === winnerId ? 4 : undefined,
 		);
 
 		tournamentPosts.push({ userId, post });
@@ -522,35 +522,9 @@ async function createTournament(userIds: number[]) {
 				battleId: tournament.id,
 				userId,
 				postId: post.id,
-				submittedAt: new Date('2026-03-20'),
+				submittedAt: getRandomDate(nineDaysAgo, weekAgo),
 			},
 		});
-	}
-
-	// Randomly selecting the winner
-	const winnerIndex = Math.floor(Math.random() * tournamentUserIds.length);
-	const winnerId = tournamentUserIds[winnerIndex];
-	const winnerPost = tournamentPosts[winnerIndex].post;
-
-	// Add 5 likes to winner's post from all other users
-	const likers = userIds.filter((id) => id !== winnerId);
-
-	for (let i = 0; i < Math.min(5, likers.length); i++) {
-		const alreadyLiked = await prisma.like.findFirst({
-			where: {
-				userId: likers[i],
-				postId: winnerPost.id,
-			},
-		});
-
-		if (!alreadyLiked) {
-			await prisma.like.create({
-				data: {
-					userId: likers[i],
-					postId: winnerPost.id,
-				},
-			});
-		}
 	}
 
 	await prisma.battle.update({
@@ -566,7 +540,6 @@ async function createTournament(userIds: number[]) {
 async function main() {
 	console.log('Seeding started...');
 
-	// Create admin and moderators
 	await createUserIfNotExists(
 		'admin@test.com',
 		'admin',
@@ -778,7 +751,7 @@ async function main() {
 				comments: [
 					{
 						userId: users[2].id,
-						content: 'Minimal doesn’t mean effortless. I see the choices.',
+						content: "Minimal doesn't mean effortless. I see the choices.",
 						reply: {
 							userId: users[3].id,
 							content: 'Thank you giiirl',
@@ -789,9 +762,6 @@ async function main() {
 		],
 		userIds,
 	);
-
-	const posts = await prisma.post.findMany();
-	const postIds = posts.map((p) => p.id);
 
 	// FRIENDSHIPS
 	await createRandomFriendships(userIds);
