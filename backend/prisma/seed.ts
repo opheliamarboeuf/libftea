@@ -1,18 +1,23 @@
-import { PrismaClient, Role } from "@prisma/client";
-import * as bcrypt from "bcrypt";
+import { PrismaClient, Role, NotificationType } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
 // -------------------- HELPERS --------------------
 
 function getRandomDate(start: Date, end: Date) {
-	return new Date(
-		start.getTime() + Math.random() * (end.getTime() - start.getTime())
-	);
+	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
 
 function shuffleArray<T>(array: T[]): T[] {
-	return array.sort(() => Math.random() - 0.5);
+	return [...array].sort(() => Math.random() - 0.5);
+}
+
+// -------------------- TYPES --------------------
+
+interface PostData {
+	title: string;
+	caption: string;
 }
 
 // -------------------- USERS --------------------
@@ -22,7 +27,7 @@ async function createUserIfNotExists(
 	username: string,
 	passwordPlain: string,
 	role: Role,
-	bio: string
+	bio: string,
 ) {
 	const existingUser = await prisma.user.findFirst({
 		where: {
@@ -31,7 +36,7 @@ async function createUserIfNotExists(
 	});
 
 	if (existingUser) {
-		console.log(`${role} already exists:`, existingUser.email);
+		console.log(`${username} already exists`);
 		return existingUser;
 	}
 
@@ -50,13 +55,25 @@ async function createUserIfNotExists(
 		data: {
 			userId: user.id,
 			bio,
-			avatarUrl: "/assets/default/default-avatar.jpeg",
-			coverUrl: "/assets/default/default-cover.jpeg",
+			avatarUrl: '/assets/default/default-avatar.jpeg',
+			coverUrl: '/assets/default/default-cover.jpeg',
 		},
 	});
 
-	console.log(`${role} created successfully:`, user.email);
 	return user;
+}
+
+// -------------------- NOTIFICATIONS --------------------
+
+async function createNotification(userId: number, type: NotificationType, message: string) {
+	await prisma.notification.create({
+		data: {
+			userId,
+			type,
+			message,
+			isRead: Math.random() > 0.5,
+		},
+	});
 }
 
 // -------------------- POSTS + LIKES --------------------
@@ -64,41 +81,30 @@ async function createUserIfNotExists(
 async function createPostsForUser(
 	userId: number,
 	username: string,
-	count: number,
-	allUserIds: number[]
+	postsData: PostData[],
+	allUserIds: number[],
 ) {
-	const existingPosts = await prisma.post.findFirst({
-		where: { authorId: userId },
-	});
+	const startDate = new Date('2026-03-17');
+	const endDate = new Date('2026-03-24');
 
-	if (existingPosts) {
-		console.log(`Posts already exist for ${username}`);
-		return;
-	}
-
-	const startDate = new Date("2026-03-17");
-	const endDate = new Date("2026-03-24");
-
-	for (let i = 1; i <= count; i++) {
+	for (let i = 0; i < postsData.length; i++) {
 		const createdAt = getRandomDate(startDate, endDate);
 
 		const post = await prisma.post.create({
 			data: {
-				title: `Post ${i} de ${username}`,
-				caption: `Caption du post ${i}`,
-				imageUrl: `/assets/posts/${username}-${i}.jpg`,
+				title: postsData[i].title,
+				caption: postsData[i].caption,
+				imageUrl: `/assets/posts/${username}-${i + 1}.jpg`,
 				authorId: userId,
-				createdAt: createdAt,
+				createdAt,
+				updatedAt: createdAt,
 			},
 		});
 
-		// 🎯 Likes aléatoires (0 à 5)
-		const shuffledUsers = shuffleArray([...allUserIds]);
+		const shuffled = shuffleArray(allUserIds);
 		const likeCount = Math.floor(Math.random() * 6);
 
-		const selectedUsers = shuffledUsers.slice(0, likeCount);
-
-		for (const likerId of selectedUsers) {
+		for (const likerId of shuffled.slice(0, likeCount)) {
 			if (likerId === userId) continue;
 
 			await prisma.like.create({
@@ -107,97 +113,266 @@ async function createPostsForUser(
 					postId: post.id,
 				},
 			});
+
+			await createNotification(
+				userId,
+				NotificationType.LIKE,
+				`User ${likerId} liked your post`,
+			);
 		}
 	}
-
-	console.log(`${count} posts created for ${username}`);
 }
 
-// -------------------- SEED --------------------
+// -------------------- COMMENTS --------------------
 
-async function seedAdminAndModerators() {
-	console.log("Seeding admin and moderators...");
+async function createCommentsForPosts(postIds: number[], userIds: number[]) {
+	for (const postId of postIds) {
+		const count = Math.floor(Math.random() * 5);
 
-	await createUserIfNotExists(
-		"admin@test.com",
-		"admin",
-		"AdminPswd0+",
-		Role.ADMIN,
-		"Admin account"
-	);
+		for (let i = 0; i < count; i++) {
+			const userId = userIds[Math.floor(Math.random() * userIds.length)];
 
-	await createUserIfNotExists(
-		"mod@test.com",
-		"mod",
-		"ModPswd0+",
-		Role.MOD,
-		"Moderator account"
-	);
+			const comment = await prisma.comment.create({
+				data: {
+					content: `Comment ${i + 1}`,
+					postId,
+					userId,
+				},
+			});
+
+			await createNotification(
+				userId,
+				NotificationType.COMMENT,
+				`User ${userId} commented on a post`,
+			);
+
+			// reply
+			if (Math.random() > 0.5) {
+				const replyUserId = userIds[Math.floor(Math.random() * userIds.length)];
+
+				await prisma.comment.create({
+					data: {
+						content: 'Reply',
+						postId,
+						userId: replyUserId,
+						parentId: comment.id,
+					},
+				});
+			}
+		}
+	}
 }
 
-async function seedSpecificUsersWithPosts() {
-	console.log("Seeding users with posts...");
+// -------------------- FRIENDSHIPS --------------------
 
-	const users = [];
+async function createRandomFriendships(userIds: number[]) {
+	for (const userId of userIds) {
+		const candidates = userIds.filter((id) => id !== userId);
 
-	const ari = await createUserIfNotExists(
-		"ari@test.com",
-		"ari",
-		"Password0+",
-		Role.USER,
-		"Compte de ari"
-	);
-	users.push(ari);
+		const shuffled = shuffleArray(candidates);
 
-	const leo = await createUserIfNotExists(
-		"leo@test.com",
-		"leo",
-		"Password0+",
-		Role.USER,
-		"Compte de leo"
-	);
-	users.push(leo);
+		const targetCount = Math.floor(Math.random() * 3) + 2;
 
-	const cha = await createUserIfNotExists(
-		"cha@test.com",
-		"cha",
-		"Password0+",
-		Role.USER,
-		"Compte de cha"
-	);
-	users.push(cha);
+		let created = 0;
 
-	const ophe = await createUserIfNotExists(
-		"ophe@test.com",
-		"ophe",
-		"Password0+",
-		Role.USER,
-		"Compte de ophe"
-	);
-	users.push(ophe);
+		for (const friendId of shuffled) {
+			if (created >= targetCount) break;
 
-	const userIds = users.map((u) => u.id);
+			const exists = await prisma.friendship.findFirst({
+				where: {
+					OR: [
+						{
+							requesterId: userId,
+							addresseId: friendId,
+						},
+						{
+							requesterId: friendId,
+							addresseId: userId,
+						},
+					],
+				},
+			});
 
-	await createPostsForUser(ari.id, "ari", 2, userIds);
-	await createPostsForUser(leo.id, "leo", 2, userIds);
-	await createPostsForUser(cha.id, "cha", 3, userIds);
-	await createPostsForUser(ophe.id, "ophe", 1, userIds);
+			if (exists) continue;
+
+			const status = Math.random() < 0.6 ? 'PENDING' : 'ACCEPTED';
+
+			await prisma.friendship.create({
+				data: {
+					requesterId: userId,
+					addresseId: friendId,
+					status,
+				},
+			});
+
+			if (status === 'PENDING') {
+				await createNotification(
+					friendId,
+					NotificationType.FRIEND_REQUEST,
+					'New friend request',
+				);
+			}
+
+			created++;
+		}
+	}
+}
+
+// -------------------- CONVERSATIONS --------------------
+
+async function createConversations() {
+	const friendships = await prisma.friendship.findMany({
+		where: { status: 'ACCEPTED' },
+	});
+
+	for (const f of friendships) {
+		const exists = await prisma.conversation.findFirst({
+			where: {
+				User: {
+					some: {
+						id: f.requesterId,
+					},
+				},
+			},
+		});
+
+		if (exists) continue;
+
+		await prisma.conversation.create({
+			data: {
+				User: {
+					connect: [{ id: f.requesterId }, { id: f.addresseId }],
+				},
+			},
+		});
+	}
+}
+
+// -------------------- MESSAGES --------------------
+
+async function createMessages() {
+	const conversations = await prisma.conversation.findMany({
+		include: {
+			User: true,
+		},
+	});
+
+	for (const conv of conversations) {
+		const count = Math.floor(Math.random() * 10);
+
+		for (let i = 0; i < count; i++) {
+			const sender = conv.User[Math.floor(Math.random() * conv.User.length)];
+
+			await prisma.message.create({
+				data: {
+					content: `Message ${i + 1}`,
+					conversationId: conv.id,
+					senderId: sender.id,
+				},
+			});
+		}
+	}
 }
 
 // -------------------- MAIN --------------------
 
 async function main() {
-	console.log("Starting database seed...");
+	console.log('Seeding started...');
 
-	await seedAdminAndModerators();
-	await seedSpecificUsersWithPosts();
+	const users = [];
 
-	console.log("Database seed completed successfully!");
+	users.push(
+		await createUserIfNotExists('ari@test.com', 'ari', 'Password0+', Role.USER, 'Ari bio'),
+	);
+
+	users.push(
+		await createUserIfNotExists('leo@test.com', 'leo', 'Password0+', Role.USER, 'Leo bio'),
+	);
+
+	users.push(
+		await createUserIfNotExists('cha@test.com', 'cha', 'Password0+', Role.USER, 'Cha bio'),
+	);
+
+	users.push(
+		await createUserIfNotExists('ophe@test.com', 'ophe', 'Password0+', Role.USER, 'Ophe bio'),
+	);
+
+	const userIds = users.map((u) => u.id);
+
+	// POSTS
+	await createPostsForUser(
+		users[0].id,
+		users[0].username,
+		[
+			{ title: 'Quiet introspection', caption: 'Still unpacking what this moment means. 🕊️' },
+			{
+				title: 'Intentional vulnerability',
+				caption: 'Trying to show up as I am, not as expected.',
+			},
+			{ title: 'Self-awareness', caption: 'Questioning the way I present myself... 🌙' },
+			{ title: 'Inner alignment', caption: 'Listening more than I speak.' },
+		],
+		userIds,
+	);
+
+	await createPostsForUser(
+		users[1].id,
+		users[1].username,
+		[
+			{ title: 'Soft energy', caption: 'Just going with the vibe today ✨' },
+			{ title: 'Little moment', caption: 'Feeling cute, might not change later 💅' },
+			{ title: 'Pink mood', caption: 'Serving soft confidence all day.' },
+			{ title: 'Good vibes only', caption: 'Just a little sparkle in my day ✨' },
+		],
+		userIds,
+	);
+
+	await createPostsForUser(
+		users[2].id,
+		users[2].username,
+		[
+			{ title: 'On purpose', caption: 'Nothing here is accidental.' },
+			{ title: 'Look complete', caption: 'I noticed the details so you don’t have to. 🤍' },
+			{
+				title: 'Detail check',
+				caption: 'Yes, every element is intentional. No, I won’t elaborate. 💅',
+			},
+			{ title: 'Curated, not casual', caption: 'There’s a difference, and it shows.' },
+		],
+		userIds,
+	);
+
+	await createPostsForUser(
+		users[3].id,
+		users[3].username,
+		[
+			{ title: 'Passing', caption: 'You saw it' },
+			{ title: 'Minimal', caption: 'As expected' },
+		],
+		userIds,
+	);
+
+	const posts = await prisma.post.findMany();
+	const postIds = posts.map((p) => p.id);
+
+	// COMMENTS
+	await createCommentsForPosts(postIds, userIds);
+
+	// FRIENDSHIPS
+	await createRandomFriendships(userIds);
+
+	// CONVERSATIONS
+	await createConversations();
+
+	// MESSAGES
+	await createMessages();
+
+	console.log('Seeding completed.');
 }
 
 main()
 	.catch((e) => {
-		console.error("Seed failed:", e);
+		console.error(e);
 		process.exit(1);
 	})
 	.finally(async () => {
