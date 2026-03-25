@@ -65,10 +65,9 @@ const TournamentFeedPage = () => {
 
   useEffect(() => {
 	tournamentApi.getLastWinnerPost()
-		.then((setWinnerPost))
-		.catch((err) =>
-		{
-			console.error("failed to fetchlast winner", err);
+		.then((data) => setWinnerPost(data))
+		.catch((err) => {
+			console.warn("No last winner post:", err.message);
 		});
   }, []);
 

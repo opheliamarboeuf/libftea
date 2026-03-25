@@ -974,7 +974,6 @@ async updateModRole(
 							username: true,
 							profile: {
 								select: {
-									displayName: true,
 									avatarUrl: true,
 									coverUrl: true,
 									bio: true,
@@ -1018,7 +1017,6 @@ async updateModRole(
 							username: true,
 							profile: {
 								select: {
-									displayName: true,
 									avatarUrl: true,
 									coverUrl: true,
 									bio: true,
@@ -1113,7 +1111,6 @@ async updateModRole(
 							username: true,
 							profile: {
 								select: {
-									displayName: true,
 									avatarUrl: true,
 									coverUrl: true,
 									bio: true,
@@ -1190,7 +1187,6 @@ async updateModRole(
 							username: true,
 							profile: {
 								select: {
-									displayName: true,
 									avatarUrl: true,
 									coverUrl: true,
 									bio: true,
@@ -1260,7 +1256,6 @@ async updateModRole(
 							username: true,
 							profile: {
 								select: {
-									displayName: true,
 									avatarUrl: true,
 									coverUrl: true,
 									bio: true,

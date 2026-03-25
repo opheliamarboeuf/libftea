@@ -98,7 +98,6 @@ export interface UserReportType {
 		profile?: {
 			avatarUrl?: string;
 			coverUrl?: string;
-			displayName?: string;
 			bio?: string;
 		};
 	};

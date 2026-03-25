@@ -8,7 +8,6 @@ async function createUserIfNotExists(
 	username: string,
 	passwordPlain: string,
 	role: Role,
-	displayName: string,
 	bio: string
 ) {
 	const existingUser = await prisma.user.findFirst({
@@ -36,7 +35,6 @@ async function createUserIfNotExists(
 	await prisma.profile.create({
 		data: {
 			userId: user.id,
-			displayName,
 			bio,
 			avatarUrl: "/assets/default/default-avatar.jpeg",
 			coverUrl: "/assets/default/default-cover.jpeg",
@@ -54,7 +52,6 @@ async function seedAdminAndModerators() {
 		"admin",
 		"AdminPswd0+",
 		Role.ADMIN,
-		"Administrator",
 		"Admin account"
 	);
 
@@ -63,7 +60,6 @@ async function seedAdminAndModerators() {
 		"mod",
 		"ModPswd0+",
 		Role.MOD,
-		"Moderator",
 		"Moderator account"
 	);
 }
@@ -80,7 +76,6 @@ async function seedClassicUsers() {
 			username,
 			password,
 			Role.USER,
-			`User ${i}`,
 			`Classic user account ${i}`
 		);
 	}

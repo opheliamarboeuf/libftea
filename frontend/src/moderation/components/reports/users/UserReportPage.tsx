@@ -60,9 +60,6 @@ const UserReportPage = () => {
 													goToProfile(fullReport.reportedUser.id)
 												}
 											>
-												{fullReport.reportedUser.profile?.displayName
-													? `${fullReport.reportedUser.username} (${fullReport.reportedUser.profile?.displayName})`
-													: fullReport.reportedUser.username}
 											</span>
 										) : (
 											<span className="user-report-target-username">

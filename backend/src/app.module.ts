@@ -15,6 +15,7 @@ import { RolesGuard } from './auth/roles.guard';
 import { LikesModule } from './likes/likes.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { CommentsModule } from './comments/comments.module';
+import { ChatModule } from './chat/chat.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.adapter';
@@ -46,7 +47,7 @@ import * as path from 'path';
 				},
 			},
 		}),
-
+    ChatModule,
 		PrismaModule,
 		AuthModule,
 		FriendsModule,

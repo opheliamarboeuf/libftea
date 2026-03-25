@@ -115,13 +115,15 @@ export const tournamentApi = {
 				Authorization: `Bearer ${localStorage.getItem("token")}`,
 			},
 		});
-		const data = await res.json();
 		if (!res.ok) {
+			const data = await res.json().catch(() => ({}));
 			const message = Array.isArray(data.message)
 				? data.message[0]
 				: data.message || i18n.t('tournament.fetchlast');
 			throw new Error(message);
 		}
-		return data;
+		const text = await res.text();
+		if (!text) return null;
+		return JSON.parse(text);
 	},
 };

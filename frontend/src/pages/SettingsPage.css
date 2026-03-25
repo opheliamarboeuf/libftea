@@ -72,3 +72,8 @@
 	align-items: center;
 	justify-content: center;
 }
+
+.settings-sidebar strong {
+    font-family: 'Gotham Bold', sans-serif;
+    font-weight: 700;
+}

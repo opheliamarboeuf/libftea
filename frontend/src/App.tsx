@@ -13,6 +13,7 @@ import { ModalProvider } from "./context/ModalContext";
 import { ModerationRoutes } from './moderation/routes/ModerationRoutes';
 import { SettingsRoutes } from './settings/SettingsRoute';
 import TournamentFeedPage from './pages/TournamentFeedPage';
+import { ChatPage } from './pages/ChatPage';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import PrivacyPage from './pages/PrivacyPage';
@@ -98,6 +99,9 @@ const { t } = useTranslation();
             <Route
               path="/users/:id"
               element={loading ? null : user ? <UserProfilePage/> : <Navigate to = "/" replace />} />
+						<Route 
+							path="/chat"
+							element={loading ? null : user ? <ChatPage /> : <Navigate to="/" replace />} />
 			<Route
 				path="/tournament"
 				element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />
