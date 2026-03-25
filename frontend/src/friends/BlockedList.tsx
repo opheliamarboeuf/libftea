@@ -4,13 +4,11 @@ import { Link } from 'react-router-dom';
 import './friends.css';
 import { useTranslation } from "react-i18next";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function BlockedList() {
 	const { blocked } = useBlocked();
-<<<<<<< HEAD
-	const API_URL = 'http://localhost:3000';
 	const { t } = useTranslation();
-=======
-	const API_URL = import.meta.env.VITE_API_URL;
 
 >>>>>>> main
 
@@ -42,7 +40,7 @@ export function BlockedList() {
 									pointerEvents: blocked.bannedAt ? 'none' : 'auto',
 								}}
 							>
-								{blocked.bannedAt ? 'Unknown User' : blocked.username}
+								{blocked.bannedAt ? t('userreport.unknown') : blocked.username}
 							</Link>
 						</div>
 						<div className="friend-card-actions">

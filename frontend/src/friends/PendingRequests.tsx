@@ -6,16 +6,15 @@ import { useFriendsSocket } from './useFriendsSocket';
 import './friends.css';
 import { useTranslation } from "react-i18next";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export function PendingRequests() {
 	const { pending, refetch } = usePendingRequests();
 	const [loading, setLoading] = useState(false);
 	const { refreshUser, user } = useUser();
 <<<<<<< HEAD
-	const API_URL = 'http://localhost:3000';
 	const { t } = useTranslation();
 =======
-	const API_URL = import.meta.env.VITE_API_URL;
->>>>>>> main
 
 	const { emit } = useFriendsSocket(user?.id, {
 		onRequestAccepted: () => {
@@ -68,7 +67,7 @@ export function PendingRequests() {
 									pointerEvents: user.bannedAt ? 'none' : 'auto',
 								}}
 							>
-								{user.bannedAt ? 'Unknown User' : user.username}
+								{user.bannedAt ? t('userreport.unknown') : user.username}
 							</Link>
 						</div>
 						<div className="friend-card-actions">

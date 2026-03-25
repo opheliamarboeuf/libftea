@@ -23,17 +23,11 @@ import GithubCallbackPage from './pages/GithubCallbackPage';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-<<<<<<< HEAD
-const [user, setUser] = useState<User | null>(null);
-const token = localStorage.getItem("token");
-const [loading, setLoading] = useState(true);
-const { t } = useTranslation();
-=======
 const App = () => {
 	const [user, setUser] = useState<User | null>(null);
 	const token = localStorage.getItem('token');
 	const [loading, setLoading] = useState(true);
->>>>>>> main
+	const { t } = useTranslation();
 
 	const fetchUser = useCallback(async () => {
 		const currentToken = localStorage.getItem('token');
@@ -47,15 +41,9 @@ const App = () => {
 					Authorization: `Bearer ${currentToken}`,
 				},
 			});
-<<<<<<< HEAD
-			if (!res.ok){
-				localStorage.removeItem("token");
-				throw new Error(t('errors.token'));
-=======
 			if (!res.ok) {
 				localStorage.removeItem('token');
-				throw new Error('Token invalid or user unauthorized');
->>>>>>> main
+				throw new Error(t('errors.token'));
 			}
 			const data = await res.json();
 			setUser(data);
@@ -136,7 +124,6 @@ const App = () => {
 						<Route 
 							path="/chat"
 							element={loading ? null : user ? <ChatPage /> : <Navigate to="/" replace />} />
-<<<<<<< HEAD
 			<Route
 				path="/tournament"
 				element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />
@@ -157,34 +144,6 @@ const App = () => {
         </ModalProvider>
     </UserContext.Provider>
   );
-=======
-						<Route
-							path="/tournament"
-							element={
-								loading ? null : user ? (
-									<TournamentFeedPage />
-								) : (
-									<Navigate to="/" replace />
-								)
-							}
-						/>
-						<Route
-							path="/dashboard"
-							element={
-								loading ? null : user ? (
-									<DashboardPage />
-								) : (
-									<Navigate to="/" replace />
-								)
-							}
-						/>
-						<Route path="/github/callback" element={<GithubCallbackPage />} />
-					</Routes>
-				</BrowserRouter>
-			</ModalProvider>
-		</UserContext.Provider>
-	);
->>>>>>> main
 };
 
 export default App;

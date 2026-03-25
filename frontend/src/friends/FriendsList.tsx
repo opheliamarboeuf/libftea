@@ -9,10 +9,8 @@ import { useTranslation } from "react-i18next";
 export function FriendsList() {
 	const { friends } = useFriends();
 <<<<<<< HEAD
-	const API_URL = 'http://localhost:3000';
-	const { t } = useTranslation();
-=======
 	const API_URL = import.meta.env.VITE_API_URL;
+	const { t } = useTranslation();
 >>>>>>> main
 
 	return (
