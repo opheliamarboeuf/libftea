@@ -131,7 +131,8 @@
 		"user": "User",
 		"post": "Post",
 		"battle": "Battle",
-		"enter": "Click to enter"
+		"enter": "Click to enter",
+		"languages": "Languages"
 	},
 
 	"feedpage": {

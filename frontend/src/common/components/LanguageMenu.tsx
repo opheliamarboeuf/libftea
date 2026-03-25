@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import i18n from "../../i18n";
+import { useTranslation } from "react-i18next";
 import './LanguageMenu.css'
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const LanguageMenu = ({ fixed = false }: Props) => {
+	const { t } = useTranslation();
 	const languages = [ 
 		{ code: 'fr', label: 'FR'},
 		{ code: 'en', label: 'EN'},
@@ -27,12 +29,12 @@ const LanguageMenu = ({ fixed = false }: Props) => {
 	return (
 		<div className={`language-dropdown ${fixed ? "fixed" : "" } ${!langMenuHidden ? "open" : "" }`}
 			ref={ref}
+			onMouseEnter={() => setLangMenuHidden(false)}
+			onMouseLeave={() => setLangMenuHidden(true)}
 		>
-			<button
-				className="language-drop-button"
-				onClick={() => setLangMenuHidden(prev => !prev)}>
-				{i18n.language.toUpperCase()} ▼
-			</button>
+			<div className="language-drop-button">
+				{t('common.languages')}
+			</div>
 			<div className="l-menu">
 				{languages.map(lang => (
 					<button

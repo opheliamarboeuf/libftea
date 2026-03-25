@@ -130,7 +130,8 @@
 		"user": "ユーザー",
 		"post": "投稿",
 		"battle": "トーナメント",
-		"enter": "クリックする"
+		"enter": "クリックする",
+		"languages": "言語"
 	},
 
 	"feedpage": {
