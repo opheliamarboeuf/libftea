@@ -65,22 +65,24 @@ export const LeftMenu = () => {
 				<MdOutlineDashboard className="icon" />
 				<span className="label">{t('leftmenu.dashboard')}</span>
 			</div> ) : null}
-			<div className="menu-item" onClick={() => setLangMenuOpen(prev => !prev)}>
-				<MdOutlineLanguage className="icon" />
-				<span className="label">{i18n.language.toUpperCase()}</span>
-			</div>
-			{langMenuOpen && (
-				<div className="lang-submenu">
-					{languages.map(lang => (
-						<div
-							key={lang.code}
-							className={`lang-submenu-item ${i18n.language === lang.code ? 'active' : ''}`}
-							onClick={() => {i18n.changeLanguage(lang.code); setLangMenuOpen(false); }}>
-								<span className="lang-submenu-code">{lang.label}</span>
-						</div>
-					))}
+			<div className="menu-bottom">
+				<div className="menu-item" onClick={() => setLangMenuOpen(prev => !prev)}>
+					<MdOutlineLanguage className="icon" />
+					<span className="label">{i18n.language.toUpperCase()}</span>
 				</div>
-			)}
+				{langMenuOpen && (
+					<div className="lang-submenu">
+						{languages.map(lang => (
+							<div
+								key={lang.code}
+								className={`lang-submenu-item ${i18n.language === lang.code ? 'active' : ''}`}
+								onClick={() => {i18n.changeLanguage(lang.code); setLangMenuOpen(false); }}>
+									<span className="lang-submenu-code">{lang.label}</span>
+							</div>
+						))}
+					</div>
+				)}
+			</div>
 		</div>
 		</>
 	);

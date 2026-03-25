@@ -78,11 +78,27 @@
 }
 
 .menu-bottom {
-	margin-top: 500px;
+	margin-top: auto;
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
 	padding: 0.5rem 0.5rem;
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	margin-bottom: 3rem;
+	padding-bottom: 0.7rem;
+	align-items: center;
+}
+
+.menu-bottom .menu-item {
+	padding: 10px;
+	justify-content: center;
+	width: 100%;
+	gap: 0;
+	padding-left: 20px;
+}
+
+.menu-bottom .menu-item .icon {
+	min-width: auto;
 }
 
 .menu-bottom-item {
