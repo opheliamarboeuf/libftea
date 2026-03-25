@@ -16,7 +16,7 @@ function shuffleArray<T>(array: T[]): T[] {
 	return [...array].sort(() => Math.random() - 0.5);
 }
 
-// Resize seed images to 500x500 (same as posts)
+// Resize seed images to 500x500
 async function ensureSeedImagesResized(username: string, postCount: number) {
 	for (let i = 1; i <= postCount; i++) {
 		const imagePath = join(process.cwd(), 'uploads/seed', username, `${i}.jpg`);
@@ -157,7 +157,7 @@ async function createPostsForUser(
 			await createNotification(
 				userId,
 				NotificationType.COMMENT,
-				`User ${commentData.userId} commented on your post`,
+				`${commentData.userId} commented on your post`,
 			);
 
 			// Create reply if provided
@@ -178,7 +178,7 @@ async function createPostsForUser(
 				await createNotification(
 					commentData.userId,
 					NotificationType.COMMENT,
-					`User ${commentData.reply.userId} replied to your comment`,
+					`${commentData.reply.userId} replied to your comment`,
 				);
 			}
 		}
@@ -196,11 +196,7 @@ async function createPostsForUser(
 				},
 			});
 
-			await createNotification(
-				userId,
-				NotificationType.LIKE,
-				`User ${likerId} liked your post`,
-			);
+			await createNotification(userId, NotificationType.LIKE, `${likerId} liked your post`);
 		}
 	}
 }
@@ -360,10 +356,227 @@ async function createMessages() {
 	}
 }
 
+// -------------------- TOURNAMENTS --------------------
+
+async function ensureTournamentImageResized(username: string) {
+	const imagePath = join(process.cwd(), 'uploads/seed/tournament', `${username}_tournament.jpg`);
+	const resizedPath = join(
+		process.cwd(),
+		'uploads/seed/tournament',
+		`${username}_tournament-resized.jpg`,
+	);
+
+	try {
+		await sharp(imagePath)
+			.resize(500, 500, {
+				fit: 'cover',
+				position: 'center',
+			})
+			.jpeg({ quality: 85 })
+			.toFile(resizedPath);
+	} catch (error) {
+		console.log(`Could not resize tournament image ${username}_tournament.jpg:`, error);
+	}
+}
+
+async function createPostsForTournament(
+	userId: number,
+	username: string,
+	postData: PostData,
+	allUserIds: number[],
+	forcedLikeCount?: number,
+) {
+	const post = await prisma.post.create({
+		data: {
+			title: postData.title,
+			caption: postData.caption,
+			imageUrl: `/uploads/seed/tournament/${username}_tournament-resized.jpg`,
+			authorId: userId,
+			createdAt: new Date('2026-03-20'),
+			updatedAt: new Date('2026-03-20'),
+		},
+	});
+
+	// Create comments for this post
+	for (const commentData of postData.comments) {
+		const comment = await prisma.comment.create({
+			data: {
+				content: commentData.content,
+				postId: post.id,
+				userId: commentData.userId,
+				createdAt: new Date('2026-03-20'),
+			},
+		});
+
+		// Create reply if provided
+		if (commentData.reply) {
+			await prisma.comment.create({
+				data: {
+					content: commentData.reply.content,
+					postId: post.id,
+					userId: commentData.reply.userId,
+					parentId: comment.id,
+					createdAt: new Date('2026-03-20'),
+				},
+			});
+		}
+	}
+
+	// Add arbitrary likes except for the winner
+	const shuffled = shuffleArray(allUserIds);
+	const likeCount = forcedLikeCount ?? Math.floor(Math.random() * 6);
+
+	for (const likerId of shuffled.slice(0, likeCount)) {
+		if (likerId === userId) continue;
+
+		await prisma.like.create({
+			data: {
+				userId: likerId,
+				postId: post.id,
+			},
+		});
+	}
+
+	return post;
+}
+
+async function createTournament(userIds: number[]) {
+	const tournament = await prisma.battle.create({
+		data: {
+			theme: 'Faux fur',
+			createdAt: new Date('2026-03-15'),
+			startsAt: new Date('2026-03-15'),
+			endsAt: new Date('2026-03-22'),
+			status: 'FINISHED',
+			description: 'Fur fashion tournament',
+			maxPlayers: 3,
+		},
+	});
+
+	const tournamentUserIds = [userIds[2], userIds[1], userIds[3]];
+	const usernames = ['cha', 'leo', 'ophe'];
+
+	// ✅ Définis ici tes titres, captions et commentaires comme pour les posts classiques
+	const tournamentPostsData: PostData[] = [
+		{
+			title: "Cha's fur look",
+			caption: 'Fur is a philosophy. 🖤',
+			comments: [
+				{
+					userId: userIds[1], // leo
+					content: 'This is so intentional, love it',
+					reply: {
+						userId: userIds[2], // cha
+						content: 'Always 💅',
+					},
+				},
+			],
+		},
+		{
+			title: "Leo's fur look",
+			caption: 'Soft, warm, and a little extra ✨',
+			comments: [
+				{
+					userId: userIds[3], // ophe
+					content: 'The vibe is immaculate',
+				},
+			],
+		},
+		{
+			title: "Ophe's fur look",
+			caption: 'No need to explain.',
+			comments: [
+				{
+					userId: userIds[2], // cha
+					content: 'Less is always more with you',
+					reply: {
+						userId: userIds[3], // ophe
+						content: '🤍',
+					},
+				},
+			],
+		},
+	];
+
+	const tournamentPosts = [];
+
+	for (let i = 0; i < tournamentUserIds.length; i++) {
+		const userId = tournamentUserIds[i];
+		const username = usernames[i];
+
+		// All users except the post author can like
+		const allUserIds = userIds.filter((id) => id !== userId);
+
+		await ensureTournamentImageResized(username);
+
+		const post = await createPostsForTournament(
+			userId,
+			username,
+			tournamentPostsData[i],
+			allUserIds,
+		);
+
+		tournamentPosts.push({ userId, post });
+
+		await prisma.battleParticipant.create({
+			data: {
+				battleId: tournament.id,
+				userId,
+				postId: post.id,
+				submittedAt: new Date('2026-03-20'),
+			},
+		});
+	}
+
+	// Randomly selecting the winner
+	const winnerIndex = Math.floor(Math.random() * tournamentUserIds.length);
+	const winnerId = tournamentUserIds[winnerIndex];
+	const winnerPost = tournamentPosts[winnerIndex].post;
+
+	// Add 5 likes to winner's post from all other users
+	const likers = userIds.filter((id) => id !== winnerId);
+
+	for (let i = 0; i < Math.min(5, likers.length); i++) {
+		const alreadyLiked = await prisma.like.findFirst({
+			where: {
+				userId: likers[i],
+				postId: winnerPost.id,
+			},
+		});
+
+		if (!alreadyLiked) {
+			await prisma.like.create({
+				data: {
+					userId: likers[i],
+					postId: winnerPost.id,
+				},
+			});
+		}
+	}
+
+	await prisma.battle.update({
+		where: { id: tournament.id },
+		data: { winnerId },
+	});
+
+	console.log(`Tournament created with ${usernames[winnerIndex]} as winner`);
+}
+
 // -------------------- MAIN --------------------
 
 async function main() {
 	console.log('Seeding started...');
+
+	// Create admin and moderators
+	await createUserIfNotExists(
+		'admin@test.com',
+		'admin',
+		'AdminPswd0+',
+		Role.ADMIN,
+		'Admin account',
+	);
+
+	await createUserIfNotExists('mod@test.com', 'mod', 'ModPswd0+', Role.MOD, 'Moderator account');
 
 	const users = [];
 
@@ -589,6 +802,9 @@ async function main() {
 
 	// MESSAGES
 	await createMessages();
+
+	// TOURNAMENTS
+	await createTournament(userIds);
 
 	console.log('Seeding completed.');
 }
