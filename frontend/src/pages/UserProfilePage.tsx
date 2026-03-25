@@ -1,16 +1,15 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
-import { useModal } from "../context/ModalContext";
-import { Post } from "../context/UserContext";
-import { postsApi } from "../posts/api";
-import { UserPostsList } from "../posts/components/UserPostsList";
-import { ConfirmBlockDelete } from "../friends/ConfirmBlockDelete";
-import { BlockFriendButton } from "../friends/BlockFriendButton";
-import { UserProfileMenu } from "../profile/components/UserProfileMenu";
-import { useFriendsSocket } from "../friends/useFriendsSocket";
-import { fetchUserTournamentPosts } from "../posts/components/fetchUserPosts";
-import { UserNameWithRole } from "../common/components/UserNameWithRole";
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
+import { useModal } from '../context/ModalContext';
+import { Post } from '../context/UserContext';
+import { postsApi } from '../posts/api';
+import { UserPostsList } from '../posts/components/UserPostsList';
+import { ConfirmBlockDelete } from '../friends/ConfirmBlockDelete';
+import { UserProfileMenu } from '../profile/components/UserProfileMenu';
+import { useFriendsSocket } from '../friends/useFriendsSocket';
+import { fetchUserTournamentPosts } from '../posts/components/fetchUserPosts';
+import { UserNameWithRole } from '../common/components/UserNameWithRole';
 
 
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -26,7 +25,6 @@ interface UserProfile {
 		avatarUrl?: string;
 		coverUrl?: string;
 		bio?: string;
-		displayName?: string;
 	} | null;
 	friendsCount: number;
 	friendshipStatus: FriendshipStatus;
@@ -201,24 +199,21 @@ const UserProfilePage = () => {
 	const renderFriendshipButton = () => {
 		if (!userData) return null;
 
-		const buttonClass = "px-3 py-2 text-sm bg-gray-600/30 border-none rounded-lg cursor-pointer opacity-70 hover:opacity-100 hover:bg-gray-500/30 transition-opacity outline-none";
+		const buttonClass =
+			'px-3 py-2 text-sm bg-gray-600/30 border-none rounded-lg cursor-pointer opacity-70 hover:opacity-100 hover:bg-gray-500/30 transition-opacity outline-none';
 
 		switch (userData.friendshipStatus) {
 			case 'NONE':
 				return (
-					<button 
-						className={buttonClass}
-						onClick={handleAddFriend} 
-						disabled={loading}
-					>
+					<button className={buttonClass} onClick={handleAddFriend} disabled={loading}>
 						Add Friend
 					</button>
 				);
 			case 'PENDING_SENT':
 				return (
-					<button 
+					<button
 						className={buttonClass}
-						onClick={handleCancelRequest} 
+						onClick={handleCancelRequest}
 						disabled={loading}
 					>
 						Cancel Request
@@ -227,18 +222,10 @@ const UserProfilePage = () => {
 			case 'PENDING_RECEIVED':
 				return (
 					<div className="flex gap-3">
-						<button 
-							className={buttonClass}
-							onClick={handleAccept} 
-							disabled={loading}
-						>
+						<button className={buttonClass} onClick={handleAccept} disabled={loading}>
 							Accept Friend Request
 						</button>
-						<button 
-							className={buttonClass}
-							onClick={handleReject} 
-							disabled={loading}
-						>
+						<button className={buttonClass} onClick={handleReject} disabled={loading}>
 							Reject Friend Request
 						</button>
 					</div>
@@ -246,16 +233,16 @@ const UserProfilePage = () => {
 			case 'ACCEPTED':
 				return (
 					<div className="flex gap-3">
-						<button 
+						<button
 							className={buttonClass}
-							onClick={() => navigate("/chat")} 
+							onClick={() => navigate(`/chat?with=${userData?.id}`)}
 							disabled={loading}
 						>
 							Send Message
 						</button>
-						<button 
+						<button
 							className={buttonClass}
-							onClick={() => setShowDeleteConfirm(true)} 
+							onClick={() => setShowDeleteConfirm(true)}
 							disabled={loading}
 						>
 							Delete friend
@@ -302,9 +289,6 @@ const UserProfilePage = () => {
 						{isOnline ? <span>☀️</span> : <span className="grayscale">🌙</span>}
 						<span>{isOnline ? 'Online' : 'Offline'}</span>
 					</div>
-					<p className="w-full font-bold text-xl flex justify-center items-center" style={{ fontFamily: "'Blosta Script', cursive" }}>
-						{userData.profile?.displayName ? userData.profile.displayName : '\u00A0'}
-					</p>
 					<div>
 						<img
 							src={
@@ -316,12 +300,12 @@ const UserProfilePage = () => {
 							className="w-24 h-24 rounded-full object-cover shadow-md"
 						/>
 					</div>
-					<p className="font-bold" style={{ fontFamily: "'Blosta Script', cursive" }}>
-						<UserNameWithRole
-							username={userData.username}
-							role={(userData as any).role}
-						/>
-					</p>
+				<p className="font-bold" style={{ fontFamily: "'Gotham Bold', sans-serif" }}>
+					<UserNameWithRole
+						username={userData.username}
+						role={(userData as any).role}
+					/>
+				</p>
 					<div className="flex justify-center gap-2 w-full">
 						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
 							<strong className="text-lg font-bold">{userData.friendsCount}</strong>
@@ -332,19 +316,16 @@ const UserProfilePage = () => {
 							Posts
 						</span>
 					</div>
-					<div className="mt-2">
-						<BlockFriendButton userId={userData.id} onAction={fetchProfile} />
-					</div>
 					<div className="text-center p-3 rounded-xl w-full bg-white/90 shadow-sm border border-black/5 text-sm whitespace-pre-line">
-						<p>{userData.profile?.bio || "Write your bio here..."}</p>
+						<p>{userData.profile?.bio || 'Write your bio here...'}</p>
 					</div>
 				</div>
 
 				{/* COVER, USER INTERACTIONS AND POSTS*/}
-				<div className="relative flex-1 min-w-0 flex flex-col mt-8">
+				<div className="relative flex-1 min-w-0 flex flex-col mt-5">
 					{/* Gradient overlay */}
 					<div className="absolute top-0 left-0 w-full h-[250px] bg-gradient-to-b from-transparent to-gray-300/70 pointer-events-none z-[1]"></div>
-					
+
 					{/* Cover */}
 					<div className="relative h-[250px] overflow-hidden rounded-2xl group">
 						<img
@@ -364,7 +345,9 @@ const UserProfilePage = () => {
 					{/* Posts section */}
 					<div className="relative z-[1] flex-1 p-4 overflow-y-auto bg-gray-300/70">
 						{blockedPosts ? (
-							<div className="flex justify-center mt-12 text-lg">You have blocked this user</div>
+							<div className="flex justify-center mt-12 text-lg">
+								You have blocked this user
+							</div>
 						) : (
 							<>
 								{/* Toolbar with tabs */}
@@ -372,34 +355,52 @@ const UserProfilePage = () => {
 									{/* Tabs */}
 									<div className="relative flex rounded-lg overflow-hidden bg-white shadow-sm">
 										{/* Indicator */}
-										<div 
+										<div
 											className={`absolute top-0 left-0 w-1/2 h-full bg-neutral-200 rounded-lg transition-transform duration-300 ease-in-out z-[1] ${
-												profileTab === "posts" ? "translate-x-0" : "translate-x-full"
+												profileTab === 'posts'
+													? 'translate-x-0'
+													: 'translate-x-full'
 											}`}
 										></div>
 										<button
 											className={`relative z-[2] px-5 py-2 text-sm bg-transparent border-none cursor-pointer min-w-[120px] outline-none ${
-												profileTab === "posts" ? "font-semibold" : ""
+												profileTab === 'posts' ? 'font-semibold' : ''
 											}`}
-											style={profileTab === "posts" ? { fontFamily: "'Gotham Bold', sans-serif", fontWeight: "700" } : {}}
-											onClick={() => setProfileTab("posts")}
+											style={
+												profileTab === 'posts'
+													? {
+															fontFamily: "'Gotham Bold', sans-serif",
+															fontWeight: '700',
+														}
+													: {}
+											}
+											onClick={() => setProfileTab('posts')}
 										>
 											Posts
 										</button>
 										<button
 											className={`relative z-[2] px-5 py-2 text-sm bg-transparent border-none cursor-pointer min-w-[120px] outline-none ${
-												profileTab === "tournament" ? "font-semibold" : ""
+												profileTab === 'tournament' ? 'font-semibold' : ''
 											}`}
-											style={profileTab === "tournament" ? { fontFamily: "'Gotham Bold', sans-serif", fontWeight: "700" } : {}}
-											onClick={() => setProfileTab("tournament")}
+											style={
+												profileTab === 'tournament'
+													? {
+															fontFamily: "'Gotham Bold', sans-serif",
+															fontWeight: '700',
+														}
+													: {}
+											}
+											onClick={() => setProfileTab('tournament')}
 										>
 											Tournament
 										</button>
 									</div>
 								</div>
 								{/* Posts list */}
-								{profileTab === "posts" && <UserPostsList posts={posts} />}
-								{profileTab === "tournament" && <UserPostsList posts={tournamentPosts} />}
+								{profileTab === 'posts' && <UserPostsList posts={posts} />}
+								{profileTab === 'tournament' && (
+									<UserPostsList posts={tournamentPosts} />
+								)}
 							</>
 						)}
 					</div>

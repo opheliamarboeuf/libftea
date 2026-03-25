@@ -39,7 +39,6 @@ private async generateUniqueUsername(base: string): Promise<string> {
 					profile: {
 						create: {
 							bio: '',
-							displayName: '',
 							avatarUrl: '/assets/default/default-avatar.jpeg',
 							coverUrl: '/assets/default/default-cover.jpeg',
 						},
@@ -150,7 +149,6 @@ private async generateUniqueUsername(base: string): Promise<string> {
 				profile: {
 						create: {
 							bio: '',
-							displayName: '',
 							avatarUrl: '/assets/default/default-avatar.jpeg',
 							coverUrl: '/assets/default/default-cover.jpeg',
 						},
@@ -227,7 +225,6 @@ private async generateUniqueUsername(base: string): Promise<string> {
 				profile: {
 					select: {
 						bio: true,
-						displayName: true,
 						avatarUrl: true,
 						coverUrl: true,
 					},

@@ -13,6 +13,7 @@ import { ModalProvider } from './context/ModalContext';
 import { ModerationRoutes } from './moderation/routes/ModerationRoutes';
 import { SettingsRoutes } from './settings/SettingsRoute';
 import TournamentFeedPage from './pages/TournamentFeedPage';
+import { ChatPage } from './pages/ChatPage';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
 import GithubCallbackPage from './pages/GithubCallbackPage';
@@ -116,6 +117,9 @@ const App = () => {
 								)
 							}
 						/>
+						<Route 
+							path="/chat"
+							element={loading ? null : user ? <ChatPage /> : <Navigate to="/" replace />} />
 						<Route
 							path="/tournament"
 							element={

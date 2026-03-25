@@ -44,7 +44,6 @@ export type User = {
 	bannedAt: string;
 	profile?: {
 		bio: string | null;
-		displayName: string | null;
 		avatarUrl: string | null;
 		coverUrl: string | null;
 	};

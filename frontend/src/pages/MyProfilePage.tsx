@@ -37,9 +37,6 @@ const ProfilePage = () => {
 		<div className="fixed top-[50px] left-[60px] flex flex-col w-[calc(100vw-60px)] h-[calc(100vh-50px)] text-gray-800 overflow-y-auto">
 			<div className="flex flex-1 h-full">
 				<div className="flex-shrink-0 w-[250px] min-w-[150px] bg-white/85 backdrop-blur-md p-6 flex flex-col items-center rounded-2xl border border-black/5 shadow-md m-5 gap-4 self-stretch max-lg:hidden">
-					<p className="w-full font-bold text-xl flex justify-center items-center">
-						{user.profile.displayName ? user.profile.displayName : '\u00A0'}
-					</p>
 					<div>
 						<img
 							src={

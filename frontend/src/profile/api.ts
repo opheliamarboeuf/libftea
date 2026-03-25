@@ -7,14 +7,12 @@ const API_URL = import.meta.env.VITE_API_URL;
 export const profileApi = {
 	async updateProfile(
 		bio: string,
-		displayName: string,
 		avatarFile: File | null,
 		coverFile: File | null
 	): Promise<ProfileUpdateResponse> {
 		// Create a FormData object to send text fields and optional files
 		const formData = new FormData();
 		formData.append("bio", bio);
-		formData.append("displayName", displayName);
 		if (avatarFile) formData.append("avatar", avatarFile);
 		if (coverFile) formData.append("cover", coverFile);
 

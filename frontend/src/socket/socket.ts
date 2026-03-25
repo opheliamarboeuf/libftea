@@ -11,6 +11,11 @@ export const friendsSocket = io(`${API_URL}/friends`, {
 	autoConnect: false,
 });
 
+export const chatSocket = io("http://localhost:3000/chat", {
+  withCredentials: true,
+  autoConnect: false,
+});
+
 export const notifSocket = io(`${API_URL}/notifications`, {
 	withCredentials: true,
 	autoConnect: false,

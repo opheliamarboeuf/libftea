@@ -14,8 +14,6 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 	const {
 		bio,
 		setBio,
-		displayName,
-		setDisplayName,
 		errorMessage,
 		handleAvatarChange,
 		handleCoverChange,
@@ -23,7 +21,6 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 		hasChanges,
 		saveProfile,
 		MAX_BIO_LENGTH,
-		MAX_DISPLAYNAME_LENGTH,
 	} = useProfileEdit();
 
 	// Function that runs the closing animation and then calls onClose() after the specified duration
@@ -63,20 +60,6 @@ export function EditProfileModal({ onClose }: EditProfileModalProps) {
 					>
 						<h2>Edit Profile</h2>
 						<form onSubmit={handleSubmit}>
-						<label>Name</label>
-						<textarea
-							value={displayName}
-							onChange={(e) => setDisplayName(e.target.value)}
-							rows={1}
-							className="create-post-input"
-						/>
-						<div
-							className={`char-counter ${
-								displayName.length > MAX_DISPLAYNAME_LENGTH ? "error" : ""
-							}`}
-						>
-							{displayName.length} / {MAX_DISPLAYNAME_LENGTH}
-						</div>
 						<label>Bio</label>
 						<textarea
 							value={bio}

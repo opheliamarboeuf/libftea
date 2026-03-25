@@ -2,7 +2,6 @@ import { useState } from "react";
 import { profileApi } from "../api";
 import { useUser } from "../../context/UserContext";
 
-const MAX_DISPLAYNAME_LENGTH = 30;
 const MAX_BIO_LENGTH = 400;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -13,7 +12,6 @@ export function useProfileEdit() {
 
 	// Form state initialized with existing user profile values
 	const [bio, setBio] = useState(user?.profile.bio ?? "");
-	const [displayName, setDisplayName] = useState(user?.profile.displayName ?? "");
 	const [avatarFile, setAvatarFile] = useState<File | null>(null);
 	const [coverFile, setCoverFile] = useState<File | null>(null);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -59,7 +57,6 @@ export function useProfileEdit() {
 
 	const resetFields = () => {
 		setBio(user?.profile.bio ?? "");
-		setDisplayName(user?.profile.displayName ?? "");
 		setAvatarFile(null);
 		setCoverFile(null);
 		setErrorMessage(null);
@@ -68,7 +65,6 @@ export function useProfileEdit() {
 	const hasChanges = () => {
 		return (
 			bio !== (user?.profile.bio ?? "") ||
-			displayName !== (user?.profile.displayName ?? "") ||
 			avatarFile !== null ||
 			coverFile !== null
 		);
@@ -82,16 +78,11 @@ export function useProfileEdit() {
 			return false;
 		}
 
-		if (displayName.length > MAX_DISPLAYNAME_LENGTH) {
-			setErrorMessage(`Name cannot exceed ${MAX_DISPLAYNAME_LENGTH} characters`);
-			return false;
-		}
-
 
 		setIsLoading(true);
 		// Send update request to backend
 		try {
-			const data = await profileApi.updateProfile(bio, displayName, avatarFile, coverFile);
+			const data = await profileApi.updateProfile(bio, avatarFile, coverFile);
 
 			// Update user context with new profile data
 			setUser((prevUser) =>
@@ -101,7 +92,6 @@ export function useProfileEdit() {
 							profile: {
 								...prevUser.profile,
 								bio: data.bio,
-								displayName: data.displayName,
 								avatarUrl: data.avatarUrl,
 								coverUrl: data.coverUrl,
 							},
@@ -126,8 +116,6 @@ export function useProfileEdit() {
 	return {
 		bio,
 		setBio,
-		displayName,
-		setDisplayName,
 		avatarFile,
 		coverFile,
 		errorMessage,
@@ -138,6 +126,5 @@ export function useProfileEdit() {
 		hasChanges,
 		saveProfile,
 		MAX_BIO_LENGTH,
-		MAX_DISPLAYNAME_LENGTH,
 	};
 }

@@ -309,7 +309,6 @@ model Profile {
 	bio         String?
 	userId      Int     @unique
 	coverUrl    String?
-	displayName String?
 	User        User    @relation(fields: [userId], references: [id])
 }
 

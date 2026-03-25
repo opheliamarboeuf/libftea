@@ -69,3 +69,8 @@
 	margin-bottom: 120px;
 	margin-left: 100px;
 }
+
+.settings-sidebar strong {
+    font-family: 'Gotham Bold', sans-serif;
+    font-weight: 700;
+}

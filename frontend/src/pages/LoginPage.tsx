@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
@@ -13,8 +13,14 @@ const LoginPage = () => {
 	const [show2FA, setShow2FA] = useState(false);
 	const [twoFactorCode, setTwoFactorCode] = useState('');
 	const [pendingUserId, setPendingUserId] = useState<number | null>(null);
+	const [visible, setVisible] = useState(false);
 	const { setUser } = useUser();
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const t = setTimeout(() => setVisible(true), 20);
+		return () => clearTimeout(t);
+	}, []);
 
 	const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value);
 	const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
@@ -96,7 +102,10 @@ const LoginPage = () => {
 	};
 
 	return (
-		<div className="fixed inset-0 flex items-center justify-center">
+		<div
+			className="fixed inset-0 flex items-center justify-center"
+			style={{ opacity: visible ? 1 : 0, transition: 'opacity 1.2s ease' }}
+		>
 			<div className="w-80 p-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
 				<h1 className="text-4xl text-center mb-8 text-black" style={{ fontFamily: "'Blosta Script', cursive" }}>
 					{show2FA ? 'Verification' : 'Login'}
