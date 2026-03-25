@@ -28,6 +28,24 @@ For communication, we relied on Discord as our main channel for day-to-day discu
 
 ## Technical Stack
 
+The combination of React and NestJS with TypeScript on both ends was chosen to ensure consistently and reduce context-switching for the team. PostgreSQL paired with Prisma gave us a robust and developer-friendly data layer, while Docker ensured that the project ran identically on every machine regardless of local configuration.
+
+# Frontend
+
+The frontend was built with React, using TypeScript for static typing and improved code reliability. Stlying was handled with Tailwind CSS, which allowed us to build a consistent and responsive UI quickly without writing custom CSS from scratch.
+
+# Backend
+
+The backend was developed with NestJS, a structured Node.js framework that encourages a modular and scalable architecture. TypeScript was used across the backend as well, ensuring type safety throughout the entire codebase. Anthentication was implemented using JWT (JSON Web Tokens), providing a stateless and secure way to manage user sessions.
+
+# Database
+
+We chose PostgreSQL as out database system for its reliability, support for complex relational data, and strong community support. It was a natural fit for our data model, which involves relationships between users, posts, and interactions. Database access was managed through Prisma, an ORM that simplified query writing and schema management while keeping things type-safe.
+
+# Infrastructure
+
+The project was containerized using Docker, making it easy to set up consistent development environments across the team and simplifying future deployment.
+
 ## Database Schema
 
 ## Features List
