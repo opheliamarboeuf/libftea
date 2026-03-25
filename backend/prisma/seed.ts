@@ -282,19 +282,19 @@ async function main() {
 	const users = [];
 
 	users.push(
-		await createUserIfNotExists('ari@test.com', 'ari', 'Password0+', Role.USER, 'Ari bio'),
+		await createUserIfNotExists('ari@test.com', 'ari', 'Password0+', Role.USER, 'Learning to exist without over-defining myself.'),
 	);
 
 	users.push(
-		await createUserIfNotExists('leo@test.com', 'leo', 'Password0+', Role.USER, 'Leo bio'),
+		await createUserIfNotExists('leo@test.com', 'leo', 'Password0+', Role.USER, 'Soft energy, good vibes, and a little bit of everything I love 💖'),
 	);
 
 	users.push(
-		await createUserIfNotExists('cha@test.com', 'cha', 'Password0+', Role.USER, 'Cha bio'),
+		await createUserIfNotExists('cha@test.com', 'cha', 'Password0+', Role.USER, 'If it looks effortless, it’s because I made it look that way. ✨'),
 	);
 
 	users.push(
-		await createUserIfNotExists('ophe@test.com', 'ophe', 'Password0+', Role.USER, 'Ophe bio'),
+		await createUserIfNotExists('ophe@test.com', 'ophe', 'Password0+', Role.USER, 'Less explanation. More presence.'),
 	);
 
 	const userIds = users.map((u) => u.id);
