@@ -11,7 +11,7 @@ export const friendsSocket = io(`${API_URL}/friends`, {
 	autoConnect: false,
 });
 
-export const chatSocket = io("http://localhost:3000/chat", {
+export const chatSocket = io(`${API_URL}/chat`, {
   withCredentials: true,
   autoConnect: false,
 });

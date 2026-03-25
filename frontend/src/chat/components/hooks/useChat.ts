@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { chatSocket } from '../../../socket/socket';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 interface Message {
   id: number;
   content: string;
@@ -43,7 +45,7 @@ export function useChat(conversationId: number, currentUserId: number) {
     if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
 
-    const socket = io('http://localhost:3000/chat', { withCredentials: true });
+    const socket = io(`${API_URL}/chat`, { withCredentials: true });
     socketRef.current = socket;
 
     socket.on('connect', () => {

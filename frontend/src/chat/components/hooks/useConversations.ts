@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { friendsSocket, chatSocket } from '../../../socket/socket'; // adapte si besoin
 
-const API_URL = 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL;
 
 function deduplicateAndSort(data: any[]): any[] {
   const seen = new Map<string, any>();
@@ -19,7 +19,7 @@ function deduplicateAndSort(data: any[]): any[] {
       if (new Date(convDate) > new Date(existingDate)) {
         seen.set(key, conv);
       }
-    }
+    }import.meta.env.VITE_API_URL;
   }
   return Array.from(seen.values()).sort((a, b) => {
     const aDate = a.Message?.[0]?.createdAt ?? a.createdAt;
