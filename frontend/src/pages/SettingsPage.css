@@ -69,11 +69,57 @@
 	margin-left: 300px;
 	min-height: 100vh;
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: center;
 }
 
 .settings-sidebar strong {
     font-family: 'Gotham Bold', sans-serif;
     font-weight: 700;
+}
+
+@media (max-width: 480px) {
+	.settings-page {
+		flex-direction: column;
+		padding-left: 68px; /* account for left-menu */
+		box-sizing: border-box;
+		width: 100vw;
+	}
+
+	.settings-sidebar {
+		position: static;
+		width: 100%;
+		max-width: 100%;
+		margin: 10px 0 0 0;
+		padding: 12px 14px;
+		border-radius: 8px;
+	}
+
+	.settings-sidebar ul {
+		gap: 6px;
+	}
+
+	.settings-content {
+		margin-left: 0;
+		padding: 1rem;
+		width: 100%;
+		min-height: auto;
+		box-sizing: border-box;
+	}
+}
+
+@media (max-width: 360px) {
+	.settings-page {
+		padding-left: 68px;
+		box-sizing: border-box;
+		width: 100vw;
+	}
+
+	.settings-sidebar {
+		padding: 10px 12px;
+	}
+
+	.settings-content {
+		padding: 0.75rem;
+	}
 }

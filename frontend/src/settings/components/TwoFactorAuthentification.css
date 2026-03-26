@@ -10,6 +10,7 @@
 	padding: 2rem;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 	box-sizing: border-box;
+	margin-top: 118px;
 }
 
 .container h2 {
@@ -90,4 +91,32 @@
 
 .toggle-switch.enabled .toggle-indicator {
 	left: 25px;
+}
+
+@media (max-width: 480px) {
+	.container {
+		max-width: 100%;
+		padding: 1.2rem;
+		gap: 14px;
+	}
+
+	.container h2 {
+		font-size: 1.1rem;
+	}
+}
+
+@media (max-width: 360px) {
+	.container {
+		padding: 1rem;
+		gap: 12px;
+		border-radius: 6px;
+	}
+
+	.container h2 {
+		font-size: 1rem;
+	}
+
+	.toggle-container {
+		gap: 10px;
+	}
 }
