@@ -84,3 +84,42 @@
 .friends-tab-indicator.blocked {
 	transform: translateX(200%);
 }
+
+@media (max-width: 480px) {
+	.friends-page {
+		left: 0;
+		width: 100vw;
+		padding-left: 68px;
+		box-sizing: border-box;
+	}
+
+	.friends-tabs {
+		width: 100%;
+		max-width: 100%;
+	}
+
+	.friends-tabs button {
+		min-width: 0;
+		padding: 8px 6px;
+		font-size: 0.78rem;
+	}
+
+	.friends-header {
+		padding: 8px 10px;
+	}
+}
+
+@media (max-width: 360px) {
+	.friends-page {
+		left: 0;
+		width: 100vw;
+		padding-left: 68px;
+		box-sizing: border-box;
+	}
+
+	.friends-tabs button {
+		min-width: 0;
+		padding: 6px 4px;
+		font-size: 0.72rem;
+	}
+}

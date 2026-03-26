@@ -106,3 +106,48 @@
 	padding: 24px 0;
 	font-style: italic;
 }
+
+@media (max-width: 480px) {
+	.friends-list {
+		min-width: 0;
+		width: 100%;
+		padding: 8px 6px;
+		gap: 8px;
+	}
+
+	.friend-card {
+		gap: 8px;
+		padding: 8px 2px;
+		flex-wrap: wrap;
+	}
+
+	.friend-card-info {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.friend-card-actions {
+		flex-wrap: wrap;
+		gap: 4px;
+	}
+
+	.friend-action-btn {
+		font-size: 0.8rem;
+		padding: 5px 8px;
+		min-width: 60px;
+	}
+}
+
+@media (max-width: 360px) {
+	.friend-action-btn {
+		font-size: 0.75rem;
+		padding: 4px 6px;
+		min-width: 50px;
+		height: 28px;
+	}
+
+	.small-avatar {
+		width: 34px;
+		height: 34px;
+	}
+}
