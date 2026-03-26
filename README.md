@@ -504,6 +504,13 @@ Once the application is running, you can either create your own user account dir
 - Test user for report and ban system: toxic
   All pre-created acounts share the same password: Password0+
 
+5. View emails during development
+
+All emails sent by the application (2FA codes, ban notifications, report confirmations) can be viewed in the Mailpit web interface at:
+- **http://localhost:8026**
+
+This interface captures all emails sent during development and is useful for testing the 2FA and moderation notification systems.
+
 ## Resources
 
 # Documentation
