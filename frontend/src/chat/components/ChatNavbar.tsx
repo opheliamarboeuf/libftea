@@ -94,12 +94,7 @@ export function ChatNavbar({ conversations, activeConversationId, onSelectConver
   });
 
   return (
-    <div style={{
-      width: '280px', flexShrink: 0, height: '100%',
-      display: 'flex', flexDirection: 'column',
-      borderRight: '1px solid #e5e7eb', backgroundColor: '#fff',
-      padding: '12px',
-    }}>
+    <div className="chat-navbar">
 
       <div style={{ padding: '0', flexShrink: 0, marginBottom: '0.5rem' }}>
         <div style={{ position: 'relative' }}>

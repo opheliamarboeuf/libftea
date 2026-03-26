@@ -5,11 +5,13 @@ import { ChatWindow } from '../chat/components/ChatWindow';
 import { ChatNavbar } from '../chat/components/ChatNavbar';
 import { useUser } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
+import './ChatPage.css';
 
 export function ChatPage() {
   const { user } = useUser();
   const { conversations, openConversation, updateLastMessage } = useConversations(user?.id);
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
+  const [showList, setShowList] = useState(true);
   const [searchParams] = useSearchParams();
   const { t } = useTranslation();
 
@@ -17,37 +19,35 @@ export function ChatPage() {
     const withUserId = searchParams.get('with');
     if (withUserId) {
       openConversation(Number(withUserId))
-        .then(conv => setActiveConversationId(conv.id))
+        .then(conv => { setActiveConversationId(conv.id); setShowList(false); })
         .catch(console.error);
     }
   }, []);
 
   if (!user) return null;
 
+  const handleSelectConversation = (convId: number) => {
+    setActiveConversationId(convId);
+    setShowList(false);
+  };
+
   // Trouve la conversation active et l'autre user
   const activeConv = conversations.find(c => c.id === activeConversationId);
   const otherUser = activeConv?.User.find(u => u.id !== user.id);
 
   return (
-    <div style={{
-      position: 'fixed', top: '50px', left: '60px',
-      width: 'calc(100vw - 60px)', height: 'calc(100vh - 50px)',
-      display: 'flex', flexDirection: 'row', overflow: 'hidden',
-      backgroundColor: 'transparent', color: 'black', padding: '20px',
-      boxSizing: 'border-box',
-    }}>
-      <div style={{
-        display: 'flex', flexDirection: 'row', overflow: 'hidden',
-        backgroundColor: '#fff', borderRadius: '12px',
-        width: '100%', height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      }}>
+    <div className="chat-page-outer">
+      <div className={`chat-page-inner ${showList ? 'mobile-show-list' : 'mobile-show-chat'}`}>
         <ChatNavbar
           conversations={conversations}
           activeConversationId={activeConversationId}
-          onSelectConversation={setActiveConversationId}
+          onSelectConversation={handleSelectConversation}
         />
 
-        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+        <div className="chat-page-content">
+          <button className="chat-back-btn" onClick={() => setShowList(true)}>
+            ← {t('chat.backtolist', 'Conversations')}
+          </button>
           {activeConversationId ? (
             <ChatWindow
               conversationId={activeConversationId}
@@ -56,7 +56,7 @@ export function ChatPage() {
               onNewMessage={updateLastMessage}
             />
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#9ca3af', fontSize: '15px' }}>
+            <div className="chat-no-conv">
               {t('chat.select')}
             </div>
           )}
