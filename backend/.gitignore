@@ -63,6 +63,7 @@ uploads/*
 !uploads/avatar/
 !uploads/cover/
 !uploads/post/
+!uploads/seed/
 # Ignore all files inside these subfolders
 uploads/avatar/*
 uploads/cover/*
@@ -72,3 +73,4 @@ uploads/post/*
 !uploads/avatar/.gitkeep
 !uploads/cover/.gitkeep
 !uploads/post/.gitkeep
+!uploads/seed/.gitkeep
