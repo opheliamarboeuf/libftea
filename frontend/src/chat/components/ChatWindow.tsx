@@ -267,22 +267,14 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                   <div style={{ width: 16, height: 16, borderRadius: '50%', overflow: 'hidden' }}>
                     <img src={avatarSrc} alt={otherUser?.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
-<<<<<<< HEAD
-                  <span style={{ fontSize: 10, color: '#2563eb' }}>Read</span>
-=======
                   <span style={{ fontSize: 10, color: '#6b7280' }}>{t('chat.seen')}</span>
->>>>>>> c314a2993a29005e6ece0b8c8a5d069aa2b20179
                 </div>
               )}
 
               {/* Envoyé */}
               {showSent && (
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2, paddingRight: 4 }}>
-<<<<<<< HEAD
-                  <span style={{ fontSize: 10, color: '#9ca3af' }}>Send</span>
-=======
                   <span style={{ fontSize: 10, color: '#9ca3af' }}>{t('chat.sent')}</span>
->>>>>>> c314a2993a29005e6ece0b8c8a5d069aa2b20179
                 </div>
               )}
             </div>
