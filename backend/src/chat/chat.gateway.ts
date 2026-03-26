@@ -72,9 +72,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				},
 			},
 		});
+    // Emit à la room conversion ET à tous les clients du namespace
     this.server
       .to(`conversation_${dto.conversationId}`)
       .emit('newMessage', message);
+    this.server.emit('newMessage', { ...message, conversationId: dto.conversationId });
     return message;
   }
 
