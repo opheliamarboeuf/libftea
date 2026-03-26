@@ -106,7 +106,7 @@ You can git clone the repository from the link provided in the evaluation sheet.
 
 2. Set up environment
 
-You can set up the necessary environment variables by copying the contents of the .env.example file located at the root of the repository into a .env file that you can create in the backend repository
+You can set up the necessary environment variables by copying the contents of the .env.example file located at the root of the repository, and adding the values we will give you into a .env file that you can create in the backend repository
 
 3. Start the project
 
