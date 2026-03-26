@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { chatSocket } from '../../../socket/socket';
 import { tournamentApi } from '../../../tournament/api';
+import i18n from '../../../i18n';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface Message {
   id: number;
@@ -46,9 +49,14 @@ export function useChat(conversationId: number, currentUserId: number) {
     const saved = localStorage.getItem(storageKey);
     return saved ? Number(saved) : null;
   });
+  const errorMessages = (message: string): string => {
+		if (message.includes("pour envoyer")) return 'errors.chat';
+	}
 
   const setErrorWithTimeout = (msg: string, duration = 3000) => {
-    setChatError(msg);
+    const key = errorMessages(msg);
+	const trad = key ? i18n.t(key) : msg;
+	setChatError(trad);
     if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     errorTimerRef.current = setTimeout(() => setChatError(''), duration);
   };

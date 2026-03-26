@@ -4,6 +4,7 @@ import { socket } from "../socket/socket";
 import { useUser } from "../context/UserContext";
 import { useModal } from "../context/ModalContext";
 import { Post } from "../context/UserContext";
+import { useTranslation } from "react-i18next";
 
 export const useLike = (post: Post) => {
 	const [liked, setLiked] = useState(false);
@@ -11,6 +12,7 @@ export const useLike = (post: Post) => {
 	const [loading, setLoading] = useState(true);
 	const { showModal } = useModal();
 	const { user } = useUser();
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		let isMounted = true;
@@ -50,7 +52,7 @@ export const useLike = (post: Post) => {
 
 	const toggleLike = () => {
 		if (post.battleParticipants?.length && user.id === post.author.id) {
-			showModal("You can't like your own post if it is in a tournament");
+			showModal(t('errors.tournamentlike'));
 			return ;
 		}
 		setLiked(prev => !prev);

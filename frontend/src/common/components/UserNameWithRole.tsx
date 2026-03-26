@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import './UserNameWithRole.css';
 import { FaStar, FaRegStar } from 'react-icons/fa';
 
@@ -11,6 +12,7 @@ interface UserNameWithRoleProps {
 
 export function UserNameWithRole({ username, role, className = '' }: UserNameWithRoleProps) {
 	const normalizedRole = (role?.toString() || '').trim().toUpperCase();
+	const { t } = useTranslation();
 
 	const isAdmin = normalizedRole === 'ADMIN';
 	const isMod = normalizedRole === 'MOD';
@@ -20,7 +22,7 @@ export function UserNameWithRole({ username, role, className = '' }: UserNameWit
 
 	return (
 		<span className={`user-role-username ${className}`}>
-			<span>{username || 'Unknown User'}</span>
+			<span>{username || t('userreport.unknown')}</span>
 			{icon && (
 				<span className="user-role-icon" title={title}>
 					{icon}

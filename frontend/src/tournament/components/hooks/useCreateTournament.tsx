@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { tournamentApi } from "../../api";
+import { useTranslation } from "react-i18next";
 
 const MAX_THEME_LENGTH = 50;
 
@@ -11,6 +12,8 @@ export function useCreateTournament() {
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+	const { t } = useTranslation()
 
 	const hasChanges = () => {
 		return theme !== "" || startDate !== "" || endDate !== "";
@@ -26,22 +29,22 @@ export function useCreateTournament() {
 	const handleCreateTournament = async (): Promise<boolean> => {
 
 		if (theme === "") {
-			setErrorMessage("Please enter a theme");
+			setErrorMessage(t('errors.theme'));
 			return false;
 		}
 
 		if (theme.length > MAX_THEME_LENGTH) {
-			setErrorMessage(`Theme cannot exceed ${MAX_THEME_LENGTH} characters`);
+			setErrorMessage(t('errors.themelength', { length: MAX_THEME_LENGTH }));
 			return false;
 		}
 
 		if (!startDate) {
-			setErrorMessage("Please select a start date");
+			setErrorMessage(t('errors.start'));
 			return false;
 		}
 
 		if (!endDate) {
-			setErrorMessage("Please select an end date");
+			setErrorMessage(t('errors.end'));
 			return false;
 		}
 
@@ -54,7 +57,7 @@ export function useCreateTournament() {
 				endDate: new Date(endDate).toISOString(),
 			};
 			console.log('Sending payload:', payload);
-			await tournamentApi.createTournament(payload);
+			await tournamentApi.createTournament(payload, t);
 			console.log('Tournament created successfully');
 			resetFields();
 			return true;
@@ -64,7 +67,7 @@ export function useCreateTournament() {
 			if (error instanceof Error) {
 				setErrorMessage(error.message);
 			} else {
-				setErrorMessage("Server unreachable");
+				setErrorMessage(t('registerpage.serverfail'));
 			}
 		}
 		finally {

@@ -1,4 +1,5 @@
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 // Props definition for the confirmation dialog
 interface ConfirmBlockDeleteProps {
@@ -19,16 +20,19 @@ export function ConfirmBlockDelete({ message, onYes, onNo }: ConfirmBlockDeleteP
 		onNo();
 	};
 
+
+	const { t } = useTranslation();
+
 	return createPortal(
 		<div className="confirm-overlay" onMouseDown={(e) => e.stopPropagation()}>
 			<div className="confirm-box">
-				<p>{message}</p>
+				<p>{t(message)}</p>
 				<div className="confirm-actions">
 					<button className="modal-btn" onClick={handleYes}>
-						Yes
+						{t('common.yes')}
 					</button>
 					<button className="modal-btn" onClick={handleNo}>
-						No
+						{t('common.no')}
 					</button>
 				</div>
 			</div>

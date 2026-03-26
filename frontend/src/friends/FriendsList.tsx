@@ -4,14 +4,17 @@ import { RemoveFriendButton } from './RemoveFriendButton';
 import { Link } from 'react-router-dom';
 import './friends.css';
 import { UserNameWithRole } from '../common/components/UserNameWithRole';
+import { useTranslation } from "react-i18next";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export function FriendsList() {
 	const { friends } = useFriends();
-	const API_URL = import.meta.env.VITE_API_URL;
+	const { t } = useTranslation();
 
 	return (
 		<div>
-			{friends.length === 0 && <p className="friends-empty">No friends yet</p>}
+			{friends.length === 0 && <p className="friends-empty">{t('friends.nofriends')}</p>}
 			<div className="friends-list">
 				{friends.map((friend) => (
 					<div key={friend.id} className="friend-card">

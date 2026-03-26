@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { postsApi } from "../api";
+import { useTranslation } from "react-i18next";
 
 export function usePostDeletion() {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const { t } = useTranslation();
 	
 	const handlePostDeletion = async (postId: number): Promise<boolean> => {
 
@@ -18,7 +20,7 @@ export function usePostDeletion() {
 				setErrorMessage(error.message);
 			}
 			else {
-				setErrorMessage("Server unreachable");
+				setErrorMessage(t('registerpage.serverfail'));
 			}
 			return false
 		}

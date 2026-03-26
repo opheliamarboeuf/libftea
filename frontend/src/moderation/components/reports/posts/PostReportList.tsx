@@ -1,11 +1,12 @@
 import "./PostReportList.css"
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PostReportType } from '../../../types';
+import { PostReportType, ReportCategory } from '../../../types';
 import { moderationApi } from '../../../api';
 import { useUser } from '../../../../context/UserContext';
 import { ConfirmDialog } from '../../../../common/components/ConfirmDialog';
 import { HandleReportModal } from '../handleReportModal';
+import { useTranslation } from "react-i18next";
 
 interface PostReportListProps {
 	reports: PostReportType[];
@@ -18,6 +19,7 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [reportToUnassign, setReportToUnassign] = useState<number | null>(null);
 	const [reportToHandle, setReportToHandle] = useState<number | null>(null);
+	const { t } = useTranslation();
 
 	const navigate = useNavigate();
 	const goToProfile = (userId: number) => {
@@ -28,7 +30,7 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 		return (
 			<div className="post-report-list">
 				<div className="post-report-card">
-					<p className="no-reports">No reports available</p>
+					<p className="no-reports">{t('postreport.noreports')}</p>
 				</div>
 			</div>
 		);
@@ -49,14 +51,14 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 									{report.reportedPost.author.username},
 								</span>
 								<span className="post-report-date">
-									{` created ${new Date(report.reportedPost.createdAt).toLocaleString()}`}
+									{t('post.created', { date: new Date(report.reportedPost.createdAt).toLocaleString() })}
 								</span>
 							</div>
 						</div>
 						<div className="post-report-btn">
 							{report.status === 'ASSIGNED' && report.handledBy && (
 								<span className="assigned-to">
-									Assigned to{' '}
+									{t('postreport.assignedto')}{' '}
 									<span onClick={() => goToProfile(report.handledBy.id)}>
 										{report.handledBy.username}
 									</span>
@@ -69,7 +71,7 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 										if (onUpdate) onUpdate(); // refresh after assigning
 									}}
 								>
-									Assign Report
+									{t('postreport.assign')}
 								</button>
 							)}
 							{report.status === 'ASSIGNED' &&
@@ -80,12 +82,12 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 											setShowConfirm(true);
 										}}
 									>
-										Unassign Report
+										{t('postreport.unassign')}
 									</button>
 								)}
 							{report.status === 'ASSIGNED' && report.handledBy?.id === user.id && (
 								<button onClick={() => setReportToHandle(report.id)}>
-									Handle Report
+									{t('postreport.handle')}
 								</button>
 							)}
 						</div>
@@ -97,7 +99,7 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 						<div className="post-report-info">
 							<div className="post-report-pre-handle">
 								<div className="reporter-info">
-									<strong>Reporter:</strong>
+									<strong>{t('postreport.reporter')}</strong>
 									<br />{' '}
 									<span
 										className="reporter-name"
@@ -107,17 +109,17 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 									</span>
 								</div>
 								<div className="post-report-category">
-									<strong>Report Category:</strong>
+									<strong>{t('postreport.category')}</strong>
 									<br />
-									{report.reportCategory.replace(/_/g, ' ')}
+									{t(`report.${report.reportCategory}`)}
 								</div>
 								<div className="post-report-description">
-									<strong>Report Description:</strong>
+									<strong>{t('postreport.description')}</strong>
 									<br />
 									{report.reportDescription}
 								</div>
 								<div className="post-report-date">
-									<strong>Report Creation:</strong>
+									<strong>{t('postreport.creation')}</strong>
 									<br />
 									{new Date(report.createdAt).toLocaleString()}
 								</div>
@@ -130,7 +132,7 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 												)
 											}
 										>
-											View all the reports ({report.reportCount})
+											{t('postreport.view')} ({report.reportCount})
 										</button>
 									</div>
 								)}
@@ -138,14 +140,14 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 							{(report.status === 'ACCEPTED' || report.status === 'REJECTED') && (
 								<div className="post-report-post-handle">
 									<div className="post-report-status">
-										<strong>Report Status:</strong>
+										<strong>{t('postreport.status')}</strong>
 										<br />
 										<span className={report.status.toLowerCase()}>
-											{report.status}
+											{report.status === 'ACCEPTED' ? t('postreport.accepted') : t('postreport.rejected')}
 										</span>
 									</div>
 									<div className="reporter-info">
-										<strong>Handled by:</strong>
+										<strong>{t('postreport.handled')}</strong>
 										<br />{' '}
 										<span
 											className="mod-name"
@@ -155,12 +157,12 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 										</span>
 									</div>
 									<div className="post-report-mod_message">
-										<strong>Moderation Message:</strong>
+										<strong>{t('postreport.message')}</strong>
 										<br />
 										{report.moderatorMessage}
 									</div>
 									<div className="post-report-date">
-										<strong>Report handle date:</strong>
+										<strong>{t('postreport.date')}</strong>
 										<br />
 										{new Date(report.handledAt).toLocaleString()}
 									</div>
@@ -177,7 +179,7 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 			))}
 			{showConfirm && reportToUnassign !== null && (
 				<ConfirmDialog
-					message="Are you sure you want to unassign this report?"
+					message={t('postreport.unassignconfirm')}
 					onConfirm={async () => {
 						await moderationApi.unassignPendingReport(reportToUnassign);
 						setShowConfirm(false);
@@ -188,8 +190,8 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 						setShowConfirm(false);
 						setReportToUnassign(null);
 					}}
-					confirmLabel="Yes"
-					cancelLabel="No"
+					confirmLabel={t('common.yes')}
+					cancelLabel={t('common.no')}
 				/>
 			)}
 			{reportToHandle !== null && (

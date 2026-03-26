@@ -7,6 +7,7 @@ import { Post } from "../../../../context/UserContext";
 import { usePostReport } from "../../../hooks/usePostReport";
 import { ReportCategory } from "../../../types";
 import { useModal } from "../../../../context/ModalContext";
+import { useTranslation } from "react-i18next";
 
 interface ReportPostModalProps {
 	post: Post,
@@ -19,6 +20,7 @@ export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostMo
 	// Function that runs the closing animation and then calls onClose() after the specified duration
 	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });
 	const { showModal } = useModal();
+	const { t } = useTranslation();
 
 	// Custom hook that manages a post creation
 	const {
@@ -50,7 +52,7 @@ export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostMo
 		e.preventDefault();
 		const res = await handlePostReport();
 		if (res) {
-			showModal("Report submitted successfully");
+			showModal(t('postreport.submitted'));
 			onPostReported(); 
 			closeWithAnimation();
 		}
@@ -65,25 +67,25 @@ export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostMo
 					className={`modal-content-post ${fadeOut ? "fade-out" : "fade-in"}`}
 					onClick={(e) => e.stopPropagation()}
 				>
-					<h2>Report Post</h2>
+					<h2>{t('postreport.reportpost')}</h2>
 					<form onSubmit={handleSubmit}>
-						<label>Category</label>
+						<label>{t('postreport.cat')}</label>
 						<select
 							value={category || ""}
 							 onChange={(e) => setCategory(e.target.value as ReportCategory)}
 							className="report-post-input"
 						>
-						<option value="" disabled>Select a report category</option>
+						<option value="" disabled>{t('postreport.catselect')}</option>
 						  {Object.values(ReportCategory).map((r) => (
-							<option key={r} value={r}>{r.replaceAll("_", " ")}</option>
+							<option key={r} value={r}>{t(`report.${r}`)}</option>
 							))}
 						</select>
-						<label>Description</label>
+						<label>{t('postreport.des')}</label>
 						<textarea
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
 							rows={5}
-							placeholder="You can add more details here"
+							placeholder={t('postreport.desplaceholder')}
 							className="report-post-input"
 						/>
 						<div
@@ -100,8 +102,8 @@ export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostMo
 						)}
 						<div className="modal-actions">
 							<button type="submit"  className="modal-btn" disabled={isLoading}> 
-								{isLoading ? "Saving..." : "Submit"} </button>
-							<button type="button" className="modal-btn" onClick={requestClose}> Cancel </button>
+								{isLoading ? t('post.saving') : t('post.submit')} </button>
+							<button type="button" className="modal-btn" onClick={requestClose}> {t('editprofile.cancel')} </button>
 						</div>
 					</form>
 				</div>
@@ -110,7 +112,7 @@ export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostMo
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message="Looks like you've made some changes. Are you sure you want to exit without saving?"
+				message={t('postreport.changes')}
 				onConfirm={confirmDiscard}
 				onCancel={cancelDiscard}
 			/>

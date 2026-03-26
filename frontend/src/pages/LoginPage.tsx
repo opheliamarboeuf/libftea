@@ -1,6 +1,10 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import LanguageMenu from "../common/components/LanguageMenu";
+import { TermsButton } from "../common/components/TermsOfService";
+import { PrivacyButton } from "../common/components/PrivacyPolicy";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,6 +20,8 @@ const LoginPage = () => {
 	const [visible, setVisible] = useState(false);
 	const { setUser } = useUser();
 	const navigate = useNavigate();
+	const { t, i18n } = useTranslation();
+	const isJp = i18n.language === 'jp';
 
 	useEffect(() => {
 		const t = setTimeout(() => setVisible(true), 20);
@@ -25,6 +31,11 @@ const LoginPage = () => {
 	const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value);
 	const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
 
+	const errorMessages = (message: string): string => {
+		if (message.includes("not found")) return 'errors.notfound';
+		if (message.includes("Incorrect")) return 'errors.pswincorrect';
+		return 'errors.lfailed';
+	}
 	// Fetch full user profile after receiving JWT token
 	const fetchAndSetUser = async (token: string) => {
 		const res = await fetch(`${API_URL}/auth/me`, {
@@ -49,12 +60,13 @@ const LoginPage = () => {
 
 			const data = await res.json();
 
-			// Handle backend validation / auth errors
-			if (!res.ok) {
-				setErrorMessage(
-					Array.isArray(data.message) ? data.message[0] : data.message || 'Login Failed',
-				);
-				return;
+			if (!res.ok){	// based on a NestJS error structure
+				if (Array.isArray(data.message)){ // if it's an Array, set the message of the first array in errorMessage
+					setErrorMessage(t(errorMessages(data.message[0])));} 
+				else {
+					setErrorMessage(t(errorMessages(data.message || ""))) // if it is a string, set "Registration Failed" is the string is empty
+				}
+				return ;
 			}
 
 			// If backend requires 2FA, switch UI state instead of logging in
@@ -88,7 +100,7 @@ const LoginPage = () => {
 
 			if (!res.ok) {
 				setErrorMessage(
-					Array.isArray(data.message) ? data.message[0] : data.message || 'Invalid code',
+					Array.isArray(data.message) ? data.message[0] : data.message || t('errors.code'),
 				);
 				return;
 			}
@@ -106,28 +118,29 @@ const LoginPage = () => {
 			className="fixed inset-0 flex items-center justify-center"
 			style={{ opacity: visible ? 1 : 0, transition: 'opacity 1.2s ease' }}
 		>
+			<LanguageMenu fixed/>
 			<div className="w-80 p-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
-				<h1 className="text-4xl text-center mb-8 text-black" style={{ fontFamily: "'Blosta Script', cursive" }}>
-					{show2FA ? 'Verification' : 'Login'}
+				<h1 className="text-4xl text-center mb-8 text-black" style={{ fontFamily: isJp ? "'Noto Serif JP', serif" : "'Blosta Script', cursive" }}>
+					{show2FA ? t('loginpage.verif') : t('loginpage.login')}
 				</h1>
 
 				{show2FA ? (
 					// 2FA Form
 					<form onSubmit={handle2FASubmit} className="flex flex-col gap-4">
 						<p className="text-center text-gray-600 text-sm mb-2">
-							A code has been sent to your email.
+							{t('loginpage.sentemail')}
 						</p>
 						<div>
-							<label htmlFor="code" className="sr-only">Verification code</label>
+							<label htmlFor="code" className="sr-only">{t('loginpage.verifcode')}</label>
 							<input 
 								type="text" 
 								name="code"
-								placeholder="Enter your 6-digit code"
+								placeholder={t('loginpage.enter')}
 								value={twoFactorCode}
 								onChange={(e) => setTwoFactorCode(e.target.value)}
 								maxLength={6}
 								required
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-gray-500"
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-gray-500 text-sm placeholder:text-sm"
 							/>
 						</div>
 						{errorMessage && (
@@ -139,7 +152,7 @@ const LoginPage = () => {
 							type="submit"
 							className="w-full py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-600 transition-all outline-none"
 						>
-							Verify
+							{t('loginpage.verify')}
 						</button>
 						<button 
 							type="button"
@@ -150,18 +163,19 @@ const LoginPage = () => {
 							}}
 							className="w-full py-2 border border-gray-300 rounded-lg hover:bg-neutral-200 transition-all outline-none"
 						>
-							Back
+							{t('loginpage.back')}
 						</button>
 					</form>
 				) : (
 					// Login Form
+					<>
 					<form onSubmit={handleSubmit} className="flex flex-col gap-4">
 						<div>
-							<label htmlFor="username" className="sr-only">Username</label>
+							<label htmlFor="username" className="sr-only">{t('loginpage.username')}</label>
 							<input 
 								type="text" 
 								name="username"
-								placeholder="Username"
+								placeholder={t('loginpage.username')}
 								value={username}
 								onChange={handleUsernameChange}
 								required
@@ -169,11 +183,11 @@ const LoginPage = () => {
 							/>
 						</div>
 						<div>
-							<label htmlFor="password" className="sr-only">Password</label>
+							<label htmlFor="password" className="sr-only">{t('loginpage.password')}</label>
 							<input 
 								type="password"
 								name="password"
-								placeholder="Password"
+								placeholder={t('loginpage.password')}
 								value={password}
 								onChange={handlePasswordChange}
 								required
@@ -189,26 +203,30 @@ const LoginPage = () => {
 							type="submit"
 							className="w-full py-2 bg-neutral-800 text-white rounded-lg hover:bg-neutral-600 transition-all outline-none"
 						>
-							Login
+							{t('loginpage.login')}
 						</button>
 						<button 
 							type="button"
 							onClick={() => window.location.href = `${API_URL}/auth/github`}
 							className="w-full py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-all outline-none"
 						>
-							Login with GitHub
+							{t('loginpage.github')}
 						</button>
 						<p className="text-center text-gray-600 text-sm">
-							No account yet?
+							{t('loginpage.noaccount')}
 						</p>
 						<button 
 							type="button"
 							onClick={() => navigate("/register")}
 							className="w-full py-2 border border-gray-300 rounded-lg hover:bg-neutral-200 transition-all outline-none"
 						>
-							Create new account
+							{t('loginpage.create')}
 						</button>
-					</form>
+					</form>				<div className="flex justify-center gap-4 mt-6">
+					<PrivacyButton className="text-xs text-gray-400 hover:text-gray-700 transition-colors"/>
+					<TermsButton className="text-xs text-gray-400 hover:text-gray-700 transition-colors"/>
+				</div>
+					</>
 				)}
 			</div>
 		</div>

@@ -5,6 +5,7 @@ import { ConfirmDialog } from "../../../profile/ConfirmDialog";
 import { useUnsavedChangesGuard } from "../../../common/hooks/useUnsavedChangesGuard";
 import { useHandleReport } from "../../hooks/useHandleReport";
 import { useModal } from "../../../context/ModalContext";
+import { useTranslation } from "react-i18next";
 
 interface HandleReportPostModalProps {
 	reportId: number,
@@ -17,6 +18,7 @@ export function HandleReportModal ({ reportId, onPostReported, onClose }: Handle
 	// Function that runs the closing animation and then calls onClose() after the specified duration
 	const { fadeOut, closeWithAnimation } = useModalAnimation({ onClose });
 	const { showModal } = useModal();
+	const { t } = useTranslation();
 
 	// Custom hook that manages a post creation
 	const {
@@ -46,7 +48,7 @@ export function HandleReportModal ({ reportId, onPostReported, onClose }: Handle
 	const handleReject = async () => {
 		const res = await rejectReport();
 		if (res) {
-			showModal("Report rejected successfully");
+			showModal(t('reporthandle.rejected'));
 			onPostReported(); 
 			closeWithAnimation();
 		}
@@ -55,7 +57,7 @@ export function HandleReportModal ({ reportId, onPostReported, onClose }: Handle
 		const handleAccept = async () => {
 		const res = await acceptReport();
 		if (res) {
-			showModal("Report accepted successfully");
+			showModal(t('reporthandle.accepted'));
 			onPostReported(); 
 			closeWithAnimation();
 		}
@@ -70,8 +72,8 @@ export function HandleReportModal ({ reportId, onPostReported, onClose }: Handle
 					className={`modal-content-post ${fadeOut ? "fade-out" : "fade-in"}`}
 					onClick={(e) => e.stopPropagation()}
 				>
-					<h2>Handle report</h2>
-						<label>Moderation Message</label>
+					<h2>{t('reporthandle.handle')}</h2>
+						<label>{t('postreport.message')}</label>
 						<textarea
 							value={mod_message || ""}
 							rows={5}
@@ -96,7 +98,7 @@ export function HandleReportModal ({ reportId, onPostReported, onClose }: Handle
 								className="modal-btn"
 								onClick={requestClose}
 								>
-								Cancel
+								{t('editprofile.cancel')}
 							</button>
 							<button
 								type="button"
@@ -104,7 +106,7 @@ export function HandleReportModal ({ reportId, onPostReported, onClose }: Handle
 								onClick={handleReject}
 								disabled={isLoading}
 							>
-								Reject
+								{t('friends.reject')}
 							</button>
 
 							<button
@@ -113,7 +115,7 @@ export function HandleReportModal ({ reportId, onPostReported, onClose }: Handle
 								onClick={handleAccept}
 								disabled={isLoading}
 								>
-								Accept
+								{t('friends.accept')}
 							</button>
 						</div>
 				</div>
@@ -122,7 +124,7 @@ export function HandleReportModal ({ reportId, onPostReported, onClose }: Handle
 		)}
 		{showConfirm && (
 			<ConfirmDialog
-				message="Looks like you've made some changes. Are you sure you want to exit without saving?"
+				message={t('reporthandle.changes')}
 				onConfirm={confirmDiscard}
 				onCancel={cancelDiscard}
 			/>

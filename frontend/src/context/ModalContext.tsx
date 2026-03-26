@@ -1,4 +1,5 @@
 import { createContext, useState, ReactNode, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Define the shape of the modal context
 interface ModalContextType {
@@ -12,6 +13,7 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 // Provider component that wraps the app and manages the modal state
 export function ModalProvider({ children }: { children: ReactNode }) {
 	const [message, setMessage] = useState<string | null>(null);
+	const { t } = useTranslation();
 
 	const showModal = (msg: string) => setMessage(msg);
 	const hideModal = () => setMessage(null);
@@ -26,7 +28,7 @@ export function ModalProvider({ children }: { children: ReactNode }) {
 					<div className="modal-content" onClick={(e) => e.stopPropagation()}>
 						<p>{message}</p>
 						<button className="modal-btn" onClick={hideModal}>
-							Close
+							{t('common.close')}
 						</button>
 					</div>
 				</div>

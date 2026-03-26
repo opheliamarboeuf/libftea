@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { friendsSocket, chatSocket } from '../../../socket/socket'; // adapte si besoin
+import i18n from 'i18next';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -141,7 +142,7 @@ export function useConversations(currentUserId?: number) {
       credentials: 'include',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
-    if (!res.ok) throw new Error('You must be friends to send messages.');
+    if (!res.ok) throw new Error(i18n.t('errors.chat'));
     const data = await res.json();
     const conv = Array.isArray(data)
       ? data.reduce((best: any, c: any) => {

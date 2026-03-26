@@ -16,6 +16,9 @@ import TournamentFeedPage from './pages/TournamentFeedPage';
 import { ChatPage } from './pages/ChatPage';
 import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
+import { useTranslation } from 'react-i18next';
 import GithubCallbackPage from './pages/GithubCallbackPage';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -24,6 +27,7 @@ const App = () => {
 	const [user, setUser] = useState<User | null>(null);
 	const token = localStorage.getItem('token');
 	const [loading, setLoading] = useState(true);
+	const { t } = useTranslation();
 
 	const fetchUser = useCallback(async () => {
 		const currentToken = localStorage.getItem('token');
@@ -39,7 +43,7 @@ const App = () => {
 			});
 			if (!res.ok) {
 				localStorage.removeItem('token');
-				throw new Error('Token invalid or user unauthorized');
+				throw new Error(t('errors.token'));
 			}
 			const data = await res.json();
 			setUser(data);
@@ -64,7 +68,7 @@ const App = () => {
 	return (
 		<UserContext.Provider value={{ user, setUser, refreshUser: fetchUser }}>
 			<ModalProvider>
-				<BrowserRouter>
+				<BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
 					<Header />
 					<LeftMenu />
 					<Routes>
@@ -117,9 +121,12 @@ const App = () => {
 								)
 							}
 						/>
-						<Route 
+						<Route
 							path="/chat"
-							element={loading ? null : user ? <ChatPage /> : <Navigate to="/" replace />} />
+							element={
+								loading ? null : user ? <ChatPage /> : <Navigate to="/" replace />
+							}
+						/>
 						<Route
 							path="/tournament"
 							element={
@@ -140,6 +147,8 @@ const App = () => {
 								)
 							}
 						/>
+						<Route path="/privacypolicy" element={<PrivacyPage />} />
+						<Route path="/termsofservice" element={<TermsPage />} />
 						<Route path="/github/callback" element={<GithubCallbackPage />} />
 					</Routes>
 				</BrowserRouter>

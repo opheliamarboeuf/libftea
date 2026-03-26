@@ -1,5 +1,7 @@
 // tournament/api.ts
 // helpers for interacting with the backend's tournament endpoints.
+import i18n from "../i18n";
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -19,13 +21,24 @@ export const tournamentApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || "Tournament join failed";
+				: data.message || i18n.t('tournament.joinfail');
 			throw new Error(message);
 		}
 		return data;
 	},
 
-	createTournament: async (payload: any): Promise<any> => {
+	createTournament: async (payload: any, t: (key: string, options?: any) => string): Promise<any> => {
+
+		const errorMessages = (message: string): string => {
+			if (message.includes("already planned")) {
+				const match = message.match(/(\d{1,2}\/\d{1,2}\/\d{4})/g);
+				if (match && match.length >= 2) {
+					return t('errors.planned', { date1: match[0], date2: match[1] });
+				}
+			} 
+			return t('errors.tfailed');
+		}
+
 		const res = await fetch(`${API_URL}/tournament`, {
 			method: "POST",
 			headers: {
@@ -38,8 +51,9 @@ export const tournamentApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || "Tournament creation failed";
-			throw new Error(message);
+				: data.message || i18n.t('tournament.create');
+			console.log("Backend error message:", message);
+			throw new Error(errorMessages(message));
 		}
 		return data;
 	},
@@ -67,7 +81,7 @@ export const tournamentApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data?.message || "Fetch current tournament failed";
+				: data?.message || i18n.t('tournament.fail');
 			throw new Error(message);
 		}
 		return data;
@@ -83,7 +97,7 @@ export const tournamentApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || "Fetch participants failed";
+				: data.message || i18n.t('tournament.fetchparticipants');
 			throw new Error(message);
 		}
 		return data;
@@ -99,7 +113,7 @@ export const tournamentApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || "Fetch battle posts failed";
+				: data.message || i18n.t('tournament.fetchposts');
 			throw new Error(message);
 		}
 		return data;
@@ -115,7 +129,7 @@ export const tournamentApi = {
 			const data = await res.json().catch(() => ({}));
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || "Fetch last winner post failed";
+				: data.message || i18n.t('tournament.fetchlast');
 			throw new Error(message);
 		}
 		const text = await res.text();

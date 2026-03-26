@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './SearchBar.css';
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./SearchBar.css";
+import { useTranslation } from "react-i18next";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const URL = `${API_URL}/users`;
@@ -20,6 +21,7 @@ export const SearchBar = () => {
 	const [showResults, setShowResults] = useState(false);
 	const searchRef = useRef<HTMLDivElement>(null);
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		if (!query.trim()) {
@@ -68,7 +70,7 @@ export const SearchBar = () => {
 		<div className="search-container" ref={searchRef}>
 			<input
 				type="text"
-				placeholder="Search..."
+				placeholder={t('searchbar.search')}
 				value={query}
 				onChange={(e) => setQuery(e.target.value)}
 				onFocus={() => setShowResults(true)}

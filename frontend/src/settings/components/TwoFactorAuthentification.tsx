@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ConfirmDialog } from '../../profile/ConfirmDialog';
 import { useUser } from '../../context/UserContext';
 import { useModal } from '../../context/ModalContext';
+import { useTranslation } from 'react-i18next';
 import './TwoFactorAuthentification.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -10,6 +11,7 @@ export function TwoFactorAuthentification() {
 	const { user, refreshUser } = useUser();
 	const [showConfirm, setShowConfirm] = useState(false);
 	const { showModal } = useModal();
+	const { t } = useTranslation();
 
 	const isEnabled = user?.twoFactorEnabled ?? false;
 
@@ -35,7 +37,7 @@ export function TwoFactorAuthentification() {
 					showModal(
 						Array.isArray(data.message)
 							? data.message[0]
-							: data.message || '2FA settings change Failed',
+							: data.message || t('errors.2fa'),
 					);
 					return;
 				}
@@ -52,20 +54,18 @@ export function TwoFactorAuthentification() {
 
 	return (
 		<div className="container">
-			<h2>Two-Factor Authentication</h2>
+			<h2>{t('settings.two')}</h2>
 
 			<p className="description">
-				Two-factor authentication adds an extra layer of security to your account. When
-				enabled, you will be asked to enter a verification code sent to your email each time
-				you log in.
+				{t('settings.twodes')}
 			</p>
 			<p className="description-large">
-				We recommend enabling 2FA to protect your account from unauthorized access.
+				{t('settings.tworecommend')}
 			</p>
 
 			<div className="toggle-container">
 				<span className="toggle-label">
-					2FA is currently <strong>{isEnabled ? 'enabled' : 'disabled'}</strong>
+					{t('settings.currently')}<strong>{isEnabled ? t('settings.enabled') : t('settings.disabled')}</strong>
 				</span>
 
 				{/* Toggle */}
@@ -81,8 +81,8 @@ export function TwoFactorAuthentification() {
 				<ConfirmDialog
 					message={
 						isEnabled
-							? 'Are you sure you want to disable two-factor authentication? Your account will be less secure.'
-							: 'Are you sure you want to enable two-factor authentication? You will receive a code by email at each login.'
+							? t('settings.disableconfirm')
+							: t('settings.enableconfirm')
 					}
 					onConfirm={handleConfirm}
 					onCancel={handleCancel}

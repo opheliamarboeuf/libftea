@@ -108,9 +108,11 @@
 .reply-box {
     display: flex;
     flex-direction: column;
+	box-sizing: border-box;
+	width: 100%;
     gap: 6px;
     margin-top: 6px;
-    margin-left: 16px;
+    margin-left: 5px;
 }
 
 .reply-box input {

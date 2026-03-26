@@ -4,6 +4,7 @@ import { useChat } from './hooks/useChat';
 import { LastMessage } from './hooks/useConversations';
 import { useFriendsSocket } from '../../friends/useFriendsSocket';
 import { useUser } from '../../context/UserContext';
+import { useTranslation } from 'react-i18next';
 
 interface OtherUser {
   id: number;
@@ -71,6 +72,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
   const navigate = useNavigate();
   const otherUserIdRef = useRef<number | undefined>(otherUser?.id);
   useEffect(() => { otherUserIdRef.current = otherUser?.id; }, [otherUser?.id]);
+  const { t } = useTranslation();
 
   const { emit } = useFriendsSocket(user?.id, {
     onUserOnline: (data) => { if (data.userId === otherUserIdRef.current) setIsOnline(true); },
@@ -158,7 +160,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             <div style={{ cursor: 'pointer' }} onClick={() => navigate(`/users/${otherUser.id}`)}>
               <p style={{ margin: 0, fontWeight: 600, fontSize: '15px', color: '#111827' }}>{otherUser.username}</p>
               <p style={{ margin: 0, fontSize: '11px', color: isOnline ? '#22c55e' : '#9ca3af' }}>
-                {isOnline ? 'Online' : 'Offline'}
+                {isOnline ? t('userprofile.online') : t('userprofile.offline')}
               </p>
             </div>
           </>
@@ -265,14 +267,22 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                   <div style={{ width: 16, height: 16, borderRadius: '50%', overflow: 'hidden' }}>
                     <img src={avatarSrc} alt={otherUser?.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
+<<<<<<< HEAD
                   <span style={{ fontSize: 10, color: '#2563eb' }}>Read</span>
+=======
+                  <span style={{ fontSize: 10, color: '#6b7280' }}>{t('chat.seen')}</span>
+>>>>>>> c314a2993a29005e6ece0b8c8a5d069aa2b20179
                 </div>
               )}
 
               {/* Envoyé */}
               {showSent && (
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2, paddingRight: 4 }}>
+<<<<<<< HEAD
                   <span style={{ fontSize: 10, color: '#9ca3af' }}>Send</span>
+=======
+                  <span style={{ fontSize: 10, color: '#9ca3af' }}>{t('chat.sent')}</span>
+>>>>>>> c314a2993a29005e6ece0b8c8a5d069aa2b20179
                 </div>
               )}
             </div>
@@ -316,7 +326,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             if (e.target.value) emitTyping(user?.username ?? '');
           }}
           onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-          placeholder="Write a message…"
+          placeholder={t('chat.write')}
           rows={1}
           style={{
             flex: 1, resize: 'none', border: '1px solid #e5e7eb', borderRadius: 22,

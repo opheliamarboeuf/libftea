@@ -1,5 +1,6 @@
 import { PostReportType, UserReportType } from './types';
 import { CreateReportType, ReportHandlePayload } from './types';
+import i18n from '../i18n';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,7 +17,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch amdin logs failed';
+				: data.message || i18n.t('modfail.fetchlogsadmin');
 			throw new Error(message);
 		}
 		return data;
@@ -34,7 +35,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch mod logs failed';
+				: data.message || i18n.t('modfail.fetchlogsmod');
 			throw new Error(message);
 		}
 		return data;
@@ -56,7 +57,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Change admin role failed';
+				: data.message || i18n.t('modfail.changeroleadmin');
 			throw new Error(message);
 		}
 
@@ -74,7 +75,7 @@ export const moderationApi = {
 		const data = await res.json();
 
 		if (!res.ok) {
-			throw new Error(data.message || 'Change mod role failed');
+			throw new Error(data.message || i18n.t('modfail.changerolemod'));
 		}
 
 		return data;
@@ -99,7 +100,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Reject report failed';
+				: data.message || i18n.t('modfail.reject');
 			throw new Error(message);
 		}
 		return data;
@@ -122,7 +123,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Accept report failed';
+				: data.message || i18n.t('modfail.accept');
 			throw new Error(message);
 		}
 		return data;
@@ -140,7 +141,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Assign report failed';
+				: data.message || i18n.t('modfail.assign');
 			throw new Error(message);
 		}
 		return data;
@@ -158,7 +159,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Unassign report failed';
+				: data.message || i18n.t('modfail.unassign');
 			throw new Error(message);
 		}
 		return data;
@@ -178,7 +179,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Ban user failed';
+				: data.message || i18n.t('modfail.ban');
 			throw new Error(message);
 		}
 		return data;
@@ -196,7 +197,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Unban user failed';
+				: data.message || i18n.t('modfail.unban');
 			throw new Error(message);
 		}
 		return data;
@@ -217,7 +218,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'User report failed';
+				: data.message || i18n.t('modfail.userreport');
 			throw new Error(message);
 		}
 	},
@@ -234,7 +235,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch pending users reports failed';
+				: data.message || i18n.t('modfail.fetchreports');
 			throw new Error(message);
 		}
 		return data;
@@ -252,7 +253,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Failed to fetch the users reports for this user';
+				: data.message || i18n.t('modfail.fetchuserreports');
 			throw new Error(message);
 		}
 		return data;
@@ -270,7 +271,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch all reports for this user failed';
+				: data.message || i18n.t('modfail.fetchalluser');
 			throw new Error(message);
 		}
 		return data;
@@ -288,7 +289,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch all assigned user reports failed';
+				: data.message || i18n.t('modfail.fetchassigned');
 			throw new Error(message);
 		}
 		return data;
@@ -306,7 +307,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch all assigned post reuserports failed';
+				: data.message || i18n.t('modfail.fetchhandled');
 			throw new Error(message);
 		}
 		return data;
@@ -327,7 +328,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Post report failed';
+				: data.message || i18n.t('modfail.postreport');
 			throw new Error(message);
 		}
 	},
@@ -344,7 +345,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch pending post reports failed';
+				: data.message || i18n.t('modfail.fetchpost');
 			throw new Error(message);
 		}
 		return data;
@@ -362,7 +363,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Failed to fetch the post reports for this user';
+				: data.message || i18n.t('modfail.fetchpostreports');
 			throw new Error(message);
 		}
 		return data;
@@ -380,7 +381,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch all reports for this post failed';
+				: data.message || i18n.t('modfail.fetchallpost');
 			throw new Error(message);
 		}
 		return data;
@@ -398,7 +399,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch all assigned post reports failed';
+				: data.message || i18n.t('modfail.fetchassignedpost');
 			throw new Error(message);
 		}
 		return data;
@@ -416,7 +417,7 @@ export const moderationApi = {
 		if (!res.ok) {
 			const message = Array.isArray(data.message)
 				? data.message[0]
-				: data.message || 'Fetch all assigned post reports failed';
+				: data.message || i18n.t('modfail.fetchhandledpost');
 			throw new Error(message);
 		}
 		return data;

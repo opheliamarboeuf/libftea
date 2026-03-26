@@ -1,0 +1,444 @@
+{
+	"header": {
+		"profile": "Mon profil",
+		"settings": "Paramètres",
+		"logout": "Déconnexion"
+	},
+
+	"leftmenu": {
+		"feed": "Mur",
+		"profile": "Profil",
+		"friends": "Amis",
+		"dashboard": "Dashboard"
+	},
+
+	"searchbar": {
+		"search": "Rechercher..."
+	},
+
+	"friends": {
+		"addfriend": "Ajouter en ami",
+		"myfriends": "Mes amis",
+		"requests": "Mes demandes en ami",
+		"accept": "Accepter",
+		"reject": "Refuser",
+		"sent": "Demande en ami envoyée",
+		"sentfail": "Echec d'envoi de la demande en ami",
+		"accepted": "Demande en ami acceptée",
+		"rejected": "Demande en ami rejetée",
+		"requestfail": "Echec de la demande",
+		"nopending": "Pas de demande en ami",
+		"cancelrequest": "Annuler la demande en ami",
+		"canceled": "Demande annulée",
+		"errorcancel": "Echec d'annulation",
+		"remove": "Retirer ami",
+		"removed": "Utilisateur retiré de la liste d'amis",
+		"acceptrequest": "Accepter la demande en ami",
+		"rejectrequest": "Refuser la demande en ami",
+		"block": "Bloquer l'utilisateur",
+		"blocked": "Utilisateur bloqué",
+		"unblock": "Débloquer l'utilisateur",
+		"unblocked": "Utilisateur débloqué",
+		"failblock": "Echec du bloc de l'utilisateur",
+		"processing": "Traitement...",
+		"confirmblock": "Etes-vous sûr de vouloir bloquer cet utilisateur ?",
+		"confirmunblock": "Etes-vous sûr de vouloir débloquer cet utilisateur ?",
+		"noblocked": "Pas d'utilisateur bloqué",
+		"nofriends": "Pas encore d'amis",
+		"delete": "Supprimer",
+		"deleting": "Suppression...",
+		"confirmremove": "Etes-vous sûr de vouloir supprimer cet utilisateur de votre liste d'amis ?",
+		"blockedusers": "Utilisateurs bloqués",
+		"prequests": "Demandes"
+	},
+
+	"userprofile": {
+		"sendmessage": "Envoyer un message",
+		"loading": "Chargement...",
+		"friends": "Amis",
+		"posts": "Posts",
+		"writebio": "Ecrivez votre bio ici...",
+		"feed": "Votre mur",
+		"noaccess": "Vous n'avez pas accès à ce profil",
+		"userblocked": "Vous avez bloqué cet utilisateur",
+		"online": "En ligne",
+		"offline": "Hors ligne"
+	},
+
+	"loginpage": {
+		"login": "Connexion",
+		"username": "Nom d'utilisateur",
+		"password": "Mot de passe",
+		"noaccount": "Pas de compte ?",
+		"create": "Créer un compte",
+		"verif": "Vérification",
+		"sentemail": "Un code a été envoyé à votre adresse email.",
+		"verifcode": "Code de vérification",
+		"enter": "Entrez votre code à 6 chiffres",
+		"verify": "Vérifier",
+		"back": "Revenir",
+		"github": "Login avec GitHub",
+		"gitconnect": "Connexion avec GitHub en cours..."
+	},
+
+	"registerpage" : {
+		"register": "S'inscrire",
+		"loginto": "Se connecter",
+		"alreadyhave": "Vous avez déjà un compte ?",
+		"registerfail": "Echec de l'inscription",
+		"serverfail": "Echec serveur",
+		"email": "Email"
+	},
+
+	"editprofile": {
+		"edit": "Modifier le profil",
+		"name": "Nom",
+		"bio": "Bio",
+		"picture": "Photo de profil",
+		"cover": "Photo de couverture",
+		"format": "Formats acceptés: JPEG, PNG, WebP (Max 5MB)",
+		"save": "Sauvegarder",
+		"cancel": "Annuler",
+		"changes": "Vous avez modifié votre profil. Etes-vous sûr de vouloir quitter sans sauvegarder ?"
+	},
+
+	"confirmdialog": {
+		"discard": "Ignorer",
+		"stay": "Rester"
+	},
+
+	"comment-section": {
+		"deletecomment": "Supprimer",
+		"leavecomment": "Laissez un commentaire...",
+		"submitcomment": "Commenter",
+		"loadingcomments": "Chargement des commentaires...",
+		"replycomment": "Répondre",
+		"leavereply": "Répondez à ce commentaire...",
+		"confirmdelete": "Etes-vous sûr de vouloir supprimer votre commentaire ?"
+	},
+
+	"common": {
+		"yes": "Oui",
+		"no": "Non",
+		"privacy": "Politique de confidentialité",
+		"terms": "Conditions de Service",
+		"back": "Retour à la page de connexion",
+		"confirm": "Confirmer",
+		"close": "Fermer",
+		"admin": "Admin",
+		"mod": "Modérateur",
+		"user": "Utilisateur",
+		"post": "Post",
+		"battle": "Tournoi",
+		"enter": "Cliquez pour entrer",
+		"languages": "Langues"
+	},
+
+	"feedpage": {
+		"myfeed": "Mon mur",
+		"postoutfit": "Poster une tenue",
+		"noposts": "Pas de post à afficher",
+		"discover": "Découvrir",
+		"friends": "Amis"
+	},
+
+	"post": {
+		"editpost": "Modifiez votre post",
+		"title": "Titre",
+		"caption": "Description",
+		"changes": "Vous avez modifié votre post. Etes-vous sûr de vouloir quitter sans sauvegarder ?",
+		"saving": "Sauvegarde...",
+		"picture": "Photo de la tenue",
+		"posting": "Publication en cours...",
+		"submit": "Poster",
+		"edit": "Modifier",
+		"report": "Signaler",
+		"confirmdelete": "Etes-vous sûr de vouloir supprimer votre post ?",
+		"edited": "modifié le {{date}}",
+		"created": "créé le {{date}}",
+		"deleted": "Ce post a été supprimé"
+	},
+
+	"notifications": {
+		"clear": "Supprimer les notifications",
+		"nonotif": "Pas de notifications",
+		"like": "{{username}} a liké votre post",
+		"comment": "{{username}} a écrit un commentaire sur votre post",
+		"replycomment": "{{username}} a répondu à votre commentaire",
+		"friendrequest": "{{username}} vous a envoyé une demande en ami",
+		"friendaccept": "{{username}} a accepté votre demande en ami",
+		"friendpost": "{{username}} a posté une tenue",
+		"newbattle": "Un nouveau tournoi commence! Le thème est: {{theme}}",
+		"battlewinner": "Félicitations! Vous avez gagné le tournoi du thème: {{theme}}!",
+		"battleparticipants": "Merci d'avoir participé au tournoi thème {{theme}}. Le gagnant est {{username}}!",
+		"promotemod": "{{username}} vous a promu au rôle de modérateur",
+		"promoteadmin": "{{username}} vous a promu au rôle d'administrateur",
+		"demote": "{{username}} vous a rétrogradé au rang d'utilisateur"
+	},
+
+	"tournament": {
+		"tournament": "Tournoi",
+		"notournament": "Pas de tournoi en cours",
+		"createtournament": "Créer un tournoi",
+		"create": "Créer",
+		"theme": "Thème",
+		"start": "Date de début",
+		"end": "Date de fin",
+		"entercontest": "Participer au concours",
+		"ended": "Le tournoi est fini",
+		"today": "Le tournoi finit aujourd'hui!",
+		"tomorrow": "Le tournoi finit demain!",
+		"days": "Le tournoi sera actif pendant encore {{count}} jours, jusq'au {{date}}",
+		"changes": "Vous avez modifié le tournoi. Etes-vous sûr de vouloir quitter sans sauvegarder ?",
+		"lastweek": "Le gagnant de la semaine dernière",
+		"joinfail": "Échec de la participation au tournoi"
+	},
+
+	"moderationlogs": {
+		"loadinglogs": "Chargement des logs...",
+		"logs": "Logs de modération",
+		"nologs": "Pas de log disponible",
+		"actionold": "<0>{{action}}</0> par {{username}} le {{date}}",
+		"actor": "Auteur",
+		"action": "Action",
+		"target": "Concerné",
+		"title": "Titre",
+		"date": "Date"
+	},
+
+	"errors": {
+		"email": "Veuillez fournir une adresse email valide",
+		"exists": "Ce nom d'utilisateur ou adresse email existe déjà",
+		"notfound": "Utilisateur introuvable",
+		"pswincorrect": "Mot de passe incorrect",
+		"pswnotstrong": "Le mot de passe n'est pas assez fort",
+		"failed": "Échec de l'inscription",
+		"lfailed": "Échec de la connexion",
+		"titleenter" : "Veuillez entrer un titre",
+		"titlelength": "Le titre ne peut pas dépasser {{length}} caractères",
+		"captionlength": "La description ne peut pas dépasser {{length}} caractères",
+		"image": "Veuillez sélectionner une image à télécharger",
+		"type": "{{type}} doit être au format JPEG, PNG ou WebP",
+		"volume": "{{type}} doit faire moins de 5MB",
+		"namelength": "Votre nom ne peut pas dépasser {{length}} caractères",
+		"biolength": "Votre bio ne ne peut pas dépasser {{length}} caractères",
+		"theme": "Veuillez entrer un thème",
+		"themelength": "Le thème ne peut pas dépasser {{length}} caractères",
+		"start": "Veuillez sélectionner une date de début",
+		"end": "Veuillez sélectionner une date de fin",
+		"planned": "Un tournoi est déjà prévu du {{date1}} au {{date2}}",
+		"tfailed": "Échec de la création du tournoi",
+		"deslength": "La description ne peut pas dépasser {{length}} caractères",
+		"selectcat": "Veuillez sélectionner une catégorie",
+		"meslength": "Le message de modérateur ne peut pas dépasser {{length}} caractères",
+		"tournamentlike": "Vous ne pouvez pas liker votre propre post s'il participe à un tournoi",
+		"tournamentuser": "Cet utilisateur est déjà inscrit à ce tournoi",
+		"tournamentactive": "Le tournoi n'est pas actif",
+		"simple": "Une erreur est survenue",
+		"token": "Token invalide ou utilisateur non autorisé",
+		"code": "Code invalide",
+		"2fa": "Échec de la modification des paramètres 2FA",
+		"chat": "Vous devez être amis pour discuter.",
+		"username": "Le nom d'utilisateur doit contenir au moins 3 caractères"
+	},
+
+	"dashboard": {
+		"admindash": "Dashboard Administrateur",
+		"moddash": "Dashboard Modérateur",
+		"manage": "Gestion des utilisateurs",
+		"users": "Tous les utilisateurs",
+		"admins": "Administrateurs",
+		"pending": "Signalements en attente",
+		"assignedme": "Assignés à moi",
+		"assignedall": "Tous les signalements assignés",
+		"resolved": "Résolus",
+		"adminlogs": "Logs administrateur",
+		"userreports": "Utilisateurs signalés",
+		"logs": "Logs",
+		"mods": "Modérateurs",
+		"postreports": "Post signalés",
+		"modlogs": "Logs de modérateur"
+	},
+
+	"userlist": {
+		"unban": "Débannir",
+		"unbanconfirm": "Débannir {{name}}?",
+		"admin": "→ ADMIN",
+		"mod": "→ MOD",
+		"user": "→ USER",
+		"promoteadmin": "Promouvoir {{name}} en ADMIN?",
+		"promotemod": "Promouvoir {{name}} en MOD?",
+		"demote": "Rétrograder {{name}} en USER?",
+		"nousers": "Aucun utilisateur trouvé",
+		"search": "Rechercher des utilisateurs...",
+		"banned": "BANNI",
+		"active": "ACTIF",
+		"username": "Nom d'utilisateur",
+		"role": "Rôle",
+		"status": "Statut",
+		"action": "Actions"
+	},
+
+	"postreport": {
+		"noreports": "Aucun signalement disponible",
+		"assignedto": "Assigné à",
+		"assign": "Assigner le signalement",
+		"unassign": "Désassigner le signalement",
+		"handle": "Traiter le signalement",
+		"reporter": "Signalé par:",
+		"category": "Catégorie du signalement:",
+		"description": "Description du signalement:",
+		"creation": "Création du signalement:",
+		"view": "Voir tous les signalements",
+		"status": "Statut du signalement:",
+		"handled": "Traité par:",
+		"message": "Message de modération:",
+		"date": "Date de traitement:",
+		"unassignconfirm": "Êtes-vous sûr de vouloir désassigner ce signalement?",
+		"accepted": "ACCEPTÉ",
+		"rejected": "REJETÉ",
+		"all": "Tous les signalements pour ce post",
+		"nonefound": "Aucun signalement trouvé pour ce post.",
+		"reported": "signalé le {{date}}",
+		"submitted": "Signalement envoyé avec succès",
+		"reportpost": "Signaler le post",
+		"cat": "Catégorie",
+		"catselect": "Sélectionner une catégorie de signalement",
+		"des": "Description",
+		"desplaceholder": "Vous pouvez ajouter plus de détails ici",
+		"changes": "Vous avez modifié le signalement. Etes-vous sûr de vouloir quitter sans sauvegarder ?"
+	},
+
+	"userreport": {
+		"unknown": "Utilisateur inconnu",
+		"nocover": "Aucune couverture disponible",
+		"noavatar": "Aucun avatar disponible",
+		"unavailable": "Profil utilisateur indisponible",
+		"nobio": "Aucune bio disponible",
+		"cover": "Couverture",
+		"avatar": "Avatar",
+		"all": "Tous les signalements pour cet utilisateur",
+		"nonefound": "Aucun signalement trouvé pour cet utilisateur.",
+		"report": "Signaler l'utilisateur",
+		"ban": "Bannir l'utilisateur",
+		"banconfirm": "Êtes-vous sûr de vouloir bannir cet utilisateur?",
+		"banned": "Utilisateur banni",
+		"success": "Signalement soumis avec succès"
+	},
+
+	"reporthandle": {
+		"rejected": "Signalement rejeté avec succès",
+		"accepted": "Signalement accepté avec succès",
+		"handle": "Traiter le signalement",
+		"changes": "Vous avez modifié le traitement du signalement. Etes-vous sûr de vouloir quitter sans sauvegarder ?"
+	},
+
+	"errorcomments": {
+		"create": "Échec de la création du commentaire",
+		"delete": "Échec de la suppression du commentaire",
+		"reply": "Échec de la création de la réponse",
+		"get": "Échec de la récupération des commentaires",
+		"load": "Échec du chargement des commentaires"
+	},
+
+	"modfail": {
+		 "fetchusers": "Échec de la récupération des utilisateurs",
+		"fetchbanned": "Échec de la récupération des utilisateurs bannis",
+		"fetchadmin": "Échec de la récupération des administrateurs",
+		"fetchmod": "Échec de la récupération des modérateurs",
+		"fetchlogsadmin": "Échec de la récupération des journaux administrateur",
+		"fetchlogsmod": "Échec de la récupération des journaux modérateur",
+		"changeroleadmin": "Échec du changement de rôle administrateur",
+		"changerolemod": "Échec du changement de rôle modérateur",
+		"reject": "Échec du rejet du signalement",
+		"accept": "Échec de l'acceptation du signalement",
+		"assign": "Échec de l'assignation du signalement",
+		"unassign": "Échec de la désassignation du signalement",
+		"ban": "Échec du bannissement de l'utilisateur",
+		"unban": "Échec du débannissement de l'utilisateur",
+		"userreport": "Échec du signalement de l'utilisateur",
+		"fetchreports": "Échec de la récupération des signalements d'utilisateurs en attente",
+		"fetchuserreports": "Échec de la récupération des signalements pour cet utilisateur",
+		"fetchalluser": "Échec de la récupération de tous les signalements pour cet utilisateur",
+		"fetchassigned": "Échec de la récupération des signalements d'utilisateurs assignés",
+		"fetchhandled": "Échec de la récupération des signalements d'utilisateurs traités",
+		"postreport": "Échec du signalement du post",
+		"fetchpost": "Échec de la récupération des signalements de posts en attente",
+		"fetchpostreports": "Échec de la récupération des signalements pour ce post",
+		"fetchallpost": "Échec de la récupération de tous les signalements pour ce post",
+		"fetchassignedpost": "Échec de la récupération des signalements de posts assignés",
+		"fetchhandledpost": "Échec de la récupération des signalements de posts traités"
+	},
+
+	"errorpage": {
+		"filenotfound": "Fichier introuvable",
+		"contentnotfound": "Contenu de l'erreur introuvable",
+		"loadpost": "Erreur lors du chargement des posts",
+		"faildelete": "Échec de la suppression du post",
+		"fetchprofile": "Erreur lors de la récupération du profil"
+	},
+
+	"errorpost": {
+		"create": "Échec de la création du post",
+		"delete": "Échec de la suppression du post",
+		"update": "Échec de la mise à jour du post",
+		"fetch": "Échec de la récupération des posts de l'utilisateur",
+		"fetchfriends": "Échec de la récupération des posts des amis",
+		"fetchall": "Échec de la récupération de tous les posts"
+	},
+	
+	"tournamenterror": {
+		"create": "Échec de la création du tournoi",
+		"fetch": "Échec de la récupération du tournoi en cours",
+		"fetchparticipants": "Échec de la récupération des participants",
+		"fetchposts": "Échec de la récupération des posts du tournoi",
+		"fetchlast": "Échec de la récupération du dernier post gagnant"
+	},
+
+	"settings": {
+		"sandp": "Paramètres & Confidentialité",
+		"security": "Sécurité",
+		"2fa": "2FA",
+		"two": "Authentification à deux facteurs",
+		"twodes": "L'authentification à deux facteurs ajoute une couche de sécurité supplémentaire à votre compte. Lorsqu'elle est activée, il vous sera demandé d'entrer un code de vérification envoyé à votre adresse email à chaque connexion.",
+		"tworecommend": "Nous recommandons d'activer la 2FA pour protéger votre compte contre les accès non autorisés.",
+		"enabled": " activée",
+		"disabled": " désactivée",
+		"enableconfirm": "Êtes-vous sûr de vouloir activer l'authentification à deux facteurs ? Vous recevrez un code par email à chaque connexion.",
+		"disableconfirm": "Êtes-vous sûr de vouloir désactiver l'authentification à deux facteurs ? Votre compte sera moins sécurisé.",
+		"legal": "Mentions légales",
+		"currently": "La 2FA est actuellement"
+	},
+
+	"chat": {
+		"chat": "Chat",
+		"noconv": "Aucune conversation pour le moment",
+		"seen": "Vu",
+		"sent": "Envoyé",
+		"write": "Écrire un message…",
+		"select": "Sélectionnez une conversation",
+		"you": "Vous : "
+	},
+
+	"report": {
+		"SPAM": "SPAM",
+		"HARASSMENT": "HARCÈLEMENT",
+		"INAPPROPRIATE_CONTENT": "CONTENU INAPPROPRIÉ",
+		"OTHER": "AUTRE",
+		"PENDING": "EN ATTENTE",
+		"ASSIGNED": "ASSIGNÉ",
+		"ACCEPTED": "ACCEPTÉ",
+		"REJECTED": "REJETÉ",
+		"DELETE_ANY_POST": "SUPPRESSION_POST",
+		"CHANGE_ADMIN_ROLE": "CHANGEMENT_RÔLE_ADMIN",
+		"CHANGE_MOD_ROLE": "CHANGEMENT_RÔLE_MOD",
+		"BAN_USER": "BAN_UTILISATEUR",
+		"UNBAN_USER": "DÉBAN_UTILISATEUR",
+		"VIEW_ADMIN_LOGS": "CONSULT_LOGS_ADMIN",
+		"VIEW_MOD_LOGS": "CONSULT_LOGS_MOD",
+		"CHANGE_ROLE": "CHANGEMENT_RÔLE",
+		"REVIEW_POST_REPORT": "REVUE_POST",
+		"REVIEW_USER_REPORT": "REVUE_UTILISATEUR",
+		"CREATE_TOURNAMENT": "CRÉATION_TOURNOI"
+	}
+}
