@@ -206,7 +206,7 @@ export function useChat(conversationId: number, currentUserId: number) {
 
       const content =
         isWinner && isFinished
-          ? '👑 I won the tournament! Come check it out!'
+          ? 'I won the tournament! Come check it out!✨'
           : 'Join me in the tournament! 💅🏼';
 
       const type =
