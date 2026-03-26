@@ -295,21 +295,18 @@ Real-time notifications for:
 - Added tournament context to posts (display of tournament theme)  
 
 # Authentication & Security
-
 - Implemented registration and login system  
 - Password hashing and secure storage  
 - Validation to prevent duplicate users in the database  
 - Enforced strong password requirements  
 
 # Database & Backend Setup
-
 - Designed the complete Prisma database schema  
 - Set up Prisma ORM for secure database access  
-- Configured Docker (Dockerfile & docker-compose) for the full project  
+- Created all Dockerfiles and docker-compose from scratch for the full project  
 
-# Frontend & UI/UX (Design Authority)
-
-- Defined the overall design system (DA) of the application  
+# Frontend & UI/UX (Direction Artistique)
+- Defined the overall Direction Artistique (DA) of the application  
 - Ensured UI consistency across all pages  
 - Reviewed and refined CSS for all team members’ work  
 - Designed and implemented:
@@ -318,13 +315,18 @@ Real-time notifications for:
   - language switcher interaction (hover-based UI)  
 
 # Cross-browser Compatibility
-
 - Ensured the application works consistently across multiple browsers  
 - Tested and fixed UI/UX inconsistencies  
+- Multi-browser support required resolving layout issues and differences in rendering  
 
 # Project Setup
+- Setup of the frontend and backend architecture (React + NestJS)  
 
-- Participated in the setup of the frontend and backend architecture (React + NestJS)  
+# Challenges Faced and Solutions
+- Achieving a visually appealing and consistent design across all pages was complex  
+- Transitioning from standard CSS to Tailwind caused major conflicts  
+- Resolving merge conflicts when unifying branches on main took significant effort  
+- Managing different module versions also created additional conflicts that needed careful resolution
 
 # lshiina-
 
