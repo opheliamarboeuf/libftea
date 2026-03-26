@@ -145,4 +145,4 @@ Browser specific issues were minor and fixed (e.g. inability to load MarkDown fi
 	- Full compaibility with at least two additional browsers
 	- All features tested and fixed in each browser
 	- Consistent UI/UX across all supported browsers
-	- No remaining browser-specific limitations
+	- No significant browser-specific limitations
