@@ -740,7 +740,7 @@ async function main() {
 	const adminUser = await createUserIfNotExists(
 		'admin@test.com',
 		'admin',
-		'AdminPswd0+',
+		'Password0+',
 		Role.ADMIN,
 		'Test account for Admin',
 	);
@@ -748,7 +748,7 @@ async function main() {
 	const modUser = await createUserIfNotExists(
 		'mod@test.com',
 		'mod',
-		'ModPswd0+',
+		'Password0+',
 		Role.MOD,
 		'Test account for Moderator',
 	);
