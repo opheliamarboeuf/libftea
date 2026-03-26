@@ -222,11 +222,10 @@ const LoginPage = () => {
 						>
 							{t('loginpage.create')}
 						</button>
-					</form>
-					<div className="flex justify-center gap-4 mt-6">
-						<PrivacyButton className="text-sm text-gray-500 hover:text-gray-800 transition-colors"/>
-						<TermsButton className="text-sm text-gray-500 hover:text-gray-800 transition-colors"/>
-					</div>
+					</form>				<div className="flex justify-center gap-4 mt-6">
+					<PrivacyButton className="text-xs text-gray-400 hover:text-gray-700 transition-colors"/>
+					<TermsButton className="text-xs text-gray-400 hover:text-gray-700 transition-colors"/>
+				</div>
 					</>
 				)}
 			</div>
