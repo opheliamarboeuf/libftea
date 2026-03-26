@@ -151,7 +151,7 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 								<div className="user-report-category">
 									<strong>{t('postreport.category')}</strong>
 									<br />
-									{report.reportCategory.replace(/_/g, ' ')}
+									{t(`report.${report.reportCategory}`)}
 								</div>
 								<div className="user-report-description">
 									<strong>{t('postreport.description')}</strong>

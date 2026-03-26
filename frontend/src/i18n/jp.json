@@ -238,7 +238,8 @@
 		"token": "トークンが無効またはユーザーが認証されていません",
 		"code": "コードが無効です",
 		"2fa": "二段階認証の設定変更に失敗しました",
-		"chat": "チャットするには友達である必要があります。"
+		"chat": "チャットするには友達である必要があります。",
+		"username": "ユーザー名は3文字以上である必要があります"
 	},
 
 	"dashboard": {
@@ -417,5 +418,27 @@
 		"write": "メッセージを入力…",
 		"select": "会話を選択してください",
 		"you": "自分 : "
+	},
+
+	"report": {
+		    "SPAM": "スパム",
+			"HARASSMENT": "ハラスメント",
+			"INAPPROPRIATE_CONTENT": "不適切なコンテンツ",
+			"OTHER": "その他",
+			"PENDING": "保留中",
+			"ASSIGNED": "割り当て済み",
+			"ACCEPTED": "承認",
+			"REJECTED": "却下",
+			"DELETE_ANY_POST": "投稿削除",
+			"CHANGE_ADMIN_ROLE": "管理者ロール変更",
+			"CHANGE_MOD_ROLE": "モデレーターロール変更",
+			"BAN_USER": "ユーザーバン",
+			"UNBAN_USER": "ユーザーバン解除",
+			"VIEW_ADMIN_LOGS": "管理者ログ閲覧",
+			"VIEW_MOD_LOGS": "モデレーターログ閲覧",
+			"CHANGE_ROLE": "ロール変更",
+			"REVIEW_POST_REPORT": "投稿報告処理",
+			"REVIEW_USER_REPORT": "ユーザー報告処理",
+			"CREATE_TOURNAMENT": "トーナメント作成"
 	}
 }

@@ -238,7 +238,8 @@
 		"token": "Token invalide ou utilisateur non autorisé",
 		"code": "Code invalide",
 		"2fa": "Échec de la modification des paramètres 2FA",
-		"chat": "Vous devez être amis pour discuter."
+		"chat": "Vous devez être amis pour discuter.",
+		"username": "Le nom d'utilisateur doit contenir au moins 3 caractères"
 	},
 
 	"dashboard": {
@@ -417,5 +418,27 @@
 		"write": "Écrire un message…",
 		"select": "Sélectionnez une conversation",
 		"you": "Vous : "
+	},
+
+	"report": {
+		"SPAM": "SPAM",
+		"HARASSMENT": "HARCÈLEMENT",
+		"INAPPROPRIATE_CONTENT": "CONTENU INAPPROPRIÉ",
+		"OTHER": "AUTRE",
+		"PENDING": "EN ATTENTE",
+		"ASSIGNED": "ASSIGNÉ",
+		"ACCEPTED": "ACCEPTÉ",
+		"REJECTED": "REJETÉ",
+		"DELETE_ANY_POST": "SUPPRESSION_POST",
+		"CHANGE_ADMIN_ROLE": "CHANGEMENT_RÔLE_ADMIN",
+		"CHANGE_MOD_ROLE": "CHANGEMENT_RÔLE_MOD",
+		"BAN_USER": "BAN_UTILISATEUR",
+		"UNBAN_USER": "DÉBAN_UTILISATEUR",
+		"VIEW_ADMIN_LOGS": "CONSULT_LOGS_ADMIN",
+		"VIEW_MOD_LOGS": "CONSULT_LOGS_MOD",
+		"CHANGE_ROLE": "CHANGEMENT_RÔLE",
+		"REVIEW_POST_REPORT": "REVUE_POST",
+		"REVIEW_USER_REPORT": "REVUE_UTILISATEUR",
+		"CREATE_TOURNAMENT": "CRÉATION_TOURNOI"
 	}
 }

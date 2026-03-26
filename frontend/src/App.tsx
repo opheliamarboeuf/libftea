@@ -137,7 +137,7 @@ const App = () => {
 						path="/termsofservice"
 						element={<TermsPage/>} />
 						<Route
-						path="/auth/github/callback"
+						path="/github/callback"
 						element={<GithubCallbackPage />} />
         			</Routes>
         		</BrowserRouter>

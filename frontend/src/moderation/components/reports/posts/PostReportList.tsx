@@ -1,7 +1,7 @@
 import "./PostReportList.css"
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PostReportType } from '../../../types';
+import { PostReportType, ReportCategory } from '../../../types';
 import { moderationApi } from '../../../api';
 import { useUser } from '../../../../context/UserContext';
 import { ConfirmDialog } from '../../../../common/components/ConfirmDialog';
@@ -111,7 +111,7 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 								<div className="post-report-category">
 									<strong>{t('postreport.category')}</strong>
 									<br />
-									{report.reportCategory.replace(/_/g, ' ')}
+									{t(`report.${report.reportCategory}`)}
 								</div>
 								<div className="post-report-description">
 									<strong>{t('postreport.description')}</strong>

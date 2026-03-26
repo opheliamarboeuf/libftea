@@ -22,7 +22,8 @@ const RegisterPage = () => {
 	const { setUser } = useUser();
 
 	//To use translation
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
+	const isJp = i18n.language === 'jp';
 
 	// Update username when input changes
 	// e = ChangeEvent<HTMLInputElement> object
@@ -42,6 +43,7 @@ const RegisterPage = () => {
 		if (message.includes("email")) return 'errors.email';
 		if (message.includes("password")) return 'errors.pswnotstrong';
 		if (message.includes("already exists")) return 'errors.exists';
+		if (message.includes("username")) return 'errors.username';
 		return 'errors.failed';
 	}
 	
@@ -93,8 +95,8 @@ const RegisterPage = () => {
 		<div className="fixed inset-0 flex items-center justify-center">
 			<LanguageMenu fixed/>
 			<div className="w-80 p-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
-				<h1 className="text-4xl text-center mb-8 text-black" style={{ fontFamily: "'Blosta Script', cursive" }}>
-					Register
+				<h1 className="text-4xl text-center mb-8 text-black" style={{ fontFamily: isJp ? "'Noto Serif JP', serif" : "'Blosta Script', cursive" }}>
+					{t('registerpage.register')}
 				</h1>
 				<form onSubmit={handleSubmit} className="flex flex-col gap-4">
 					<div>

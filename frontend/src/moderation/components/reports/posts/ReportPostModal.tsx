@@ -77,7 +77,7 @@ export function ReportPostModal ({ post, onPostReported, onClose }: ReportPostMo
 						>
 						<option value="" disabled>{t('postreport.catselect')}</option>
 						  {Object.values(ReportCategory).map((r) => (
-							<option key={r} value={r}>{r.replaceAll("_", " ")}</option>
+							<option key={r} value={r}>{t(`report.${r}`)}</option>
 							))}
 						</select>
 						<label>{t('postreport.des')}</label>

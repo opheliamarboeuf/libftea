@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { chatSocket } from '../../../socket/socket';
+import i18n from '../../../i18n';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -32,8 +33,14 @@ export function useChat(conversationId: number, currentUserId: number) {
     });
   };
 
+  const errorMessages = (message: string): string => {
+		if (message.includes("pour envoyer")) return 'errors.chat';
+	}
+
   const setErrorWithTimeout = (msg: string, duration = 3000) => {
-    setChatError(msg);
+    const key = errorMessages(msg);
+	const trad = key ? i18n.t(key) : msg;
+	setChatError(trad);
     if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     errorTimerRef.current = setTimeout(() => setChatError(''), duration);
   };
@@ -68,6 +75,7 @@ export function useChat(conversationId: number, currentUserId: number) {
     });
 
     socket.on('error', (data: { message: string }) => setErrorWithTimeout(data.message));
+
     socket.on('userTyping', () => {
       setIsTyping(true);
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);

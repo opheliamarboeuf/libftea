@@ -112,7 +112,7 @@ function ReportUserModal ({ targetId, onPostReported, onClose }: ReportUserModal
 						>
 						<option value="" disabled>{t('postreport.catselect')}</option>
 						  {Object.values(ReportCategory).map((r) => (
-							<option key={r} value={r}>{r.replaceAll("_", " ")}</option>
+							<option key={r} value={r}>{t(`report.${r}`)}</option>
 							))}
 						</select>
 						<label>{t('postreport.des')}</label>
