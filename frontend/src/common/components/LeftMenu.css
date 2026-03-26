@@ -170,7 +170,8 @@
 	z-index: 300;
 }
 
-.lang-hover-wrapper:hover .lang-submenu {
+.lang-hover-wrapper:hover .lang-submenu,
+.lang-hover-wrapper.open .lang-submenu {
 	max-height: 200px;
 	opacity: 1;
 }

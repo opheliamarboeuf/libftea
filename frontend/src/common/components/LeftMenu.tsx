@@ -14,6 +14,7 @@ export const LeftMenu = () => {
 	const { user, setUser } = useUser();
 	const { t } = useTranslation();
 	const [isHovered, setIsHovered] = useState(false);
+	const [langOpen, setLangOpen] = useState(false);
 
 	const languages = [
 		{ code: 'fr', label: 'FR'},
@@ -65,18 +66,21 @@ export const LeftMenu = () => {
 				<span className="label">{t('leftmenu.dashboard')}</span>
 			</div> ) : null}
 			<div className="menu-bottom">
-				<div className="lang-hover-wrapper">
+				<div className={`lang-hover-wrapper ${langOpen ? 'open' : ''}`}>
 					<div className="lang-submenu">
 						{languages.map(lang => (
 							<div
 								key={lang.code}
 								className={`lang-submenu-item ${i18n.language === lang.code ? 'active' : ''}`}
-								onClick={() => i18n.changeLanguage(lang.code)}>
+								onClick={() => { i18n.changeLanguage(lang.code); setLangOpen(false); }}>
 									<span className="lang-submenu-code">{lang.label}</span>
 							</div>
 						))}
 					</div>
-					<div className="menu-item lang-trigger">
+					<div
+						className="menu-item lang-trigger"
+						onClick={() => setLangOpen(prev => !prev)}
+					>
 						<MdOutlineLanguage className="icon" />
 						<span className="label">{i18n.language.toUpperCase()}</span>
 					</div>
