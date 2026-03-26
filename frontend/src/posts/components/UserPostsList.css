@@ -273,3 +273,61 @@
   max-width: 300px;
   transform: translateX(-44px); 
 }
+
+@media (max-width: 480px) {
+	.posts-list {
+		padding: 10px 8px;
+		gap: 12px;
+	}
+
+	.post-card {
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.post-content {
+		flex-direction: column;
+	}
+
+	.post-image {
+		flex: none;
+		width: 100%;
+	}
+
+	.post-text {
+		flex: none;
+		width: 100%;
+		max-height: none;
+	}
+
+	.post-header-right {
+		transform: none;
+		max-width: 100%;
+		align-items: flex-start;
+	}
+
+	.winner-badge {
+		font-size: 0.82rem;
+		padding: 4px 10px;
+	}
+}
+
+@media (max-width: 360px) {
+	.posts-list {
+		padding: 8px 6px;
+		gap: 10px;
+	}
+
+	.post-card {
+		padding: 10px;
+	}
+
+	.post-title {
+		font-size: 1rem;
+	}
+
+	.post-footer button {
+		font-size: 1rem;
+		padding: 4px 6px;
+	}
+}

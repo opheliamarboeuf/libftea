@@ -107,3 +107,43 @@
 .tab-indicator.right {
 	transform: translateX(100%);
 }
+
+@media (max-width: 480px) {
+	.feed-page {
+		left: 0;
+		width: 100vw;
+		padding-left: 68px; /* account for left-menu (60px + 8px gap) */
+		box-sizing: border-box;
+	}
+
+	.feed-center {
+		gap: 8px;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	.feed-tabs button {
+		min-width: 90px;
+		padding: 8px 10px;
+		font-size: 0.82rem;
+	}
+
+	.no-posts-card {
+		width: 100%;
+	}
+}
+
+@media (max-width: 360px) {
+	.feed-page {
+		left: 0;
+		width: 100vw;
+		padding-left: 68px;
+		box-sizing: border-box;
+	}
+
+	.feed-tabs button {
+		min-width: 80px;
+		padding: 6px 8px;
+		font-size: 0.78rem;
+	}
+}
