@@ -197,7 +197,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
           const isTournamentMessage = isTournamentInvite || isTournamentVictory;
 
           const bubbleBg = isOwn
-            ? isTournamentVictory ? '#7c3aed' : isTournamentInvite ? '#f59e0b' : '#6b7280'
+            ? isTournamentVictory ? '#7c3aed' : isTournamentInvite ? 'rgba(249, 216, 230, 0.8)' : '#6b7280'
             : '#f3f4f6';
 
           return (
@@ -224,7 +224,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                       borderBottomRightRadius: isOwn ? 4 : 18,
                       borderBottomLeftRadius: isOwn ? 18 : 4,
                       background: bubbleBg,
-                      color: isOwn ? '#fff' : '#111827',
+                      color: isOwn && isTournamentInvite ? '#b05070' : isOwn ? '#fff' : '#111827',
                       fontSize: 14, lineHeight: 1.5, wordBreak: 'break-word',
                     }}>
                       {msg.content}
@@ -236,8 +236,8 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                             onClick={() => navigate(`/tournament`)}
                             style={{
                               background: '#fff',
-                              color: isTournamentVictory ? '#7c3aed' : '#f59e0b',
-                              border: `1.5px solid ${isTournamentVictory ? '#7c3aed' : '#f59e0b'}`,
+                              color: isTournamentVictory ? '#7c3aed' : '#b05070',
+                              border: `1.5px solid ${isTournamentVictory ? '#7c3aed' : '#b05070'}`,
                               borderRadius: 12,
                               padding: '5px 14px',
                               fontSize: 13,
@@ -249,7 +249,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                               whiteSpace: 'nowrap',
                             }}
                           >
-                            {isTournamentVictory ? '👑 See the winner' : '🏆 Join Tournament'}
+                            {isTournamentVictory ? '👑 See the winner' : 'Join Tournament 💅🏼'}
                           </button>
                         </div>
                       )}
@@ -336,14 +336,14 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             title={showVictoryButton ? 'Share your victory' : 'Invite to tournament'}
             style={{
               width: 38, height: 38, borderRadius: '50%', border: 'none',
-              background: showVictoryButton ? '#7c3aed' : '#f59e0b',
+              background: showVictoryButton ? '#7c3aed' : 'rgba(249, 216, 230, 0.8)',
               cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0, transition: 'background 0.15s',
               fontSize: 18,
             }}
           >
-            {showVictoryButton ? '👑' : '🏆'}
+            {showVictoryButton ? '👑' : '👑'}
           </button>
         )}
 
