@@ -105,12 +105,17 @@ async function createUserIfNotExists(
 
 // -------------------- NOTIFICATIONS --------------------
 
-async function createNotification(userId: number, type: NotificationType, message: string) {
+async function createNotification(
+	userId: number,
+	type: NotificationType,
+	metadata: Record<string, string>,
+) {
 	await prisma.notification.create({
 		data: {
 			userId,
 			type,
-			message,
+			message: '',
+			metadata: JSON.stringify(metadata),
 			isRead: Math.random() > 0.5,
 		},
 	});
@@ -147,6 +152,14 @@ async function createPostsForUser(
 	const existingPosts = await prisma.post.count({ where: { authorId: userId } });
 	if (existingPosts > 0) return;
 
+	// Fetch all usernames for notifications
+	const allUsers = await prisma.user.findMany({
+		where: { id: { in: allUserIds } },
+		select: { id: true, username: true },
+	});
+	const usersMap = new Map<number, string>();
+	allUsers.forEach((u) => usersMap.set(u.id, u.username));
+
 	await ensureSeedImagesResized(username, postsData.length);
 
 	for (let i = 0; i < postsData.length; i++) {
@@ -175,11 +188,9 @@ async function createPostsForUser(
 				},
 			});
 
-			await createNotification(
-				userId,
-				NotificationType.COMMENT,
-				`${commentData.userId} commented on your post`,
-			);
+			await createNotification(userId, NotificationType.COMMENT, {
+				username: usersMap.get(commentData.userId)!,
+			});
 
 			if (commentData.reply) {
 				const replyDate = commentData.reply.createdAt || getRandomDate(commentDate, now);
@@ -194,11 +205,9 @@ async function createPostsForUser(
 					},
 				});
 
-				await createNotification(
-					commentData.userId,
-					NotificationType.COMMENT,
-					`${commentData.reply.userId} replied to your comment`,
-				);
+				await createNotification(commentData.userId, NotificationType.COMMENT_REPLY, {
+					username: usersMap.get(commentData.reply.userId)!,
+				});
 			}
 		}
 
@@ -215,7 +224,9 @@ async function createPostsForUser(
 				},
 			});
 
-			await createNotification(userId, NotificationType.LIKE, `${likerId} liked your post`);
+			await createNotification(userId, NotificationType.LIKE, {
+				username: usersMap.get(likerId)!,
+			});
 		}
 	}
 }
@@ -223,6 +234,14 @@ async function createPostsForUser(
 // -------------------- FRIENDSHIPS --------------------
 
 async function createRandomFriendships(userIds: number[]) {
+	// ✅ Récupérer les usernames pour les notifs
+	const allUsers = await prisma.user.findMany({
+		where: { id: { in: userIds } },
+		select: { id: true, username: true },
+	});
+	const usersMap = new Map<number, string>();
+	allUsers.forEach((u) => usersMap.set(u.id, u.username));
+
 	for (const userId of userIds) {
 		const candidates = userIds.filter((id) => id !== userId);
 
@@ -263,11 +282,9 @@ async function createRandomFriendships(userIds: number[]) {
 			});
 
 			if (status === 'PENDING') {
-				await createNotification(
-					friendId,
-					NotificationType.FRIEND_REQUEST,
-					'New friend request',
-				);
+				await createNotification(friendId, NotificationType.FRIEND_REQUEST, {
+					username: usersMap.get(userId)!,
+				});
 			}
 
 			created++;
