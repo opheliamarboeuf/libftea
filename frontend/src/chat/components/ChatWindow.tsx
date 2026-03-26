@@ -187,7 +187,9 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             : '/default-avatar.png';
 
           const isThisMessageRead = isOwn && msg.id === lastReadMessageId;
-          const showSent = isLastOwn && lastReadMessageId === null;
+					const showSent = isOwn && isLastOwn && (
+						lastReadMessageId === null || msg.id > lastReadMessageId
+					);
           const isTournamentInvite = msg.type === 'tournament_invite';
           const isTournamentVictory = msg.type === 'tournament_victory';
           const isTournamentMessage = isTournamentInvite || isTournamentVictory;
