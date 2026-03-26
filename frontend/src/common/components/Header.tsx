@@ -17,6 +17,7 @@ export const Header = () => {
 	const { user, setUser, refreshUser } = useUser();
 	const API_URL = import.meta.env.VITE_API_URL;
 	const [menuHidden, setMenuHidden] = useState(false);
+	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const { notifications, unreadCount, markAsRead, markAllAsRead, getNotifMessage } = useNotifications(user?.id);
 	const [notifOpen, setNotifOpen] = useState(false);
 	const notifRef = useRef<HTMLDivElement | null>(null);
@@ -73,6 +74,12 @@ export const Header = () => {
 			if (notifRef.current && !notifRef.current.contains(target)) {
 				setNotifOpen(false);
 			}
+			
+			// Close dropdown if clicking outside
+			const avatarMenu = document.querySelector('.avatar-menu');
+			if (avatarMenu && !avatarMenu.contains(target)) {
+				setDropdownOpen(false);
+			}
 		};
 		document.addEventListener("mousedown", outsideClick);
 
@@ -85,6 +92,7 @@ export const Header = () => {
 
 	const handleLogout = () => {
 		setMenuHidden(true);
+		setDropdownOpen(false);
 		localStorage.removeItem('token');
 		friendsSocket.disconnect();
 		notifSocket.disconnect();
@@ -94,7 +102,12 @@ export const Header = () => {
 
 	const handleNavigate = (path: string) => {
 		setMenuHidden(true);
+		setDropdownOpen(false);
 		navigate(path);
+	};
+
+	const toggleDropdown = () => {
+		setDropdownOpen(!dropdownOpen);
 	};
 
 	return (
@@ -130,10 +143,10 @@ export const Header = () => {
 					)}
 				</div>
 				<div 
-					className={`avatar-menu ${menuHidden ? 'menu-hidden' : ''}`}
+					className={`avatar-menu ${menuHidden ? 'menu-hidden' : ''} ${dropdownOpen ? 'dropdown-active' : ''}`}
 					onMouseLeave={() => setMenuHidden(false)}
 				>
-					<div className="small-avatar-container">
+					<div className="small-avatar-container" onClick={toggleDropdown}>
 						<p className="header-username">
 							<UserNameWithRole username={user.username || ''} role={user.role} />
 						</p>

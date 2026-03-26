@@ -49,6 +49,7 @@
     align-items: center;
     gap: 10px;
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 }
 
 .header-username {
@@ -128,14 +129,16 @@
 	transform-origin: top;
 }
 
-.avatar-menu:hover .dropdown-menu {
+.avatar-menu:hover .dropdown-menu,
+.avatar-menu.dropdown-active .dropdown-menu {
 	max-height: 200px;
 	opacity: 1;
 	pointer-events: auto;
 	transform: translateY(0);
 }
 
-.avatar-menu.menu-hidden:hover .dropdown-menu {
+.avatar-menu.menu-hidden:hover .dropdown-menu,
+.avatar-menu.menu-hidden.dropdown-active .dropdown-menu {
 	opacity: 0;
 	pointer-events: none;
 }
@@ -169,7 +172,8 @@
 	flex: 1;
 }
 
-.avatar-menu:hover .label {
+.avatar-menu:hover .label,
+.avatar-menu.dropdown-active .label {
 	opacity: 1;
 }
 
@@ -254,4 +258,173 @@
 
 .notif-item.read {
 	color: #999;
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+	.header {
+		padding: 1px 15px;
+		left: 5px;
+		width: calc(100vw - 10px);
+	}
+	
+	.header-left {
+		margin-left: 10px;
+		gap: 10px;
+		min-width: 0;
+	}
+	
+	.app-name {
+		font-size: 1.5rem;
+		white-space: nowrap;
+	}
+	
+	.search-bar-container {
+		max-width: 180px;
+		margin-right: 15px;
+		flex-shrink: 1;
+	}
+	
+	.header-right {
+		gap: 5px;
+		min-width: 0;
+	}
+	
+	.header-username {
+		font-size: 0.85rem;
+		max-width: 80px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	
+	.small-avatar {
+		width: 35px;
+		height: 35px;
+		margin-right: 15px;
+	}
+	
+	.avatar-menu {
+		padding-left: 15px;
+		padding-bottom: 5px;
+	}
+	
+	.dropdown-menu {
+		width: 160px;
+		top: 46px;
+	}
+	
+	.avatar-menu:hover .dropdown-menu,
+	.avatar-menu.dropdown-active .dropdown-menu {
+		max-height: 200px;
+		opacity: 1;
+		pointer-events: auto;
+		transform: translateY(0);
+	}
+}
+
+@media (max-width: 480px) {
+	.header {
+		padding: 1px 10px;
+		left: 2px;
+		width: calc(100vw - 4px);
+	}
+	
+	.header-left {
+		margin-left: 5px;
+		flex: 0 1 auto;
+		min-width: 0;
+	}
+	
+	.app-name {
+		font-size: 1.2rem;
+	}
+	
+	.search-bar-container {
+		max-width: 140px;
+		margin-right: 10px;
+		flex: 1;
+		min-width: 0;
+	}
+	
+	.header-right {
+		flex-shrink: 0;
+		gap: 3px;
+		min-width: fit-content;
+	}
+	
+	.header-username {
+		font-size: 0.8rem;
+		max-width: 60px;
+		display: none; 
+	}
+	
+	.small-avatar {
+		width: 32px;
+		height: 32px;
+		margin-right: 10px;
+		top: 3px;
+	}
+	
+	.avatar-menu {
+		padding-left: 10px;
+		padding-bottom: 3px;
+	}
+	
+	.dropdown-menu {
+		width: 140px;
+		top: 40px;
+		right: -10px; 
+	}
+	
+	.avatar-menu:hover .dropdown-menu,
+	.avatar-menu.dropdown-active .dropdown-menu {
+		max-height: 200px;
+		opacity: 1;
+		pointer-events: auto;
+		transform: translateY(0);
+	}
+	
+	.notif-dropdown {
+		width: 240px;
+		right: -10px;
+	}
+}
+
+@media (max-width: 360px) {
+	.header {
+		padding: 1px 8px;
+	}
+	
+	.app-name {
+		font-size: 1.1rem;
+	}
+	
+	.search-bar-container {
+		max-width: 120px;
+		margin-right: 8px;
+	}
+	
+	.small-avatar {
+		width: 30px;
+		height: 30px;
+		margin-right: 8px;
+	}
+	
+	.dropdown-menu {
+		width: 130px;
+		right: -15px;
+	}
+	
+	.avatar-menu:hover .dropdown-menu,
+	.avatar-menu.dropdown-active .dropdown-menu {
+		max-height: 200px;
+		opacity: 1;
+		pointer-events: auto;
+		transform: translateY(0);
+	}
+	
+	.notif-dropdown {
+		width: 220px;
+		right: -15px;
+	}
 }
