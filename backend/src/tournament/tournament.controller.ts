@@ -71,9 +71,19 @@ export class TournamentController {
 		return this.tournamentService.joinTournament(Number(battleId), userId, data, imageUrl);
 	}
 	@Get('recent')
-	getRecentTournament() {
-		return this.tournamentService.getRecentTournament();
-	}
+  async getRecentTournament() {
+    try {
+      // On attend le résultat du service
+      const tournament = await this.tournamentService.getRecentTournament();
+      
+      // Si le service renvoie undefined ou rien, on force le null
+      return tournament || null; 
+    } catch (error) {
+      // Si le service pète une erreur (ex: NotFoundException),
+      // on l'étouffe ici et on renvoie gentiment null.
+      return null;
+    }
+  }
 	@Get(':battleId/participants')
 	getParticipants(@Param('battleId') battleId: string) {
 		return this.tournamentService.getParticipants(Number(battleId));

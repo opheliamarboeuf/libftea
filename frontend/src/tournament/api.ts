@@ -59,13 +59,31 @@ export const tournamentApi = {
 	},
 
 	getRecentTournament: async () => {
-		const res = await fetch(`${API_URL}/tournament/recent`, {
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem("token")}`,
-			},
-		});
-		if (!res.ok) return null;
-		return res.json();
+		try {
+			const token = localStorage.getItem("token");
+			if (!token) return null; // Protection : pas de token, pas d'appel
+
+			const res = await fetch(`${API_URL}/tournament/recent`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			// Si c'est une 404, on retourne null proprement sans lever d'alerte
+			if (res.status === 404) return null;
+
+			// Si c'est une autre erreur (500, 403, etc.)
+			if (!res.ok) {
+				console.error(`Error fetching tournament: ${res.status}`);
+				return null;
+			}
+
+			return await res.json();
+		} catch (error) {
+			// Protection contre les crashs réseau (ex: serveur éteint)
+			console.error("Network error while fetching tournament:", error);
+			return null;
+		}
 	},
 
 	getCurrentTournament: async (): Promise<any> => {
