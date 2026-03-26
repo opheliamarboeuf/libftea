@@ -370,3 +370,31 @@ The advanced permissions system (roles, CRUD on users) naturally extended into a
 - Two fully separate role-specific dashboards (Admin and Mod) with sidebar navigation, report queues, user management panels, and log viewers
 - DashboardPage handles tab switching, route memory per role, and unauthorized access redirection
 **Production-grade system**: This is not basic CRUD — it's a real-world ticket system with complex transactional workflows (bulk assignment, cascading bans, tournament cleanup) that goes well beyond simple features.
+
+# lshiina-
+I implemented the friends system as part of the user interaction module, which includes:
+- adding and removing friends
+- accepting and rejecting friend requests
+- blocking and unblocking users
+The difficulty of this feature was to handle the different states of the relationships while keeping UI and real time implementation in sync. This was overcome by implementing clear backend logic thanks to the prisma schema written by chheniqu.
+
+I also implemented real-time features using websockets (socket.io) with NestJS gateways. The features working in real time include:
+- updated likes on posts
+- real time apparition/disparition of comments and replies
+- notifications
+- etc...
+At first it was hard to juggle between the different sockets and rooms, as all real time features do not need to happen across all users, but I was able to fix it by clearly separating public (for everyone to see) and private events (only between two users).
+
+I worked on the notification system, sending relevant notifications to the right users. The latter are notified when:
+- another user likes their post
+- another user send a friendship requests
+- another user comments under their post
+- etc...
+The main difficulty was to make sure that the right user only received the notification once, which I managed to do by only triggering events based on key actions.
+
+I also worked on the localization of the application, implementing french and japanese text on top of the classic english. I used react-i18next as the internationalization framework, directly from the React library. There is a language switcher on all user facing pages of the application.
+It was difficult to track all user facing text and make sure to translate it, especially when the logic is more complex than simple JSX text. The solution was simply to keep an eye out and be rigorous, as well as ask other colleagues if they found anything that was not translated.
+
+I also made sure with my colleagues that the applicaiton ran smoothly across these three browsers: Safari, Chrome, and Firefox. As we constantly used these three browsers during development, no significant browser-specifi limitations were observed, except the display of Markdown content on Chrome, which was quickly fixed.
+
+For all of the features above, I wrote the backend as well as the frontend part (except for browser compatibility, it did not require backend coding).
