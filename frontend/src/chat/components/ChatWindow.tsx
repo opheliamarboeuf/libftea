@@ -145,7 +145,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
       {/* Barre du haut */}
       <div style={{
         height: '57px', display: 'flex', alignItems: 'center', gap: '12px',
-        padding: '0 20px', borderBottom: '1px solid #111827', flexShrink: 0,
+        padding: '0 20px', borderBottom: '1px solid #e5e7eb', flexShrink: 0,
       }}>
         {otherUser && (
           <>
@@ -197,7 +197,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
           const isTournamentMessage = isTournamentInvite || isTournamentVictory;
 
           const bubbleBg = isOwn
-            ? isTournamentVictory ? '#7c3aed' : isTournamentInvite ? '#f59e0b' : '#2563eb'
+            ? isTournamentVictory ? '#7c3aed' : isTournamentInvite ? '#f59e0b' : '#6b7280'
             : '#f3f4f6';
 
           return (
@@ -325,7 +325,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
             padding: '9px 14px', fontSize: 14, lineHeight: 1.5, maxHeight: 120,
             overflowY: 'auto', outline: 'none', fontFamily: 'inherit', color: '#111827', background: '#f9fafb',
           }}
-          onFocus={e => { e.currentTarget.style.borderColor = '#2563eb'; e.currentTarget.style.background = '#fff'; }}
+          onFocus={e => { e.currentTarget.style.borderColor = '#6b7280'; e.currentTarget.style.background = '#fff'; }}
           onBlur={e => { e.currentTarget.style.borderColor = '#e5e7eb'; e.currentTarget.style.background = '#f9fafb'; }}
         />
 
@@ -353,14 +353,15 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
           disabled={!input.trim()}
           style={{
             width: 38, height: 38, borderRadius: '50%', border: 'none',
-            background: input.trim() ? '#2563eb' : '#e5e7eb',
+            background: input.trim() ? '#6b7280' : '#e5e7eb',
             cursor: input.trim() ? 'pointer' : 'default',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0, transition: 'background 0.15s',
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke={input.trim() ? '#fff' : '#9ca3af'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', flexShrink: 0 }}>
+            <path d="M22 2L11 13" stroke={input.trim() ? '#fff' : '#9ca3af'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke={input.trim() ? '#fff' : '#9ca3af'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
       </div>
