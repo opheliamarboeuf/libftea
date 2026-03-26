@@ -62,13 +62,200 @@ Selected for its modular architecture and strong structure inspired by enterpris
 We chose PostgreSQL as out database system for its reliability, support for complex relational data, and strong community support. It was a natural fit for our data model, which involves relationships between users, posts, and interactions. It was chosen for its reliability, performance, and widespread adoption in production environments.
 Database access was managed through Prisma, an ORM that simplified query writing and schema management while keeping things type-safe and helps prevent common vulnerabilities such as SQL injections.
 
+# Other technologies and libraries
+
+WebSockets (if applicable)Used to handle real-time features such as live notifications and interactions.
+
+# Justification of technical choices
+
+The technical stack was chosen to reflect modern industry standards and best practices:
+Use of TypeScript across the entire project ensures consistency and reliability
+React and Tailwind provides a fast, scalable, and maintainable frontend
+NestJS offers a clean and structured backend architecture suitable for complex applications
+PostgreSQL and Prisma ensures secure, efficient, and scalable data management
+Overall, these choices allow the application to be scalable, maintainable, secure, and aligned with real-world development practices.
+
 # Infrastructure
 
 The project was containerized using Docker, making it easy to set up consistent development environments across the team and simplifying future deployment.
 
 ## Database Schema
 
+# Overview
+
+The application is built on a relational database (PostgreSQL) structured around core social network entities such as users, posts, interactions, and tournaments.
+The schema is designed to ensure:
+- data integrity through strong relations and constraints
+- scalability for social features (likes, comments, friendships, messaging)
+- support for advanced modules such as moderation and tournaments
+
+# Core entities and relationships
+
+User:
+- Central entity of the application
+- Stores authentication data, role (USER, ADMIN, MOD), and account status (banned)
+- Relations: posts (one-to-many), comments (one-to-many), likes (one-to-many), friendships (self-relation), messages and conversations, notifications, reports and moderation logs
+
+Post:
+- Represents an outfit shared by a user
+- Contains image, caption, title, timestamps
+- Relations: belongs to one user (author), has many likes and comments, can participate in a tournament (BattleParticipant), can be reported or hidden
+
+Comment:
+- Linked to a post and a user
+- Supports nested comments via a self-relation (replies system)
+
+Like:
+- Connects a user to a post
+- Enforced constraint: one like per user per post (@@unique[userId, postId])
+
+Friendship:
+- Self-relation between users
+- Includes status (PENDING, ACCEPTED, BLOCKED)
+- Enforces uniqueness between two users
+
+Conversation & Message:
+- Messaging system between users
+- A conversation contains multiple messages
+- Supports real-time communication features
+
+Battle:
+- Represents a tournament
+- Key fields: theme, startsAt, endsAt, status (UPCOMING, ACTIVE, FINISHED), winnerId (linked to User)
+
+BattleParticipant:
+- Junction table linking: a user, a post, a tournament
+- Enforces:
+one participation per user per tournament (@@unique[battleId, userId])
+
+Report:
+- Allows users to report posts or other users
+- Includes: report type (SPAM, HARASSMENT, etc.), status (PENDING, ACCEPTED, REJECTED)
+- Linked to: reporter (User), target (User or Post), moderator handling the report
+
+ModerationLog:
+- Stores all moderation actions (ban, delete, role changes, etc.)
+- Ensures traceability with: actor (admin/mod), target (user, post, or tournament)
+
+Notification:
+- Stores user notifications
+- Includes: type (LIKE, COMMENT, BATTLE_WIN, etc.), read status,optional metadata (JSON for flexibility)
+
+PostHiddenForUser / UserHiddenForUser:
+- Allow users to hide posts or other users
+- Implemented through junction tables with uniqueness constraints
+
+Additional entities:
+- Profile: stores user profile data (avatar, bio, cover)
+- Tag / PostTag: tagging system for posts (many-to-many relationship)
+
+Key design choices:
+- Strong use of relations to model a real social network structure
+- Junction tables (BattleParticipant, PostTag, Hidden entities) to handle many-to-many relationships
+- Database constraints (@@unique) to enforce business rules (e.g. one like per post, one participation per tournament)
+- Enums to standardize states (roles, reports, tournament lifecycle, notifications)
+- Soft deletion patterns (deletedAt, bannedDeletion) to preserve data integrity while hiding content
+
 ## Features List
+
+# Landing & Authentication (armarboe, chheniqu)
+
+- Landing page presenting the platform, its concept, and key features
+- User registration with email and password
+- User login system
+- GitHub OAuth authentication
+- Two-Factor Authentication (2FA) via email code
+- Form validation and error handling
+- JWT-based authentication and protected routes
+
+# User Profile (armarboe)
+
+- Personal profile page displaying user information
+- Avatar and cover image upload
+- Bio editing
+- Display of user's posts
+- Access to profile settings
+
+# Posts (armarboe)
+
+- Create a post with image, title, and caption
+- Edit and delete own posts
+- Tag system for categorizing posts
+- Global feed (timeline) displaying posts
+- Ability to hide posts from specific users
+
+# Likes & Comments (lshiina-)
+
+- Like and unlike posts
+- Comment on posts
+- Reply to comments (nested comment system)
+- Delete own comments
+
+# Friends (lshiina-, armaboe)
+
+- Send, accept, and reject friend requests
+- Block other users
+- Friends list management
+- View online status of friends
+
+# Chat (aroualid)
+
+- Private conversations between users
+- Real-time messaging using WebSockets
+- Persistent message history
+- Invitation system to invite users to join tournaments via messaging
+
+# Tournament / Battle (chheniqu)
+
+- Create tournaments with theme, description, rules, max players, and start/end dates (admin only)
+- Plan tournaments in advance
+- Join a tournament by submitting a post
+- Tournament lifecycle management (UPCOMING → ACTIVE → FINISHED)
+- Voting system with like-based ranking
+- Automatic winner selection at the end of the tournament
+- Winner highlight (“Last week’s winner”) displayed in the next tournament
+
+# Notifications (lshiina-)
+
+Real-time notifications for:
+
+  - likes
+  - comments and replies
+  - friend requests and acceptances
+  - new tournaments
+  - tournament results (win/end)
+  - role changes (promotion/demotion)
+- Mark notifications as read
+
+# Internationalisation (i18n) (lshiina-, chheniqu)
+
+- Full UI translation in:
+  - English
+  - French
+  - Japanese
+- Language switcher available in the interface
+
+# Moderation & Admin (armarboe)
+
+- Role-based access control (USER, MOD, ADMIN)
+- Report system for posts and users:
+
+  - spam
+  - harassment
+  - inappropriate content
+  - other
+- Moderation dashboard for admins and moderators
+- Ban and unban users
+- Delete any post
+- Promote and demote users (MOD / ADMIN)
+- Moderation logs ensuring full action traceability
+
+
+# Legal (lshiina-, chheniqu)
+
+ Privacy Policy page (EN / FR / JP)
+ Terms of Service page (EN / FR / JP)
+ Accessible links from login and registration pages
 
 ## Modules
 
