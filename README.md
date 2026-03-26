@@ -322,10 +322,15 @@ Real-time notifications for:
 - Setup of the frontend and backend architecture (React + NestJS)  
 
 # Challenges Faced and Solutions
-- Achieving a visually appealing and consistent design across all pages was complex  
-- Transitioning from standard CSS to Tailwind caused major conflicts  
-- Resolving merge conflicts when unifying branches on main took significant effort  
-- Managing different module versions also created additional conflicts that needed careful resolution
+- Achieving a visually appealing and consistent design across all pages was complex, especially when teammates had different styling approaches  
+- Transitioning from standard CSS to Tailwind caused major conflicts, requiring careful refactoring to avoid breaking existing styles  
+- Resolving merge conflicts when unifying branches on main took significant effort, particularly when multiple members had touched the same files  
+- Managing different module versions also created additional conflicts that needed careful resolution  
+- Designing the Prisma schema upfront to support all planned features required anticipating complex relationships (self-relations, junction tables, soft deletions) before the full scope was finalized  
+- Implementing the tournament lifecycle (scheduling, automatic activation, winner calculation, ban edge cases) required careful transactional logic to prevent inconsistencies under concurrent requests  
+- Setting up the Docker infrastructure from scratch proved more time-consuming than expected, especially when debugging container-specific issues that did not appear in local development  
+- Ensuring the landing page animations and overall visual identity remained smooth and consistent across different screen sizes and browsers required multiple iterations  
+- Balancing the role of Product Owner (defining and validating features) with hands-on development responsibilities led to constant context-switching, making it challenging to maintain both product quality and technical delivery simultaneously
 
 # lshiina-
 
