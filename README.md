@@ -259,7 +259,72 @@ Real-time notifications for:
 
 ## Modules
 
+# Major modules
+
+- The use of frontend and backend frameworks (React + NestJS) provides a solid and scalable foundation aligned with industry standards.
+- Real-time features are essential for a social platform, enabling live chat and instant notifications, which significantly improve user engagement.
+- The user interaction module (profiles, friends, messaging) forms the core of the social experience and is fundamental to the platform.
+- Authentication and user management ensure secure access and personalized user experiences.
+- The advanced permission system allows structured moderation and role-based access, which is crucial for maintaining a safe community.
+
+# Minor modules:
+
+- Prisma ORM ensures secure and maintainable database interactions.
+- The notification system enhances user engagement by keeping users informed of activity.
+- Internationalisation (i18n) makes the platform accessible to a broader audience.
+- OAuth and 2FA strengthen security and improve user experience.
+- Advanced chat features enrich communication between users.
+- Multi-browser support ensures accessibility and consistent experience across platforms.
+
 ## Individual Contributions
+
+### chheniqu
+
+# Fashion Tournament System (Minor of Choice)
+- Designed and implemented the full tournament system  
+- Tournament creation (admin only) with theme, rules, max players, and scheduling  
+- Tournament lifecycle management (UPCOMING → ACTIVE → FINISHED)  
+- Participation system (submit a post to join a tournament)  
+- Like-based voting system with consistency constraints  
+- Automatic winner selection at the end of the tournament  
+- Winner highlight system (“Last week’s winner”)  
+
+# Content Structuring & Feed Logic
+- Ensured tournament posts are excluded from the main feed and friends feed  
+- Created a dedicated tournament posts section on user profiles  
+- Added tournament context to posts (display of tournament theme)  
+
+# Authentication & Security
+
+- Implemented registration and login system  
+- Password hashing and secure storage  
+- Validation to prevent duplicate users in the database  
+- Enforced strong password requirements  
+
+# Database & Backend Setup
+
+- Designed the complete Prisma database schema  
+- Set up Prisma ORM for secure database access  
+- Configured Docker (Dockerfile & docker-compose) for the full project  
+
+# Frontend & UI/UX (Design Authority)
+
+- Defined the overall design system (DA) of the application  
+- Ensured UI consistency across all pages  
+- Reviewed and refined CSS for all team members’ work  
+- Designed and implemented:
+  - landing page (including animated visuals)  
+  - default user profile layout  
+  - language switcher interaction (hover-based UI)  
+
+# Cross-browser Compatibility
+
+- Ensured the application works consistently across multiple browsers  
+- Tested and fixed UI/UX inconsistencies  
+
+# Project Setup
+
+- Participated in the setup of the frontend and backend architecture (React + NestJS)  
 
 ## Instructions
 
@@ -371,6 +436,7 @@ The advanced permissions system (roles, CRUD on users) naturally extended into a
 - DashboardPage handles tab switching, route memory per role, and unauthorized access redirection
 **Production-grade system**: This is not basic CRUD — it's a real-world ticket system with complex transactional workflows (bulk assignment, cascading bans, tournament cleanup) that goes well beyond simple features.
 
+<<<<<<< HEAD
 # lshiina-
 I implemented the friends system as part of the user interaction module, which includes:
 - adding and removing friends
@@ -398,3 +464,56 @@ It was difficult to track all user facing text and make sure to translate it, es
 I also made sure with my colleagues that the applicaiton ran smoothly across these three browsers: Safari, Chrome, and Firefox. As we constantly used these three browsers during development, no significant browser-specifi limitations were observed, except the display of Markdown content on Chrome, which was quickly fixed.
 
 For all of the features above, I wrote the backend as well as the frontend part (except for browser compatibility, it did not require backend coding).
+=======
+## Minor of Choice: Fashion Tournament System
+
+The fashion tournament is a core feature of Libftea, designed to boost user engagement around a creative and social theme: personal style and fashion.  
+This module introduces a recurring event-based system (weekly) that encourages users to actively participate, interact with others, and return regularly to the platform. It also structures content around challenges, giving users a clear goal: winning the tournament.
+
+### Technical Challenges Addressed
+
+#### Plannable Tournament Lifecycle Management
+- Implementation of a state system (UPCOMING → ACTIVE → FINISHED) with controlled transitions  
+- Ability to create tournaments in advance (scheduling)  
+- Automatic activation at a specified date  
+- Automatic closure with end-of-tournament processing  
+- Only administrators can create and schedule tournaments, ensuring global control and preventing abuse  
+
+#### Prevention of Tournament Conflicts
+- Rules enforced to prevent overlapping tournaments  
+- Only one tournament can be active at a time, ensuring a clear user experience  
+
+#### Secure and Consistent Voting System
+- One vote per user per post  
+- Users cannot vote for their own posts  
+- Users can only participate once per tournament  
+- Prevention of duplicates through database constraints  
+- Consistency under concurrent requests  
+
+#### Automatic Winner Calculation
+- At the end of the tournament, a process determines the winning post based on the number of likes  
+- Handles potential ties  
+- Atomic execution to prevent inconsistencies  
+- If the winner of the previous week is banned, the system recalculates and displays the last valid winner  
+
+#### Winner Highlight (Last Week’s Winner)
+- The winner is automatically showcased in the next tournament  
+- Highlighted through a dedicated “Last week’s winner” section  
+
+#### User Invitation System
+- Users can invite others to join the tournament via messaging  
+- Sends targeted invitations to encourage participation  
+- Strengthens social interactions between users  
+
+#### Integration with the Notification System
+- Automatic notifications are sent to the tournament winner  
+- Notifications sent to all participants (results, tournament end)  
+
+### Added Value to the Project
+- **Enhanced Community Engagement:** The tournament creates a recurring event that encourages users to post, vote, and interact  
+- **Gamification of the User Experience:** Introduces a simple but effective competitive system (participate, win, get featured)  
+- **Stronger Social Dynamics:** With the invitation system, users actively bring others into the tournament, creating a network effect  
+- **Content Structuring:** Posts gain additional context and distinction between regular posts and tournament entries  
+- **User Recognition and Visibility:** Winners gain increased visibility through the “Last week’s winner” system, reinforcing social recognition  
+- **Enhanced User History:** Participations and wins can be displayed on user profiles, strengthening identity and progression
+>>>>>>> e4c9b928 (minor of choice)
