@@ -68,7 +68,7 @@ const App = () => {
 	return (
 		<UserContext.Provider value={{ user, setUser, refreshUser: fetchUser }}>
 			<ModalProvider>
-				<BrowserRouter>
+				<BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
 					<Header />
 					<LeftMenu />
 					<Routes>
@@ -121,29 +121,40 @@ const App = () => {
 								)
 							}
 						/>
-						<Route 
+						<Route
 							path="/chat"
-							element={loading ? null : user ? <ChatPage /> : <Navigate to="/" replace />} />
+							element={
+								loading ? null : user ? <ChatPage /> : <Navigate to="/" replace />
+							}
+						/>
 						<Route
 							path="/tournament"
-							element={loading ? null : user ? <TournamentFeedPage/> : <Navigate to = "/" replace />} />
+							element={
+								loading ? null : user ? (
+									<TournamentFeedPage />
+								) : (
+									<Navigate to="/" replace />
+								)
+							}
+						/>
 						<Route
-						path="/dashboard"
-						element={loading ? null : user ? <DashboardPage/> : <Navigate to = "/" replace />} />
-						<Route
-						path="/privacypolicy"
-						element={<PrivacyPage/>} />
-						<Route
-						path="/termsofservice"
-						element={<TermsPage/>} />
-						<Route
-						path="/github/callback"
-						element={<GithubCallbackPage />} />
-        			</Routes>
-        		</BrowserRouter>
-    		</ModalProvider>
-    	</UserContext.Provider>
-  );
+							path="/dashboard"
+							element={
+								loading ? null : user ? (
+									<DashboardPage />
+								) : (
+									<Navigate to="/" replace />
+								)
+							}
+						/>
+						<Route path="/privacypolicy" element={<PrivacyPage />} />
+						<Route path="/termsofservice" element={<TermsPage />} />
+						<Route path="/github/callback" element={<GithubCallbackPage />} />
+					</Routes>
+				</BrowserRouter>
+			</ModalProvider>
+		</UserContext.Provider>
+	);
 };
 
 export default App;
