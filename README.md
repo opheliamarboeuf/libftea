@@ -47,15 +47,20 @@ The combination of React and NestJS with TypeScript on both ends was chosen to e
 
 # Frontend
 
-The frontend was built with React, using TypeScript for static typing and improved code reliability. Stlying was handled with Tailwind CSS, which allowed us to build a consistent and responsive UI quickly without writing custom CSS from scratch.
+React (TypeScript):
+Used to build a dynamic and component-based user interface. React allows efficient state management and reusable UI components, improving maintainability and scalability.
+
+Tailwind CSS:
+Chosen over traditional CSS to enable faster and more consistent styling. Its utility-first approach improves development speed, enforces design consistency, and reduces the need for custom CSS.
 
 # Backend
 
-The backend was developed with NestJS, a structured Node.js framework that encourages a modular and scalable architecture. TypeScript was used across the backend as well, ensuring type safety throughout the entire codebase. Anthentication was implemented using JWT (JSON Web Tokens), providing a stateless and secure way to manage user sessions.
+Selected for its modular architecture and strong structure inspired by enterprise frameworks, the backend was developed with NestJS.It provides scalability, maintainability, and clear separation of concerns. NestJS is widely used in professional environments, making it a relevant choice for real-world development. TypeScript was used across the backend as well, ensuring type safety throughout the entire codebase. Anthentication was implemented using JWT (JSON Web Tokens), providing a stateless and secure way to manage user sessions.
 
 # Database
 
-We chose PostgreSQL as out database system for its reliability, support for complex relational data, and strong community support. It was a natural fit for our data model, which involves relationships between users, posts, and interactions. Database access was managed through Prisma, an ORM that simplified query writing and schema management while keeping things type-safe.
+We chose PostgreSQL as out database system for its reliability, support for complex relational data, and strong community support. It was a natural fit for our data model, which involves relationships between users, posts, and interactions. It was chosen for its reliability, performance, and widespread adoption in production environments.
+Database access was managed through Prisma, an ORM that simplified query writing and schema management while keeping things type-safe and helps prevent common vulnerabilities such as SQL injections.
 
 # Infrastructure
 
