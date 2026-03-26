@@ -1,6 +1,5 @@
 _This project has been created as part of the 42 curriculum by armarboe, chheniqu, aroualid, and lshiina-._
 
-
 ## Description
 
 Our project, Libftea, is a social platform designed for fashion enthusiasts who want to share their style and connect with a like-minded community. Users can post outfit photos, interact with friends and other fashion lovers, and engage with content through likes and comments, creating an interactive and inspiring space for self-expression through clothing.
