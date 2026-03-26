@@ -14,35 +14,37 @@ The entire application is designed to provide a smooth, interactive, and communi
 
 ## Team Information
 
-# chheniqu
+#### chheniqu
 
 Product Owner (PO) Defined the product vision and concept of Libftea as a fashion social network. Designed the visual identity and UI/UX direction. Created the Prisma database schema. Responsible for feature prioritization and validation of completed work.
 
-# armarboe
+#### armarboe
 
 Technical Lead / Architect Defined the technical architecture and chose the technology stack (React/TypeScript, NestJS, Prisma, PostgreSQL). Set up the project structure, organized the Trello board, and created reusable components shared across the application. Ensured code quality and reviewed critical changes.
 
-# aroualid
+#### aroualid
 
-# lshiina-
+Developer Responsible for implementing key features and modules within the application, adapting quickly to evolving technical requirements. Wrote clean, efficient code for assigned features across the stack. Actively participated in peer code reviews, tested implementations to ensure application reliability, and maintained clear documentation of their work for the team.
+
+#### lshiina-
 
 Project Manager / Scrum Master Facilitated team coordination and planning sessions. Tracked progress and deadlines. Ensured communication within the team and managed blockers.
 
 ## Project Management
 
-# Work organization
+#### Work organization
 
 The team followed an iterative and collaborative workflow throughout the project.
 Weekly meetings were held to review overall progress, discuss blockers, and adjust priorities. During these meetings, tasks were redistributed based on each member’s progress and the current needs of the project.
 At the beginning of the project, each team member was assigned a major module to take ownership of, ensuring clear responsibility and deeper technical involvement. However, the workflow remained flexible, allowing collaboration and mutual support when needed.
 Additionally, during the early stages of development, the team worked in the same cluster environment, which facilitated real-time communication, quick problem-solving, and efficient coordination.
 
-# Project management tools
+#### Project management tools
 
 GitHub: used for version control, pull requests, and issue tracking
 Trello: used for task organization, backlog management, and progress tracking
 
-# Communication
+#### Communication
 
 Discord: main communication channel for daily discussions, quick questions, and coordination
 
@@ -50,7 +52,7 @@ Discord: main communication channel for daily discussions, quick questions, and 
 
 The combination of React and NestJS with TypeScript on both ends was chosen to ensure consistently and reduce context-switching for the team. PostgreSQL paired with Prisma gave us a robust and developer-friendly data layer, while Docker ensured that the project ran identically on every machine regardless of local configuration.
 
-# Frontend
+#### Frontend
 
 React (TypeScript):
 Used to build a dynamic and component-based user interface. React allows efficient state management and reusable UI components, improving maintainability and scalability.
@@ -58,20 +60,20 @@ Used to build a dynamic and component-based user interface. React allows efficie
 Tailwind CSS:
 Chosen over traditional CSS to enable faster and more consistent styling. Its utility-first approach improves development speed, enforces design consistency, and reduces the need for custom CSS.
 
-# Backend
+#### Backend
 
 Selected for its modular architecture and strong structure inspired by enterprise frameworks, the backend was developed with NestJS.It provides scalability, maintainability, and clear separation of concerns. NestJS is widely used in professional environments, making it a relevant choice for real-world development. TypeScript was used across the backend as well, ensuring type safety throughout the entire codebase. Anthentication was implemented using JWT (JSON Web Tokens), providing a stateless and secure way to manage user sessions.
 
-# Database
+#### Database
 
 We chose PostgreSQL as out database system for its reliability, support for complex relational data, and strong community support. It was a natural fit for our data model, which involves relationships between users, posts, and interactions. It was chosen for its reliability, performance, and widespread adoption in production environments.
 Database access was managed through Prisma, an ORM that simplified query writing and schema management while keeping things type-safe and helps prevent common vulnerabilities such as SQL injections.
 
-# Other technologies and libraries
+#### Other technologies and libraries
 
 WebSockets (if applicable)Used to handle real-time features such as live notifications and interactions.
 
-# Justification of technical choices
+#### Justification of technical choices
 
 The technical stack was chosen to reflect modern industry standards and best practices:
 Use of TypeScript across the entire project ensures consistency and reliability
@@ -80,13 +82,13 @@ NestJS offers a clean and structured backend architecture suitable for complex a
 PostgreSQL and Prisma ensures secure, efficient, and scalable data management
 Overall, these choices allow the application to be scalable, maintainable, secure, and aligned with real-world development practices.
 
-# Infrastructure
+#### Infrastructure
 
 The project was containerized using Docker, making it easy to set up consistent development environments across the team and simplifying future deployment.
 
 ## Database Schema
 
-# Overview
+#### Overview
 
 The application is built on a relational database (PostgreSQL) structured around core social network entities such as users, posts, interactions, and tournaments.
 The schema is designed to ensure:
@@ -95,80 +97,80 @@ The schema is designed to ensure:
 - scalability for social features (likes, comments, friendships, messaging)
 - support for advanced modules such as moderation and tournaments
 
-# Core entities and relationships
+#### Core entities and relationships
 
-User:
+#### User:
 
 - Central entity of the application
 - Stores authentication data, role (USER, ADMIN, MOD), and account status (banned)
 - Relations: posts (one-to-many), comments (one-to-many), likes (one-to-many), friendships (self-relation), messages and conversations, notifications, reports and moderation logs
 
-Post:
+#### Post:
 
 - Represents an outfit shared by a user
 - Contains image, caption, title, timestamps
 - Relations: belongs to one user (author), has many likes and comments, can participate in a tournament (BattleParticipant), can be reported or hidden
 
-Comment:
+#### Comment:
 
 - Linked to a post and a user
 - Supports nested comments via a self-relation (replies system)
 
-Like:
+#### Like:
 
 - Connects a user to a post
 - Enforced constraint: one like per user per post (@@unique[userId, postId])
 
-Friendship:
+#### Friendship:
 
 - Self-relation between users
 - Includes status (PENDING, ACCEPTED, BLOCKED)
 - Enforces uniqueness between two users
 
-Conversation & Message:
+#### Conversation & Message:
 
 - Messaging system between users
 - A conversation contains multiple messages
 - Supports real-time communication features
 
-Battle:
+#### Battle:
 
 - Represents a tournament
 - Key fields: theme, startsAt, endsAt, status (UPCOMING, ACTIVE, FINISHED), winnerId (linked to User)
 
-BattleParticipant:
+#### BattleParticipant:
 
 - Junction table linking: a user, a post, a tournament
 - Enforces:
   one participation per user per tournament (@@unique[battleId, userId])
 
-Report:
+#### Report:
 
 - Allows users to report posts or other users
 - Includes: report type (SPAM, HARASSMENT, etc.), status (PENDING, ACCEPTED, REJECTED)
 - Linked to: reporter (User), target (User or Post), moderator handling the report
 
-ModerationLog:
+#### ModerationLog:
 
 - Stores all moderation actions (ban, delete, role changes, etc.)
 - Ensures traceability with: actor (admin/mod), target (user, post, or tournament)
 
-Notification:
+#### Notification:
 
 - Stores user notifications
 - Includes: type (LIKE, COMMENT, BATTLE_WIN, etc.), read status,optional metadata (JSON for flexibility)
 
-PostHiddenForUser / UserHiddenForUser:
+#### PostHiddenForUser / UserHiddenForUser:
 
 - Allow users to hide posts or other users
 - Implemented through junction tables with uniqueness constraints
 
-Additional entities:
+#### Additional entities:
 
 - Profile: stores user profile data (avatar, bio, cover)
 - Tag / PostTag: tagging system for posts (many-to-many relationship)
 
-Key design choices:
+#### Key design choices:
 
 - Strong use of relations to model a real social network structure
 - Junction tables (BattleParticipant, PostTag, Hidden entities) to handle many-to-many relationships
@@ -178,7 +180,7 @@ Key design choices:
 
 ## Features List
 
-# Landing & Authentication (armarboe, chheniqu)
+#### Landing & Authentication (armarboe, chheniqu)
 
 - Landing page presenting the platform, its concept, and key features
 - User registration with email and password
@@ -188,7 +190,7 @@ Key design choices:
 - Form validation and error handling
 - JWT-based authentication and protected routes
 
-# User Profile (armarboe)
+#### User Profile (armarboe)
 
 - Personal profile page displaying user information
 - Avatar and cover image upload
@@ -196,7 +198,7 @@ Key design choices:
 - Display of user's posts
 - Access to profile settings
 
-# Posts (armarboe)
+#### Posts (armarboe)
 
 - Create a post with image, title, and caption
 - Edit and delete own posts
@@ -204,28 +206,28 @@ Key design choices:
 - Global feed (timeline) displaying posts
 - Ability to hide posts from specific users
 
-# Likes & Comments (lshiina-)
+#### Likes & Comments (lshiina-)
 
 - Like and unlike posts
 - Comment on posts
 - Reply to comments (nested comment system)
 - Delete own comments
 
-# Friends (lshiina-, armaboe)
+#### Friends (lshiina-, armaboe)
 
 - Send, accept, and reject friend requests
 - Block other users
 - Friends list management
 - View online status of friends
 
-# Chat (aroualid)
+#### Chat (aroualid)
 
 - Private conversations between users
 - Real-time messaging using WebSockets
 - Persistent message history
 - Invitation system to invite users to join tournaments via messaging
 
-# Tournament / Battle (chheniqu)
+#### Tournament / Battle (chheniqu)
 
 - Create tournaments with theme, description, rules, max players, and start/end dates (admin only)
 - Plan tournaments in advance
@@ -235,7 +237,7 @@ Key design choices:
 - Automatic winner selection at the end of the tournament
 - Winner highlight (“Last week’s winner”) displayed in the next tournament
 
-# Notifications (lshiina-)
+#### Notifications (lshiina-)
 
 Real-time notifications for:
 
@@ -247,7 +249,7 @@ Real-time notifications for:
 - role changes (promotion/demotion)
 - Mark notifications as read
 
-# Internationalisation (i18n) (lshiina-, chheniqu)
+#### Internationalisation (i18n) (lshiina-, chheniqu)
 
 - Full UI translation in:
   - English
@@ -255,7 +257,7 @@ Real-time notifications for:
   - Japanese
 - Language switcher available in the interface
 
-# Moderation & Admin (armarboe)
+#### Moderation & Admin (armarboe)
 
 - Role-based access control (USER, MOD, ADMIN)
 - Report system for posts and users:
@@ -270,7 +272,7 @@ Real-time notifications for:
 - Promote and demote users (MOD / ADMIN)
 - Moderation logs ensuring full action traceability
 
-# Legal (lshiina-, chheniqu)
+#### Legal (lshiina-, chheniqu)
 
 Privacy Policy page (EN / FR / JP)
 Terms of Service page (EN / FR / JP)
@@ -278,7 +280,7 @@ Accessible links from login and registration pages
 
 ## Modules
 
-# Major modules
+#### Major modules
 
 - The use of frontend and backend frameworks (React + NestJS) provides a solid and scalable foundation aligned with industry standards.
 - Real-time features are essential for a social platform, enabling live chat and instant notifications, which significantly improve user engagement.
@@ -286,7 +288,7 @@ Accessible links from login and registration pages
 - Authentication and user management ensure secure access and personalized user experiences.
 - The advanced permission system allows structured moderation and role-based access, which is crucial for maintaining a safe community.
 
-# Minor modules:
+#### Minor modules:
 
 - Prisma ORM ensures secure and maintainable database interactions.
 - The notification system enhances user engagement by keeping users informed of activity.
@@ -299,7 +301,7 @@ Accessible links from login and registration pages
 
 ### chheniqu
 
-# Fashion Tournament System (Minor of Choice)
+#### Fashion Tournament System (Minor of Choice)
 
 - Designed and implemented the full tournament system
 - Tournament creation (admin only) with theme, rules, max players, and scheduling
@@ -309,26 +311,26 @@ Accessible links from login and registration pages
 - Automatic winner selection at the end of the tournament
 - Winner highlight system (“Last week’s winner”)
 
-# Content Structuring & Feed Logic
+#### Content Structuring & Feed Logic
 
 - Ensured tournament posts are excluded from the main feed and friends feed
 - Created a dedicated tournament posts section on user profiles
 - Added tournament context to posts (display of tournament theme)
 
-# Authentication & Security
+#### Authentication & Security
 
 - Implemented registration and login system
 - Password hashing and secure storage
 - Validation to prevent duplicate users in the database
 - Enforced strong password requirements
 
-# Database & Backend Setup
+#### Database & Backend Setup
 
 - Designed the complete Prisma database schema
 - Set up Prisma ORM for secure database access
 - Created all Dockerfiles and docker-compose from scratch for the full project
 
-# Frontend & UI/UX (Direction Artistique)
+#### Frontend & UI/UX (Direction Artistique)
 
 - Defined the overall Direction Artistique (DA) of the application
 - Ensured UI consistency across all pages
@@ -338,17 +340,17 @@ Accessible links from login and registration pages
   - default user profile layout
   - language switcher interaction (hover-based UI)
 
-# Cross-browser Compatibility
+#### Cross-browser Compatibility
 
 - Ensured the application works consistently across multiple browsers
 - Tested and fixed UI/UX inconsistencies
 - Multi-browser support required resolving layout issues and differences in rendering
 
-# Project Setup
+#### Project Setup
 
 - Setup of the frontend and backend architecture (React + NestJS)
 
-# Challenges Faced and Solutions
+#### Challenges Faced and Solutions
 - Achieving a visually appealing and consistent design across all pages was complex, especially when teammates had different styling approaches  
 - Transitioning from standard CSS to Tailwind caused major conflicts, requiring careful refactoring to avoid breaking existing styles  
 - Resolving merge conflicts when unifying branches on main took significant effort, particularly when multiple members had touched the same files  
@@ -359,7 +361,7 @@ Accessible links from login and registration pages
 - Ensuring the landing page animations and overall visual identity remained smooth and consistent across different screen sizes and browsers required multiple iterations  
 - Balancing the role of Product Owner (defining and validating features) with hands-on development responsibilities led to constant context-switching, making it challenging to maintain both product quality and technical delivery simultaneously
 
-# lshiina-
+### lshiina-
 
 I implemented the friends system as part of the user interaction module, which includes:
 
@@ -391,11 +393,11 @@ I also made sure with my colleagues that the applicaiton ran smoothly across the
 
 For all of the features above, I wrote the backend as well as the frontend part (except for browser compatibility, it did not require backend coding).
 
-## armarboe
+### armarboe
 
 I worked on both the frontend and backend for all the features described below.
 
-# User Profile
+#### User Profile
 
 I implemented the complete user profile system, which includes:
 - personal profile page displaying user information (avatar, cover image, bio, posts)
@@ -405,7 +407,7 @@ I implemented the complete user profile system, which includes:
 - ban protection preventing banned users from editing their profile
   The main challenge was handling image processing robustly while keeping the UI responsive. I solved this with server-side resizing and proper error handling to ensure a smooth experience regardless of the file submitted.
 
-# Posts & Feed
+#### Posts & Feed
 
 I built the full post system (creation, editing, deletion) and feed logic:
 - post creation with title, caption, and image upload (resized server-side)
@@ -415,7 +417,7 @@ I built the full post system (creation, editing, deletion) and feed logic:
 - soft deletion with moderation tracking (bannedDeletion flag)
   The feed filtering logic was complex due to many edge cases (blocks, reports, hidden posts, tournament-specific posts). I solved this by building layered Prisma queries that combine these filters cleanly.
 
-# Content Moderation & Report Ticket System (Major Module)
+#### Content Moderation & Report Ticket System (Major Module)
 
 I designed and implemented the entire moderation pipeline, which includes:
 - report submission with 4 categories (SPAM, HARASSMENT, INAPPROPRIATE_CONTENT, OTHER)
@@ -427,7 +429,7 @@ I designed and implemented the entire moderation pipeline, which includes:
 - role management (promote/demote with constraints)
   The biggest challenge was orchestrating cascading ban effects across multiple modules while ensuring atomicity. I wrapped all operations in a single Prisma transaction and integrated with the Mail, Notifications, and Tournament services.
 
-# Mail Service
+#### Mail Service
 
 I set up the email service using Nodemailer with Handlebars templates:
 - 2FA verification codes
@@ -436,7 +438,7 @@ I set up the email service using Nodemailer with Handlebars templates:
 - deduplication logic to avoid sending multiple emails to the same reporter
   The challenge was making the system reusable across modules (auth, moderation), which I solved by centralizing it into a dedicated MailService with typed payloads.
 
-# Authentication & Security
+#### Authentication & Security
 
 I implemented the following authentication features:
 - Two-Factor Authentication (2FA) via email with 6-digit codes and 10-minute expiration
@@ -445,7 +447,7 @@ I implemented the following authentication features:
 - ban enforcement at login and 2FA verification
   The difficulty with 2FA was managing the two-step login flow while preventing timing attacks. I handled this by storing hashed codes server-side with strict expiration and providing clear frontend feedback at each step.
 
-# Test Database & Seed Script
+#### Test Database & Seed Script
 
 I created a comprehensive seed script (~400+ lines) to populate the database with realistic test data:
 - pre-created users with different roles (USER, MOD, ADMIN)
@@ -455,7 +457,7 @@ I created a comprehensive seed script (~400+ lines) to populate the database wit
 - image preprocessing with Sharp and idempotent execution
   The challenge was creating interconnected data that showcases every feature without conflicts, which I ensured through careful ordering and randomized dates to simulate natural activity.
 
-# Reusable Frontend Components & Architecture
+#### Reusable Frontend Components & Architecture
 
 I built shared components and patterns used across the entire application:
 - ConfirmDialog: reusable confirmation modal used before any destructive action
@@ -465,13 +467,28 @@ I built shared components and patterns used across the entire application:
 - layout components: Header, LeftMenu, SearchBar
   I structured the overall frontend design by defining the placement and ergonomics of UI elements to ensure a coherent and professional experience. The challenge was keeping abstractions generic enough for team-wide adoption while remaining simple to use.
 
-# Challenges Faced and Solutions
+#### Challenges Faced and Solutions
 
 - Orchestrating cascading ban effects across multiple modules while maintaining atomicity was the most complex challenge, solved with Prisma transactions and cross-module service integration
 - Creating a realistic seed database covering all features without conflicts required careful ordering and idempotent logic
 - Designing two separate admin/mod dashboards with distinct permissions and views required careful route management and component architecture
 - Designing reusable components (ConfirmDialog, modals, context providers) generic enough for the whole team while keeping interfaces minimal
 
+### aroualid
+
+I was responsible for implementing the **Advanced Chat Features**, enhancing the basic "User Interaction" module. Joining the project in the final phase required me to work at an accelerated pace to meet all requirements.
+
+* **Technical Implementation:** To ensure a robust architecture, I integrated a real-time system based on this [Medium Tutorial](https://medium.com/@nageshadhavbncoe/building-a-real-time-chat-application-with-nestjs-prisma-postgresql-and-socket-io-bc4a7ae51aad).
+* **Beyond the Tutorial:** I didn't just copy-paste; I refactored the code to understand the project’s specific architecture and ensure seamless integration with our stack (**NestJS**, **Prisma**, **PostgreSQL**, and **Socket.io**).
+* **Feature Completeness:** I successfully implemented:
+    * **User Blocking:** Ability to block messages from specific users.
+    * **Direct Game Invites:** Sending match invitations directly from the chat interface.
+    * **Notifications:** Real-time chat alerts for games and tournaments.
+    * **UI Integration:** Accessing user profiles from chat, typing indicators, and read receipts.
+    * **Persistence:** Full chat history persistence in the database.
+
+**Challenges Overcome:**
+The most difficult part was synchronizing these features with my teammates' modules (Game and User). Through intense collaboration, I managed to incorporate all requirements, ensuring the chat depends correctly on the rest of the project's logic.
 ## Instructions
 
 # Prerequisites
@@ -513,7 +530,7 @@ This interface captures all emails sent during development and is useful for tes
 
 ## Resources
 
-# Documentation
+### Documentation
 
 The following official and classic documentation was consulted throughout the project:
 
@@ -525,7 +542,7 @@ The following official and classic documentation was consulted throughout the pr
 - https://docs.docker.com/
 - https://jwt.io/introduction
 
-# AI Usage
+### AI Usage
 
 Several AI tools were used during the development of the project, strictly as assistance tools:
 
@@ -534,7 +551,7 @@ Several AI tools were used during the development of the project, strictly as as
 
 All code was reviewed, understood and validated by the team before integration. AI was never used to generate entire features autonomously.
 
-# Support for additional browsers (1pt)
+### Support for additional browsers (1pt)
 
 - **Implementation**: Cross-browser compatibility, ensured through consistent testing, using different browsers as we developped the application/
 
