@@ -102,7 +102,7 @@ export function ModerationLogs() {
 					logs.map((log) => (
 						<div key={log.id} className="log-row">
 							<span>{renderClickableUsername(log.actor.username, log.actor.id)}</span>
-							<span className="log-action">{log.action}</span>
+							<span className="log-action">{t(`report.${log.action}`)}</span>
 							<span>
 								{renderClickableUsername(getTarget(log), getTargetUserId(log))}
 							</span>
