@@ -82,7 +82,53 @@ The project was containerized using Docker, making it easy to set up consistent 
 
 ## Instructions
 
+# Prerequisites
+
+Make sure the following tools are installed on your machine before getting started:
+- docker and docker Compose
+- make
+- npm
+
+1. Get the repository
+
+You can git clone the repository from the link provided in the evaluation sheet.
+
+2. Set up environment
+
+You can set up the necessary environment variables by copying the contents of the .env.example file located at the root of the repository into a .env file that you can create in the backend repository
+
+3. Start the project
+
+Simply the command "make start" in a terminal you opened from the root of the repository
+
+4. Acces all the available features
+
+Once the application is running, you can either create you own user account directly, or use on of our pre-created accountes available in the database:
+- Regular users: ari, cha, leo, ophe
+- Moderator: mod
+- Administrator: admin
+All pre-created acounts share the same password: Password0+
+
 ## Resources
+
+# Documentation
+
+The following official and classic documentation was consulted throughout the project: 
+- https://react.dev/learn
+- https://docs.nestjs.com/
+- https://www.prisma.io/docs
+- https://www.postgresql.org/docs/
+- https://tailwindcss.com/docs
+- https://docs.docker.com/
+- https://jwt.io/introduction
+
+# AI Usage
+
+Several AI tools were used during the development of the project, strictly as assistance tools:
+- Gihub Copilot was used to help with code completion and suggest implementations during development
+- ChatGPT and Claude were used to better understand certain concepts, debug issues, and help identify cause of errors encountered throughout development
+
+All code was reviewed, understood and validated by the team before integration. AI was never used to generate entire features autonomously.
 
 # Support for additional browsers (1pt)
 
