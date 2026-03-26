@@ -249,7 +249,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
                               whiteSpace: 'nowrap',
                             }}
                           >
-                            {isTournamentVictory ? '👑 See the winner' : '🏆 Join Tournament'}
+                            {isTournamentVictory ? `👑 ${t('chat.seewin')}` : `🏆 ${t('chat.jointournament')}`}
                           </button>
                         </div>
                       )}

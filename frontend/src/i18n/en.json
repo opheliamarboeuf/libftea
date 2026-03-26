@@ -419,7 +419,11 @@
 		"sent": "Sent",
 		"write": "Write a message…",
 		"select": "Select a conversation",
-		"you": "You : "
+		"you": "You : ",
+		"win": "I won the tournament! Come check it out!",
+		"tournament": "Join me in the tournament!",
+		"seewin": "See the winner",
+		"jointournament": "Join Tournament"
 	},
 
 	"report": {

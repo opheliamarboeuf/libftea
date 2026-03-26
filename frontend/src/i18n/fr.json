@@ -417,7 +417,11 @@
 		"sent": "Envoyé",
 		"write": "Écrire un message…",
 		"select": "Sélectionnez une conversation",
-		"you": "Vous : "
+		"you": "Vous : ",
+		"win": "J'ai gagné le tournoi ! Viens voir ça !",
+		"tournament": "Rejoins-moi dans le tournoi !",
+		"seewin": "Voir le gagnant",
+		"jointournament": "Rejoindre le tournoi"
 	},
 
 	"report": {
