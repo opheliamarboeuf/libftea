@@ -31,8 +31,7 @@ const ProfilePage = () => {
 	};
 
 	useEffect(() => {
-		loadPosts();
-		loadTournamentPosts();
+		void Promise.all([loadPosts(), loadTournamentPosts()]);
 	}, [user]);
 
 	return (
