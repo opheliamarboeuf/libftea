@@ -345,7 +345,7 @@ const UserProfilePage = () => {
 					</div>
 
 					{/* Posts section */}
-					<div className="relative z-[1] p-4 bg-gray-300/70">
+				<div className="relative z-[1] p-4">
 						{blockedPosts ? (
 							<div className="flex justify-center mt-12 text-lg">
 								{t('userprofile.userblocked')}

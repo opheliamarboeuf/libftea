@@ -48,7 +48,7 @@ export class ImageResizeService {
 
 	// Resize user's post to 800x800 (standard post size, 1:1 ratio)
 	async resizePost(filePath: string): Promise<string> {
-		const ext = filePath.split('.').pop();
+		const ext = filePath.split('.').pop()?.toLowerCase();
 		const outputPath = filePath.replace(/(\.\w+)$/, `-resized.${ext}`);
 
 		let transformer = sharp(filePath).resize(500, 500, {

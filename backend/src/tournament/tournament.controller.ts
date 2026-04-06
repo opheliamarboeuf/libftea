@@ -21,19 +21,18 @@ import { Roles } from '../auth/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Role } from '@prisma/client';
+import { ImageResizeService } from '../common/service/image-resize.service';
 
 @Controller('tournament')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class TournamentController {
-	// injection de dependances, indique a nestJS que l'on va utiliser TournamentService
-	// on le stocke dans une variable privee tournamentService de type TournamentService
-	// readonly pour ne pas la modifier, provate pour que la variable soit accessible seulement dans cette classe
-	constructor(private readonly tournamentService: TournamentService) {}
+	constructor(
+		private readonly tournamentService: TournamentService,
+		private readonly imageResizeService: ImageResizeService,
+	) {}
 
 	@Roles('ADMIN')
 	@Post()
-	// @Body() on prend le corps de la requete HTTP
-	// data = nom de la variable, any = type TS
 	createTournament(@Body() data: CreateTournamentDto, @Req() req: any) {
 		const userId = req.user.id;
 		const userRole = req.user.role;
@@ -55,35 +54,31 @@ export class TournamentController {
 			}),
 		}),
 	)
-	// @Req car c'est JwtAuthGuard stock notre utilisateur dans req.user
-	// sources de donnees dont le service a besoin
-	joinTournament(
+	async joinTournament(
 		@Param('battleId') battleId: string,
 		@UploadedFile() file: Express.Multer.File,
 		@Body() data: JoinTournamentDto,
 		@Req() req: any,
 	) {
 		if (!file) throw new BadRequestException('Image is required');
-		// user.id > informations récolté par JWT
-		const imageUrl = `/uploads/tournament/${file.filename}`;
+		// Resize the picture
+		const resizedPath = await this.imageResizeService.resizePost(file.path);
+		// Extract file name
+		const filename = resizedPath.split('/').pop() || resizedPath.split('\\').pop(); // Handle Windows/Linux paths
+		// Set the image URL
+		const imageUrl = `/uploads/tournament/${filename}`;
 		const userId = req.user.id;
-		// Number(battleId) > conversion de battleId de string à int
 		return this.tournamentService.joinTournament(Number(battleId), userId, data, imageUrl);
 	}
 	@Get('recent')
-  async getRecentTournament() {
-    try {
-      // On attend le résultat du service
-      const tournament = await this.tournamentService.getRecentTournament();
-      
-      // Si le service renvoie undefined ou rien, on force le null
-      return tournament || null; 
-    } catch (error) {
-      // Si le service pète une erreur (ex: NotFoundException),
-      // on l'étouffe ici et on renvoie gentiment null.
-      return null;
-    }
-  }
+	async getRecentTournament() {
+		try {
+			const tournament = await this.tournamentService.getRecentTournament();
+			return tournament || null;
+		} catch (error) {
+			return null;
+		}
+	}
 	@Get(':battleId/participants')
 	getParticipants(@Param('battleId') battleId: string) {
 		return this.tournamentService.getParticipants(Number(battleId));
