@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext";
-import { FaMessage} from "react-icons/fa6";
 import { MdOutlineHome, MdOutlineAccountCircle, MdOutlineLanguage, MdOutlinePeople, MdOutlineWorkspacePremium, MdOutlineDashboard, MdOutlineChat} from "react-icons/md";
 import { useState } from "react";
 import "./LeftMenu.css"
@@ -11,7 +10,7 @@ import i18n from "../../i18n";
 export const LeftMenu = () => {
 	
 	const navigate = useNavigate();
-	const { user, setUser } = useUser();
+	const { user } = useUser();
 	const { t } = useTranslation();
 	const [isHovered, setIsHovered] = useState(false);
 	const [langOpen, setLangOpen] = useState(false);

@@ -1,12 +1,12 @@
-import "./PostReportList.css"
+import './PostReportList.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PostReportType, ReportCategory } from '../../../types';
+import { PostReportType } from '../../../types';
 import { moderationApi } from '../../../api';
 import { useUser } from '../../../../context/UserContext';
 import { ConfirmDialog } from '../../../../common/components/ConfirmDialog';
 import { HandleReportModal } from '../handleReportModal';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 interface PostReportListProps {
 	reports: PostReportType[];
@@ -51,7 +51,11 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 									{report.reportedPost.author.username},
 								</span>
 								<span className="post-report-date">
-									{t('post.created', { date: new Date(report.reportedPost.createdAt).toLocaleString() })}
+									{t('post.created', {
+										date: new Date(
+											report.reportedPost.createdAt,
+										).toLocaleString(),
+									})}
 								</span>
 							</div>
 						</div>
@@ -143,7 +147,9 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 										<strong>{t('postreport.status')}</strong>
 										<br />
 										<span className={report.status.toLowerCase()}>
-											{report.status === 'ACCEPTED' ? t('postreport.accepted') : t('postreport.rejected')}
+											{report.status === 'ACCEPTED'
+												? t('postreport.accepted')
+												: t('postreport.rejected')}
 										</span>
 									</div>
 									<div className="reporter-info">

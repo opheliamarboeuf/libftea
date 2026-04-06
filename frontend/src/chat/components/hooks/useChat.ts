@@ -3,8 +3,6 @@ import { chatSocket } from '../../../socket/socket';
 import { tournamentApi } from '../../../tournament/api';
 import i18n from '../../../i18n';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 interface Message {
   id: number;
   content: string;

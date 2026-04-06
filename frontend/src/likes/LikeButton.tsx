@@ -1,17 +1,15 @@
-import { likesApi } from "./api";
-import { useLike } from "./hooks";
-import { useUser } from "../context/UserContext";
-import { useState } from "react";
-import { FaHeart } from "react-icons/fa";
-import { Post } from "../context/UserContext";
+import { useLike } from './hooks';
+import { useState } from 'react';
+import { FaHeart } from 'react-icons/fa';
+import { Post } from '../context/UserContext';
 
 interface Props {
-    post: Post,
+	post: Post;
 }
 
 export function LikeButton({ post }: Props) {
-	const { liked, count, loading, toggleLike } = useLike(post);
-    const [btnLoading, setBtnLoading] = useState(false);
+	const { liked, count, toggleLike } = useLike(post);
+	const [btnLoading, setBtnLoading] = useState(false);
 
 	const handleClick = () => {
 		setBtnLoading(true);
@@ -22,18 +20,14 @@ export function LikeButton({ post }: Props) {
 		} finally {
 			setBtnLoading(false);
 		}
-	}
+	};
 
 	return (
 		<>
-			<button
-				className={liked ? "liked" : "" }
-				onClick={handleClick}
-				disabled={btnLoading}
-			>
+			<button className={liked ? 'liked' : ''} onClick={handleClick} disabled={btnLoading}>
 				<FaHeart className="heart-icon" />
 				<span className="count">
-					{count ?? 0} {count <= 1 ? "like" : "likes"}
+					{count ?? 0} {count <= 1 ? 'like' : 'likes'}
 				</span>
 			</button>
 		</>

@@ -1,28 +1,28 @@
-import { useState } from "react";
-import { Post, useUser } from "../../context/UserContext";
-import { postsApi } from "../api";
-import { PostEditPayload } from "../types";
-import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { Post, useUser } from '../../context/UserContext';
+import { postsApi } from '../api';
+import { PostEditPayload } from '../types';
+import { useTranslation } from 'react-i18next';
 
 const MAX_TITLE_LENGTH = 50;
 const MAX_CAPTION_LENGTH = 500;
 
-export function usePostEdition(post: Post, onPostEdited: () => void) {
+export function usePostEdition(post: Post) {
 	const { user, setUser } = useUser();
-	
+
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [title, setTitle] = useState(post.title);
-	const [caption, setCaption] = useState(post.caption || "");
+	const [caption, setCaption] = useState(post.caption || '');
 	const { t } = useTranslation();
 
 	const handlePostEdition = async () => {
 		setIsLoading(true);
-		
-		if (title === "") {
+
+		if (title === '') {
 			setErrorMessage(t('errors.titleenter'));
 			setIsLoading(false);
-			return (false);
+			return false;
 		}
 
 		if (title.length > MAX_TITLE_LENGTH) {
@@ -42,50 +42,42 @@ export function usePostEdition(post: Post, onPostEdited: () => void) {
 				title,
 				caption,
 			};
-			
+
 			const updatedPost = await postsApi.updatePost(post.id, payload);
 			setTitle(updatedPost.title);
-			setCaption(updatedPost.caption || "");
+			setCaption(updatedPost.caption || '');
 			setErrorMessage(null);
-			
+
 			// Update the user context with the new post
 			if (user) {
-				const updatedPosts = user.posts.map(p => 
-					p.id === post.id ? updatedPost : p
-				);
+				const updatedPosts = user.posts.map((p) => (p.id === post.id ? updatedPost : p));
 				setUser({
 					...user,
 					posts: updatedPosts,
 				});
 			}
-			
+
 			return updatedPost;
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof Error) {
 				setErrorMessage(error.message);
-			}
-			else {
+			} else {
 				setErrorMessage(t('registerpage.serverfail'));
 			}
-		}
-		finally { 
+		} finally {
 			setIsLoading(false);
 		}
-	}
+	};
 
 	const resetFields = () => {
 		setTitle(post.title);
-		setCaption(post.caption || "");
+		setCaption(post.caption || '');
 		setIsLoading(false);
-	}
+	};
 
 	const hasChanges = () => {
-		return (
-			title !== post.title || 
-			caption !== post.caption
-		)
-	}
+		return title !== post.title || caption !== post.caption;
+	};
 	return {
 		title,
 		setTitle,
@@ -98,5 +90,5 @@ export function usePostEdition(post: Post, onPostEdited: () => void) {
 		resetFields,
 		hasChanges,
 		handlePostEdition,
-	}
+	};
 }
