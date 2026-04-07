@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { commentsApi } from './api';
 import { useUser } from '../context/UserContext';
-import i18n from '../i18n';
+import { mockDatabase } from '../mockData';
 
 interface User {
 	id: number;
@@ -25,14 +24,38 @@ export const useComments = (postId: number) => {
 	const { user } = useUser();
 
 	useEffect(() => {
-		const fetchComments = async () => {
+		const fetchComments = () => {
 			setLoading(true);
 			setError(null);
 			try {
-				const data = await commentsApi.getComments(postId);
-				setComments(data || []);
-			} catch (err) {
-				setError(err.message || i18n.t('errorcomments.load'));
+				const postComments = mockDatabase.comments
+					.filter((c) => c.postId === postId && !c.parentId)
+					.map((c) => {
+						const author = mockDatabase.users.find((u) => u.id === c.userId);
+						return {
+							id: c.id,
+							content: c.content,
+							createdAt: c.createdAt.toISOString(),
+							user: { id: author?.id ?? c.userId, username: author?.username ?? '' },
+							userId: c.userId,
+							postId: c.postId,
+							replies: (c.replies ?? []).map((r) => {
+								const replyAuthor = mockDatabase.users.find((u) => u.id === r.userId);
+								return {
+									id: r.id,
+									content: r.content,
+									createdAt: r.createdAt.toISOString(),
+									user: { id: replyAuthor?.id ?? r.userId, username: replyAuthor?.username ?? '' },
+									userId: r.userId,
+									postId: r.postId,
+									replies: [],
+								};
+							}),
+						};
+					});
+				setComments(postComments);
+			} catch (err: any) {
+				setError(err.message);
 			} finally {
 				setLoading(false);
 			}

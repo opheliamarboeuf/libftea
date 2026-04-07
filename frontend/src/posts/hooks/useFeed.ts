@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { Post, useUser } from "../../context/UserContext";
-import { mockDatabase } from "../../mockData";
-import { fetchUserPosts } from "../../mockData/mockUser";
+import { useState, useEffect } from 'react';
+import { Post, useUser } from '../../context/UserContext';
+import { mockDatabase } from '../../mockData';
+import { fetchUserPosts } from '../../mockData/mockUser';
 
-type FeedType = "all" | "friends";
+type FeedType = 'all' | 'friends';
 
 interface UseFeedResult {
 	posts: Post[];
@@ -14,7 +14,7 @@ interface UseFeedResult {
 	refresh: () => void;
 }
 
-export function useFeed(initialType: FeedType = "all"): UseFeedResult {
+export function useFeed(initialType: FeedType = 'all'): UseFeedResult {
 	const [feedType, setFeedType] = useState<FeedType>(initialType);
 	const [posts, setPosts] = useState<Post[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -24,7 +24,7 @@ export function useFeed(initialType: FeedType = "all"): UseFeedResult {
 	const fetchPosts = async () => {
 		setLoading(true);
 		try {
-			if (feedType === "all") {
+			if (feedType === 'all') {
 				const tournamentPostIds = new Set(
 					mockDatabase.battleParticipants.map((bp) => bp.postId),
 				);
@@ -35,25 +35,26 @@ export function useFeed(initialType: FeedType = "all"): UseFeedResult {
 					.flat()
 					.filter((p) => !tournamentPostIds.has(p.id))
 					.sort(
-						(a, b) =>
-							new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+						(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
 					);
 				setPosts(flat);
-			} else if (feedType === "friends") {
-				if (!user) { setPosts([]); return; }
+			} else if (feedType === 'friends') {
+				if (!user) {
+					setPosts([]);
+					return;
+				}
 				const friendIds = mockDatabase.friendships
 					.filter(
 						(f) =>
 							(f.requesterId === user.id || f.addresseId === user.id) &&
-							f.status === "ACCEPTED",
+							f.status === 'ACCEPTED',
 					)
 					.map((f) => (f.requesterId === user.id ? f.addresseId : f.requesterId));
 				const friendPosts = await Promise.all(friendIds.map((id) => fetchUserPosts(id)));
 				const flat = friendPosts
 					.flat()
 					.sort(
-						(a, b) =>
-							new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+						(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
 					);
 				setPosts(flat);
 			}
