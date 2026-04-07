@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { mockDatabase } from '../mockData';
 
 export interface Notification {
 	id: number;
@@ -15,40 +16,39 @@ export interface Notification {
 	};
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 export const useNotifications = (userId: number | undefined) => {
 	const [notifications, setNotifications] = useState<Notification[]>([]);
 	const { t } = useTranslation();
 
 	useEffect(() => {
 		if (!userId) return;
-		const token = localStorage.getItem('token');
-		fetch(`${API_URL}/notifications`, {
-			headers: { Authorization: `Bearer ${token}` },
-		})
-			.then((res) => res.json())
-			.then((data) => setNotifications(data));
+		const mockNotifs = mockDatabase.notifications
+			.filter((n) => n.userId === userId)
+			.map((n) => ({
+				id: n.id,
+				type: n.type,
+				isRead: n.isRead,
+				message: n.message,
+				createdAt: n.createdAt.toISOString(),
+				metadata: n.metadata as unknown as JSON,
+				User: { id: userId, username: '', role: '' },
+			}));
+		setNotifications(mockNotifs);
 	}, [userId]);
 
 	const unreadCount = notifications.filter((n) => !n.isRead).length;
 
 	const markAsRead = async (notifId: number) => {
-		const token = localStorage.getItem('token');
-		await fetch(`${API_URL}/notifications/${notifId}/read`, {
-			method: 'PATCH',
-			headers: { Authorization: `Bearer ${token}` },
-		});
+		const mockNotif = mockDatabase.notifications.find((n) => n.id === notifId);
+		if (mockNotif) mockNotif.isRead = true;
 		setNotifications((prev) =>
 			prev.map((n) => (n.id === notifId ? { ...n, isRead: true } : n)),
 		);
 	};
 
 	const markAllAsRead = async () => {
-		const token = localStorage.getItem('token');
-		await fetch(`${API_URL}/notifications/read-all`, {
-			method: 'PATCH',
-			headers: { Authorization: `Bearer ${token}` },
+		mockDatabase.notifications.forEach((n) => {
+			if (n.userId === userId) n.isRead = true;
 		});
 		setNotifications([]);
 	};

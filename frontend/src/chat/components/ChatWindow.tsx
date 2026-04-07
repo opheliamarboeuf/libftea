@@ -149,7 +149,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
 
 	const avatarSrc = otherUser?.profile?.avatarUrl
 		? `${API_URL}${otherUser.profile.avatarUrl}`
-		: '/default-avatar.png';
+		: '/transcendence/default-avatar.jpeg';
 
 	const lastOwnMessageIndex = messages.reduce(
 		(last, msg, i) => (msg.senderId === currentUserId ? i : last),
@@ -262,7 +262,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
 					const isLastOwn = isOwn && i === lastOwnMessageIndex;
 					const msgAvatarSrc = msg.User?.profile?.avatarUrl
 						? `${API_URL}${msg.User.profile.avatarUrl}`
-						: '/default-avatar.png';
+						: '/transcendence/default-avatar.jpeg';
 
 					const isThisMessageRead = isOwn && msg.id === lastReadMessageId;
 					const showSent =

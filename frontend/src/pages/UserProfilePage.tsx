@@ -3,18 +3,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { useModal } from '../context/ModalContext';
 import { Post } from '../context/UserContext';
-import { postsApi } from '../posts/api';
 import { UserPostsList } from '../posts/components/UserPostsList';
 import { ConfirmBlockDelete } from '../friends/ConfirmBlockDelete';
 import { UserProfileMenu } from '../profile/components/UserProfileMenu';
 import { useFriendsSocket } from '../friends/useFriendsSocket';
-import { fetchUserTournamentPosts } from '../posts/components/fetchUserPosts';
 import { UserNameWithRole } from '../common/components/UserNameWithRole';
-import { useTranslation } from "react-i18next";
-
+import { useTranslation } from 'react-i18next';
+import { mockDatabase } from '../mockData';
+import { fetchUserPosts, fetchUserTournamentPosts } from '../mockData/mockUser';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-const API_URL = `${BASE_URL}/users`;
 
 type FriendshipStatus = 'NONE' | 'PENDING_SENT' | 'PENDING_RECEIVED' | 'ACCEPTED' | 'BLOCKED';
 
@@ -48,44 +46,74 @@ const UserProfilePage = () => {
 	const { t } = useTranslation();
 
 	const fetchProfile = async () => {
-		const token = localStorage.getItem('token');
-		try {
-			const res = await fetch(`${API_URL}/${id}`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
+		if (!id) return;
+		const targetId = Number(id);
+		const baseUser = mockDatabase.users.find((u) => u.id === targetId);
+		if (!baseUser) return;
 
-			// if blocked by the current user
-			if (res.status === 403) {
-				setBlockedByUser(true);
-				return;
+		// Check if current user has blocked them
+		const blockedByMe = mockDatabase.friendships.some(
+			(f) =>
+				f.requesterId === user?.id && f.addresseId === targetId && f.status === 'BLOCKED',
+		);
+		if (blockedByMe) {
+			setBlockedByUser(true);
+			return;
+		}
+		setBlockedByUser(false);
+
+		// Derive friendship status from current user's perspective
+		const friendship = mockDatabase.friendships.find(
+			(f) =>
+				(f.requesterId === user?.id && f.addresseId === targetId) ||
+				(f.requesterId === targetId && f.addresseId === user?.id),
+		);
+
+		let friendshipStatus: FriendshipStatus = 'NONE';
+		if (friendship) {
+			if (friendship.status === 'ACCEPTED') {
+				friendshipStatus = 'ACCEPTED';
+			} else if (friendship.status === 'BLOCKED') {
+				friendshipStatus = 'BLOCKED';
+			} else if (friendship.status === 'PENDING') {
+				if (friendship.requesterId === user?.id) {
+					friendshipStatus = 'PENDING_SENT';
+				} else {
+					friendshipStatus = 'PENDING_RECEIVED';
+				}
 			}
+		}
 
-			setBlockedByUser(false);
+		const friendsCount = mockDatabase.friendships.filter(
+			(f) =>
+				(f.requesterId === targetId || f.addresseId === targetId) &&
+				f.status === 'ACCEPTED',
+		).length;
 
-			if (!res.ok) {
-				throw new Error(t('errorpage.fetchprofile'));
-			}
+		const profileData: UserProfile = {
+			id: baseUser.id,
+			username: baseUser.username,
+			role: baseUser.role,
+			profile: {
+				avatarUrl: baseUser.profile.avatarUrl ?? undefined,
+				coverUrl: baseUser.profile.coverUrl ?? undefined,
+				bio: baseUser.profile.bio ?? undefined,
+			},
+			friendsCount,
+			friendshipStatus,
+		};
 
-			const data = await res.json();
-			setUserData(data);
-			// if the current user has blocked the user's profile
-			if (data.friendshipStatus === 'BLOCKED') {
-				setBlockedPosts(true);
-			} else {
-				setBlockedPosts(false);
-			}
-			await loadPosts();
-		} catch (error) {
-			console.error(error);
-			showModal?.(t('errorpage.fetchprofile'));
+		setUserData(profileData);
+		if (friendshipStatus === 'BLOCKED') {
+			setBlockedPosts(true);
+		} else {
+			setBlockedPosts(false);
 		}
 	};
 
 	const loadPosts = async () => {
 		if (!id) return;
-		const data = await postsApi.fetchUserPosts(Number(id));
+		const data = await fetchUserPosts(Number(id));
 		setPosts(data);
 	};
 
@@ -296,18 +324,22 @@ const UserProfilePage = () => {
 							src={
 								userData.profile?.avatarUrl
 									? `${BASE_URL}${userData.profile.avatarUrl}`
-									: '/assets/images/default-avatar.jpeg'
+									: '/transcendence/default-avatar.jpeg'
 							}
+							onError={(e) => {
+								(e.target as HTMLImageElement).src =
+									'/transcendence/default-avatar.jpeg';
+							}}
 							alt="Profile Avatar"
 							className="w-24 h-24 rounded-full object-cover shadow-md"
 						/>
 					</div>
-				<p className="font-bold" style={{ fontFamily: "'Gotham Bold', sans-serif" }}>
-					<UserNameWithRole
-						username={userData.username}
-						role={(userData as any).role}
-					/>
-				</p>
+					<p className="font-bold" style={{ fontFamily: "'Gotham Bold', sans-serif" }}>
+						<UserNameWithRole
+							username={userData.username}
+							role={(userData as any).role}
+						/>
+					</p>
 					<div className="flex justify-center gap-2 w-full">
 						<span className="bg-gray-100/90 rounded-xl px-4 py-2 flex flex-col items-center text-sm flex-1 shadow-sm">
 							<strong className="text-lg font-bold">{userData.friendsCount}</strong>
@@ -334,8 +366,12 @@ const UserProfilePage = () => {
 							src={
 								userData.profile?.coverUrl
 									? `${BASE_URL}${userData.profile.coverUrl}`
-									: '/assets/images/default-cover.jpeg'
+									: '/transcendence/default-cover.jpeg'
 							}
+							onError={(e) => {
+								(e.target as HTMLImageElement).src =
+									'/transcendence/default-cover.jpeg';
+							}}
 							alt="Cover"
 							className="w-full h-full object-cover"
 						/>
@@ -345,7 +381,7 @@ const UserProfilePage = () => {
 					</div>
 
 					{/* Posts section */}
-				<div className="relative z-[1] p-4">
+					<div className="relative z-[1] p-4">
 						{blockedPosts ? (
 							<div className="flex justify-center mt-12 text-lg">
 								{t('userprofile.userblocked')}

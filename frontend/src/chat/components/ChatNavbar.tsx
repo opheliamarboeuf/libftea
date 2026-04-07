@@ -132,7 +132,7 @@ export function ChatNavbar({
 						const isOnline = false; // Mock mode - no online status
 						const avatarSrc = other?.profile?.avatarUrl
 							? `${API_URL}${other.profile.avatarUrl}`
-							: '/default-avatar.png';
+							: '/transcendence/default-avatar.jpeg';
 						const senderPrefix = lastMsg?.senderId === user.id ? t('chat.you') : '';
 
 						return (

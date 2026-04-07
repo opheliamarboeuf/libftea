@@ -23,7 +23,7 @@ export function BlockedList() {
 										src={
 											blocked.avatarUrl
 												? `${API_URL}${blocked.avatarUrl}`
-												: '/default-avatar.png'
+												: '/transcendence/default-avatar.jpeg'
 										}
 										alt="Small Avatar"
 									/>

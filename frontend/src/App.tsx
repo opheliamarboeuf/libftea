@@ -39,16 +39,17 @@ const App = () => {
 	return (
 		<UserContext.Provider value={{ user, setUser, refreshUser }}>
 			<ModalProvider>
-				<BrowserRouter basename="/transcendence" future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+				<BrowserRouter
+					basename="/transcendence"
+					future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+				>
 					<Header />
 					<LeftMenu />
-					// LoginSwitcher
 					<LoginSwitcher
 						users={mockDatabase.users}
 						currentUser={user}
 						onSwitch={(base) => setUser(toContextUser(base))}
 					/>
-					;
 					<Routes>
 						{ModerationRoutes}
 						{SettingsRoutes}
@@ -57,7 +58,7 @@ const App = () => {
 						<Route path="/register" element={<RegisterPage />} />
 						<Route path="/login" element={<LoginPage />} />
 						<Route
-							path="/transcendence/myprofile"
+							path="/myprofile"
 							element={user ? <MyProfilePage /> : <Navigate to="/" replace />}
 						/>
 						<Route

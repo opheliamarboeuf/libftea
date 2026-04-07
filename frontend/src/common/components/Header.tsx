@@ -158,7 +158,7 @@ export const Header = () => {
 								src={
 									user?.profile?.avatarUrl
 										? `${API_URL}${user.profile.avatarUrl}`
-										: '/default-avatar.png'
+										: '/transcendence/default-avatar.jpeg'
 								}
 								alt="Small Avatar"
 							/>
