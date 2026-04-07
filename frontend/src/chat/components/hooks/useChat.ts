@@ -1,247 +1,164 @@
 import { useEffect, useRef, useState } from 'react';
-import { chatSocket } from '../../../socket/socket';
 import { tournamentApi } from '../../../tournament/api';
-import i18n from '../../../i18n';
 
 interface Message {
-  id: number;
-  content: string;
-  senderId: number;
-  createdAt: string;
-  type?: string;
-  metadata?: { battleId: number };
-  User: { id: number; username: string; profile: { avatarUrl: string } };
+	id: number;
+	content: string;
+	senderId: number;
+	createdAt: string;
+	type?: string;
+	metadata?: { battleId: number };
+	User: { id: number; username: string; profile: { avatarUrl: string } };
 }
 
 interface TournamentState {
-  id: number;
-  status: string;
-  winnerId?: number | null;
-  endsAt?: string;
+	id: number;
+	status: string;
+	winnerId?: number | null;
+	endsAt?: string;
 }
 
 // Cache tournoi partagé entre toutes les conversations
 let tournamentCache: TournamentState | null | undefined = undefined;
 
 export function useChat(conversationId: number, currentUserId: number) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [chatError, setChatError] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [tournamentState, setTournamentState] = useState<TournamentState | null>(null);
+	const [messages, setMessages] = useState<Message[]>([]);
 
-  const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isTypingRef = useRef(false);
-  const messagesRef = useRef<Message[]>([]);
-  const storageKey = `lastRead_${conversationId}_${currentUserId}`;
+	const [isTyping, setIsTyping] = useState(false);
+	const [tournamentState, setTournamentState] = useState<TournamentState | null>(null);
 
-  const setMessagesSync = (updater: (prev: Message[]) => Message[]) => {
-    setMessages(prev => {
-      const next = updater(prev);
-      messagesRef.current = next;
-      return next;
-    });
-  };
+	const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const isTypingRef = useRef(false);
+	const messagesRef = useRef<Message[]>([]);
+	const storageKey = `lastRead_${conversationId}_${currentUserId}`;
 
-  const [lastReadMessageId, setLastReadMessageId] = useState<number | null>(() => {
-    const saved = localStorage.getItem(storageKey);
-    return saved ? Number(saved) : null;
-  });
-  const errorMessages = (message: string): string => {
-		if (message.includes("pour envoyer")) return 'errors.chat';
-	}
+	const setMessagesSync = (updater: (prev: Message[]) => Message[]) => {
+		setMessages((prev) => {
+			const next = updater(prev);
+			messagesRef.current = next;
+			return next;
+		});
+	};
 
-  const setErrorWithTimeout = (msg: string, duration = 3000) => {
-    const key = errorMessages(msg);
-	const trad = key ? i18n.t(key) : msg;
-	setChatError(trad);
-    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
-    errorTimerRef.current = setTimeout(() => setChatError(''), duration);
-  };
+	const [lastReadMessageId, setLastReadMessageId] = useState<number | null>(() => {
+		const saved = localStorage.getItem(storageKey);
+		return saved ? Number(saved) : null;
+	});
 
-  // Charge le tournoi une seule fois (cache partagé entre conversations)
-  useEffect(() => {
-    if (tournamentCache !== undefined) {
-      setTournamentState(tournamentCache);
-      return;
-    }
-    tournamentApi.getRecentTournament()
-      .then(t => {
-        tournamentCache = t ?? null;
-        setTournamentState(tournamentCache);
-      })
-      .catch(() => {
-        tournamentCache = null;
-        setTournamentState(null);
-      });
-  }, []); // plus de dépendance sur conversationId
+	// Charge le tournoi une seule fois (cache partagé entre conversations)
+	useEffect(() => {
+		if (tournamentCache !== undefined) {
+			setTournamentState(tournamentCache);
+			return;
+		}
+		tournamentApi
+			.getRecentTournament()
+			.then((t) => {
+				tournamentCache = t ?? null;
+				setTournamentState(tournamentCache);
+			})
+			.catch(() => {
+				tournamentCache = null;
+				setTournamentState(null);
+			});
+	}, []); // plus de dépendance sur conversationId
 
-  // Socket — réutilise le singleton chatSocket, pas de new io()
-  useEffect(() => {
-    // Reset immédiat de l'UI
-    setMessages([]);
-    messagesRef.current = [];
-    setChatError('');
-    setIsTyping(false);
+	// Reset UI when conversation changes
+	useEffect(() => {
+		setMessages([]);
+		messagesRef.current = [];
+		setIsTyping(false);
 
-    const saved = localStorage.getItem(storageKey);
-    setLastReadMessageId(saved ? Number(saved) : null);
+		const saved = localStorage.getItem(storageKey);
+		setLastReadMessageId(saved ? Number(saved) : null);
 
-    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
-    if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+		if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+	}, [conversationId]);
 
-    if (!chatSocket.connected) chatSocket.connect();
+	const sendMessage = (content: string) => {
+		// Mock: add message to local state
+		const newMessage: Message = {
+			id: Math.max(0, ...messages.map((m) => m.id)) + 1,
+			content,
+			senderId: currentUserId,
+			createdAt: new Date().toISOString(),
+			User: { id: currentUserId, username: 'Current User', profile: { avatarUrl: '' } },
+		};
+		setMessagesSync((prev) => [...prev, newMessage]);
 
-    const onConnect = () => {
-      chatSocket.emit('joinConversation', { conversationId });
-      chatSocket.emit('getMessages', { conversationId });
-      chatSocket.emit('markRead', { conversationId, userId: currentUserId });
-    };
+		if (isTypingRef.current) {
+			isTypingRef.current = false;
+		}
+	};
 
-    const onMessageHistory = (msgs: Message[]) => {
-      messagesRef.current = msgs;
-      setMessages(msgs);
-    };
+	const sendTournamentMessage = async () => {
+		try {
+			const fresh = await tournamentApi.getRecentTournament();
 
-    const onNewMessage = (msg: Message & { conversationId: number }) => {
-      // Ignore les messages d'autres conversations reçus sur le socket global
-      if (msg.conversationId !== conversationId) return;
-      setMessagesSync(prev => [...prev, msg]);
-      setIsTyping(false);
-      if (msg.senderId !== currentUserId) {
-        chatSocket.emit('markRead', { conversationId, userId: currentUserId });
-      }
-    };
+			if (!fresh?.id) {
+				console.warn('No active or recent tournament');
+				return;
+			}
 
-    const onError = (data: { message: string }) => setErrorWithTimeout(data.message);
+			const now = new Date();
+			const isFinished =
+				fresh.status === 'FINISHED' || (fresh.endsAt && new Date(fresh.endsAt) < now);
 
-    const onUserTyping = () => {
-      setIsTyping(true);
-      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-      typingTimerRef.current = setTimeout(() => setIsTyping(false), 3000);
-    };
+			const isWinner = fresh.winnerId === currentUserId;
 
-    const onUserStoppedTyping = () => {
-      setIsTyping(false);
-      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-    };
+			if (!isFinished) {
+				const participants = await tournamentApi.getParticipants(fresh.id);
+				const isParticipant = participants.some(
+					(p: { userId: number }) => p.userId === currentUserId,
+				);
+				if (!isParticipant) {
+					console.warn('User is not a tournament participant');
+					return;
+				}
+			}
 
-    const onMessageRead = () => {
-      const myMessages = messagesRef.current.filter(m => m.senderId === currentUserId);
-      if (myMessages.length > 0) {
-        const lastId = myMessages[myMessages.length - 1].id;
-        setLastReadMessageId(lastId);
-        localStorage.setItem(storageKey, String(lastId));
-      }
-    };
+			const content =
+				isWinner && isFinished
+					? 'I won the tournament! Come check it out!✨'
+					: 'Join me in the tournament! 💅🏼';
 
-    // Si déjà connecté, rejoindre directement sans attendre l'event connect
-    if (chatSocket.connected) {
-      onConnect();
-    } else {
-      chatSocket.once('connect', onConnect);
-    }
+			const type = isWinner && isFinished ? 'tournament_victory' : 'tournament_invite';
 
-    chatSocket.on('messageHistory', onMessageHistory);
-    chatSocket.on('newMessage', onNewMessage);
-    chatSocket.on('error', onError);
-    chatSocket.on('userTyping', onUserTyping);
-    chatSocket.on('userStoppedTyping', onUserStoppedTyping);
-    chatSocket.on('messageRead', onMessageRead);
+			// Mock: add tournament message
+			const newMessage: Message = {
+				id: Math.max(0, ...messages.map((m) => m.id)) + 1,
+				content,
+				senderId: currentUserId,
+				createdAt: new Date().toISOString(),
+				type,
+				metadata: { battleId: fresh.id },
+				User: { id: currentUserId, username: 'Current User', profile: { avatarUrl: '' } },
+			};
+			setMessagesSync((prev) => [...prev, newMessage]);
+		} catch (err) {
+			console.error('Tournament message failed:', err);
+		}
+	};
 
-    return () => {
-      if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
-      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-      chatSocket.emit('leaveConversation', { conversationId });
-      chatSocket.off('connect', onConnect);
-      chatSocket.off('messageHistory', onMessageHistory);
-      chatSocket.off('newMessage', onNewMessage);
-      chatSocket.off('error', onError);
-      chatSocket.off('userTyping', onUserTyping);
-      chatSocket.off('userStoppedTyping', onUserStoppedTyping);
-      chatSocket.off('messageRead', onMessageRead);
-    };
-  }, [conversationId]);
+	const emitTyping = (_username: string) => {
+		if (!isTypingRef.current) {
+			setIsTyping(true);
+			isTypingRef.current = true;
+		}
+		if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+		typingTimerRef.current = setTimeout(() => {
+			setIsTyping(false);
+			isTypingRef.current = false;
+		}, 2000);
+	};
 
-  const sendMessage = (content: string) => {
-    chatSocket.emit('sendMessage', {
-      content,
-      conversationId,
-      senderId: currentUserId,
-    });
-    if (isTypingRef.current) {
-      chatSocket.emit('stopTyping', { conversationId, senderId: currentUserId });
-      isTypingRef.current = false;
-    }
-  };
-
-  const sendTournamentMessage = async () => {
-    try {
-      const fresh = await tournamentApi.getRecentTournament();
-
-      if (!fresh?.id) {
-        console.warn('No active or recent tournament');
-        return;
-      }
-
-      const now = new Date();
-      const isFinished =
-        fresh.status === 'FINISHED' ||
-        (fresh.endsAt && new Date(fresh.endsAt) < now);
-
-      const isWinner = fresh.winnerId === currentUserId;
-
-      if (!isFinished) {
-        const participants = await tournamentApi.getParticipants(fresh.id);
-        const isParticipant = participants.some(
-          (p: { userId: number }) => p.userId === currentUserId
-        );
-        if (!isParticipant) {
-          console.warn('User is not a tournament participant');
-          return;
-        }
-      }
-
-      const content =
-        isWinner && isFinished
-          ? 'I won the tournament! Come check it out!✨'
-          : 'Join me in the tournament! 💅🏼';
-
-      const type =
-        isWinner && isFinished ? 'tournament_victory' : 'tournament_invite';
-
-      chatSocket.emit('sendMessage', {
-        content,
-        conversationId,
-        senderId: currentUserId,
-        type,
-        metadata: { battleId: fresh.id },
-      });
-    } catch (err) {
-      console.error('Tournament message failed:', err);
-    }
-  };
-
-  const emitTyping = (username: string) => {
-    if (!isTypingRef.current) {
-      chatSocket.emit('typing', { conversationId, senderId: currentUserId, username });
-      isTypingRef.current = true;
-    }
-    if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-    typingTimerRef.current = setTimeout(() => {
-      chatSocket.emit('stopTyping', { conversationId, senderId: currentUserId });
-      isTypingRef.current = false;
-    }, 2000);
-  };
-
-  return {
-    messages,
-    sendMessage,
-    sendTournamentMessage,
-    chatError,
-    isTyping,
-    emitTyping,
-    lastReadMessageId,
-    tournamentState,
-  };
+	return {
+		messages,
+		sendMessage,
+		sendTournamentMessage,
+		isTyping,
+		emitTyping,
+		lastReadMessageId,
+		tournamentState,
+	};
 }

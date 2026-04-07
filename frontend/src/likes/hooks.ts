@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
-import { likesApi } from "./api";
-import { socket } from "../socket/socket";
-import { useUser } from "../context/UserContext";
-import { useModal } from "../context/ModalContext";
-import { Post } from "../context/UserContext";
-import { useTranslation } from "react-i18next";
+import { useState, useEffect } from 'react';
+import { likesApi } from './api';
+import { useUser } from '../context/UserContext';
+import { useModal } from '../context/ModalContext';
+import { Post } from '../context/UserContext';
+import { useTranslation } from 'react-i18next';
 
 export const useLike = (post: Post) => {
 	const [liked, setLiked] = useState(false);
@@ -34,33 +33,18 @@ export const useLike = (post: Post) => {
 			}
 		};
 		fetchData();
-		return () => { isMounted = false };
-	}, [post.id]);
-
-	useEffect(() => {
-		const handleLikeUpdate = (data: any) => {
-			if (data.postId === post.id) {
-				setCount(data.count);
-			}
-		};
-		socket.on("like_updated", handleLikeUpdate);
-
 		return () => {
-			socket.off("like_updated", handleLikeUpdate);
-		}
+			isMounted = false;
+		};
 	}, [post.id]);
 
 	const toggleLike = () => {
 		if (post.battleParticipants?.length && user.id === post.author.id) {
 			showModal(t('errors.tournamentlike'));
-			return ;
+			return;
 		}
-		setLiked(prev => !prev);
-		setCount(prev => liked ? prev - 1 : prev + 1);
-		socket.emit("toggle_like", {
-			postId:post.id,
-			userId:user.id,
-		});
+		setLiked((prev) => !prev);
+		setCount((prev) => (liked ? prev - 1 : prev + 1));
 	};
 
 	return { liked, count, loading, toggleLike };

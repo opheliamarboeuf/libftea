@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { commentsApi } from './api';
-import { socket } from '../socket/socket';
 import { useUser } from '../context/UserContext';
 import i18n from '../i18n';
 
@@ -41,50 +40,22 @@ export const useComments = (postId: number) => {
 		fetchComments();
 	}, [postId]);
 
-	useEffect(() => {
-		const handleNewComment = (comment: Comment) => {
-			if (comment.postId === postId) {
-				setComments((prev) => [...prev, comment]);
-			}
-		};
-		const handleDeletedComment = (commentId: number) => {
-			setComments((prev) => removeComment(prev, commentId));
-		};
-
-		const handleRepliedComment = (reply: Comment & { parentCommentId: number }) => {
-			const addReply = (arr: Comment[]): Comment[] => {
-				return arr.map((c) => {
-					if (c.id === reply.parentCommentId) {
-						const alreadyExists = c.replies?.some((r) => r.id === reply.id);
-						if (alreadyExists) return c;
-						return { ...c, replies: [...(c.replies || []), reply] };
-					}
-					if (c.replies && c.replies.length > 0) {
-						return { ...c, replies: addReply(c.replies) };
-					}
-					return c;
-				});
-			};
-			setComments((prev) => addReply(prev));
-		};
-
-		socket.on('comment_created', handleNewComment);
-		socket.on('comment_deleted', handleDeletedComment);
-		socket.on('comment_replied', handleRepliedComment);
-
-		return () => {
-			socket.off('comment_created', handleNewComment);
-			socket.off('comment_deleted', handleDeletedComment);
-			socket.off('comment_replied', handleRepliedComment);
-		};
-	}, [postId]);
-
 	const createComment = (content: string) => {
-		socket.emit('create_comment', {
-			postId,
-			userId: user.id,
+		// Mock: add comment to local state
+		const newComment: Comment = {
+			id:
+				Math.max(
+					0,
+					...comments.map((c) => c.id),
+					...comments.flatMap((c) => c.replies?.map((r) => r.id) ?? []),
+				) + 1,
 			content,
-		});
+			createdAt: new Date().toISOString(),
+			user,
+			userId: user.id,
+			postId,
+		};
+		setComments((prev) => [...prev, newComment]);
 	};
 
 	const removeComment = (arr: Comment[], commentId: number): Comment[] => {
@@ -94,17 +65,36 @@ export const useComments = (postId: number) => {
 	};
 	const deleteComment = (commentId: number) => {
 		setComments((prev) => removeComment(prev, commentId));
-		socket.emit('delete_comment', {
-			commentId,
-			userId: user.id,
-		});
 	};
 
 	const replyComment = async (parentCommentId: number, content: string) => {
-		socket.emit('reply_comment', {
-			parentCommentId,
-			userId: user.id,
+		// Mock: add reply to local state
+		const reply: Comment = {
+			id:
+				Math.max(
+					0,
+					...comments.map((c) => c.id),
+					...comments.flatMap((c) => c.replies?.map((r) => r.id) ?? []),
+				) + 1,
 			content,
+			createdAt: new Date().toISOString(),
+			user,
+			userId: user.id,
+			postId,
+		};
+		setComments((prev) => {
+			const addReply = (arr: Comment[]): Comment[] => {
+				return arr.map((c) => {
+					if (c.id === parentCommentId) {
+						return { ...c, replies: [...(c.replies || []), reply] };
+					}
+					if (c.replies && c.replies.length > 0) {
+						return { ...c, replies: addReply(c.replies) };
+					}
+					return c;
+				});
+			};
+			return addReply(prev);
 		});
 	};
 

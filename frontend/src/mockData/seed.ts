@@ -10,8 +10,8 @@ type BattleStatus = 'UPCOMING' | 'ONGOING' | 'FINISHED';
 export interface UserProfile {
 	userId: number;
 	bio: string | null;
-	avatarUrl: string;
-	coverUrl: string;
+	avatarUrl: string | null;
+	coverUrl: string | null;
 }
 
 export interface BaseUser {
@@ -206,12 +206,7 @@ interface PostData {
 
 // -------------------- USERS --------------------
 
-function createUser(
-	email: string,
-	username: string,
-	role: Role,
-	bio: string,
-): BaseUser {
+function createUser(email: string, username: string, role: Role, bio: string): BaseUser {
 	const userId = generateId('user');
 
 	const user: BaseUser = {
@@ -225,8 +220,8 @@ function createUser(
 		profile: {
 			userId,
 			bio,
-			avatarUrl: '/assets/default/default-avatar.jpeg',
-			coverUrl: '/assets/default/default-cover.jpeg',
+			avatarUrl: null,
+			coverUrl: null,
 		},
 	};
 
@@ -416,8 +411,7 @@ function createRandomFriendships(userIds: number[]): void {
 function createConversations(userIds: number[]): void {
 	for (const userId of userIds) {
 		const friendships = mockDatabase.friendships.filter(
-			(f) =>
-				(f.requesterId === userId || f.addresseId === userId) && f.status === 'ACCEPTED',
+			(f) => (f.requesterId === userId || f.addresseId === userId) && f.status === 'ACCEPTED',
 		);
 
 		const friendIds = friendships.map((f) =>
@@ -431,8 +425,7 @@ function createConversations(userIds: number[]): void {
 
 			const existingConversation = mockDatabase.conversations.some(
 				(c) =>
-					c.users.some((u) => u.id === userId) &&
-					c.users.some((u) => u.id === friendId),
+					c.users.some((u) => u.id === userId) && c.users.some((u) => u.id === friendId),
 			);
 
 			if (existingConversation) continue;
@@ -807,20 +800,10 @@ export function seedDatabase(): typeof mockDatabase {
 	console.log('Seeding mock database started...');
 
 	// Create admin
-	const adminUser = createUser(
-		'admin@test.com',
-		'admin',
-		'ADMIN',
-		'Test account for Admin',
-	);
+	const adminUser = createUser('admin@test.com', 'admin', 'ADMIN', 'Test account for Admin');
 
 	// Create mod
-	const modUser = createUser(
-		'mod@test.com',
-		'mod',
-		'MOD',
-		'Test account for Moderator',
-	);
+	const modUser = createUser('mod@test.com', 'mod', 'MOD', 'Test account for Moderator');
 
 	// Create toxic user
 	const toxicUser = createUser(
@@ -852,22 +835,10 @@ export function seedDatabase(): typeof mockDatabase {
 	);
 
 	users.push(
-		createUser(
-			'cha@test.com',
-			'cha',
-			'USER',
-			'Karl Marx with a micro skirt and a luxury bag',
-		),
+		createUser('cha@test.com', 'cha', 'USER', 'Karl Marx with a micro skirt and a luxury bag'),
 	);
 
-	users.push(
-		createUser(
-			'ophe@test.com',
-			'ophe',
-			'USER',
-			'Less explanation. More presence.',
-		),
-	);
+	users.push(createUser('ophe@test.com', 'ophe', 'USER', 'Less explanation. More presence.'));
 
 	const userIds = users.map((u) => u.id);
 
@@ -1071,7 +1042,12 @@ export function seedDatabase(): typeof mockDatabase {
 
 	// USER REPORT (HARASSMENT)
 	const reporterUser = users[0];
-	const userReportHandledAt = createUserReport(toxicUser, reporterUser, adminUser, lastReportDate);
+	const userReportHandledAt = createUserReport(
+		toxicUser,
+		reporterUser,
+		adminUser,
+		lastReportDate,
+	);
 
 	// BAN TOXIC USER
 	const banDate = getRandomDate(userReportHandledAt, now);

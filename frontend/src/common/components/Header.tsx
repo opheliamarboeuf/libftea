@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import { SearchBar } from './SearchBar';
@@ -7,10 +7,10 @@ import { UserNameWithRole } from './UserNameWithRole';
 import './Header.css';
 import '../../App.css';
 import { friendsSocket } from '../../socket/socket';
-import { notifSocket } from "../../socket/socket";
-import { useNotifications } from "../../notifications/useNotifications";
-import { MdOutlineNotifications } from "react-icons/md";
-import { useTranslation } from "react-i18next";
+import { notifSocket } from '../../socket/socket';
+import { useNotifications } from '../../notifications/useNotifications';
+import { MdOutlineNotifications } from 'react-icons/md';
+import { useTranslation } from 'react-i18next';
 
 export const Header = () => {
 	const navigate = useNavigate();
@@ -18,7 +18,8 @@ export const Header = () => {
 	const API_URL = import.meta.env.VITE_API_URL;
 	const [menuHidden, setMenuHidden] = useState(false);
 	const [dropdownOpen, setDropdownOpen] = useState(false);
-	const { notifications, unreadCount, markAsRead, markAllAsRead, getNotifMessage } = useNotifications(user?.id);
+	const { notifications, unreadCount, markAsRead, markAllAsRead, getNotifMessage } =
+		useNotifications(user?.id);
 	const [notifOpen, setNotifOpen] = useState(false);
 	const notifRef = useRef<HTMLDivElement | null>(null);
 	const { t } = useTranslation();
@@ -67,24 +68,24 @@ export const Header = () => {
 			refreshUser();
 		},
 	});
-	
+
 	useEffect(() => {
 		const outsideClick = (event: MouseEvent) => {
 			const target = event.target as Node;
 			if (notifRef.current && !notifRef.current.contains(target)) {
 				setNotifOpen(false);
 			}
-			
+
 			// Close dropdown if clicking outside
 			const avatarMenu = document.querySelector('.avatar-menu');
 			if (avatarMenu && !avatarMenu.contains(target)) {
 				setDropdownOpen(false);
 			}
 		};
-		document.addEventListener("mousedown", outsideClick);
+		document.addEventListener('mousedown', outsideClick);
 
 		return () => {
-			document.removeEventListener("mousedown", outsideClick);
+			document.removeEventListener('mousedown', outsideClick);
 		};
 	}, []);
 
@@ -94,8 +95,8 @@ export const Header = () => {
 		setMenuHidden(true);
 		setDropdownOpen(false);
 		localStorage.removeItem('token');
-		friendsSocket.disconnect();
-		notifSocket.disconnect();
+		friendsSocket?.disconnect();
+		notifSocket?.disconnect();
 		setUser(null);
 		navigate('/');
 	};
@@ -124,7 +125,9 @@ export const Header = () => {
 				<div className="notif-bell" ref={notifRef}>
 					<span onClick={() => setNotifOpen(!notifOpen)}>
 						<MdOutlineNotifications />
-						{unreadCount > 0 && !notifOpen && <span className="notif-badge">{unreadCount}</span>}
+						{unreadCount > 0 && !notifOpen && (
+							<span className="notif-badge">{unreadCount}</span>
+						)}
 					</span>
 					{notifOpen && (
 						<div className="notif-dropdown">
@@ -142,7 +145,7 @@ export const Header = () => {
 						</div>
 					)}
 				</div>
-				<div 
+				<div
 					className={`avatar-menu ${menuHidden ? 'menu-hidden' : ''} ${dropdownOpen ? 'dropdown-active' : ''}`}
 					onMouseLeave={() => setMenuHidden(false)}
 				>
