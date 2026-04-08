@@ -29,7 +29,6 @@ interface Props {
 	onNewMessage?: (conversationId: number, message: LastMessage) => void;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
 const SCROLL_THRESHOLD = 100;
 
 function formatTime(iso?: string) {
@@ -38,15 +37,8 @@ function formatTime(iso?: string) {
 }
 
 export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMessage }: Props) {
-	const {
-		messages,
-		sendMessage,
-		sendTournamentMessage,
-		isTyping,
-		emitTyping,
-		lastReadMessageId,
-		tournamentState,
-	} = useChat(conversationId, currentUserId);
+	const { messages, sendMessage, sendTournamentMessage, lastReadMessageId, tournamentState } =
+		useChat(conversationId, currentUserId);
 
 	const { showVictoryButton, showTournamentButton } = useMemo(() => {
 		const finished =
@@ -127,13 +119,6 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
 		prevLengthRef.current = messages.length;
 	}, [messages]);
 
-	useEffect(() => {
-		if (isTyping && isNearBottomRef.current) {
-			const el = scrollContainerRef.current;
-			if (el) el.scrollTop = el.scrollHeight;
-		}
-	}, [isTyping]);
-
 	const handleScroll = () => {
 		const el = scrollContainerRef.current;
 		if (!el) return;
@@ -147,9 +132,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
 		setInput('');
 	};
 
-	const avatarSrc = otherUser?.profile?.avatarUrl
-		? `${API_URL}${otherUser.profile.avatarUrl}`
-		: '/transcendence/default-avatar.jpeg';
+	const avatarSrc = otherUser?.profile?.avatarUrl ?? '/transcendence/default-avatar.jpeg';
 
 	const lastOwnMessageIndex = messages.reduce(
 		(last, msg, i) => (msg.senderId === currentUserId ? i : last),
@@ -260,9 +243,8 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
 					const showAvatar =
 						!isOwn && (i === 0 || messages[i - 1]?.senderId !== msg.senderId);
 					const isLastOwn = isOwn && i === lastOwnMessageIndex;
-					const msgAvatarSrc = msg.User?.profile?.avatarUrl
-						? `${API_URL}${msg.User.profile.avatarUrl}`
-						: '/transcendence/default-avatar.jpeg';
+					const msgAvatarSrc =
+						msg.User?.profile?.avatarUrl || '/transcendence/default-avatar.jpeg';
 
 					const isThisMessageRead = isOwn && msg.id === lastReadMessageId;
 					const showSent =
@@ -464,62 +446,6 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
 						</div>
 					);
 				})}
-
-				{/* Typing indicator */}
-				{isTyping && (
-					<div
-						style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 2 }}
-					>
-						<div style={{ width: 30, flexShrink: 0 }}>
-							<div
-								style={{
-									width: 30,
-									height: 30,
-									borderRadius: '50%',
-									overflow: 'hidden',
-								}}
-							>
-								<img
-									src={avatarSrc}
-									alt={otherUser?.username}
-									style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-								/>
-							</div>
-						</div>
-						<div
-							style={{
-								padding: '10px 14px',
-								borderRadius: 18,
-								borderBottomLeftRadius: 4,
-								background: '#f3f4f6',
-								display: 'flex',
-								alignItems: 'center',
-								gap: 4,
-							}}
-						>
-							{[0, 1, 2].map((i) => (
-								<div
-									key={i}
-									style={{
-										width: 7,
-										height: 7,
-										borderRadius: '50%',
-										background: '#9ca3af',
-										animation: 'typingBounce 1.2s infinite',
-										animationDelay: `${i * 0.2}s`,
-									}}
-								/>
-							))}
-						</div>
-					</div>
-				)}
-
-				<style>{`
-          @keyframes typingBounce {
-            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-            30% { transform: translateY(-6px); opacity: 1; }
-          }
-        `}</style>
 			</div>
 
 			{/* Input */}
@@ -538,7 +464,6 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
 					value={input}
 					onChange={(e) => {
 						setInput(e.target.value);
-						if (e.target.value) emitTyping(user?.username ?? '');
 					}}
 					onKeyDown={(e) => {
 						if (e.key === 'Enter' && !e.shiftKey) {

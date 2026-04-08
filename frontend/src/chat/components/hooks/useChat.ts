@@ -24,11 +24,8 @@ let tournamentCache: TournamentState | null | undefined = undefined;
 export function useChat(conversationId: number, currentUserId: number) {
 	const [messages, setMessages] = useState<Message[]>([]);
 
-	const [isTyping, setIsTyping] = useState(false);
 	const [tournamentState, setTournamentState] = useState<TournamentState | null>(null);
 
-	const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const isTypingRef = useRef(false);
 	const messagesRef = useRef<Message[]>([]);
 	const storageKey = `lastRead_${conversationId}_${currentUserId}`;
 
@@ -68,17 +65,11 @@ export function useChat(conversationId: number, currentUserId: number) {
 
 	// Reset UI and load messages when conversation changes
 	useEffect(() => {
-		setIsTyping(false);
-		if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-
 		const saved = localStorage.getItem(storageKey);
 		setLastReadMessageId(saved ? Number(saved) : null);
 
-		const conv = mockDatabase.conversations.find((c) => c.id === conversationId);
-		const loaded = (
-			conv?.messages ??
-			mockDatabase.messages.filter((m) => m.conversationId === conversationId)
-		)
+		const loaded = mockDatabase.messages
+			.filter((m) => m.conversationId === conversationId)
 			.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
 			.map((m) => {
 				const author = mockDatabase.users.find((u) => u.id === m.senderId);
@@ -109,10 +100,6 @@ export function useChat(conversationId: number, currentUserId: number) {
 			User: { id: currentUserId, username: 'Current User', profile: { avatarUrl: '' } },
 		};
 		setMessagesSync((prev) => [...prev, newMessage]);
-
-		if (isTypingRef.current) {
-			isTypingRef.current = false;
-		}
 	};
 
 	const sendTournamentMessage = async () => {
@@ -165,24 +152,10 @@ export function useChat(conversationId: number, currentUserId: number) {
 		}
 	};
 
-	const emitTyping = (_username: string) => {
-		if (!isTypingRef.current) {
-			setIsTyping(true);
-			isTypingRef.current = true;
-		}
-		if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-		typingTimerRef.current = setTimeout(() => {
-			setIsTyping(false);
-			isTypingRef.current = false;
-		}, 2000);
-	};
-
 	return {
 		messages,
 		sendMessage,
 		sendTournamentMessage,
-		isTyping,
-		emitTyping,
 		lastReadMessageId,
 		tournamentState,
 	};
