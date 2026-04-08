@@ -32,8 +32,31 @@ const toContextPost = (postId: number): Post | null => {
 
 const TournamentFeedPage = () => {
 	const { user } = useUser();
-	const [battle, setBattle] = useState<any | null | undefined>(undefined);
-	const [posts, setPosts] = useState<Post[]>([]);
+	const [battle, setBattle] = useState<any | null>(
+		() =>
+			mockDatabase.battles.find((b) => b.status === 'ONGOING' || b.status === 'UPCOMING') ??
+			null,
+	);
+	const [posts, setPosts] = useState<Post[]>(() => {
+		const current = mockDatabase.battles.find(
+			(b) => b.status === 'ONGOING' || b.status === 'UPCOMING',
+		);
+		if (!current) return [];
+		return mockDatabase.battleParticipants
+			.filter((bp) => bp.battleId === current.id)
+			.map((bp) => {
+				const post = toContextPost(bp.postId);
+				if (post) {
+					return {
+						...post,
+						battleParticipants: [{ Battle: { theme: current.theme } }],
+					};
+				}
+				return null;
+			})
+			.filter((p): p is any => p !== null)
+			.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+	});
 
 	const [showPostModal, setShowPostModal] = useState<boolean>(false);
 	const [showCreateTournamentModal, setShowCreateTournamentModal] = useState(false);
@@ -48,8 +71,18 @@ const TournamentFeedPage = () => {
 			(bp) => bp.battleId === battle.id,
 		);
 		const battlePosts = participants
-			.map((bp) => toContextPost(bp.postId))
-			.filter((p): p is Post => p !== null);
+			.map((bp) => {
+				const post = toContextPost(bp.postId);
+				if (post) {
+					return {
+						...post,
+						battleParticipants: [{ Battle: { theme: battle.theme } }],
+					};
+				}
+				return null;
+			})
+			.filter((p): p is any => p !== null)
+			.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 		setPosts(battlePosts);
 	};
 
@@ -60,14 +93,6 @@ const TournamentFeedPage = () => {
 		setBattle(current);
 		setBattleError(null);
 	};
-
-	useEffect(() => {
-		const current =
-			mockDatabase.battles.find((b) => b.status === 'ONGOING' || b.status === 'UPCOMING') ??
-			null;
-		setBattle(current);
-		setBattleError(null);
-	}, []);
 
 	useEffect(() => {
 		if (!battle) return;
@@ -84,7 +109,12 @@ const TournamentFeedPage = () => {
 		);
 		if (!winnerParticipant) return;
 		const post = toContextPost(winnerParticipant.postId);
-		setWinnerPost(post);
+		if (post) {
+			setWinnerPost({
+				...post,
+				battleParticipants: [{ Battle: { theme: finished.theme } }],
+			});
+		}
 	}, []);
 
 	const feedPosts = winnerPost

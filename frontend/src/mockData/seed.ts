@@ -494,15 +494,18 @@ function createPostsForTournament(
 	postData: PostData,
 	allUserIds: number[],
 	forcedLikeCount?: number,
+	imageFilename?: string,
+	customDate?: Date,
 ): Post {
-	const postDate = getRandomDate(nineDaysAgo, weekAgo);
+	const postDate = customDate ?? getRandomDate(nineDaysAgo, weekAgo);
 	const postId = generateId('post');
+	const resolvedImage = imageFilename ?? `${username}_tournament-resized.jpg`;
 
 	const post: Post = {
 		id: postId,
 		title: postData.title,
 		caption: postData.caption,
-		imageUrl: `${import.meta.env.BASE_URL}uploads/seed/tournament/${username}_tournament-resized.jpg`,
+		imageUrl: `${import.meta.env.BASE_URL}uploads/seed/tournament/${resolvedImage}`,
 		authorId: userId,
 		createdAt: postDate,
 		updatedAt: postDate,
@@ -765,12 +768,21 @@ function createTournament(userIds: number[]): void {
 
 		const allUserIds = userIds.filter((id) => id !== userId);
 
+		// Give explicit spaced dates (most recent first)
+		const postDate = new Date(weekAgo.getTime() - i * 6 * 60 * 60 * 1000);
+
 		const post = createPostsForTournament(
 			userId,
 			username,
 			tournamentPostsData[i],
 			allUserIds,
 			userId === winnerId ? 4 : undefined,
+			username === 'cha'
+				? 'cha_tournament1.jpg'
+				: username === 'ophe'
+					? 'ophe_tournament1.jpg'
+					: undefined,
+			postDate,
 		);
 
 		tournamentPosts.push({ userId, post });
@@ -792,6 +804,142 @@ function createTournament(userIds: number[]): void {
 	mockDatabase.battles.push(tournament);
 
 	console.log(`Tournament created with ${usernames[winnerIndex]} as winner`);
+}
+
+function createOngoingTournament(userIds: number[]): void {
+	const existingTournament = mockDatabase.battles.some((b) => b.theme === 'Dot Revival');
+	if (existingTournament) return;
+
+	const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+	const inFiveDays = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
+
+	const tournament: Battle = {
+		id: generateId('battle'),
+		theme: 'Dot Revival',
+		createdAt: twoDaysAgo,
+		startsAt: twoDaysAgo,
+		endsAt: inFiveDays,
+		status: 'ONGOING',
+		description: 'Pattern is the new neutral',
+		maxPlayers: 4,
+		participants: [],
+	};
+
+	const tournamentUserIds = [userIds[2], userIds[3]];
+	const usernames = ['cha', 'ophe'];
+
+	const tournamentPostsData: PostData[] = [
+		{
+			title: 'Dot matrix',
+			caption: 'Structure in every circle. 🖤',
+			comments: [
+				{
+					userId: userIds[3],
+					content: 'The pattern does all the talking',
+					reply: {
+						userId: userIds[0],
+						content: 'Exactly the point',
+					},
+				},
+			],
+		},
+		{
+			title: 'Spotted',
+			caption: "You either see it or you don't.",
+			comments: [
+				{
+					userId: userIds[1],
+					content: 'I see it and I love it',
+				},
+			],
+		},
+	];
+
+	for (let i = 0; i < tournamentUserIds.length; i++) {
+		const userId = tournamentUserIds[i];
+		const username = usernames[i];
+		const allUserIds = userIds.filter((id) => id !== userId);
+
+		// Give explicit spaced dates (most recent first)
+		const postDate = new Date(now.getTime() - i * 6 * 60 * 60 * 1000);
+		const postId = generateId('post');
+
+		const post: Post = {
+			id: postId,
+			title: tournamentPostsData[i].title,
+			caption: tournamentPostsData[i].caption,
+			imageUrl: `${import.meta.env.BASE_URL}uploads/seed/tournament/${username === 'cha' ? 'cha_tournament2.jpg' : 'ophe_tournament2.jpg'}`,
+			authorId: userId,
+			createdAt: postDate,
+			updatedAt: postDate,
+			comments: [],
+			likes: [],
+		};
+
+		for (const commentData of tournamentPostsData[i].comments) {
+			const commentDate = getRandomDate(postDate, now);
+			const commentId = generateId('comment');
+
+			const comment: Comment = {
+				id: commentId,
+				content: commentData.content,
+				postId,
+				userId: commentData.userId,
+				createdAt: commentDate,
+				replies: [],
+			};
+
+			mockDatabase.comments.push(comment);
+			post.comments?.push(comment);
+
+			if (commentData.reply) {
+				const replyId = generateId('comment');
+				const reply: Comment = {
+					id: replyId,
+					content: commentData.reply.content,
+					postId,
+					userId: commentData.reply.userId,
+					parentId: commentId,
+					createdAt: getRandomDate(commentDate, now),
+				};
+				mockDatabase.comments.push(reply);
+				comment.replies?.push(reply);
+			}
+		}
+
+		const shuffled = shuffleArray(allUserIds);
+		const likeCount = Math.floor(Math.random() * 4) + 1;
+
+		for (const likerId of shuffled.slice(0, likeCount)) {
+			if (likerId === userId) continue;
+			const like: Like = {
+				id: generateId('like'),
+				userId: likerId,
+				postId,
+				createdAt: getRandomDate(postDate, now),
+			};
+			mockDatabase.likes.push(like);
+			post.likes?.push(like);
+		}
+
+		mockDatabase.posts.push(post);
+
+		mockDatabase.battleParticipants.push({
+			id: generateId('battleParticipant'),
+			battleId: tournament.id,
+			userId,
+			postId,
+			submittedAt: getRandomDate(twoDaysAgo, now),
+		});
+	}
+
+	tournament.participants = mockDatabase.battleParticipants.filter(
+		(p) => p.battleId === tournament.id,
+	);
+
+	mockDatabase.battles.push(tournament);
+
+	console.log('Ongoing tournament "Dot Revival" created');
 }
 
 // -------------------- MAIN --------------------
@@ -1064,7 +1212,7 @@ export function seedDatabase(): typeof mockDatabase {
 
 	// TOURNAMENTS
 	createTournament(userIds);
-
+	createOngoingTournament(userIds);
 	console.log('Seeding mock database completed.');
 
 	return mockDatabase;

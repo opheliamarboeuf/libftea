@@ -73,39 +73,47 @@ export function toContextUser(base: BaseUser): User {
 	};
 }
 
-function toContextPost(p: typeof mockDatabase.posts[0]): Post {
-    const author = mockDatabase.users.find(u => u.id === p.authorId)!;
-    return {
-        id: p.id,
-        title: p.title,
-        caption: p.caption,
-        imageUrl: p.imageUrl,
-        createdAt: p.createdAt.toISOString(),
-        updatedAt: p.updatedAt.toISOString(),
-        author: {
-            id: author.id,
-            username: author.username,
-            role: author.role,
-        },
-        likes: p.likes?.length ?? 0,
-        battleParticipants: [],
-    };
+function toContextPost(p: (typeof mockDatabase.posts)[0]): Post {
+	const author = mockDatabase.users.find((u) => u.id === p.authorId)!;
+	return {
+		id: p.id,
+		title: p.title,
+		caption: p.caption,
+		imageUrl: p.imageUrl,
+		createdAt: p.createdAt.toISOString(),
+		updatedAt: p.updatedAt.toISOString(),
+		author: {
+			id: author.id,
+			username: author.username,
+			role: author.role,
+		},
+		likes: p.likes?.length ?? 0,
+		battleParticipants: [],
+	};
 }
 
 export async function fetchUserPosts(userId: number): Promise<Post[]> {
-    const tournamentPostIds = new Set(
-        mockDatabase.battleParticipants.map(bp => bp.postId)
-    );
-    return mockDatabase.posts
-        .filter(p => p.authorId === userId && !tournamentPostIds.has(p.id))
-        .map(toContextPost);
+	const tournamentPostIds = new Set(mockDatabase.battleParticipants.map((bp) => bp.postId));
+	return mockDatabase.posts
+		.filter((p) => p.authorId === userId && !tournamentPostIds.has(p.id))
+		.map(toContextPost)
+		.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
 
-export async function fetchUserTournamentPosts(userId: number): Promise<Post[]> {
-    const tournamentPostIds = new Set(
-        mockDatabase.battleParticipants.map(bp => bp.postId)
-    );
-    return mockDatabase.posts
-        .filter(p => p.authorId === userId && tournamentPostIds.has(p.id))
-        .map(toContextPost);
+export async function fetchUserTournamentPosts(userId: number): Promise<any[]> {
+	const tournamentPostIds = new Set(mockDatabase.battleParticipants.map((bp) => bp.postId));
+	return mockDatabase.posts
+		.filter((p) => p.authorId === userId && tournamentPostIds.has(p.id))
+		.map((p) => {
+			const battle = mockDatabase.battles.find((b) =>
+				mockDatabase.battleParticipants.some(
+					(bp) => bp.postId === p.id && bp.battleId === b.id,
+				),
+			);
+			return {
+				...toContextPost(p),
+				battleParticipants: battle ? [{ Battle: { theme: battle.theme } }] : [],
+			};
+		})
+		.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
