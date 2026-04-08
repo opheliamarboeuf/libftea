@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '../../context/UserContext';
 import { useTranslation } from 'react-i18next';
+import { mockDatabase } from '../../mockData';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -39,20 +40,13 @@ export function ChatNavbar({
 	const [blockedUsers, setBlockedUsers] = useState<Set<number>>(new Set());
 	const { t } = useTranslation();
 
-	const fetchBlockedUsers = useCallback(async () => {
-		try {
-			const res = await fetch(`${API_URL}/friends/blocked`, {
-				credentials: 'include',
-				headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-			});
-			const data = await res.json();
-			if (Array.isArray(data)) {
-				setBlockedUsers(new Set(data.map((u: any) => u.id)));
-			}
-		} catch (e) {
-			console.error(e);
-		}
-	}, []);
+	const fetchBlockedUsers = useCallback(() => {
+		if (!user) return;
+		const blockedIds = mockDatabase.friendships
+			.filter((f) => f.requesterId === user.id && f.status === 'BLOCKED')
+			.map((f) => f.addresseId);
+		setBlockedUsers(new Set(blockedIds));
+	}, [user]);
 
 	useEffect(() => {
 		fetchBlockedUsers();

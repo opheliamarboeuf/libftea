@@ -40,12 +40,17 @@ export const useComments = (postId: number) => {
 							userId: c.userId,
 							postId: c.postId,
 							replies: (c.replies ?? []).map((r) => {
-								const replyAuthor = mockDatabase.users.find((u) => u.id === r.userId);
+								const replyAuthor = mockDatabase.users.find(
+									(u) => u.id === r.userId,
+								);
 								return {
 									id: r.id,
 									content: r.content,
 									createdAt: r.createdAt.toISOString(),
-									user: { id: replyAuthor?.id ?? r.userId, username: replyAuthor?.username ?? '' },
+									user: {
+										id: replyAuthor?.id ?? r.userId,
+										username: replyAuthor?.username ?? '',
+									},
 									userId: r.userId,
 									postId: r.postId,
 									replies: [],

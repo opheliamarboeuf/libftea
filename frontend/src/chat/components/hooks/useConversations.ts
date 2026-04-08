@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import i18n from 'i18next';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { mockDatabase } from '../../../mockData';
 
 function deduplicateAndSort(data: any[]): any[] {
 	const seen = new Map<string, any>();
@@ -56,48 +54,63 @@ export function useConversations(_currentUserId?: number) {
 		);
 	}, []);
 
+	const toConvShape = (conv: any) => {
+		const messages = mockDatabase.messages
+			.filter((m) => m.conversationId === conv.id)
+			.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+			.map((m) => ({
+				id: m.id,
+				content: m.content,
+				senderId: m.senderId,
+				createdAt: m.createdAt.toISOString(),
+				User: { id: m.senderId, username: '', profile: { avatarUrl: '' } },
+			}));
+		return {
+			id: conv.id,
+			User: conv.users.map((u: any) => ({
+				id: u.id,
+				username: u.username,
+				profile: { avatarUrl: u.profile?.avatarUrl ?? null },
+			})),
+			Message: messages.slice(0, 1),
+			createdAt: conv.createdAt.toISOString(),
+		};
+	};
+
 	const fetchConversations = useCallback(() => {
-		fetch(`${API_URL}/chat/conversations`, {
-			credentials: 'include',
-			headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-		})
-			.then((r) => r.json())
-			.then((data: any[]) => {
-				if (!Array.isArray(data)) return;
-				const deduped = deduplicateAndSort(data);
-				setConversations(deduped);
-				conversationsRef.current = deduped;
-			})
-			.catch(console.error);
-	}, []);
+		if (!_currentUserId) return;
+		const userConvs = mockDatabase.conversations
+			.filter((c) => c.users.some((u) => u.id === _currentUserId))
+			.map(toConvShape);
+		const deduped = deduplicateAndSort(userConvs);
+		setConversations(deduped);
+		conversationsRef.current = deduped;
+	}, [_currentUserId]);
 
 	useEffect(() => {
 		fetchConversations();
-	}, []);
+	}, [fetchConversations]);
 
 	const openConversation = async (otherUserId: number) => {
-		const res = await fetch(`${API_URL}/chat/conversations/${otherUserId}`, {
-			method: 'POST',
-			credentials: 'include',
-			headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-		});
-		if (!res.ok) throw new Error(i18n.t('errors.chat'));
-		const data = await res.json();
-		const conv = Array.isArray(data)
-			? data.reduce((best: any, c: any) => {
-					const bestDate = best.Message?.[0]?.createdAt ?? best.createdAt;
-					const cDate = c.Message?.[0]?.createdAt ?? c.createdAt;
-					return new Date(cDate) > new Date(bestDate) ? c : best;
-				})
-			: data;
-
+		let conv = mockDatabase.conversations.find(
+			(c) =>
+				c.users.some((u) => u.id === _currentUserId) &&
+				c.users.some((u) => u.id === otherUserId),
+		);
+		if (!conv) {
+			const user1 = mockDatabase.users.find((u) => u.id === _currentUserId)!;
+			const user2 = mockDatabase.users.find((u) => u.id === otherUserId)!;
+			const newId = Math.max(0, ...mockDatabase.conversations.map((c) => c.id)) + 1;
+			conv = { id: newId, users: [user1, user2], createdAt: new Date(), messages: [] };
+			mockDatabase.conversations.push(conv);
+		}
+		const shaped = toConvShape(conv);
 		setConversations((prev) => {
-			const existing = prev.find((c) => c.id === conv.id);
+			const existing = prev.find((c) => c.id === shaped.id);
 			if (existing) return prev;
-			return [conv, ...prev];
+			return [shaped, ...prev];
 		});
-
-		return conv;
+		return shaped;
 	};
 
 	return {

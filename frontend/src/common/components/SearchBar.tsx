@@ -1,10 +1,8 @@
-import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "./SearchBar.css";
-import { useTranslation } from "react-i18next";
-
-const API_URL = import.meta.env.VITE_API_URL;
-const URL = `${API_URL}/users`;
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './SearchBar.css';
+import { useTranslation } from 'react-i18next';
+import { mockDatabase } from '../../mockData';
 
 interface SearchResult {
 	id: number;
@@ -29,21 +27,18 @@ export const SearchBar = () => {
 			return;
 		}
 
-		const searchUsers = async () => {
-			try {
-				const token = localStorage.getItem('token');
-				const res = await fetch(`${URL}/search?username=${query}`, {
-					headers: { Authorization: `Bearer ${token}` },
-				});
+		const searchUsers = () => {
+			const filtered = mockDatabase.users
+				.filter((u) => u.username.toLowerCase().includes(query.toLowerCase()))
+				.map((u) => ({
+					id: u.id,
+					username: u.username,
+					role: u.role,
+					avatarUrl: u.profile?.avatarUrl ?? undefined,
+				}));
 
-				if (res.ok) {
-					const data = await res.json();
-					setResults(data);
-					setShowResults(true);
-				}
-			} catch (err) {
-				console.error('Search error:', err);
-			}
+			setResults(filtered);
+			setShowResults(true);
 		};
 
 		const timeoutId = setTimeout(searchUsers, 300);
@@ -86,9 +81,13 @@ export const SearchBar = () => {
 						>
 							{user.avatarUrl && (
 								<img
-									src={`${API_URL}${user.avatarUrl}`}
+									src={user.avatarUrl}
 									alt={user.username}
 									className="search-avatar"
+									onError={(e) => {
+										(e.target as HTMLImageElement).src =
+											'/transcendence/default-avatar.jpeg';
+									}}
 								/>
 							)}
 							<span className="search-username">

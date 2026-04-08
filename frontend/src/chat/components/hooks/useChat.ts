@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { tournamentApi } from '../../../tournament/api';
+import { mockDatabase } from '../../../mockData';
 
 interface Message {
 	id: number;
@@ -51,28 +51,52 @@ export function useChat(conversationId: number, currentUserId: number) {
 			setTournamentState(tournamentCache);
 			return;
 		}
-		tournamentApi
-			.getRecentTournament()
-			.then((t) => {
-				tournamentCache = t ?? null;
-				setTournamentState(tournamentCache);
-			})
-			.catch(() => {
-				tournamentCache = null;
-				setTournamentState(null);
-			});
-	}, []); // plus de dépendance sur conversationId
+		const recent =
+			mockDatabase.battles.find((b) => b.status === 'FINISHED' || b.status === 'ONGOING') ??
+			null;
+		const state = recent
+			? {
+					id: recent.id,
+					status: recent.status,
+					winnerId: recent.winnerId,
+					endsAt: recent.endsAt.toISOString(),
+				}
+			: null;
+		tournamentCache = state;
+		setTournamentState(state);
+	}, []);
 
-	// Reset UI when conversation changes
+	// Reset UI and load messages when conversation changes
 	useEffect(() => {
-		setMessages([]);
-		messagesRef.current = [];
 		setIsTyping(false);
+		if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
 
 		const saved = localStorage.getItem(storageKey);
 		setLastReadMessageId(saved ? Number(saved) : null);
 
-		if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+		const conv = mockDatabase.conversations.find((c) => c.id === conversationId);
+		const loaded = (
+			conv?.messages ??
+			mockDatabase.messages.filter((m) => m.conversationId === conversationId)
+		)
+			.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+			.map((m) => {
+				const author = mockDatabase.users.find((u) => u.id === m.senderId);
+				return {
+					id: m.id,
+					content: m.content,
+					senderId: m.senderId,
+					createdAt: m.createdAt.toISOString(),
+					User: {
+						id: m.senderId,
+						username: author?.username ?? '',
+						profile: { avatarUrl: author?.profile?.avatarUrl ?? '' },
+					},
+				};
+			});
+
+		setMessages(loaded);
+		messagesRef.current = loaded;
 	}, [conversationId]);
 
 	const sendMessage = (content: string) => {
@@ -93,7 +117,9 @@ export function useChat(conversationId: number, currentUserId: number) {
 
 	const sendTournamentMessage = async () => {
 		try {
-			const fresh = await tournamentApi.getRecentTournament();
+			const fresh = mockDatabase.battles.find(
+				(b) => b.status === 'FINISHED' || b.status === 'ONGOING',
+			);
 
 			if (!fresh?.id) {
 				console.warn('No active or recent tournament');
@@ -107,9 +133,8 @@ export function useChat(conversationId: number, currentUserId: number) {
 			const isWinner = fresh.winnerId === currentUserId;
 
 			if (!isFinished) {
-				const participants = await tournamentApi.getParticipants(fresh.id);
-				const isParticipant = participants.some(
-					(p: { userId: number }) => p.userId === currentUserId,
+				const isParticipant = mockDatabase.battleParticipants.some(
+					(p) => p.battleId === fresh.id && p.userId === currentUserId,
 				);
 				if (!isParticipant) {
 					console.warn('User is not a tournament participant');

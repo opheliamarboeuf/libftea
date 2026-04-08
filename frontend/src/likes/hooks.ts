@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { likesApi } from './api';
 import { useUser } from '../context/UserContext';
 import { useModal } from '../context/ModalContext';
 import { Post } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
+import { mockDatabase } from '../mockData';
 
 export const useLike = (post: Post) => {
 	const [liked, setLiked] = useState(false);
@@ -14,37 +14,42 @@ export const useLike = (post: Post) => {
 	const { t } = useTranslation();
 
 	useEffect(() => {
-		let isMounted = true;
-		const fetchData = async () => {
-			try {
-				const [c, status] = await Promise.all([
-					likesApi.countLikes(post.id),
-					likesApi.isLiked(post.id),
-				]);
-
-				if (isMounted) {
-					setCount(c);
-					setLiked(status.liked);
-				}
-			} catch (err) {
-				console.error(err);
-			} finally {
-				if (isMounted) setLoading(false);
-			}
-		};
-		fetchData();
-		return () => {
-			isMounted = false;
-		};
-	}, [post.id]);
+		try {
+			const allLikes = mockDatabase.likes.filter((l) => l.postId === post.id);
+			setCount(allLikes.length);
+			setLiked(allLikes.some((l) => l.userId === user?.id));
+		} finally {
+			setLoading(false);
+		}
+	}, [post.id, user?.id]);
 
 	const toggleLike = () => {
 		if (post.battleParticipants?.length && user.id === post.author.id) {
 			showModal(t('errors.tournamentlike'));
 			return;
 		}
-		setLiked((prev) => !prev);
-		setCount((prev) => (liked ? prev - 1 : prev + 1));
+
+		if (!user) return;
+
+		const existingLike = mockDatabase.likes.find(
+			(l) => l.postId === post.id && l.userId === user.id,
+		);
+
+		if (existingLike) {
+			const idx = mockDatabase.likes.indexOf(existingLike);
+			if (idx > -1) mockDatabase.likes.splice(idx, 1);
+			setLiked(false);
+			setCount((prev) => prev - 1);
+		} else {
+			mockDatabase.likes.push({
+				id: Math.max(0, ...mockDatabase.likes.map((l) => l.id)) + 1,
+				userId: user.id,
+				postId: post.id,
+				createdAt: new Date(),
+			});
+			setLiked(true);
+			setCount((prev) => prev + 1);
+		}
 	};
 
 	return { liked, count, loading, toggleLike };
