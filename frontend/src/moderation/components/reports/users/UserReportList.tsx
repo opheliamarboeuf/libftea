@@ -7,6 +7,7 @@ import { useUser } from '../../../../context/UserContext';
 import { ConfirmDialog } from '../../../../common/components/ConfirmDialog';
 import { HandleReportModal } from '../handleReportModal';
 import { useTranslation } from 'react-i18next';
+import { defaultAvatar, defaultCover } from '../../../../mockData/uploads/default';
 
 interface UserReportListProps {
 	reports: UserReportType[];
@@ -25,6 +26,8 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 	const goToProfile = (userId: number) => {
 		navigate(`/users/${userId}`);
 	};
+
+
 
 	if (!Array.isArray(reports) || reports.length === 0) {
 		return (
@@ -99,26 +102,18 @@ export function UserReportList({ reports, onUpdate }: UserReportListProps) {
 									<>
 										<div className="user-report-cover">
 											<div className="user-report-label">{t('userreport.cover')}</div>
-											{report.reportedUser.profile.coverUrl ? (
-												<img
-													src={`${API_URL}${report.reportedUser.profile.coverUrl}`}
-													alt="Cover"
-												/>
-											) : (
-												<span>{t('userreport.nocover')}</span>
-											)}
+											<img
+												src={report.reportedUser.profile.coverUrl ? `${API_URL}${report.reportedUser.profile.coverUrl}` : defaultCover}
+												alt="Cover"
+											/>
 										</div>
 										<div className="user-report-avatar-bio-row">
 											<div className="user-report-avatar">
 												<div className="user-report-label">{t('userreport.avatar')}</div>
-												{report.reportedUser.profile.avatarUrl ? (
-													<img
-														src={`${API_URL}${report.reportedUser.profile.avatarUrl}`}
-														alt="Avatar"
-													/>
-												) : (
-													<span>{t('userreport.noavatar')}</span>
-												)}
+												<img
+													src={report.reportedUser.profile.avatarUrl ? `${API_URL}${report.reportedUser.profile.avatarUrl}` : defaultAvatar}
+													alt="Avatar"
+												/>
 											</div>
 											<div className="user-report-bio">
 												<div className="user-report-label">{t('editprofile.bio')}</div>
