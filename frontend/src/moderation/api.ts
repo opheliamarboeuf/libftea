@@ -1,84 +1,162 @@
-import { PostReportType, UserReportType } from './types';
-import { CreateReportType, ReportHandlePayload } from './types';
-import i18n from '../i18n';
+import { PostReportType, UserReportType, ModerationLogType } from './types';
+import { ReportHandlePayload } from './types';
+import { ReportStatus, ReportCategory, ModerationLogCategory } from './types';
+import { mockDatabase } from '../mockData';
 
-const API_URL = import.meta.env.VITE_API_URL;
+// Helper function to map mock logs to ModerationLogType
+const mapModerationLog = (log: (typeof mockDatabase.moderationLogs)[0]): ModerationLogType => {
+	const actor = mockDatabase.users.find((u) => u.id === log.actorId) || {
+		id: log.actorId,
+		username: 'Unknown',
+	};
+	const targetUser = log.targetUserId
+		? mockDatabase.users.find((u) => u.id === log.targetUserId)
+		: undefined;
+	const targetPost = log.targetPostId
+		? mockDatabase.posts.find((p) => p.id === log.targetPostId)
+		: undefined;
+
+	return {
+		id: log.id,
+		action: log.action as unknown as ModerationLogCategory,
+		createdAt: log.createdAt,
+		actor: {
+			id: actor.id,
+			username: actor.username,
+		},
+		targetUser: targetUser
+			? {
+					id: targetUser.id,
+					username: targetUser.username,
+				}
+			: undefined,
+		targetPost: targetPost
+			? {
+					id: targetPost.id,
+					title: targetPost.title,
+					author: targetPost.author
+						? {
+								id: targetPost.author.id,
+								username: targetPost.author.username,
+							}
+						: { id: 0, username: 'Unknown' },
+				}
+			: undefined,
+		status: 'PENDING' as ReportStatus,
+	};
+};
+
+// Helper function to map mock reports to UserReportType
+const mapUserReport = (report: (typeof mockDatabase.reports)[0]): UserReportType | null => {
+	if (!report.reportedUserId) return null;
+
+	const reportedUser = mockDatabase.users.find((u) => u.id === report.reportedUserId);
+	const reporter = mockDatabase.users.find((u) => u.id === report.reporterId);
+	const handledByUser = report.handledById
+		? mockDatabase.users.find((u) => u.id === report.handledById)
+		: undefined;
+
+	if (!reportedUser || !reporter) return null;
+
+	return {
+		id: report.id,
+		reporter: {
+			id: reporter.id,
+			username: reporter.username,
+		},
+		reportedUser: {
+			id: reportedUser.id,
+			username: reportedUser.username,
+			profile: reportedUser.profile,
+		},
+		reportCategory: report.reportCategory as unknown as ReportCategory,
+		reportDescription: report.reportDescription,
+		handledBy: handledByUser
+			? {
+					id: handledByUser.id,
+					username: handledByUser.username,
+				}
+			: undefined,
+		status: report.status as ReportStatus,
+		createdAt: report.createdAt.toISOString(),
+		moderatorMessage: report.moderatorMessage,
+		handledAt: report.handledAt?.toISOString(),
+	};
+};
+
+// Helper function to map mock reports to PostReportType
+const mapPostReport = (report: (typeof mockDatabase.reports)[0]): PostReportType | null => {
+	if (!report.reportedPostId) return null;
+
+	const reportedPost = mockDatabase.posts.find((p) => p.id === report.reportedPostId);
+	const reporter = mockDatabase.users.find((u) => u.id === report.reporterId);
+	const handledByUser = report.handledById
+		? mockDatabase.users.find((u) => u.id === report.handledById)
+		: undefined;
+
+	if (!reportedPost || !reporter || !reportedPost.author) return null;
+
+	return {
+		id: report.id,
+		reporter: {
+			id: reporter.id,
+			username: reporter.username,
+		},
+		reportedPost: {
+			id: reportedPost.id,
+			title: reportedPost.title,
+			imageUrl: reportedPost.imageUrl,
+			caption: reportedPost.caption,
+			createdAt: reportedPost.createdAt.toISOString(),
+			author: {
+				id: reportedPost.author.id,
+				username: reportedPost.author.username,
+			},
+		},
+		reportCategory: report.reportCategory as unknown as ReportCategory,
+		reportDescription: report.reportDescription,
+		handledBy: handledByUser
+			? {
+					id: handledByUser.id,
+					username: handledByUser.username,
+				}
+			: undefined,
+		status: report.status as ReportStatus,
+		createdAt: report.createdAt.toISOString(),
+		moderatorMessage: report.moderatorMessage,
+		handledAt: report.handledAt?.toISOString(),
+	};
+};
 
 export const moderationApi = {
 	fetchAdminLogs: async () => {
-		const res = await fetch(`${API_URL}/moderation/admin/logs`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchlogsadmin');
-			throw new Error(message);
-		}
-		return data;
+		// Return mock moderation logs
+		return mockDatabase.moderationLogs.map(mapModerationLog);
 	},
 
 	fetchModLogs: async () => {
-		const res = await fetch(`${API_URL}/moderation/mod/logs`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchlogsmod');
-			throw new Error(message);
-		}
-		return data;
+		// Return mock moderation logs (same as admin for this implementation)
+		return mockDatabase.moderationLogs.map(mapModerationLog);
 	},
 
 	// ---------------------------------- CHANGE ROLES  -----------------------------------
 
 	changeAdminRole: async (userId: number) => {
-		const res = await fetch(`${API_URL}/moderation/role/admin/${userId}`, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.changeroleadmin');
-			throw new Error(message);
+		// Mock implementation - just return success
+		const user = mockDatabase.users.find((u) => u.id === userId);
+		if (user) {
+			user.role = 'ADMIN';
 		}
-
-		return data;
+		return user;
 	},
 
 	changeModRole: async (userId: number) => {
-		const res = await fetch(`${API_URL}/moderation/role/mod/${userId}`, {
-			method: 'PUT',
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-
-		if (!res.ok) {
-			throw new Error(data.message || i18n.t('modfail.changerolemod'));
+		// Mock implementation - just return success
+		const user = mockDatabase.users.find((u) => u.id === userId);
+		if (user) {
+			user.role = 'MOD';
 		}
-
-		return data;
+		return user;
 	},
 
 	// ---------------------------------- HANDLE REPORTS ----------------------------------
@@ -87,339 +165,171 @@ export const moderationApi = {
 		reportId: number,
 		payload: ReportHandlePayload,
 	): Promise<PostReportType> => {
-		const res = await fetch(`${API_URL}/moderation/reports/${reportId}/reject`, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-			body: JSON.stringify(payload),
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.reject');
-			throw new Error(message);
+		// Mock implementation - update report status and return it
+		const report = mockDatabase.reports.find((r) => r.id === reportId);
+		if (report) {
+			report.status = 'REJECTED';
+			report.moderatorMessage = payload.moderatorMessage;
+			report.handledAt = new Date();
 		}
-		return data;
+
+		const mapped = report ? mapPostReport(report) : null;
+		if (!mapped) throw new Error('Report not found');
+		return mapped;
 	},
 
 	acceptReport: async (
 		reportId: number,
 		payload: ReportHandlePayload,
 	): Promise<PostReportType> => {
-		const res = await fetch(`${API_URL}/moderation/reports/${reportId}/accept`, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-			body: JSON.stringify(payload),
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.accept');
-			throw new Error(message);
+		// Mock implementation - update report status and return it
+		const report = mockDatabase.reports.find((r) => r.id === reportId);
+		if (report) {
+			report.status = 'ACCEPTED';
+			report.moderatorMessage = payload.moderatorMessage;
+			report.handledAt = new Date();
 		}
-		return data;
+
+		const mapped = report ? mapPostReport(report) : null;
+		if (!mapped) throw new Error('Report not found');
+		return mapped;
 	},
 
 	assignPendingReport: async (reportId: number) => {
-		const res = await fetch(`${API_URL}/moderation/reports/${reportId}/assign`, {
-			method: 'PUT',
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.assign');
-			throw new Error(message);
+		// Mock implementation
+		const report = mockDatabase.reports.find((r) => r.id === reportId);
+		if (report) {
+			report.status = 'ASSIGNED' as unknown as typeof report.status;
 		}
-		return data;
+		return report;
 	},
 
 	unassignPendingReport: async (reportId: number) => {
-		const res = await fetch(`${API_URL}/moderation/reports/${reportId}/unassign`, {
-			method: 'PUT',
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.unassign');
-			throw new Error(message);
+		// Mock implementation
+		const report = mockDatabase.reports.find((r) => r.id === reportId);
+		if (report) {
+			report.status = 'PENDING' as unknown as typeof report.status;
 		}
-		return data;
+		return report;
 	},
 
 	// ---------------------------------- BAN USERS ----------------------------------
 
 	banUser: async (targetId: number) => {
-		const res = await fetch(`${API_URL}/moderation/ban/${targetId}`, {
-			method: 'PUT',
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.ban');
-			throw new Error(message);
+		// Mock implementation
+		const user = mockDatabase.users.find((u) => u.id === targetId);
+		if (user) {
+			user.bannedAt = new Date();
 		}
-		return data;
+		return user;
 	},
 
 	unbanUser: async (targetId: number) => {
-		const res = await fetch(`${API_URL}/moderation/unban/${targetId}`, {
-			method: 'PUT',
-			headers: {
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.unban');
-			throw new Error(message);
+		// Mock implementation
+		const user = mockDatabase.users.find((u) => u.id === targetId);
+		if (user) {
+			user.bannedAt = null;
 		}
-		return data;
+		return user;
 	},
 
 	// ---------------------------------- USER REPORTS ----------------------------------
 
-	reportUser: async (payload: CreateReportType, userId: number): Promise<void> => {
-		const res = await fetch(`${API_URL}/moderation/reports/users/${userId}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-			body: JSON.stringify(payload),
-		});
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.userreport');
-			throw new Error(message);
-		}
+	reportUser: async (): Promise<void> => {
+		// Mock implementation - create a new report
+		// This would normally be created in the backend
 	},
 
 	fetchPendingUserReport: async () => {
-		const res = await fetch(`${API_URL}/moderation/reports/users/pending`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchreports');
-			throw new Error(message);
-		}
-		return data;
+		// Return pending user reports from mock data
+		return mockDatabase.reports
+			.filter((r) => r.reportedUserId && r.status === 'PENDING')
+			.map(mapUserReport)
+			.filter((r): r is UserReportType => r !== null);
 	},
 
 	fetchMyUserReports: async (): Promise<UserReportType[]> => {
-		const res = await fetch(`${API_URL}/moderation/reports/users/mine`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchuserreports');
-			throw new Error(message);
-		}
-		return data;
+		// Mock implementation - return assigned reports
+		return mockDatabase.reports
+			.filter((r) => r.reportedUserId && (r.status as unknown as string) === 'ASSIGNED')
+			.map(mapUserReport)
+			.filter((r): r is UserReportType => r !== null);
 	},
 
 	fetchAllReportsForThisUser: async (reportId: number): Promise<UserReportType[]> => {
-		const res = await fetch(`${API_URL}/moderation/reports/users/all/${reportId}`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
+		// Mock implementation - return reports for a specific user
+		const report = mockDatabase.reports.find((r) => r.id === reportId);
+		if (!report || !report.reportedUserId) return [];
 
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchalluser');
-			throw new Error(message);
-		}
-		return data;
+		return mockDatabase.reports
+			.filter((r) => r.reportedUserId === report.reportedUserId)
+			.map(mapUserReport)
+			.filter((r): r is UserReportType => r !== null);
 	},
 
 	fetchAllAssignedUserReports: async (): Promise<UserReportType[]> => {
-		const res = await fetch(`${API_URL}/moderation/reports/users/all/assigned`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchassigned');
-			throw new Error(message);
-		}
-		return data;
+		// Return assigned user reports from mock data
+		return mockDatabase.reports
+			.filter((r) => r.reportedUserId && (r.status as unknown as string) === 'ASSIGNED')
+			.map(mapUserReport)
+			.filter((r): r is UserReportType => r !== null);
 	},
 
 	fetchAllHandledUserReports: async (): Promise<UserReportType[]> => {
-		const res = await fetch(`${API_URL}/moderation/reports/users/all/handled`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchhandled');
-			throw new Error(message);
-		}
-		return data;
+		// Return handled (accepted or rejected) user reports from mock data
+		return mockDatabase.reports
+			.filter((r) => r.reportedUserId && (r.status === 'ACCEPTED' || r.status === 'REJECTED'))
+			.map(mapUserReport)
+			.filter((r): r is UserReportType => r !== null);
 	},
 
 	// ---------------------------------- POST REPORTS ----------------------------------
 
-	reportPost: async (payload: CreateReportType, postId: number): Promise<void> => {
-		const res = await fetch(`${API_URL}/moderation/reports/posts/${postId}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-			body: JSON.stringify(payload),
-		});
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.postreport');
-			throw new Error(message);
-		}
+	reportPost: async (): Promise<void> => {
+		// Mock implementation - create a new report
+		// This would normally be created in the backend
 	},
 
 	fetchPendingPostReports: async (): Promise<PostReportType[]> => {
-		const res = await fetch(`${API_URL}/moderation/reports/posts/pending`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchpost');
-			throw new Error(message);
-		}
-		return data;
+		// Return pending post reports from mock data
+		return mockDatabase.reports
+			.filter((r) => r.reportedPostId && r.status === 'PENDING')
+			.map(mapPostReport)
+			.filter((r): r is PostReportType => r !== null);
 	},
 
 	fetchMyPostReports: async (): Promise<PostReportType[]> => {
-		const res = await fetch(`${API_URL}/moderation/reports/posts/mine`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchpostreports');
-			throw new Error(message);
-		}
-		return data;
+		// Mock implementation - return assigned reports
+		return mockDatabase.reports
+			.filter((r) => r.reportedPostId && (r.status as unknown as string) === 'ASSIGNED')
+			.map(mapPostReport)
+			.filter((r): r is PostReportType => r !== null);
 	},
 
 	fetchAllReportsForThisPost: async (reportId: number): Promise<PostReportType[]> => {
-		const res = await fetch(`${API_URL}/moderation/reports/posts/all/${reportId}`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
+		// Mock implementation - return reports for a specific post
+		const report = mockDatabase.reports.find((r) => r.id === reportId);
+		if (!report || !report.reportedPostId) return [];
 
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchallpost');
-			throw new Error(message);
-		}
-		return data;
+		return mockDatabase.reports
+			.filter((r) => r.reportedPostId === report.reportedPostId)
+			.map(mapPostReport)
+			.filter((r): r is PostReportType => r !== null);
 	},
 
 	fetchAllAssignedPostReports: async (): Promise<PostReportType[]> => {
-		const res = await fetch(`${API_URL}/moderation/reports/posts/all/assigned`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchassignedpost');
-			throw new Error(message);
-		}
-		return data;
+		// Return assigned post reports from mock data
+		return mockDatabase.reports
+			.filter((r) => r.reportedPostId && (r.status as unknown as string) === 'ASSIGNED')
+			.map(mapPostReport)
+			.filter((r): r is PostReportType => r !== null);
 	},
 
 	fetchAllHandledPostReports: async (): Promise<PostReportType[]> => {
-		const res = await fetch(`${API_URL}/moderation/reports/posts/all/handled`, {
-			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${localStorage.getItem('token')}`,
-			},
-		});
-
-		const data = await res.json();
-		if (!res.ok) {
-			const message = Array.isArray(data.message)
-				? data.message[0]
-				: data.message || i18n.t('modfail.fetchhandledpost');
-			throw new Error(message);
-		}
-		return data;
+		// Return handled (accepted or rejected) post reports from mock data
+		return mockDatabase.reports
+			.filter((r) => r.reportedPostId && (r.status === 'ACCEPTED' || r.status === 'REJECTED'))
+			.map(mapPostReport)
+			.filter((r): r is PostReportType => r !== null);
 	},
 };
