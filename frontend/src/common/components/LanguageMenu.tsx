@@ -10,8 +10,8 @@ interface Props {
 const LanguageMenu = ({ fixed = false }: Props) => {
 	const { t } = useTranslation();
 	const languages = [ 
-		{ code: 'fr', label: 'FR'},
 		{ code: 'en', label: 'EN'},
+		{ code: 'fr', label: 'FR'},
 		{ code: 'jp', label: 'JP'},
 	];
 	const [ langMenuHidden, setLangMenuHidden ] = useState(true);

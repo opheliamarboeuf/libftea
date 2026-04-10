@@ -19,8 +19,8 @@ export const LeftMenu = () => {
 	const [switcherOpen, setSwitcherOpen] = useState(false);
 
 	const languages = [
-		{ code: 'fr', label: 'FR'},
 		{ code: 'en', label: 'EN'},
+		{ code: 'fr', label: 'FR'},
 		{ code: 'jp', label: 'JP'},
 	];
 
