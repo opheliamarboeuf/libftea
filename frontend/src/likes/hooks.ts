@@ -3,7 +3,7 @@ import { useUser } from '../context/UserContext';
 import { useModal } from '../context/ModalContext';
 import { Post } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
-import { mockDatabase } from '../mockData';
+import { mockDatabase, createNotification } from '../mockData';
 
 export const useLike = (post: Post) => {
 	const [liked, setLiked] = useState(false);
@@ -49,6 +49,11 @@ export const useLike = (post: Post) => {
 			});
 			setLiked(true);
 			setCount((prev) => prev + 1);
+
+			// Notify post author (don't notify yourself)
+			if (post.author.id !== user.id) {
+				createNotification(post.author.id, 'LIKE', { username: user.username });
+			}
 		}
 	};
 

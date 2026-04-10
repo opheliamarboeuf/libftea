@@ -1,7 +1,7 @@
 // -------------------- TYPES --------------------
 
 type Role = 'USER' | 'MOD' | 'ADMIN';
-type NotificationType = 'COMMENT' | 'COMMENT_REPLY' | 'LIKE' | 'FRIEND_REQUEST';
+type NotificationType = 'COMMENT' | 'COMMENT_REPLY' | 'LIKE' | 'FRIEND_REQUEST' | 'FRIEND_REQUEST_ACCEPTED';
 type ReportCategory = 'HARASSMENT' | 'INAPPROPRIATE_CONTENT';
 type ReportStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED';
 type FriendshipStatus = 'PENDING' | 'ACCEPTED' | 'BLOCKED';
@@ -230,9 +230,22 @@ function createUser(email: string, username: string, role: Role, bio: string): B
 	return user;
 }
 
+// -------------------- NOTIFICATION LISTENERS --------------------
+
+type NotificationListener = () => void;
+const notificationListeners: NotificationListener[] = [];
+
+export function onNotificationChange(listener: NotificationListener): () => void {
+	notificationListeners.push(listener);
+	return () => {
+		const idx = notificationListeners.indexOf(listener);
+		if (idx > -1) notificationListeners.splice(idx, 1);
+	};
+}
+
 // -------------------- NOTIFICATIONS --------------------
 
-function createNotification(
+export function createNotification(
 	userId: number,
 	type: NotificationType,
 	metadata: Record<string, string>,
@@ -243,10 +256,11 @@ function createNotification(
 		type,
 		message: '',
 		metadata,
-		isRead: Math.random() > 0.5,
+		isRead: false,
 		createdAt: new Date(),
 	};
 	mockDatabase.notifications.push(notification);
+	notificationListeners.forEach((l) => l());
 }
 
 // -------------------- MODERATION LOGS --------------------

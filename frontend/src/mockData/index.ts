@@ -19,7 +19,7 @@
  * ```
  */
 
-export { seedDatabase, mockDatabase } from './seed';
+export { seedDatabase, mockDatabase, createNotification, onNotificationChange } from './seed';
 export type {
 	UserProfile,
 	BaseUser,

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { mockDatabase } from '../mockData';
+import { mockDatabase, onNotificationChange } from '../mockData';
 
 export interface Notification {
 	id: number;
@@ -20,10 +20,11 @@ export const useNotifications = (userId: number | undefined) => {
 	const [notifications, setNotifications] = useState<Notification[]>([]);
 	const { t } = useTranslation();
 
-	useEffect(() => {
+	const loadNotifications = useCallback(() => {
 		if (!userId) return;
 		const mockNotifs = mockDatabase.notifications
 			.filter((n) => n.userId === userId)
+			.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 			.map((n) => ({
 				id: n.id,
 				type: n.type,
@@ -35,6 +36,12 @@ export const useNotifications = (userId: number | undefined) => {
 			}));
 		setNotifications(mockNotifs);
 	}, [userId]);
+
+	useEffect(() => {
+		loadNotifications();
+		const unsubscribe = onNotificationChange(loadNotifications);
+		return unsubscribe;
+	}, [loadNotifications]);
 
 	const unreadCount = notifications.filter((n) => !n.isRead).length;
 

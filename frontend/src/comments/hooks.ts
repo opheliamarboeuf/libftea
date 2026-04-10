@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
-import { mockDatabase } from '../mockData';
+import { mockDatabase, createNotification } from '../mockData';
 
 interface User {
 	id: number;
@@ -84,6 +84,12 @@ export const useComments = (postId: number) => {
 			postId,
 		};
 		setComments((prev) => [...prev, newComment]);
+
+		// Notify post author (don't notify yourself)
+		const post = mockDatabase.posts.find((p) => p.id === postId);
+		if (post && post.authorId !== user.id) {
+			createNotification(post.authorId, 'COMMENT', { username: user.username });
+		}
 	};
 
 	const removeComment = (arr: Comment[], commentId: number): Comment[] => {
@@ -124,6 +130,21 @@ export const useComments = (postId: number) => {
 			};
 			return addReply(prev);
 		});
+
+		// Notify parent comment author (don't notify yourself)
+		const findAuthor = (arr: Comment[]): number | undefined => {
+			for (const c of arr) {
+				if (c.id === parentCommentId) return c.userId;
+				if (c.replies) {
+					const found = findAuthor(c.replies);
+					if (found) return found;
+				}
+			}
+		};
+		const parentAuthorId = findAuthor(comments);
+		if (parentAuthorId && parentAuthorId !== user.id) {
+			createNotification(parentAuthorId, 'COMMENT_REPLY', { username: user.username });
+		}
 	};
 
 	return { comments, loading, error, createComment, deleteComment, replyComment };
