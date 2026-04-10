@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { profileApi } from "./api";
 import { useUser } from "../context/UserContext";
 import { useTranslation } from "react-i18next";
+import { mockDatabase } from "../mockData";
 
 const MAX_BIO_LENGTH = 400;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -81,27 +81,34 @@ export function useProfileEdit() {
 		}
 
 		setIsLoading(true);
-		// Send update request to backend
 		try {
-			const data = await profileApi.updateProfile(bio, avatarFile, coverFile);
+			const newAvatarUrl = avatarFile ? URL.createObjectURL(avatarFile) : (user?.profile?.avatarUrl ?? null);
+			const newCoverUrl = coverFile ? URL.createObjectURL(coverFile) : (user?.profile?.coverUrl ?? null);
 
-			// Update user context with new profile data
+			// Update mockDatabase
+			const dbUser = mockDatabase.users.find((u) => u.id === user?.id);
+			if (dbUser) {
+				dbUser.profile.bio = bio;
+				if (avatarFile) dbUser.profile.avatarUrl = newAvatarUrl;
+				if (coverFile) dbUser.profile.coverUrl = newCoverUrl;
+			}
+
+			// Update user context
 			setUser((prevUser) =>
 				prevUser
 					? {
 							...prevUser,
 							profile: {
 								...prevUser.profile,
-								bio: data.bio,
-								avatarUrl: data.avatarUrl,
-								coverUrl: data.coverUrl,
+								bio,
+								avatarUrl: newAvatarUrl,
+								coverUrl: newCoverUrl,
 							},
 					  }
 					: prevUser
 			);
 			return true;
 		} catch (error) {
-			// Handle API or network errors
 			if (error instanceof Error) {
 				setErrorMessage(error.message);
 			} else {

@@ -1,0 +1,23 @@
+services:
+  caddy:
+    image: caddy:alpine
+    ports:
+      - "4433:443"
+    volumes:
+      - ./Caddyfile.frontend:/etc/caddy/Caddyfile
+      - ./certs:/certs
+    depends_on:
+      - frontend
+
+  frontend:
+    build:
+      context: ./frontend
+      network: host
+    container_name: frontend
+    expose:
+      - "5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=https://localhost:4433

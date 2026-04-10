@@ -489,6 +489,7 @@ I was responsible for implementing the **Advanced Chat Features**, enhancing the
 
 **Challenges Overcome:**
 The most difficult part was synchronizing these features with my teammates' modules (Game and User). Through intense collaboration, I managed to incorporate all requirements, ensuring the chat depends correctly on the rest of the project's logic.
+
 ## Instructions
 
 # Prerequisites

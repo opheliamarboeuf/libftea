@@ -4,6 +4,19 @@ build:
 up:
 	docker compose up -d
 
+# Frontend only (no backend required)
+build-front:
+	docker compose -f docker-compose.frontend.yml build
+
+front:
+	docker compose -f docker-compose.frontend.yml up
+
+front-d:
+	docker compose -f docker-compose.frontend.yml up -d
+
+down-front:
+	docker compose -f docker-compose.frontend.yml down --remove-orphans
+
 # Start in development mode 
 dev:
 	docker compose up

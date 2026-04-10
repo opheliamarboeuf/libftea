@@ -157,7 +157,7 @@ export const Header = () => {
 							<img
 								src={
 									user?.profile?.avatarUrl
-										? `${API_URL}${user.profile.avatarUrl}`
+										? user.profile.avatarUrl.startsWith('blob:') ? user.profile.avatarUrl : `${API_URL}${user.profile.avatarUrl}`
 										: '/transcendence/default-avatar.jpeg'
 								}
 								alt="Small Avatar"

@@ -323,7 +323,7 @@ const UserProfilePage = () => {
 						<img
 							src={
 								userData.profile?.avatarUrl
-									? `${BASE_URL}${userData.profile.avatarUrl}`
+									? userData.profile.avatarUrl.startsWith('blob:') ? userData.profile.avatarUrl : `${BASE_URL}${userData.profile.avatarUrl}`
 									: '/transcendence/default-avatar.jpeg'
 							}
 							onError={(e) => {
@@ -365,7 +365,7 @@ const UserProfilePage = () => {
 						<img
 							src={
 								userData.profile?.coverUrl
-									? `${BASE_URL}${userData.profile.coverUrl}`
+									? userData.profile.coverUrl.startsWith('blob:') ? userData.profile.coverUrl : `${BASE_URL}${userData.profile.coverUrl}`
 									: '/transcendence/default-cover.jpeg'
 							}
 							onError={(e) => {

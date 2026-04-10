@@ -24,7 +24,7 @@ export function FriendsList() {
 									<img
 										src={
 											friend.avatarUrl
-												? `${API_URL}${friend.avatarUrl}`
+												? friend.avatarUrl.startsWith('blob:') ? friend.avatarUrl : `${API_URL}${friend.avatarUrl}`
 												: '/transcendence/default-avatar.jpeg'
 										}
 										alt="Small Avatar"

@@ -91,9 +91,8 @@
 
 .menu-bottom .menu-item {
 	padding: 10px;
-	justify-content: center;
 	width: 100%;
-	gap: 0;
+	padding-left: 0px;
 }
 
 .menu-bottom .menu-item .icon {
