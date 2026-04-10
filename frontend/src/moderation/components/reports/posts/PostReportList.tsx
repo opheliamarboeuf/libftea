@@ -70,9 +70,8 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 							)}
 							{report.status === 'PENDING' && (
 								<button
-									onClick={async () => {
-										await moderationApi.assignPendingReport(report.id);
-										if (onUpdate) onUpdate(); // refresh after assigning
+									onClick={() => {
+										// Do nothing
 									}}
 								>
 									{t('postreport.assign')}

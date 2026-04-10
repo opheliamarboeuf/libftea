@@ -590,36 +590,21 @@ function createReports(
 	const inappropriateReporters = allReporters.slice(2, 4);
 
 	let lastReportDate = harassmentPost.createdAt;
-	let harassmentHandledAt: Date | undefined;
 
-	// HARASSMENT POST REPORT
+	// HARASSMENT POST REPORT (pending/unassigned)
 	for (let i = 0; i < harassmentReporters.length; i++) {
 		const reportDate = getRandomDate(harassmentPost.createdAt, now);
 		lastReportDate = reportDate;
 
-		harassmentHandledAt = getRandomDate(reportDate, now);
 		mockDatabase.reports.push({
 			id: generateId('report'),
 			reporterId: harassmentReporters[i],
 			reportedPostId: harassmentPost.id,
 			reportCategory: 'HARASSMENT',
 			reportDescription: harassmentDescriptions[i % harassmentDescriptions.length],
-			status: 'ACCEPTED',
-			handledById: modUser.id,
-			handledAt: harassmentHandledAt,
-			moderatorMessage: 'Post harassment confirmed after review.',
+			status: 'PENDING',
 			createdAt: reportDate,
 		});
-	}
-
-	if (harassmentHandledAt) {
-		createModerationLog(
-			'REVIEW_POST_REPORT',
-			modUser.id,
-			undefined,
-			harassmentPost.id,
-			harassmentHandledAt,
-		);
 	}
 
 	// INAPPROPRIATE POST REPORT

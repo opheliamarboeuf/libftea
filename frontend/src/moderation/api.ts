@@ -294,10 +294,28 @@ export const moderationApi = {
 	},
 
 	fetchPendingPostReports: async (): Promise<PostReportType[]> => {
-		// Return pending post reports from mock data
-		return mockDatabase.reports
+		// Return pending post reports from mock data, one per post (oldest)
+		const pending = mockDatabase.reports
 			.filter((r) => r.reportedPostId && r.status === 'PENDING')
-			.map(mapPostReport)
+			.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+
+		const seenPostIds = new Set<number>();
+		const unique: typeof pending = [];
+		for (const r of pending) {
+			if (!r.reportedPostId || seenPostIds.has(r.reportedPostId)) continue;
+			seenPostIds.add(r.reportedPostId);
+			unique.push(r);
+		}
+
+		return unique
+			.map((r) => {
+				const mapped = mapPostReport(r);
+				if (!mapped) return null;
+				mapped.reportCount = pending.filter(
+					(h) => h.reportedPostId === r.reportedPostId,
+				).length;
+				return mapped;
+			})
 			.filter((r): r is PostReportType => r !== null);
 	},
 
