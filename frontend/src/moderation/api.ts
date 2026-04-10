@@ -15,6 +15,9 @@ const mapModerationLog = (log: (typeof mockDatabase.moderationLogs)[0]): Moderat
 	const targetPost = log.targetPostId
 		? mockDatabase.posts.find((p) => p.id === log.targetPostId)
 		: undefined;
+	const targetBattle = log.targetBattleId
+		? mockDatabase.battles.find((b) => b.id === log.targetBattleId)
+		: undefined;
 
 	return {
 		id: log.id,
@@ -40,6 +43,12 @@ const mapModerationLog = (log: (typeof mockDatabase.moderationLogs)[0]): Moderat
 								username: targetPost.author.username,
 							}
 						: { id: 0, username: 'Unknown' },
+				}
+			: undefined,
+		targetBattle: targetBattle
+			? {
+					id: targetBattle.id,
+					theme: targetBattle.theme,
 				}
 			: undefined,
 		status: 'PENDING' as ReportStatus,

@@ -95,6 +95,7 @@ export interface ModerationLog {
 	actorId: number;
 	targetUserId?: number;
 	targetPostId?: number;
+	targetBattleId?: number;
 	createdAt: Date;
 }
 
@@ -256,6 +257,7 @@ function createModerationLog(
 	targetUserId?: number,
 	targetPostId?: number,
 	createdAt?: Date,
+	targetBattleId?: number,
 ): void {
 	const log: ModerationLog = {
 		id: generateId('moderationLog'),
@@ -263,6 +265,7 @@ function createModerationLog(
 		actorId,
 		targetUserId,
 		targetPostId,
+		targetBattleId,
 		createdAt: createdAt || new Date(),
 	};
 	mockDatabase.moderationLogs.push(log);
@@ -574,6 +577,10 @@ function createReports(
 	harassmentPost: Post,
 	inappropriatePost: Post,
 	modUser: BaseUser,
+	logH1Date: Date,
+	logI1Date: Date,
+	logH2Date: Date,
+	logI2Date: Date,
 ): Date {
 	const harassmentDescriptions = [
 		'This feels like direct harassment toward a specific person.',
@@ -607,14 +614,15 @@ function createReports(
 		});
 	}
 
-	// INAPPROPRIATE POST REPORT
-	let inappropriateHandledAt: Date | undefined;
+	// Two reviews of harassment post
+	createModerationLog('REVIEW_POST_REPORT', modUser.id, undefined, harassmentPost.id, logH1Date);
+	createModerationLog('REVIEW_POST_REPORT', modUser.id, undefined, harassmentPost.id, logH2Date);
 
+	// INAPPROPRIATE POST REPORT
 	for (let i = 0; i < inappropriateReporters.length; i++) {
 		const reportDate = getRandomDate(inappropriatePost.createdAt, now);
 		lastReportDate = reportDate;
 
-		inappropriateHandledAt = getRandomDate(reportDate, now);
 		mockDatabase.reports.push({
 			id: generateId('report'),
 			reporterId: inappropriateReporters[i],
@@ -623,21 +631,15 @@ function createReports(
 			reportDescription: inappropriateDescriptions[i % inappropriateDescriptions.length],
 			status: 'ACCEPTED',
 			handledById: modUser.id,
-			handledAt: inappropriateHandledAt,
+			handledAt: logI1Date,
 			moderatorMessage: 'Post content confirmed as inappropriate and violating guidelines.',
 			createdAt: reportDate,
 		});
 	}
 
-	if (inappropriateHandledAt) {
-		createModerationLog(
-			'REVIEW_POST_REPORT',
-			modUser.id,
-			undefined,
-			inappropriatePost.id,
-			inappropriateHandledAt,
-		);
-	}
+	// Two reviews of inappropriate post
+	createModerationLog('REVIEW_POST_REPORT', modUser.id, undefined, inappropriatePost.id, logI1Date);
+	createModerationLog('REVIEW_POST_REPORT', modUser.id, undefined, inappropriatePost.id, logI2Date);
 
 	return lastReportDate;
 }
@@ -646,7 +648,9 @@ function createUserReport(
 	toxicUser: BaseUser,
 	reporterUser: BaseUser,
 	modUser: BaseUser,
+	adminUser: BaseUser,
 	afterDate: Date,
+	logDate: Date,
 ): Date {
 	const reportDate = getRandomDate(afterDate, now);
 	const userReportHandledAt = getRandomDate(reportDate, now);
@@ -664,13 +668,7 @@ function createUserReport(
 		moderatorMessage: 'User report confirmed. Pattern of harassment behavior documented.',
 		createdAt: reportDate,
 	});
-	createModerationLog(
-		'REVIEW_USER_REPORT',
-		modUser.id,
-		toxicUser.id,
-		undefined,
-		userReportHandledAt,
-	);
+	createModerationLog('REVIEW_USER_REPORT', adminUser.id, toxicUser.id, undefined, logDate);
 
 	return userReportHandledAt;
 }
@@ -1173,26 +1171,45 @@ export function seedDatabase(): typeof mockDatabase {
 	};
 	mockDatabase.posts.push(inappropriatePost);
 
+	// LOG DATES — chained to maintain chronological order
+	const fiveDaysAgo = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
+	const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+	const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+	const oneDayAgo = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000);
+
+	const logH1Date = getRandomDate(weekAgo, fiveDaysAgo);      // mod: harassment review 1
+	const logI1Date = getRandomDate(logH1Date, threeDaysAgo);   // mod: inappropriate review 1
+	const logUserDate = getRandomDate(logI1Date, threeDaysAgo); // admin: user report review
+	const logBanDate = getRandomDate(logUserDate, twoDaysAgo);  // admin: ban
+	const logTournamentDate = getRandomDate(logBanDate, twoDaysAgo); // admin: create tournament
+	const logH2Date = getRandomDate(logTournamentDate, oneDayAgo);   // mod: harassment review 2
+	const logI2Date = getRandomDate(logH2Date, now);                 // mod: inappropriate review 2
+
 	const lastReportDate = createReports(
 		toxicUser,
 		userIds,
 		harassmentPost,
 		inappropriatePost,
 		modUser,
+		logH1Date,
+		logI1Date,
+		logH2Date,
+		logI2Date,
 	);
 
 	// USER REPORT (HARASSMENT)
 	const reporterUser = users[0];
-	const userReportHandledAt = createUserReport(
+	createUserReport(
 		toxicUser,
 		reporterUser,
 		adminUser,
+		adminUser,
 		lastReportDate,
+		logUserDate,
 	);
 
 	// BAN TOXIC USER
-	const banDate = getRandomDate(userReportHandledAt, now);
-	banToxicUser(toxicUser, adminUser, banDate);
+	banToxicUser(toxicUser, adminUser, logBanDate);
 
 	// FRIENDSHIPS
 	createRandomFriendships(userIds);
@@ -1205,6 +1222,22 @@ export function seedDatabase(): typeof mockDatabase {
 
 	// TOURNAMENTS
 	createTournament(userIds);
+
+	// Admin-created "Test" tournament (battle #2)
+	const testBattle: Battle = {
+		id: generateId('battle'),
+		theme: 'Test',
+		description: '',
+		createdAt: logTournamentDate,
+		startsAt: new Date(logTournamentDate.getTime() + 24 * 60 * 60 * 1000),
+		endsAt: new Date(logTournamentDate.getTime() + 8 * 24 * 60 * 60 * 1000),
+		status: 'UPCOMING',
+		maxPlayers: 10,
+		participants: [],
+	};
+	mockDatabase.battles.push(testBattle);
+	createModerationLog('CREATE_TOURNAMENT', adminUser.id, undefined, undefined, logTournamentDate, testBattle.id);
+
 	createOngoingTournament(userIds);
 	console.log('Seeding mock database completed.');
 
