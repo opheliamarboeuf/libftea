@@ -309,13 +309,10 @@ export const moderationApi = {
 			.filter((r): r is PostReportType => r !== null);
 	},
 
-	fetchAllReportsForThisPost: async (reportId: number): Promise<PostReportType[]> => {
-		// Mock implementation - return reports for a specific post
-		const report = mockDatabase.reports.find((r) => r.id === reportId);
-		if (!report || !report.reportedPostId) return [];
-
+	fetchAllReportsForThisPost: async (postId: number): Promise<PostReportType[]> => {
+		// Return all reports for a specific post
 		return mockDatabase.reports
-			.filter((r) => r.reportedPostId === report.reportedPostId)
+			.filter((r) => r.reportedPostId === postId)
 			.map(mapPostReport)
 			.filter((r): r is PostReportType => r !== null);
 	},
