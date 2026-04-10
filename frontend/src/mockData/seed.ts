@@ -1160,25 +1160,33 @@ export function seedDatabase(): typeof mockDatabase {
 	);
 
 	// TOXIC USER POSTS
-	const toxicPosts: PostData[] = [
-		{
-			title: 'Say it louder',
-			caption: "Some people really don't belong here.",
-			comments: [],
-		},
-		{
-			title: 'Just being honest',
-			caption: 'If you dress like that, expect comments.',
-			comments: [],
-		},
-	];
+	const toxicPost1Date = getRandomDate(weekAgo, now);
+	const harassmentPost: Post = {
+		id: generateId('post'),
+		title: 'Say it louder',
+		caption: "Some people really don't belong here.",
+		imageUrl: `${import.meta.env.BASE_URL}uploads/toxic/1-resized.jpg`,
+		authorId: toxicUser.id,
+		createdAt: toxicPost1Date,
+		updatedAt: toxicPost1Date,
+		comments: [],
+		likes: [],
+	};
+	mockDatabase.posts.push(harassmentPost);
 
-	createPostsForUser(toxicUser.id, toxicUser.username, toxicPosts, userIds);
-
-	// REPORTS ON TOXIC POSTS
-	const toxicPostsFromDB = mockDatabase.posts.filter((p) => p.authorId === toxicUser.id);
-	const harassmentPost = toxicPostsFromDB[0];
-	const inappropriatePost = toxicPostsFromDB[1];
+	const toxicPost2Date = getRandomDate(weekAgo, now);
+	const inappropriatePost: Post = {
+		id: generateId('post'),
+		title: 'Just being honest',
+		caption: 'If you dress like that, expect comments.',
+		imageUrl: `${import.meta.env.BASE_URL}uploads/toxic/2-resized.jpg`,
+		authorId: toxicUser.id,
+		createdAt: toxicPost2Date,
+		updatedAt: toxicPost2Date,
+		comments: [],
+		likes: [],
+	};
+	mockDatabase.posts.push(inappropriatePost);
 
 	const lastReportDate = createReports(
 		toxicUser,

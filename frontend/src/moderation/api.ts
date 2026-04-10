@@ -94,7 +94,10 @@ const mapPostReport = (report: (typeof mockDatabase.reports)[0]): PostReportType
 		? mockDatabase.users.find((u) => u.id === report.handledById)
 		: undefined;
 
-	if (!reportedPost || !reporter || !reportedPost.author) return null;
+	const postAuthor =
+		reportedPost?.author ?? mockDatabase.users.find((u) => u.id === reportedPost?.authorId);
+
+	if (!reportedPost || !reporter || !postAuthor) return null;
 
 	return {
 		id: report.id,
@@ -109,8 +112,8 @@ const mapPostReport = (report: (typeof mockDatabase.reports)[0]): PostReportType
 			caption: reportedPost.caption,
 			createdAt: reportedPost.createdAt.toISOString(),
 			author: {
-				id: reportedPost.author.id,
-				username: reportedPost.author.username,
+				id: postAuthor.id,
+				username: postAuthor.username,
 			},
 		},
 		reportCategory: report.reportCategory as unknown as ReportCategory,
@@ -326,10 +329,28 @@ export const moderationApi = {
 	},
 
 	fetchAllHandledPostReports: async (): Promise<PostReportType[]> => {
-		// Return handled (accepted or rejected) post reports from mock data
-		return mockDatabase.reports
+		// Return handled (accepted or rejected) post reports from mock data, one per post (oldest)
+		const handled = mockDatabase.reports
 			.filter((r) => r.reportedPostId && (r.status === 'ACCEPTED' || r.status === 'REJECTED'))
-			.map(mapPostReport)
+			.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+
+		const seenPostIds = new Set<number>();
+		const unique: typeof handled = [];
+		for (const r of handled) {
+			if (!r.reportedPostId || seenPostIds.has(r.reportedPostId)) continue;
+			seenPostIds.add(r.reportedPostId);
+			unique.push(r);
+		}
+
+		return unique
+			.map((r) => {
+				const mapped = mapPostReport(r);
+				if (!mapped) return null;
+				mapped.reportCount = handled.filter(
+					(h) => h.reportedPostId === r.reportedPostId,
+				).length;
+				return mapped;
+			})
 			.filter((r): r is PostReportType => r !== null);
 	},
 };

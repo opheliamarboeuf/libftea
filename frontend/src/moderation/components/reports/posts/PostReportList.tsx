@@ -26,24 +26,6 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 		navigate(`/users/${userId}`);
 	};
 
-	const getMockDataImageUrl = (username: string, type: 'avatar' | 'cover'): string | null => {
-		const usersWithMockData = ['ari', 'leo', 'cha', 'ophe', 'toxic'];
-		if (!usersWithMockData.includes(username)) return null;
-		
-		const coverMap: Record<string, string> = {
-			'ari': `/transcendence/uploads/seed/ari/4-resized.jpg`,
-			'leo': `/transcendence/uploads/seed/leo/3-resized.jpg`,
-			'cha': `/transcendence/uploads/seed/cha/4-resized.jpg`,
-			'ophe': `/transcendence/uploads/seed/ophe/2-resized.jpg`,
-			'toxic': `/transcendence/uploads/seed/toxic/2-resized.jpg`,
-		};
-		
-		if (type === 'avatar') {
-			return `/transcendence/uploads/seed/${username}/1-resized.jpg`;
-		}
-		return coverMap[username] ?? null;
-	};
-
 	if (!Array.isArray(reports) || reports.length === 0) {
 		return (
 			<div className="post-report-list">
@@ -116,25 +98,14 @@ export function PostReportList({ reports, onUpdate }: PostReportListProps) {
 					</div>
 					<div className="post-report-content">
 						<div className="post-report-image">
-							<img src={`${API_URL}${report.reportedPost.imageUrl}`} alt="Post" />
-						</div>
-						<div className="post-report-author-profile">
-							<div className="author-cover">
-								{report.reportedPost.author && getMockDataImageUrl(report.reportedPost.author.username, 'cover') && (
-									<img
-										src={getMockDataImageUrl(report.reportedPost.author.username, 'cover')!}
-										alt="Author Cover"
-									/>
-								)}
-							</div>
-							<div className="author-avatar">
-								{report.reportedPost.author && getMockDataImageUrl(report.reportedPost.author.username, 'avatar') && (
-									<img
-										src={getMockDataImageUrl(report.reportedPost.author.username, 'avatar')!}
-										alt="Author Avatar"
-									/>
-								)}
-							</div>
+							<img
+								src={
+									report.reportedPost.imageUrl.startsWith('http')
+										? report.reportedPost.imageUrl
+										: `${API_URL ?? ''}${report.reportedPost.imageUrl}`
+								}
+								alt="Post"
+							/>
 						</div>
 						<div className="post-report-info">
 							<div className="post-report-pre-handle">
