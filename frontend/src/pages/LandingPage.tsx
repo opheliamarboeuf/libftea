@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LanguageMenu from "../common/components/LanguageMenu";
 import { useTranslation } from "react-i18next";
+import etoiles from "../assets/images/étoiles.jpg";
 
 const LandingPage = () => {
     const navigate = useNavigate();
@@ -27,7 +28,7 @@ const LandingPage = () => {
                 }}
             >
                 <img
-                    src="src/assets/images/étoiles.jpg"
+                    src={etoiles}
                     alt="landing"
                     className="w-80 h-80 rounded-full object-cover animate-spin-slow"
                 />
