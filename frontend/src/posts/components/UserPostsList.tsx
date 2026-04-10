@@ -145,7 +145,8 @@ export function UserPostsList({ posts, onPostDeleted }: UserPostsListProps) {
 						<div className="post-image">
 							<img
 								src={
-									post.imageUrl.startsWith('http')
+									post.imageUrl.startsWith('http') ||
+									post.imageUrl.startsWith('blob:')
 										? post.imageUrl
 										: `${API_URL ?? ''}${post.imageUrl.startsWith('/') ? post.imageUrl : '/' + post.imageUrl}`
 								}
