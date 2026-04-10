@@ -67,6 +67,7 @@
 
 	"loginpage": {
 		"login": "ログイン",
+		"choose": "ログインするユーザーを選択してください",
 		"username": "ユーザーネーム",
 		"password": "パスワード",
 		"noaccount": "まだアカウントをお持ちでないですか ?",

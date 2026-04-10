@@ -67,6 +67,7 @@
 
 	"loginpage": {
 		"login": "Connexion",
+		"choose": "Choisir un utilisateur pour se connecter",
 		"username": "Nom d'utilisateur",
 		"password": "Mot de passe",
 		"noaccount": "Pas de compte ?",

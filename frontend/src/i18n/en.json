@@ -68,6 +68,7 @@
 
 	"loginpage": {
 		"login": "Login",
+		"choose": "Choose a user to log in as",
 		"username": "Username",
 		"password": "Password",
 		"noaccount": "No account yet ?",

@@ -1,127 +1,73 @@
-.login-page {
+/* ---- Switcher Card ---- */
+.switcher-card {
+	background: rgba(255, 255, 255, 0.85);
+	backdrop-filter: blur(12px);
+	border-radius: 1rem;
+	padding: 2.5rem 2rem;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+	max-width: 420px;
+	width: 90vw;
+	text-align: center;
+}
+
+.switcher-title {
+	font-family: 'Blosta Script', cursive;
+	font-size: 2.5rem;
+	color: #111;
+	margin: 0 0 2.2rem;
+}
+
+.switcher-subtitle {
+	font-size: 0.9rem;
+	color: #888;
+	margin: 0 0 1.75rem;
+}
+
+/* ---- User Grid ---- */
+.switcher-grid {
 	display: flex;
-	height: 100vh;
-	width: 100vw;
+	flex-direction: column;
+	gap: 0.5rem;
+	max-width: 260px;
+	margin: 0 auto;
 }
 
-.login-left {
-  flex: 3; /*3/5 of space*/
-  position: relative; 
-  overflow: hidden;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-}
-
-.bg-image {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: url('../assets/images/background.jpeg');
-  background-size: cover;
-  background-position: center;
-  z-index: -1;  /*behind text*/
-  animation: kenburns-top-right 5s ease-out both;
-}
-
-.login-right {
-  flex: 2; /*2/5 of space*/
-  flex-direction: column;
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-right h1{
-  font-size: 2rem;
-  color: black;
-}
-
-.app-title {
-  font-family: "Palatino", serif;
-  font-size: 5rem;
-  font-weight: bold;
-  margin-bottom: 3rem;
-  color: black;
-}
-
-.app-subtitle {
-  width: 50%;
-  margin-top: -2rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: black
-}
-
-.no-account {
-  font-size: 0.9rem;
-  color: #000000;
-  text-align: center;
-  margin-bottom: -0.2rem;
-}
-
-.kenburns-bottom-left {
-  -webkit-animation:kenburns-bottom-left 5s ease-out both;animation:kenburns-bottom-left 5s ease-out both
-}
-
-@-webkit-keyframes kenburns-top-right {
-  0% {
-    -webkit-transform: scale(1) translate(0,0);
-    transform: scale(1) translate(0,0);
-    -webkit-transform-origin: 84% 16%;
-    transform-origin: 84% 16%;
-  }
-  100% {
-    -webkit-transform: scale(1.25) translate(20px,-15px);
-    transform: scale(1.25) translate(20px,-15px);
-    -webkit-transform-origin: right top;
-    transform-origin: right top;
-  }
-}
-
-.login-bottom {
+.switcher-btn {
 	display: flex;
-	flex-direction: row;
-	gap: 1rem;
-	margin-top: 1rem;
-	justify-content: center;
-}
-
-.login-bottom button {
-	font-size: 0.75rem;
-	padding: 0.25rem;
-	background-color: transparent;
-	border: 1px solid #ddd;
-	border-radius: 4px;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.65rem 1rem;
+	border: 1px solid #e5e5e5;
+	border-radius: 0.75rem;
+	background: #fff;
 	cursor: pointer;
-	transition: background-color 0.2s;
+	transition: all 0.2s ease;
+	min-width: 0;
+	width: 100%;
+	max-width: 240px;
+	margin: 0 auto;
 }
 
-.login-bottom button:hover {
-	text-decoration: underline;
+.switcher-btn:hover {
+	border-color: #a5a5a5;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+	transform: translateY(-2px);
 }
 
-.login-bottom .menu-bottom-item {
-	background-color: transparent;
-	border: none;
-	padding: 0;
-	opacity: 1 !important;
+.switcher-btn:active {
+	transform: translateY(0);
 }
 
-.login-bottom .menu-bottom-item .label {
-	opacity: 1 !important;
+/* ---- Name & role ---- */
+.switcher-name {
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: #222;
 }
 
-.login-bottom .menu-bottom-item:hover .label {
-	text-decoration: underline;
-	background-color: transparent;
-}
-
-.login-bottom .menu-bottom-item:hover,
-.login-bottom .menu-bottom-item:focus,
-.login-bottom .menu-bottom-item:active {
-	background: none !important;
+.switcher-role {
+	font-size: 0.72rem;
+	color: #999;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
 }
