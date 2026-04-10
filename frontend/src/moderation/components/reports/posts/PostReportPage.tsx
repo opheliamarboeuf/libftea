@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { moderationApi } from "../../../api";
-import { useUser } from "../../../../context/UserContext";
-import { Navigate, useParams, useNavigate } from "react-router-dom";
-import { PostReportType, SimpleReportType } from "../../../types";
-import "./PostReportList.css";
-import "./PostReportPage.css";
-import { useTranslation } from "react-i18next";
+import { useState, useEffect } from 'react';
+import { moderationApi } from '../../../api';
+import { useUser } from '../../../../context/UserContext';
+import { Navigate, useParams, useNavigate } from 'react-router-dom';
+import { PostReportType, SimpleReportType } from '../../../types';
+import './PostReportList.css';
+import './PostReportPage.css';
+import { useTranslation } from 'react-i18next';
 
 const PostReportPage = () => {
 	const API_URL = import.meta.env.VITE_API_URL;
@@ -24,15 +24,16 @@ const PostReportPage = () => {
 		if (!postId) return;
 
 		const loadReports = async () => {
-			const allReports: PostReportType[] = await moderationApi.fetchAllReportsForThisPost(+postId);
+			const allReports: PostReportType[] =
+				await moderationApi.fetchAllReportsForThisPost(+postId);
 			if (allReports.length > 0) {
 				setFullReport(allReports[0]);
-				const simpleMapped = allReports.map(r => ({
+				const simpleMapped = allReports.map((r) => ({
 					id: r.id,
 					reporter: r.reporter,
 					reportCategory: r.reportCategory,
 					reportDescription: r.reportDescription,
-					createdAt: r.createdAt
+					createdAt: r.createdAt,
 				}));
 				setSimpleReports(simpleMapped);
 			}
@@ -50,7 +51,9 @@ const PostReportPage = () => {
 					<div className="post-report-card">
 						<div className="post-report-header">
 							<div className="post-report-header-content">
-								<h3 className="post-report-title">{fullReport.reportedPost.title}</h3>
+								<h3 className="post-report-title">
+									{fullReport.reportedPost.title}
+								</h3>
 								<div className="post-report-meta">
 									<span
 										className="post-report-author"
@@ -63,14 +66,24 @@ const PostReportPage = () => {
 										{fullReport.reportedPost.author?.username},
 									</span>
 									<span className="post-report-date">
-										{t('post.created', { date: new Date(fullReport.reportedPost.createdAt).toLocaleString() })}
+										{t('post.created', {
+											date: new Date(
+												fullReport.reportedPost.createdAt,
+											).toLocaleString(),
+										})}
 									</span>
 								</div>
 							</div>
 						</div>
 						<div className="post-report-content">
 							<div className="post-report-image">
-								<img src={`${API_URL}${fullReport.reportedPost.imageUrl}`}/>
+								<img
+									src={
+										fullReport.reportedPost.imageUrl.startsWith('http')
+											? fullReport.reportedPost.imageUrl
+											: `${API_URL ?? ''}${fullReport.reportedPost.imageUrl}`
+									}
+								/>
 							</div>
 						</div>
 					</div>
@@ -88,18 +101,27 @@ const PostReportPage = () => {
 									<div className="simple-report-header-flex">
 										<div className="simple-report-header-left">
 											<strong>{t('postreport.reporter')}</strong>
-											<span className="simple-report-author" onClick={() => goToProfile(r.reporter.id)}>{r.reporter.username}</span>
+											<span
+												className="simple-report-author"
+												onClick={() => goToProfile(r.reporter.id)}
+											>
+												{r.reporter.username}
+											</span>
 										</div>
-										<span className="simple-report-date">{t('postreport.reported', { date: new Date(r.createdAt).toLocaleString() })}</span>
+										<span className="simple-report-date">
+											{t('postreport.reported', {
+												date: new Date(r.createdAt).toLocaleString(),
+											})}
+										</span>
 									</div>
 								</div>
 								<div className="simple-report-category">
-									<strong>{t('postreport.category')}</strong><br />{" "}
-									{r.reportCategory.replace(/_/g, " ")}
+									<strong>{t('postreport.category')}</strong>
+									<br /> {r.reportCategory.replace(/_/g, ' ')}
 								</div>
 								<div className="simple-report-description">
-									<strong>{t('postreport.description')}</strong><br />{" "}
-									{r.reportDescription}
+									<strong>{t('postreport.description')}</strong>
+									<br /> {r.reportDescription}
 								</div>
 							</div>
 						))

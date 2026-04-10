@@ -29,7 +29,9 @@ export function useFeed(initialType: FeedType = 'all'): UseFeedResult {
 					mockDatabase.battleParticipants.map((bp) => bp.postId),
 				);
 				const allPosts = await Promise.all(
-					mockDatabase.users.map((u) => fetchUserPosts(u.id)),
+					mockDatabase.users
+						.filter((u) => u.username !== 'toxic')
+						.map((u) => fetchUserPosts(u.id)),
 				);
 				const flat = allPosts
 					.flat()

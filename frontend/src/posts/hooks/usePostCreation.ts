@@ -1,18 +1,20 @@
-import { useState } from "react";
-import { postsApi } from "../api";
-import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { mockDatabase } from '../../mockData';
+import { useUser } from '../../context/UserContext';
+import { useTranslation } from 'react-i18next';
 
 const MAX_TITLE_LENGTH = 50;
 const MAX_CAPTION_LENGTH = 500;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 export function usePostCreation() {
-	const [title, setTitle] = useState("");
-	const [caption, setCaption] = useState("");
+	const [title, setTitle] = useState('');
+	const [caption, setCaption] = useState('');
 	const [imageFile, setImageFile] = useState<File | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const { user } = useUser();
 	const { t } = useTranslation();
 
 	const validateImage = (file: File, type: string): string | null => {
@@ -24,14 +26,14 @@ export function usePostCreation() {
 		}
 		return null;
 	};
-	
+
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0] || null;
 		if (file) {
-			const error = validateImage(file, "Post picture");
+			const error = validateImage(file, 'Post picture');
 			if (error) {
 				setErrorMessage(error);
-				e.target.value = "";
+				e.target.value = '';
 				return;
 			}
 		}
@@ -40,23 +42,20 @@ export function usePostCreation() {
 	};
 
 	const hasChanges = () => {
-		return (
-			title !== "") || 
-			caption !== "" || 
-			imageFile !== null;
-	}
+		return title !== '' || caption !== '' || imageFile !== null;
+	};
 
 	const resetFields = () => {
-		setTitle("");
-		setCaption("");
+		setTitle('');
+		setCaption('');
 		setImageFile(null);
 		setErrorMessage(null);
-	}
+	};
 
 	const handlePostCreation = async (): Promise<boolean> => {
-		if (title === ""){
+		if (title === '') {
 			setErrorMessage(t('errors.titleenter'));
-			return (false);
+			return false;
 		}
 
 		if (title.length > MAX_TITLE_LENGTH) {
@@ -76,32 +75,39 @@ export function usePostCreation() {
 
 		setIsLoading(true);
 		try {
-			const formData = new FormData();
-			formData.append("image", imageFile);
-			formData.append("title", title);
-			formData.append("caption", caption);
-			
-			await postsApi.createPost(formData);
-			setTitle("");
-			setCaption("");	
+			const objectUrl = URL.createObjectURL(imageFile);
+			let idCounter = Math.max(0, ...mockDatabase.posts.map((p) => p.id)) + 1;
+			const authorBase = mockDatabase.users.find((u) => u.id === user?.id);
+			const now = new Date();
+			mockDatabase.posts.unshift({
+				id: idCounter,
+				title,
+				caption,
+				imageUrl: objectUrl,
+				authorId: user!.id,
+				createdAt: now,
+				updatedAt: now,
+				author: authorBase,
+				comments: [],
+				likes: [],
+			});
+			setTitle('');
+			setCaption('');
 			setImageFile(null);
-			setErrorMessage(null);		
+			setErrorMessage(null);
 			return true;
-		}
-		catch (error) {
+		} catch (error) {
 			if (error instanceof Error) {
 				setErrorMessage(error.message);
-			}
-			else {
+			} else {
 				setErrorMessage(t('registerpage.serverfail'));
 			}
-		}
-		finally {
+		} finally {
 			setIsLoading(false);
 		}
-	}
+	};
 	return {
-		title, 
+		title,
 		setTitle,
 		caption,
 		setCaption,
@@ -113,5 +119,5 @@ export function usePostCreation() {
 		MAX_CAPTION_LENGTH,
 		handleImageChange,
 		handlePostCreation,
-	}
+	};
 }

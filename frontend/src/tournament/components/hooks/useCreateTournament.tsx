@@ -1,34 +1,32 @@
-import { useState } from "react";
-import { tournamentApi } from "../../api";
-import { useTranslation } from "react-i18next";
+import { useState } from 'react';
+import { mockDatabase } from '../../../mockData';
+import { useTranslation } from 'react-i18next';
 
 const MAX_THEME_LENGTH = 50;
 
 export function useCreateTournament() {
-
-	const [theme, setTheme] = useState("");
-	const [startDate, setStartDate] = useState("");
-	const [endDate, setEndDate] = useState("");
+	const [theme, setTheme] = useState('');
+	const [startDate, setStartDate] = useState('');
+	const [endDate, setEndDate] = useState('');
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-	const { t } = useTranslation()
+	const { t } = useTranslation();
 
 	const hasChanges = () => {
-		return theme !== "" || startDate !== "" || endDate !== "";
+		return theme !== '' || startDate !== '' || endDate !== '';
 	};
 
 	const resetFields = () => {
-		setTheme("");
-		setStartDate("");
-		setEndDate("");
+		setTheme('');
+		setStartDate('');
+		setEndDate('');
 		setErrorMessage(null);
 	};
 
 	const handleCreateTournament = async (): Promise<boolean> => {
-
-		if (theme === "") {
+		if (theme === '') {
 			setErrorMessage(t('errors.theme'));
 			return false;
 		}
@@ -51,26 +49,29 @@ export function useCreateTournament() {
 		setIsLoading(true);
 
 		try {
-			const payload = {
+			const now = new Date();
+			const newBattle = {
+				id: Math.max(0, ...mockDatabase.battles.map((b) => b.id)) + 1,
 				theme,
-				startDate: new Date(startDate).toISOString(),
-				endDate: new Date(endDate).toISOString(),
+				description: '',
+				createdAt: now,
+				startsAt: new Date(startDate),
+				endsAt: new Date(endDate),
+				status: 'UPCOMING' as const,
+				maxPlayers: 10,
+				participants: [],
 			};
-			console.log('Sending payload:', payload);
-			await tournamentApi.createTournament(payload, t);
-			console.log('Tournament created successfully');
+			mockDatabase.battles.push(newBattle);
 			resetFields();
 			return true;
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Error creating tournament:', error);
 			if (error instanceof Error) {
 				setErrorMessage(error.message);
 			} else {
 				setErrorMessage(t('registerpage.serverfail'));
 			}
-		}
-		finally {
+		} finally {
 			setIsLoading(false);
 		}
 

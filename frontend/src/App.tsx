@@ -19,7 +19,6 @@ import DashboardPage from './pages/DashboardPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import { toContextUser } from './mockData/mockUser';
-import { LoginSwitcher } from './mockData/LoginSwitcher';
 import GithubCallbackPage from './pages/GithubCallbackPage';
 import { seedDatabase, mockDatabase } from './mockData';
 
@@ -45,11 +44,6 @@ const App = () => {
 				>
 					<Header />
 					<LeftMenu />
-					<LoginSwitcher
-						users={mockDatabase.users}
-						currentUser={user}
-						onSwitch={(base) => setUser(toContextUser(base))}
-					/>
 					<Routes>
 						{ModerationRoutes}
 						{SettingsRoutes}
