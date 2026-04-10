@@ -142,14 +142,17 @@ const mapPostReport = (report: (typeof mockDatabase.reports)[0]): PostReportType
 
 export const moderationApi = {
 	fetchAdminLogs: async () => {
-		// Return mock moderation logs
-		return mockDatabase.moderationLogs.map(mapModerationLog);
+		// Return mock moderation logs sorted from most recent to oldest
+		return [...mockDatabase.moderationLogs]
+			.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+			.map(mapModerationLog);
 	},
 
 	fetchModLogs: async () => {
-		// Return only mod-level logs (post report reviews)
-		return mockDatabase.moderationLogs
+		// Return only mod-level logs (post report reviews) sorted from most recent to oldest
+		return [...mockDatabase.moderationLogs]
 			.filter((log) => log.action === 'REVIEW_POST_REPORT')
+			.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 			.map(mapModerationLog);
 	},
 
