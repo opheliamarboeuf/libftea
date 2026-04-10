@@ -135,8 +135,10 @@ export const moderationApi = {
 	},
 
 	fetchModLogs: async () => {
-		// Return mock moderation logs (same as admin for this implementation)
-		return mockDatabase.moderationLogs.map(mapModerationLog);
+		// Return only mod-level logs (post report reviews)
+		return mockDatabase.moderationLogs
+			.filter((log) => log.action === 'REVIEW_POST_REPORT')
+			.map(mapModerationLog);
 	},
 
 	// ---------------------------------- CHANGE ROLES  -----------------------------------

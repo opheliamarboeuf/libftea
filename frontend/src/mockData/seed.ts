@@ -679,14 +679,22 @@ function createUserReport(
 		moderatorMessage: 'User report confirmed. Pattern of harassment behavior documented.',
 		createdAt: reportDate,
 	});
+	createModerationLog(
+		'REVIEW_USER_REPORT',
+		modUser.id,
+		toxicUser.id,
+		undefined,
+		userReportHandledAt,
+	);
 
 	return userReportHandledAt;
 }
 
-function banToxicUser(toxicUser: BaseUser, banDate: Date): void {
+function banToxicUser(toxicUser: BaseUser, adminUser: BaseUser, banDate: Date): void {
 	const user = mockDatabase.users.find((u) => u.id === toxicUser.id);
 	if (user && !user.bannedAt) {
 		user.bannedAt = banDate;
+		createModerationLog('BAN_USER', adminUser.id, toxicUser.id, undefined, banDate);
 	}
 }
 
@@ -1191,7 +1199,7 @@ export function seedDatabase(): typeof mockDatabase {
 
 	// BAN TOXIC USER
 	const banDate = getRandomDate(userReportHandledAt, now);
-	banToxicUser(toxicUser, banDate);
+	banToxicUser(toxicUser, adminUser, banDate);
 
 	// FRIENDSHIPS
 	createRandomFriendships(userIds);
