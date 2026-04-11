@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useUser } from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { seedDatabase, mockDatabase } from "../mockData";
 import { toContextUser } from "../mockData/mockUser";
@@ -66,6 +66,11 @@ const LoginPage = () => {
 							</button>
 						);
 					})}
+				</div>
+
+				<div className="switcher-links">
+					<Link to="/termsofservice" className="switcher-link">{t('common.terms')}</Link>
+					<Link to="/privacypolicy" className="switcher-link">{t('common.privacy')}</Link>
 				</div>
 			</div>
 		</div>

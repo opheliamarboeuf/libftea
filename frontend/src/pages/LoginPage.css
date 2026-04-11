@@ -71,3 +71,28 @@
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
 }
+
+/* ---- Legal Links ---- */
+.switcher-links {
+	display: flex;
+	gap: 12px;
+	justify-content: center;
+	margin-top: 1.5rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid #e5e5e5;
+}
+
+.switcher-link {
+	text-decoration: none;
+	color: #999;
+	font-size: 0.75rem;
+	padding: 6px 8px;
+	border-radius: 4px;
+	transition: background-color 0.15s ease, color 0.15s ease;
+	letter-spacing: 0.2px;
+}
+
+.switcher-link:hover {
+	background-color: rgba(0, 0, 0, 0.03);
+	color: #666;
+}
