@@ -1,4 +1,4 @@
-プライバシーポリシー – Libftea デモ
+const n=`プライバシーポリシー – Libftea デモ
 
 最終更新日：2026年4月11日
 
@@ -57,3 +57,4 @@ Libftea は、このデモが紹介する完全かつ完全機能のソーシャ
 7. お問い合わせ
 
 このデモまたは Libftea プロジェクトに関するご質問は、開発チームまでお問い合わせください：m.opheliaa@gmail.com
+`;export{n as default};

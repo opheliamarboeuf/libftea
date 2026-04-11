@@ -1,4 +1,4 @@
-Terms of Service – Libftea Demo
+const e=`Terms of Service – Libftea Demo
 
 Last updated: April 11, 2026
 
@@ -57,3 +57,4 @@ These Terms of Service may be updated as the project evolves. Any changes will b
 8. Contact
 
 For any questions regarding this demo or the Libftea project, please contact the development team at: m.opheliaa@gmail.com
+`;export{e as default};

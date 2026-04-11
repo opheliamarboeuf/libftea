@@ -1,4 +1,4 @@
-Conditions Générales d'Utilisation – Démo Libftea
+const e=`Conditions Générales d'Utilisation – Démo Libftea
 
 Dernière mise à jour : 11 avril 2026
 
@@ -57,3 +57,4 @@ Les présentes Conditions Générales d'Utilisation peuvent être mises à jour 
 8. Contact
 
 Pour toute question concernant cette démo ou le projet Libftea, veuillez contacter l'équipe de développement à : m.opheliaa@gmail.com
+`;export{e as default};

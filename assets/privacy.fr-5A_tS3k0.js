@@ -1,4 +1,4 @@
-Politique de Confidentialité – Démo Libftea
+const e=`Politique de Confidentialité – Démo Libftea
 
 Dernière mise à jour : 11 avril 2026
 
@@ -57,3 +57,4 @@ Cette politique peut être mise à jour au fur et à mesure de l'évolution du p
 7. Contact
 
 Pour toute question concernant cette démo ou le projet Libftea, veuillez contacter l'équipe de développement à : m.opheliaa@gmail.com
+`;export{e as default};

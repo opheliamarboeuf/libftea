@@ -1,4 +1,4 @@
-利用規約 – Libftea デモ
+const n=`利用規約 – Libftea デモ
 
 最終更新日：2026年4月11日
 
@@ -57,3 +57,4 @@ Libftea は学生プロジェクトです。このデモはデモンストレー
 8. お問い合わせ
 
 このデモまたは Libftea プロジェクトに関するご質問は、開発チームまでお問い合わせください：m.opheliaa@gmail.com
+`;export{n as default};

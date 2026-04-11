@@ -1,4 +1,4 @@
-Privacy Policy – Libftea Demo
+const e=`Privacy Policy – Libftea Demo
 
 Last updated: April 11, 2026
 
@@ -56,4 +56,4 @@ This policy may be updated as the project evolves. Any changes will be reflected
 
 7. Contact
 
-For any questions regarding this demo or the Libftea project, please contact the development team at: m.opheliaa@gmail.com
+For any questions regarding this demo or the Libftea project, please contact the development team at: m.opheliaa@gmail.com`;export{e as default};
