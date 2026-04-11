@@ -132,7 +132,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
 		setInput('');
 	};
 
-	const avatarSrc = otherUser?.profile?.avatarUrl ?? '/transcendence/default-avatar.jpeg';
+	const avatarSrc = otherUser?.profile?.avatarUrl ?? '/libftea/default-avatar.jpeg';
 
 	const lastOwnMessageIndex = messages.reduce(
 		(last, msg, i) => (msg.senderId === currentUserId ? i : last),
@@ -244,7 +244,7 @@ export function ChatWindow({ conversationId, currentUserId, otherUser, onNewMess
 						!isOwn && (i === 0 || messages[i - 1]?.senderId !== msg.senderId);
 					const isLastOwn = isOwn && i === lastOwnMessageIndex;
 					const msgAvatarSrc =
-						msg.User?.profile?.avatarUrl || '/transcendence/default-avatar.jpeg';
+						msg.User?.profile?.avatarUrl || '/libftea/default-avatar.jpeg';
 
 					const isThisMessageRead = isOwn && msg.id === lastReadMessageId;
 					const showSent =

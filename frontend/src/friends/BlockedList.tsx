@@ -23,7 +23,7 @@ export function BlockedList() {
 										src={
 											blocked.avatarUrl
 												? `${API_URL}${blocked.avatarUrl}`
-												: '/transcendence/default-avatar.jpeg'
+												: '/libftea/default-avatar.jpeg'
 										}
 										alt="Small Avatar"
 									/>

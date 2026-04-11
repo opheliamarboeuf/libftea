@@ -40,10 +40,10 @@ const ProfilePage = () => {
 				<div className="flex-shrink-0 w-[250px] min-w-[150px] bg-white/85 backdrop-blur-md p-6 flex flex-col items-center rounded-2xl border border-black/5 shadow-md m-5 gap-4 self-stretch max-lg:hidden">
 					<div>
 						<img
-							src={user.profile.avatarUrl || '/transcendence/default-avatar.jpeg'}
+							src={user.profile.avatarUrl || '/libftea/default-avatar.jpeg'}
 							onError={(e) => {
 								(e.target as HTMLImageElement).src =
-									'/transcendence/default-avatar.jpeg';
+									'/libftea/default-avatar.jpeg';
 							}}
 							alt="Profile Avatar"
 							className="w-24 h-24 rounded-full object-cover shadow-md"
@@ -73,10 +73,10 @@ const ProfilePage = () => {
 
 					<div className="relative h-[250px] overflow-hidden rounded-2xl group">
 						<img
-							src={user.profile?.coverUrl || '/transcendence/default-cover.jpeg'}
+							src={user.profile?.coverUrl || '/libftea/default-cover.jpeg'}
 							onError={(e) => {
 								(e.target as HTMLImageElement).src =
-									'/transcendence/default-cover.jpeg';
+									'/libftea/default-cover.jpeg';
 							}}
 							alt="Cover"
 							className="w-full h-full object-cover"

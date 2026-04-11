@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { UserContext, User } from './context/UserContext';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
@@ -24,65 +24,95 @@ import { seedDatabase, mockDatabase } from './mockData';
 
 seedDatabase();
 
-const App = () => {
-	const [user, setUser] = useState<User | null>(
-		toContextUser(mockDatabase.users.find((u) => u.username === 'ophe')!),
+const AppContent = () => {
+	const location = useLocation();
+	const { user } = useContext(UserContext);
+	
+	// Pages that shouldn't show header and left menu
+	const publicPages = ['/landing', '/login', '/register', '/privacypolicy', '/termsofservice', '/github/callback'];
+	const shouldShowLayout = !publicPages.includes(location.pathname);
+
+	return (
+		<>
+			{shouldShowLayout && <Header />}
+			{shouldShowLayout && <LeftMenu />}
+			<Routes>
+				{ModerationRoutes}
+				{SettingsRoutes}
+			<Route path="/" element={<Navigate to="/landing" />} />
+				<Route path="/landing" element={<LandingPage />} />
+				<Route path="/register" element={<RegisterPage />} />
+				<Route path="/login" element={<LoginPage />} />
+				<Route
+					path="/myprofile"
+					element={<MyProfilePage />}
+				/>
+				<Route
+					path="/friends"
+					element={<FriendsPage />}
+				/>
+				<Route
+					path="/feed"
+					element={<FeedPage />}
+				/>
+				<Route
+					path="/users/:id"
+					element={<UserProfilePage />}
+				/>
+				<Route
+					path="/chat"
+					element={<ChatPage />}
+				/>
+				<Route
+					path="/tournament"
+					element={<TournamentFeedPage />}
+				/>
+				<Route
+					path="/dashboard"
+					element={<DashboardPage />}
+				/>
+				<Route path="/privacypolicy" element={<PrivacyPage />} />
+				<Route path="/termsofservice" element={<TermsPage />} />
+				<Route path="/github/callback" element={<GithubCallbackPage />} />
+			</Routes>
+		</>
 	);
+};
+
+const App = () => {
+	const storedId = sessionStorage.getItem('userId');
+	const initialUser = storedId
+		? (() => {
+				const found = mockDatabase.users.find((u) => u.id === Number(storedId));
+				return found ? toContextUser(found) : null;
+		  })()
+		: null;
+
+	const [user, setUser] = useState<User | null>(initialUser);
+
+	const setUserWithStorage: React.Dispatch<React.SetStateAction<User | null>> = (action) => {
+		setUser((prev) => {
+			const next = typeof action === 'function' ? action(prev) : action;
+			if (next) sessionStorage.setItem('userId', String(next.id));
+			else sessionStorage.removeItem('userId');
+			return next;
+		});
+	};
 
 	// refreshUser
 	const refreshUser = async () => {
 		const fresh = mockDatabase.users.find((u) => u.id === user?.id);
-		if (fresh) setUser(toContextUser(fresh));
+		if (fresh) setUserWithStorage(toContextUser(fresh));
 	};
 
 	return (
-		<UserContext.Provider value={{ user, setUser, refreshUser }}>
+		<UserContext.Provider value={{ user, setUser: setUserWithStorage, refreshUser }}>
 			<ModalProvider>
 				<BrowserRouter
-					basename="/transcendence"
+					basename="/libftea"
 					future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
 				>
-					<Header />
-					<LeftMenu />
-					<Routes>
-						{ModerationRoutes}
-						{SettingsRoutes}
-						<Route path="/" element={<Navigate to={user ? '/feed' : '/landing'} />} />
-						<Route path="/landing" element={<LandingPage />} />
-						<Route path="/register" element={<RegisterPage />} />
-						<Route path="/login" element={<LoginPage />} />
-						<Route
-							path="/myprofile"
-							element={user ? <MyProfilePage /> : <Navigate to="/" replace />}
-						/>
-						<Route
-							path="/friends"
-							element={user ? <FriendsPage /> : <Navigate to="/" replace />}
-						/>
-						<Route
-							path="/feed"
-							element={user ? <FeedPage /> : <Navigate to="/" replace />}
-						/>
-						<Route
-							path="/users/:id"
-							element={user ? <UserProfilePage /> : <Navigate to="/" replace />}
-						/>
-						<Route
-							path="/chat"
-							element={user ? <ChatPage /> : <Navigate to="/" replace />}
-						/>
-						<Route
-							path="/tournament"
-							element={user ? <TournamentFeedPage /> : <Navigate to="/" replace />}
-						/>
-						<Route
-							path="/dashboard"
-							element={user ? <DashboardPage /> : <Navigate to="/" replace />}
-						/>
-						<Route path="/privacypolicy" element={<PrivacyPage />} />
-						<Route path="/termsofservice" element={<TermsPage />} />
-						<Route path="/github/callback" element={<GithubCallbackPage />} />
-					</Routes>
+					<AppContent />
 				</BrowserRouter>
 			</ModalProvider>
 		</UserContext.Provider>

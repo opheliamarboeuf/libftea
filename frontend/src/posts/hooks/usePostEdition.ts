@@ -48,7 +48,7 @@ export function usePostEdition(post: Post) {
 			// Update user context
 			if (user) {
 				const updatedPosts = user.posts.map((p) =>
-					p.id === post.id ? { ...p, title, caption, updatedAt: new Date() } : p,
+					p.id === post.id ? { ...p, title, caption, updatedAt: new Date().toISOString() } : p,
 				);
 				setUser({ ...user, posts: updatedPosts });
 			}

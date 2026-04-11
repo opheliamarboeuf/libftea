@@ -50,7 +50,7 @@ export function PendingRequests() {
 										src={
 											user.avatarUrl
 												? `${API_URL}${user.avatarUrl}`
-												: '/transcendence/default-avatar.jpeg'
+												: '/libftea/default-avatar.jpeg'
 										}
 										alt="Small Avatar"
 									/>

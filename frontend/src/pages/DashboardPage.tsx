@@ -29,6 +29,7 @@ const DashboardPage = () => {
 	const activeTab = isModRoute ? 'MOD' : 'ADMIN';
 
 	if (!user) return <Navigate to="/" replace />;
+	if (user.role !== 'ADMIN' && user.role !== 'MOD') return <Navigate to="/feed" replace />;
 	
 	// Prevent unauthorized access to the wrong dashboard
 	const isOnAdminDash = location.pathname.startsWith('/dashboard/admin');

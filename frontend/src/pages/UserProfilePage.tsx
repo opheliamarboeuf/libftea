@@ -324,11 +324,11 @@ const UserProfilePage = () => {
 							src={
 								userData.profile?.avatarUrl
 									? userData.profile.avatarUrl.startsWith('blob:') ? userData.profile.avatarUrl : `${BASE_URL}${userData.profile.avatarUrl}`
-									: '/transcendence/default-avatar.jpeg'
+									: '/libftea/default-avatar.jpeg'
 							}
 							onError={(e) => {
 								(e.target as HTMLImageElement).src =
-									'/transcendence/default-avatar.jpeg';
+									'/libftea/default-avatar.jpeg';
 							}}
 							alt="Profile Avatar"
 							className="w-24 h-24 rounded-full object-cover shadow-md"
@@ -366,11 +366,11 @@ const UserProfilePage = () => {
 							src={
 								userData.profile?.coverUrl
 									? userData.profile.coverUrl.startsWith('blob:') ? userData.profile.coverUrl : `${BASE_URL}${userData.profile.coverUrl}`
-									: '/transcendence/default-cover.jpeg'
+									: '/libftea/default-cover.jpeg'
 							}
 							onError={(e) => {
 								(e.target as HTMLImageElement).src =
-									'/transcendence/default-cover.jpeg';
+									'/libftea/default-cover.jpeg';
 							}}
 							alt="Cover"
 							className="w-full h-full object-cover"

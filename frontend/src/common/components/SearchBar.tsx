@@ -86,7 +86,7 @@ export const SearchBar = () => {
 									className="search-avatar"
 									onError={(e) => {
 										(e.target as HTMLImageElement).src =
-											'/transcendence/default-avatar.jpeg';
+											'/libftea/default-avatar.jpeg';
 									}}
 								/>
 							)}

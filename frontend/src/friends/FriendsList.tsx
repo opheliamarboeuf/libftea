@@ -25,7 +25,7 @@ export function FriendsList() {
 										src={
 											friend.avatarUrl
 												? friend.avatarUrl.startsWith('blob:') ? friend.avatarUrl : `${API_URL}${friend.avatarUrl}`
-												: '/transcendence/default-avatar.jpeg'
+												: '/libftea/default-avatar.jpeg'
 										}
 										alt="Small Avatar"
 									/>

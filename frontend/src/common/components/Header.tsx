@@ -158,7 +158,7 @@ export const Header = () => {
 								src={
 									user?.profile?.avatarUrl
 										? user.profile.avatarUrl.startsWith('blob:') ? user.profile.avatarUrl : `${API_URL}${user.profile.avatarUrl}`
-										: '/transcendence/default-avatar.jpeg'
+										: '/libftea/default-avatar.jpeg'
 								}
 								alt="Small Avatar"
 							/>
