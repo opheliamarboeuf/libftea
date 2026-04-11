@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Post, useUser } from '../../context/UserContext';
-import { postsApi } from '../api';
-import { PostEditPayload } from '../types';
+import { mockDatabase } from '../../mockData';
 import { useTranslation } from 'react-i18next';
 
 const MAX_TITLE_LENGTH = 50;
@@ -38,26 +37,24 @@ export function usePostEdition(post: Post) {
 		}
 
 		try {
-			const payload: PostEditPayload = {
-				title,
-				caption,
-			};
-
-			const updatedPost = await postsApi.updatePost(post.id, payload);
-			setTitle(updatedPost.title);
-			setCaption(updatedPost.caption || '');
-			setErrorMessage(null);
-
-			// Update the user context with the new post
-			if (user) {
-				const updatedPosts = user.posts.map((p) => (p.id === post.id ? updatedPost : p));
-				setUser({
-					...user,
-					posts: updatedPosts,
-				});
+			// Update in mock database
+			const mockPost = mockDatabase.posts.find((p) => p.id === post.id);
+			if (mockPost) {
+				mockPost.title = title;
+				mockPost.caption = caption;
+				mockPost.updatedAt = new Date();
 			}
 
-			return updatedPost;
+			// Update user context
+			if (user) {
+				const updatedPosts = user.posts.map((p) =>
+					p.id === post.id ? { ...p, title, caption, updatedAt: new Date() } : p,
+				);
+				setUser({ ...user, posts: updatedPosts });
+			}
+
+			setErrorMessage(null);
+			return true;
 		} catch (error) {
 			if (error instanceof Error) {
 				setErrorMessage(error.message);

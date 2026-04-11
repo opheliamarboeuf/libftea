@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { postsApi } from "../api";
+import { mockDatabase } from "../../mockData";
 import { useTranslation } from "react-i18next";
 
 export function usePostDeletion() {
@@ -8,10 +8,11 @@ export function usePostDeletion() {
 	const { t } = useTranslation();
 	
 	const handlePostDeletion = async (postId: number): Promise<boolean> => {
-
 		setIsDeleting(true);
 		try {
-			await postsApi.deletePost(postId);
+			// Remove from mock database (will restore on refresh)
+			const index = mockDatabase.posts.findIndex((p) => p.id === postId);
+			if (index !== -1) mockDatabase.posts.splice(index, 1);
 			setErrorMessage(null);
 			return true;
 		}
@@ -22,7 +23,7 @@ export function usePostDeletion() {
 			else {
 				setErrorMessage(t('registerpage.serverfail'));
 			}
-			return false
+			return false;
 		}
 		finally{
 			setIsDeleting(false);
