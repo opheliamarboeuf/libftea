@@ -7,6 +7,7 @@ const MAX_TITLE_LENGTH = 50;
 const MAX_CAPTION_LENGTH = 500;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+const POST_IMAGE_SIZE = 500; // 500x500 for posts/tournaments
 
 // this hook now expects the id of the battle/tournament that the user is
 // joining so it can include it in the request URL.
@@ -29,7 +30,39 @@ export function useTournamentJoin(battleId: number) {
 		return null;
 	};
 
-	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const resizeImage = async (file: File): Promise<File> => {
+		return new Promise((resolve) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = (event) => {
+				const img = new Image();
+				img.src = event.target?.result as string;
+				img.onload = () => {
+					const canvas = document.createElement('canvas');
+					canvas.width = POST_IMAGE_SIZE;
+					canvas.height = POST_IMAGE_SIZE;
+					const ctx = canvas.getContext('2d');
+					if (ctx) {
+						ctx.drawImage(img, 0, 0, POST_IMAGE_SIZE, POST_IMAGE_SIZE);
+					}
+					canvas.toBlob(
+						(blob) => {
+							if (blob) {
+								const resizedFile = new File([blob], file.name, { type: file.type });
+								resolve(resizedFile);
+							} else {
+								resolve(file);
+							}
+						},
+						file.type,
+						0.85
+					);
+				};
+			};
+		});
+	};
+
+	const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0] || null;
 		if (file) {
 			const error = validateImage(file, 'Outfit picture');
@@ -38,9 +71,18 @@ export function useTournamentJoin(battleId: number) {
 				e.target.value = '';
 				return;
 			}
+			try {
+				const resizedFile = await resizeImage(file);
+				setImageFile(resizedFile);
+				setErrorMessage(null);
+			} catch (error) {
+				setErrorMessage(t('errors.imageresize') || 'Failed to resize image');
+				e.target.value = '';
+			}
+		} else {
+			setImageFile(null);
+			setErrorMessage(null);
 		}
-		setImageFile(file);
-		setErrorMessage(null);
 	};
 
 	const hasChanges = () => {

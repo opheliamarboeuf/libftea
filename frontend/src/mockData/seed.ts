@@ -879,7 +879,7 @@ function createOngoingTournament(userIds: number[]): void {
 			id: postId,
 			title: tournamentPostsData[i].title,
 			caption: tournamentPostsData[i].caption,
-			imageUrl: `${import.meta.env.BASE_URL}uploads/seed/tournament/${username === 'cha' ? 'cha_tournament2.jpg' : 'ophe_tournament2.jpg'}`,
+			imageUrl: `${import.meta.env.BASE_URL}uploads/seed/tournament/${username === 'cha' ? 'cha_tournament2.jpg' : 'ophe_tournament2.jpg'}?v=${Date.now()}`,
 			authorId: userId,
 			createdAt: postDate,
 			updatedAt: postDate,
