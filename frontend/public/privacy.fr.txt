@@ -1,69 +1,59 @@
-Politique de Confidentialité – Libftea
+Politique de Confidentialité – Démo Libftea
 
-Dernière mise à jour : 17 mars 2026
+Dernière mise à jour : 11 avril 2026
 
-1. Introduction
+CECI EST UNE DÉMO – PAS L'APPLICATION RÉELLE
 
-Libftea est une plateforme sociale permettant aux utilisateurs de partager des photos de tenues, d'interagir avec leurs amis, de commenter et liker des publications, et de participer à des tournois de style. Cette politique de confidentialité explique quelles données personnelles nous collectons, comment nous les utilisons et comment nous les protégeons.
-En créant un compte et en utilisant Libftea, vous acceptez les pratiques décrites dans cette politique.
+Ce site est une démonstration non fonctionnelle de Libftea, une plateforme sociale complète permettant aux utilisateurs de partager des photos de tenues, d'interagir avec leurs amis et de participer à des tournois de style. La version complète de Libftea inclut l'inscription, le chat en temps réel, le stockage persistant des données et un backend complet.
+
+Cette démo existe uniquement pour présenter l'interface et l'expérience utilisateur de Libftea. Elle ne se connecte à aucun serveur et ne collecte aucune donnée personnelle.
+
+1. Fonctionnement de cette démo
+
+- Il n'y a ni inscription ni connexion. Vous naviguez dans la démo en utilisant des comptes fictifs pré-générés via un widget de sélection d'utilisateur.
+- Toutes les données (utilisateurs, publications, commentaires, likes, messages, amitiés, tournois) sont générées localement dans la mémoire de votre navigateur au chargement de la page.
+- Aucune donnée n'est envoyée ni reçue d'un serveur. Tout fonctionne entièrement dans votre navigateur.
+- Toutes les données sont effacées lorsque vous rafraîchissez ou fermez la page. Rien n'est sauvegardé entre les sessions.
+- Aucune autre personne ne peut voir ni accéder à ce qui est affiché sur votre écran. Votre session de démo est entièrement privée et locale à votre appareil.
 
 2. Informations que nous collectons
 
-Informations que vous fournissez directement :
+Aucune. Cette démo ne collecte, ne stocke et ne transmet aucune donnée personnelle.
 
-- Nom d'utilisateur et adresse e-mail lors de l'inscription
-- Informations de profil telles que l'avatar et le nom d'affichage
-- Photos et légendes que vous publiez
-- Messages envoyés via la fonctionnalité de chat
-- Commentaires et likes sur les publications
+Plus précisément :
+- Aucun compte ni adresse e-mail n'est requis ou accepté.
+- Aucune adresse IP, empreinte de navigateur ou information d'appareil n'est enregistrée.
+- Aucun cookie n'est déposé. Aucun pixel de suivi, script d'analyse ou service tiers n'est chargé.
+- Aucune donnée ne quitte votre navigateur à aucun moment.
 
-Informations collectées automatiquement :
+3. Stockage des données
 
-- Adresse IP et informations sur l'appareil/navigateur
-- Horodatages de connexion et données de session
+Tout le contenu affiché dans la démo (publications, profils, messages, etc.) est constitué de données fictives générées par du code JavaScript s'exécutant dans votre navigateur. Ces données n'existent que dans la mémoire vive de votre appareil et sont entièrement supprimées au rafraîchissement de la page.
 
+La démo n'utilise ni localStorage, ni sessionStorage, ni cookies, ni aucun autre mécanisme de persistance au-delà de la session de page en cours.
 
-3. Utilisation de vos informations
+4. Services tiers
 
-Nous utilisons les données collectées pour :
+Cette démo ne se connecte à aucun service tiers. Il n'y a ni OAuth, ni analyse, ni appels CDN, ni requêtes API externes.
 
-- Créer et gérer votre compte
-- Afficher vos publications, profil et interactions aux autres utilisateurs
-- Activer le chat en temps réel et les notifications
-- Gérer les tournois et déterminer les gagnants
-- Assurer la sécurité et le bon fonctionnement de la plateforme
+La version complète de Libftea utilise GitHub OAuth pour l'authentification et un serveur backend pour le stockage des données, mais aucun de ces éléments n'est actif dans cette démo.
 
+5. À propos de l'application Libftea complète
 
-4. Partage des données
+Libftea est la plateforme sociale complète et entièrement fonctionnelle dont cette démo présente l'interface. L'application complète inclut :
+- Inscription et authentification des utilisateurs (dont GitHub OAuth)
+- Stockage persistant des données avec une vraie base de données
+- Chat en temps réel et notifications via WebSockets
+- Tournois de style avec système de vote
+- Outils de modération et signalement d'utilisateurs
+- Personnalisation du profil et gestion des amis
 
-Nous ne vendons ni ne partageons vos données personnelles avec des tiers. Votre contenu (publications, nom d'utilisateur, photo de profil) est visible par les autres utilisateurs inscrits de la plateforme, conformément à la nature sociale du service.
+La politique de confidentialité de l'application Libftea complète couvre la collecte de données, le stockage, les droits des utilisateurs, et plus encore. La présente politique ne s'applique qu'à ce site de démonstration statique.
 
-5. Stockage et sécurité des données
+6. Modifications de cette politique
 
-Vos données sont stockées sur un serveur de développement local. Nous mettons en œuvre des mesures de sécurité standard, notamment l'authentification par JWT et des routes API protégées. Libftea étant un projet étudiant, nous déconseillons de soumettre des informations personnelles sensibles au-delà de ce qui est nécessaire pour utiliser la plateforme.
+Cette politique peut être mise à jour au fur et à mesure de l'évolution du projet. Tout changement sera reflété dans la date de « Dernière mise à jour » en haut de cette page.
 
-6. Cookies et sessions
+7. Contact
 
-Libftea utilise des tokens JWT stockés dans le localStorage de votre navigateur pour maintenir votre session. Ceux-ci sont strictement nécessaires à l'authentification et ne sont pas utilisés à des fins publicitaires ou de suivi intersites.
-
-7. Vos droits
-
-Vous avez le droit de :
-
-- Accéder aux données personnelles associées à votre compte
-- Demander la correction ou la suppression de vos données
-- Supprimer votre compte et le contenu associé
-
-Pour exercer ces droits, veuillez nous contacter via les informations ci-dessous.
-
-8. Services tiers
-
-Libftea peut utiliser des bibliothèques et outils open source pour assurer son fonctionnement. Ceux-ci ne collectent pas vos données personnelles de manière indépendante.
-
-9. Modifications de cette politique
-
-Cette politique peut être mise à jour au fur et à mesure de l'évolution du projet. Tout changement significatif sera reflété dans la date de « Dernière mise à jour » en haut de cette page.
-
-10. Contact
-
-Pour toute question concernant cette politique de confidentialité ou vos données, veuillez contacter l'équipe de développement Libftea à : libftea@student.42.fr
+Pour toute question concernant cette démo ou le projet Libftea, veuillez contacter l'équipe de développement à : m.opheliaa@gmail.com

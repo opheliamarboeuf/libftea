@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { UserContext, User } from './context/UserContext';
 import RegisterPage from './pages/RegisterPage';
@@ -26,7 +26,6 @@ seedDatabase();
 
 const AppContent = () => {
 	const location = useLocation();
-	const { user } = useContext(UserContext);
 	
 	// Pages that shouldn't show header and left menu
 	const publicPages = ['/landing', '/login', '/register', '/privacypolicy', '/termsofservice', '/github/callback'];

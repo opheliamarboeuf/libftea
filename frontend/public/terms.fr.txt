@@ -1,80 +1,59 @@
-Conditions Générales d'Utilisation – Libftea
+Conditions Générales d'Utilisation – Démo Libftea
 
-Dernière mise à jour : 17 mars 2026
+Dernière mise à jour : 11 avril 2026
 
-1. Acceptation des conditions
+⚠ CECI EST UNE DÉMO – PAS L'APPLICATION RÉELLE
 
-En créant un compte et en accédant à Libftea, vous acceptez d'être lié par les présentes Conditions Générales d'Utilisation. Si vous n'acceptez pas ces conditions, vous ne pouvez pas utiliser la plateforme.
+Ce site est une démonstration non fonctionnelle de Libftea, une plateforme sociale complète pour le partage de photos de tenues, l'interaction avec des amis et la participation à des tournois de style. Cette démo présente uniquement l'interface utilisateur. Elle ne se connecte à aucun serveur, ne nécessite aucune inscription et ne stocke aucune donnée.
 
-2. Description du service
+1. Nature de cette démo
 
-Libftea est une plateforme sociale permettant aux utilisateurs de :
+Ce site est une démonstration statique fonctionnant côté client. En le parcourant, vous reconnaissez ce qui suit :
 
-- Partager des photos de tenues et de looks stylisés
-- Suivre des amis et interagir avec leur contenu via des likes et des commentaires
-- Échanger des messages via la fonctionnalité de chat
-- articiper à des tournois de style en soumettant des photos et en votant
+- Il n'y a aucune création de compte, connexion ou inscription. Vous interagissez avec la démo à l'aide de comptes fictifs pré-générés via un widget de sélection d'utilisateur.
+- Tout le contenu affiché (utilisateurs, publications, commentaires, likes, messages, tournois) est constitué de données fictives générées localement dans votre navigateur au chargement de la page.
+- Aucune donnée n'est envoyée ni reçue d'un serveur. Tout fonctionne entièrement dans votre navigateur.
+- Toutes les données sont effacées lorsque vous rafraîchissez ou fermez la page. Rien ne persiste entre les sessions.
+- Aucune autre personne ne peut voir ni accéder à votre session de démo. Elle est entièrement privée et locale à votre appareil.
 
+2. Aucune collecte de données
 
-3. Inscription au compte
+Cette démo ne collecte, ne stocke et ne transmet aucune information personnelle. Aucun compte, e-mail ou identifiant n'est requis. Aucun cookie, pixel de suivi, outil d'analyse ou service tiers n'est utilisé.
 
-Vous devez créer un compte pour accéder à la plateforme. Vous vous engagez à :
+3. Interactions utilisateur dans la démo
 
-- Fournir des informations exactes et véridiques lors de l'inscription
-- Garder vos identifiants de connexion confidentiels
-- Être seul responsable de toute activité effectuée depuis votre compte
-- Nous informer immédiatement en cas d'utilisation non autorisée de votre compte
+En naviguant dans la démo, vous pouvez interagir avec des fonctionnalités telles que publier, commenter, liker, chatter et participer à des tournois. Ces interactions :
 
+- N'affectent que les données fictives dans la mémoire de votre navigateur
+- Ne sont visibles par personne d'autre
+- Sont définitivement perdues au rafraîchissement de la page
+- N'ont aucun effet dans le monde réel
 
-4. Contenu utilisateur
+4. Propriété intellectuelle
 
-Vous conservez la propriété du contenu que vous publiez sur Libftea. En publiant du contenu, vous accordez à Libftea une licence non exclusive pour afficher ce contenu aux autres utilisateurs de la plateforme.
+Tous les éléments de la plateforme Libftea — y compris son nom, son logo, son design et son code source — sont la propriété de l'équipe de développement. Vous ne pouvez pas reproduire ou réutiliser une partie de la plateforme sans autorisation explicite.
 
-Vous êtes seul responsable du contenu que vous partagez. Vous vous engagez à ne pas publier de contenu :
+5. À propos de l'application Libftea complète
 
-- Portant atteinte aux droits de propriété intellectuelle d'autrui
-- Offensant, abusif, menaçant ou discriminatoire
-- Contenant de la nudité ou du matériel à caractère sexuel explicite
-- Faisant la promotion de la violence ou d'activités illégales
-- Usurpant l'identité d'une autre personne ou entité
+Libftea est la plateforme sociale complète et entièrement fonctionnelle dont cette démo présente l'interface. L'application complète inclut :
 
+- Inscription et authentification des utilisateurs (dont GitHub OAuth)
+- Stockage persistant des données avec une vraie base de données
+- Chat en temps réel et notifications via WebSockets
+- Tournois de style avec vote et modération
+- Outils de modération de contenu et signalement d'utilisateurs
+- Personnalisation du profil et gestion des amis
 
-5. Comportements interdits
+L'application complète dispose de ses propres Conditions Générales d'Utilisation couvrant les responsabilités de compte, les politiques de contenu, les comportements interdits, la modération, et plus encore. Les présentes conditions ne s'appliquent qu'à ce site de démonstration statique.
 
-Vous vous engagez à ne pas :
+6. Limitation de responsabilité
 
-- Utiliser la plateforme à des fins illégales
-- Tenter d'accéder sans autorisation à d'autres comptes ou aux systèmes de la plateforme
-- Harceler, intimider ou menacer d'autres utilisateurs
-- Utiliser des scripts automatisés ou des bots pour interagir avec la plateforme
-- Télécharger du code malveillant ou tenter de perturber le service
+Libftea est un projet étudiant. Cette démo est fournie telle quelle à des fins de démonstration uniquement. Nous ne fournissons aucune garantie quant à sa disponibilité, son exactitude ou sa fonctionnalité. Nous ne saurions être tenus responsables de tout problème découlant de l'utilisation de cette démo.
 
+7. Modifications des conditions
 
-6. Tournois
+Les présentes Conditions Générales d'Utilisation peuvent être mises à jour au fur et à mesure de l'évolution du projet. Tout changement sera reflété dans la date de « Dernière mise à jour » en haut de cette page.
 
-Libftea organise des tournois de style ouverts à tous les utilisateurs inscrits. En participant, vous acceptez que :
+8. Contact
 
-- La publication gagnante est déterminée par le nombre de likes reçus
-- Libftea se réserve le droit de modérer ou de supprimer toute soumission enfreignant les présentes conditions
-- Les résultats des tournois sont définitifs une fois déterminés par la plateforme
-
-
-7. Modération et résiliation de compte
-
-Libftea se réserve le droit de supprimer tout contenu ou de suspendre tout compte enfreignant les présentes Conditions Générales d'Utilisation, sans préavis. Des violations répétées ou graves peuvent entraîner la suppression définitive du compte.
-
-8. Propriété intellectuelle
-
-Tous les éléments de la plateforme, notamment le nom, le logo, le design et le code de Libftea, sont la propriété de l'équipe de développement. Vous ne pouvez pas reproduire ou réutiliser une partie de la plateforme sans autorisation explicite.
-
-9. Limitation de responsabilité
-
-Libftea est un projet étudiant fourni tel quel. Nous ne garantissons pas un service ininterrompu ou sans erreur. Nous ne saurions être tenus responsables de toute perte de données, interruption de service ou dommage découlant de l'utilisation de la plateforme.
-
-10. Modifications des conditions
-
-Les présentes Conditions Générales d'Utilisation peuvent être mises à jour à tout moment. L'utilisation continue de la plateforme après toute modification vaut acceptation des conditions révisées.
-
-11. Contact
-
-Pour toute question concernant les présentes Conditions Générales d'Utilisation, veuillez contacter l'équipe de développement Libftea à : libftea@student.42.fr
+Pour toute question concernant cette démo ou le projet Libftea, veuillez contacter l'équipe de développement à : m.opheliaa@gmail.com

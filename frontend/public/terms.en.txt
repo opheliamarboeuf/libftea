@@ -1,75 +1,59 @@
-Terms of Service – Libftea
+Terms of Service – Libftea Demo
 
-Last updated: March 17, 2026
+Last updated: April 11, 2026
 
-1. Acceptance of Terms
+THIS IS A DEMO – NOT THE REAL APPLICATION
 
-By creating an account and accessing Libftea, you agree to be bound by these Terms of Service. If you do not agree to these terms, you may not use the platform.
+This website is a non-functional demonstration of Libftea, a fully-featured social platform for sharing outfit photos, interacting with friends, and participating in style tournaments. This demo showcases the user interface only. It does not connect to any server, does not require registration, and does not store any data.
 
-2. Description of Service
+1. Nature of This Demo
 
-Libftea is a social platform that allows users to:
+This site is a static, client-side demonstration. By browsing it, you acknowledge the following:
 
-- Share outfit photos and styled looks
-- Follow friends and interact with their content via likes and comments
-- Exchange messages through the chat feature
-- Participate in style tournaments by submitting photos and voting
+- There is no account creation, login, or registration. You interact with the demo using fictional, pre-generated accounts via a user-switching widget.
+- All content displayed (users, posts, comments, likes, messages, tournaments) is mock data generated locally in your browser when the page loads.
+- No data is sent to or received from any server. Everything runs entirely within your browser.
+- All data is erased when you refresh or close the page. Nothing persists between sessions.
+- No other person can see or access your demo session. It is entirely private and local to your device.
 
-3. Account Registration
+2. No Data Collection
 
-You must register an account to access the platform. You agree to:
+This demo does not collect, store, or transmit any personal information. No account, email, or credentials are required. No cookies, tracking pixels, analytics, or third-party services are used.
 
-- Provide accurate and truthful information upon registration
-- Keep your login credentials confidential
-- Be solely responsible for all activity that occurs under your account
-- Notify us immediately if you suspect unauthorized use of your account
+3. User Interactions Within the Demo
 
-4. User Content
+While browsing the demo, you may interact with features such as posting, commenting, liking, chatting, and participating in tournaments. These interactions:
 
-You retain ownership of the content you post on Libftea. By posting content, you grant Libftea a non-exclusive license to display that content to other users of the platform.
+- Affect only the mock data in your browser's memory
+- Are not visible to anyone else
+- Are permanently lost on page refresh
+- Have no real-world effect
 
-You are solely responsible for the content you share. You agree not to post content that:
+4. Intellectual Property
 
-- Infringes on the intellectual property rights of others
-- Is offensive, abusive, threatening, or discriminatory
-- Contains nudity or sexually explicit material
-- Promotes violence or illegal activities
-vImpersonates another person or entity
+All elements of the Libftea platform — including its name, logo, design, and source code — are the property of the development team. You may not reproduce or reuse any part of the platform without explicit permission.
 
-5. Prohibited Conduct
+5. About the Full Libftea Application
 
-You agree not to:
+Libftea is the complete, fully functional social platform that this demo showcases. The full application includes:
 
-- Use the platform for any unlawful purpose
-- Attempt to gain unauthorized access to other accounts or the platform's systems
-- Harass, bully, or intimidate other users
-- Use automated scripts or bots to interact with the platform
-- Upload malicious code or attempt to disrupt the service
+- User registration and authentication (including GitHub OAuth)
+- Persistent data storage with a real database
+- Real-time chat and notifications via WebSockets
+- Style tournaments with voting and moderation
+- Content moderation tools and user reporting
+- Profile customization and friend management
 
-6. Tournaments
+The full application has its own Terms of Service covering account responsibilities, content policies, prohibited conduct, moderation, and more. These demo terms only apply to this static demonstration site.
 
-Libftea organizes style tournaments open to all registered users. By participating, you agree that:
+6. Limitation of Liability
 
-- The winning post is determined by the number of likes received
-- Libftea reserves the right to moderate or remove any submission that violates these Terms
-- Tournament results are final once determined by the platform
+Libftea is a student project. This demo is provided as-is for demonstration purposes only. We make no warranties regarding its availability, accuracy, or functionality. We shall not be held liable for any issue arising from the use of this demo.
 
-7. Moderation & Account Termination
+7. Changes to These Terms
 
-Libftea reserves the right to remove any content or suspend any account that violates these Terms of Service, without prior notice. Repeated or severe violations may result in permanent account deletion.
+These Terms of Service may be updated as the project evolves. Any changes will be reflected in the "Last updated" date at the top of this page.
 
-8. Intellectual Property
+8. Contact
 
-All platform elements including the name, logo, design, and code of Libftea are the property of the development team. You may not reproduce or reuse any part of the platform without explicit permission.
-
-9. Limitation of Liability
-
-Libftea is a student project provided as-is. We do not guarantee uninterrupted or error-free service. We shall not be held liable for any loss of data, service interruption, or damages arising from the use of the platform.
-
-10. Changes to These Terms
-
-These Terms of Service may be updated at any time. Continued use of the platform following any changes constitutes your acceptance of the revised terms.
-
-11. Contact
-
-For any questions regarding these Terms of Service, please contact the Libftea development team at: libftea@student.42.fr
+For any questions regarding this demo or the Libftea project, please contact the development team at: m.opheliaa@gmail.com
