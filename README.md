@@ -1,3 +1,5 @@
+A real-time fashion social network with posts, chat, tournaments, moderation, and multi-role architecture.
+
 ## Description
 
 Libftea is a social platform for fashion enthusiasts to share outfits, connect with others, and discover new styles. Users can post content, interact through likes and comments, and explore a community built around self-expression through clothing.
@@ -8,6 +10,21 @@ The platform includes:
 - Social features (friends, online status, blocking/reporting)
 - Themed tournaments where users compete and vote
 - A real-time notification system
+
+## Preview
+
+### User Profile
+![Profile Preview](./docs/preview/profile.png)
+
+### Moderation Dashboard
+![Admin Preview](./docs/preview/admin.png)
+
+### Mail Notifications
+#### Report Confirmation Email
+![Report Notification Email](./docs/preview/report_notif.png)
+
+#### Ban Notification Email
+![Ban Notification Email](./docs/preview/ban_notif.png)
 
 ## Live Demo (Frontend Showcase)
 
